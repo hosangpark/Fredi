@@ -46,8 +46,9 @@ function OrderListCard({ item, onClickOrderDetails, onClickRequesCancellation, o
               <CartItemTitleWrap>
                 <CartItemAuthor>[{deepItem.sale_product.designer} 디자이너] </CartItemAuthor>
                 <CartItemTitle> {deepItem.sale_product.name}</CartItemTitle>
-                <CartItemOption> {deepItem.option}</CartItemOption>
+                {/* <CartItemOption> {deepItem.option}</CartItemOption> */}
               </CartItemTitleWrap>
+              <>
               <StatusWrap>
                 <Status color={deepItem.color}> {deepItem.state}</Status>
                 {(deepItem.state === '배송중' || deepItem.state === '배송완료' || deepItem.state === '교환중') && (
@@ -59,7 +60,7 @@ function OrderListCard({ item, onClickOrderDetails, onClickRequesCancellation, o
               </StatusWrap>
               <ButtonWrap>
                 <WhiteButton onClick={onClickOrderDetails}>
-                  <WhiteButtonText>주문상세</WhiteButtonText>
+                  <WhiteButtonText>Detail</WhiteButtonText>
                 </WhiteButton>
                 {deepItem.state === '결제완료' && (
                   <WhiteButton
@@ -104,6 +105,7 @@ function OrderListCard({ item, onClickOrderDetails, onClickRequesCancellation, o
                   </>
                 )}
               </ButtonWrap>
+              </>
             </SpaceWrap>
           </RowWrap>
         </ContentBox>
@@ -145,7 +147,7 @@ const SpaceWrap = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   align-items: flex-start;
 `;
 
@@ -161,17 +163,19 @@ const CartItemTitleWrap = styled.div`
 `;
 
 const CartItemImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   margin-left: 12px;
   margin-right: 20px;
   @media only screen and (max-width: 768px) {
+    width: 110px;
+    height: 110px;
     margin-right: 20px;
   }
 `;
 
 const CartItemTitle = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 15px;
   margin-left: 8px;
   font-weight: 500;
@@ -182,7 +186,7 @@ const CartItemTitle = styled.span`
 `;
 
 const CartItemAuthor = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 15px;
   color: #121212;
   font-weight: 500;
@@ -217,7 +221,7 @@ const DeliveryInfo = styled(Status)`
 
 const SubTitleBox = styled.div`
   height: 65px;
-  border-bottom: 1px solid #121212;
+  /* border-bottom: 1px solid #121212; */
   display: flex;
   align-items: center;
   padding-left: 20px;
@@ -229,9 +233,9 @@ const SubTitleBox = styled.div`
 `;
 
 const Date = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   color: #121212;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
@@ -239,11 +243,13 @@ const Date = styled.span`
 `;
 
 const OrderNumber = styled(Date)`
+font-family:'Pretendard Variable';
   font-weight: 400;
   color: #777;
   margin-left: 5px;
+  font-size:14px;
   @media only screen and (max-width: 768px) {
-    font-size: 11px;
+    font-size: 12px;
   }
 `;
 
@@ -253,7 +259,8 @@ const ButtonWrap = styled.div`
   margin-top: 15px;
   flex-wrap: wrap;
   @media only screen and (max-width: 768px) {
-    margin-top: 8px;
+    /* margin-top: 8px; */
+    margin-top: 0px;
   }
 `;
 
@@ -265,12 +272,13 @@ const WhiteButton = styled.div`
   align-items: center;
   justify-content: center;
   margin-right: 10px;
+  margin-bottom: 5px;
   cursor: pointer;
   @media only screen and (max-width: 768px) {
     width: 85px;
     height: 33px;
     margin-right: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
   }
 `;
 
@@ -294,7 +302,7 @@ const OrderButton = styled.div`
 `;
 
 const WhiteButtonText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   color: #121212;
   font-size: 12px;
   @media only screen and (max-width: 768px) {
@@ -303,7 +311,7 @@ const WhiteButtonText = styled.span`
 `;
 
 const CartItemOption = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 15px;
   margin-left: 8px;
   font-weight: 500;

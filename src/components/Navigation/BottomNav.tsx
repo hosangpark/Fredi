@@ -5,11 +5,11 @@ import newIconImage from '../../asset/image/ico_new.png';
 import { APICheckNew } from '../../api/SettingAPI';
 import { UserContext } from '../../context/user';
 import AlertModal from '../Modal/AlertModal';
-import home01 from '../../asset/image/home01.png';
+import home01 from '../../asset/image/homeicon.png';
 import home02 from '../../asset/image/home02.png';
-import home03 from '../../asset/image/home03.png';
-import home04 from '../../asset/image/home04.png';
-import home05 from '../../asset/image/home05.png';
+import home03 from '../../asset/image/searchicon.png';
+import home04 from '../../asset/image/snsicon.png';
+import home05 from '../../asset/image/profile.png';
 import likeOffImage from '../../asset/image/heart_off.png';
 import ConfirmModal from '../Modal/ConfirmModal';
 import { removeHistory } from '../Layout/Header';
@@ -48,7 +48,7 @@ function BottomNav() {
         }}
       >
         <MenuButtonImage src={home01} />
-        <MenuButtonText>작품보기</MenuButtonText>
+        <MenuButtonText>HOME</MenuButtonText>
       </MenuButton>
 
       {user.level <= 1 && (
@@ -68,18 +68,17 @@ function BottomNav() {
           <MenuButtonText>Producing</MenuButtonText>
         </MenuButton>
       )}
-
       <MenuButton
         onClick={() => {
           removeHistory();
-          navigate('/shop');
+          navigate('/MainTab');
         }}
       >
         <MenuButtonImage src={home03} />
-        <MenuButtonText>Shop</MenuButtonText>
+        <MenuButtonText>FAIR</MenuButtonText>
       </MenuButton>
 
-      <MenuButton
+      {/* <MenuButton
         onClick={() => {
           removeHistory();
           if (!token) {
@@ -90,30 +89,30 @@ function BottomNav() {
       >
         <MenuButtonImage src={likeOffImage} width={26} />
         <MenuButtonText>관심작품</MenuButtonText>
-      </MenuButton>
-
+      </MenuButton> */}
+      
       <MenuButton
         onClick={() => {
           removeHistory();
-          navigate('/contact/asklist');
+          navigate('/community');
         }}
       >
-        <MenuButtonImage src={home05} width={26} />
-        <MenuButtonText>고객센터</MenuButtonText>
+        <MenuButtonImage src={home04} width={26} />
+        <MenuButtonText>SNS</MenuButtonText>
       </MenuButton>
       <MenuButton
         onClick={() => {
           removeHistory();
-
-          if (!token) {
-            setShowLogin(true);
-          } else {
-            navigate('/profile');
-          }
+          navigate('/MobileProfile');
+          // if (!token) {
+          //   setShowLogin(true);
+          // } else {
+          //   navigate('/profile');
+          // }
         }}
       >
-        <MenuButtonImage src={home04} />
-        <MenuButtonText>마이페이지</MenuButtonText>
+        <MenuButtonImage src={home05} />
+        <MenuButtonText>MY</MenuButtonText>
       </MenuButton>
       <AlertModal
         visible={showModal}
@@ -140,6 +139,7 @@ function BottomNav() {
 
 const BottomNavWrap = styled.div`
   position: fixed;
+  padding:5px 0 10px 0;
   bottom: 0;
   display: none;
   width: 100%;
@@ -184,12 +184,18 @@ const MenuButtonImage = styled.img<{ width?: number }>`
   width: ${(props) => (props.width ? props.width : 27)}px;
   height: 27px;
   margin-bottom: 3px;
+  @media only screen and (max-width: 768px) {
+    width: 23px;
+    height: 23px;
+  }
+
 `;
 
 const MenuButtonText = styled.span`
   font-weight: 400;
   color: #121212;
   font-size: 10px;
+  display:none;
 `;
 
 export default memo(BottomNav);

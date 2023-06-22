@@ -10,9 +10,15 @@ import FindPassword from './page/user/FindPassword';
 import FindUserId from './page/user/FindUserId';
 import Home from './page/product/Home';
 import Producer from './page/producer/Producer';
-import ProducerDetails from './page/producer/ProducerDetails';
-import ProductDetails from './page/product/ProductDetails';
+
+import PrevProductDetails from './page/product/PrevProductDetails';
 import Profile from './page/user/Profile';
+import MobileProfile from './page/user/MobileProfile';
+import EditProfile from './page/user/EditProfile';
+import AddLink from './page/user/AddLink';
+import EditLink from './page/user/EditLink';
+import AddPhoto from './page/user/AddPhoto';
+import AddPhoto2 from './page/user/AddPhoto2';
 import RegisterAsk from './page/contact/RegisterAsk';
 import RegisterFaq from './page/admin/RegisterFaq';
 import RegisterProduct from './page/admin/RegisterProduct';
@@ -38,7 +44,6 @@ import { UserContext } from './context/user';
 import { APIUserDetails } from './api/UserAPI';
 import { useLayoutEffect } from 'react';
 import Shop from './page/shop/Shop';
-import ShopDetails from './page/shop/ShopDetails';
 import Cart from './page/shop/Cart';
 import Order from './page/shop/Order';
 import OrderList from './page/user/OrderList';
@@ -50,6 +55,24 @@ import OrderCompletedMobile from './page/shop/OrderCompletedMobile';
 import Privacy from './page/user/Privacy';
 import RegisterShopAsk from './page/contact/RegisterShopAsk';
 import ShopAskList from './page/user/ShopAskList';
+
+import MainTab from './page/MainTab/MainTab';
+import FairContent from './page/MainTab/FairContent';
+import PersonalPage from './page/user/PersonalPage';
+import Community from './page/community/Community';
+import LikeTab from './page/LikeFeed/LikeTab';
+import ArtistProducts from './page/MainTab/ArtistProducts';
+import WeeklyEdition from './page/product/WeeklyEdition';
+import Fair from './page/MainTab/Fair';
+import Artwork from './page/MainTab/Artwork';
+import Artist from './page/MainTab/Artist';
+import ProducerDetails from './page/producer/ProducerDetails';
+import ProductDetails from './page/product/ProductDetails';
+import ChangePassword from './page/user/ChangePassword';
+import ChangePhone from './page/user/ChangePhone';
+import ChangeAddress from './page/user/ChangeAddress';
+import DeleteAccount from './page/user/DeleteAccount';
+
 
 function Router() {
   const { patchUser } = useContext(UserContext);
@@ -78,15 +101,17 @@ function Router() {
           {/* 비밀번호 찾기 페이지 */}
           <Route path="/findpassword" element={<FindPassword />} />
           {/* '작품보기' 상세 페이지 */}
-          <Route path="/productdetails/:idx" element={<ProductDetails />} />
+          <Route path="/prevproductdetails/:idx" element={<PrevProductDetails />} />
           {/* 'producing' 메인 페이지 */}
           <Route path="/producer" element={<Producer />} />
           {/* 'producing' 상세 페이지 */}
-          <Route path="/producerdetails/:idx" element={<ProducerDetails />} />
+          <Route path="/producerdetails/:idx" element={<ProducerDetails/>} />
           {/* 'shop' 메인 페이지 */}
           <Route path="/shop" element={<Shop />} />
           {/* 'shop' 상세 페이지 */}
-          <Route path="/shopdetails/:idx" element={<ShopDetails />} />
+          <Route path="/productdetails/:idx" element={<ProductDetails />} />
+          {/* 장바구니 페이지 */}
+          <Route path="/personalpage/:name" element={<PersonalPage/>} />
           {/* 장바구니 페이지 */}
           <Route path="/cart" element={<Cart />} />
           {/* 주문하기 페이지 */}
@@ -99,14 +124,41 @@ function Router() {
           <Route path="/ordercompleted-mobile" element={<OrderCompletedMobile />} />
           {/* '마이페이지' 메인 페이지 */}
           <Route path="/profile" element={<Profile />} />
+          <Route path="/MobileProfile" element={<MobileProfile />} />
+          <Route path="/EditProfile" element={<EditProfile />} />
+          <Route path="/AddLink" element={<AddLink />} />
+          <Route path="/EditLink" element={<EditLink />} />
+          <Route path="/AddPhoto" element={<AddPhoto />} />
+          <Route path="/AddPhoto2" element={<AddPhoto2 />} />
           {/* 주문내역 페이지 */}
           <Route path="/orderlist" element={<OrderList />} />
           {/* 주문상세 페이지 */}
+
+          <Route path="/MainTab" element={<MainTab />}/>
+          <Route path="/Fair" element={<Fair />}/>
+          <Route path="/Artwork" element={<Artwork />}/>
+          <Route path="/Artist" element={<Artist />}/>
+
+          <Route path="/ArtistProducts/:name" element={<ArtistProducts />}/>
+
+          <Route path="/WeeklyEdition" element={<WeeklyEdition />}/>
+          {/* <Route path="Artwork" element={<Artwork />} />
+          <Route path="Artist" element={<Artist />} /> */}
+          <Route path="/FairContent/:idx" element={<FairContent />} />
+
           <Route path="/orderdetails/:idx" element={<OrderDetails />} />
           {/* 주문취소/반품요청/교환요청 페이지 */}
           <Route path="/request/:type/:idx" element={<Request />} />
           {/* 개인정보 수정 페이지 */}
           <Route path="/modifyuserinfo" element={<ModifyUserInfo />} />
+          {/* 개인정보 수정 페이지 */}
+          <Route path="/changePassword" element={<ChangePassword />} />
+          {/* 개인정보 수정 페이지 */}
+          <Route path="/changePhone" element={<ChangePhone />} />
+          {/* 개인정보 수정 페이지 */}
+          <Route path="/changeAddress" element={<ChangeAddress />} />
+          {/* 개인정보 수정 페이지 */}
+          <Route path="/deleteAccount" element={<DeleteAccount />} />
           {/* 찜한상품 페이지 */}
           <Route path="/likelist" element={<LikeList />} />
           {/* 카카오 회원가입 페이지 */}
@@ -130,6 +182,8 @@ function Router() {
             {/* '고객센터' - shop 1:1문의 등록 페이지 */}
             <Route path="registerask-shop" element={<RegisterShopAsk />} />
           </Route>
+          <Route path="/community/*" element={<Community />}/>
+          <Route path="/LikeTab" element={<LikeTab />}/>
           {/* 'manager' 라우터 */}
           <Route path="/admin/*" element={<Admin />}>
             {/* 'manager' - 메인 페이지 */}

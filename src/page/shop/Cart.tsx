@@ -106,7 +106,7 @@ function Cart() {
       }
       console.log('array',array);
       setAllDelete(array);
-      setCartList(newList);
+      // setCartList(newList);
       console.log('newList', newList);
       const addressData = res.address;
       setZipCode(addressData.zipcode);
@@ -196,6 +196,27 @@ function Cart() {
 
   useEffect(() => {
     getCartList();
+    setCartList([
+        {
+          idx:1,
+          selected:true,
+          image:[
+            {
+            idx: 1,
+            file_name: ''
+            }
+          ],
+          option: '옵션',
+          product_idx: 1,
+          name: '이름',
+          designer: '디자이너',
+          amount: 1,
+          price: 8000,
+          delivery_fee: 100,
+          delivery_fee2: 200,
+          delivery_fee3: 300
+        }
+      ]);
   }, []);
 
   useEffect(() => {
@@ -403,7 +424,7 @@ const LeftBox = styled.div`
   @media only screen and (max-width: 1100px) {
     display: flex;
     width: 100%;
-    border-bottom: 1px solid #121212;
+    border-bottom: 2px solid #dfdfdf;
     border-right: 0;
   }
 `;
@@ -468,6 +489,7 @@ const CheckBoxWrap = styled.div`
   @media only screen and (max-width: 768px) {
     height: 40px;
     padding: 0 10px;
+    border-bottom: 0px
   }
 `;
 
@@ -499,7 +521,7 @@ const SideTopBox = styled.div`
 `;
 const SideBottomBox = styled.div`
   width: 100%;
-  border-top: 1px solid #121212;
+  
   padding: 30px;
   @media only screen and (max-width: 1100px) {
     padding: 0 18px 30px;
@@ -510,6 +532,10 @@ const IconTitleWrap = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  @media only screen and (max-width: 768px) {
+    border-top:2px solid #dfdfdf; 
+    padding-top:20px
+  }
 `;
 
 const SideTopBoxTitle = styled.span`
@@ -590,7 +616,8 @@ const DeliveryInfoButtonText = styled.span`
 const OrderInfoBox = styled.div``;
 
 const OrderInfoTopBox = styled.div`
-  border-bottom: 1px solid #121212;
+  border-bottom: 2px solid #dfdfdf;
+  border-Top: 2px solid #dfdfdf;
   padding: 10px 0;
   @media only screen and (max-width: 768px) {
     padding: 40px 0 20px;
@@ -783,6 +810,9 @@ const DeleteAllButton = styled.div`
   align-self: center;
   cursor: pointer;
   float: right;
+  @media only screen and (max-width: 768px) {
+    border: 0
+  }
   @media only screen and (max-width: 1100px) {
   }
 `;

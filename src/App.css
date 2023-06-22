@@ -18,3 +18,15 @@ body::-webkit-scrollbar {
 .App::-webkit-scrollbar {
   width: 0;
 }
+.div{
+  font-family: 'Pretendard Variable';
+}
+.span{
+  font-family: 'Pretendard Variable';
+}
+.p{
+  font-family: 'Pretendard Variable';
+}
+.a{
+  font-family: 'Pretendard Variable';
+}

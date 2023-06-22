@@ -34,7 +34,13 @@ function Footer() {
     <FooterWrap>
       <FooterBox>
         <FooterTopBox>
-          <Logo src={logoImage} />
+          {/* <Logo src={logoImage} /> */}
+          <InstaBox>
+            <InstaButton href={companyInfo?.instagram} target="_blank">
+              <InstaButtonImage src={instaImage} />
+            </InstaButton>
+            <TextButton onClick={() => navigate('/contact/askinfo')}>입점문의</TextButton>
+          </InstaBox>
           <TextBox>
             <FooterText>대표 {companyInfo?.representative}</FooterText>
             <FooterText>대표전화 {companyInfo?.phone}</FooterText>
@@ -44,13 +50,19 @@ function Footer() {
             <FooterText>사업자등록번호 {companyInfo?.business_number}</FooterText>
             <FooterText>통신판매업신고 {companyInfo?.business_number2}</FooterText>
           </TextBox>
+            <FooterText Bold={true}>@copyright. FREDI</FooterText>
         </FooterTopBox>
-        <FooterBottomBox>
-          <TextButton onClick={() => navigate('/contact/askinfo')}>입점문의</TextButton>
-          <InstaButton href={companyInfo?.instagram} target="_blank">
-            <InstaButtonImage src={instaImage} />
-          </InstaButton>
-        </FooterBottomBox>
+        <TermsBox>
+          <FooterText>
+            이용약관
+          </FooterText>
+          <FooterText>
+            개인정보처리방침
+          </FooterText>
+          <FooterText>
+            FAQ
+          </FooterText>
+        </TermsBox>
       </FooterBox>
     </FooterWrap>
   );
@@ -61,12 +73,13 @@ const FooterWrap = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
-  border-top: 1px solid #121212;
+  /* background-color: #ffffff; */
+  background-color: #2e2e2e;
+  /* border-top: 1px solid #121212; */
   padding: 45px 50px 0;
   @media only screen and (max-width: 768px) {
     padding: 25px 18px 0;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
   }
 `;
 
@@ -76,6 +89,7 @@ const FooterBox = styled.div`
   align-items: flex-start;
   justify-content: center;
   width: 100%;
+  color:white;
   /* min-width: 768px; */
 `;
 
@@ -92,27 +106,32 @@ const FooterTopBox = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
-  border-bottom: 1px solid #e9e9e9;
-  padding-bottom: 5px;
+  border-bottom: 1px solid #8b8b8b;
+  padding-bottom: 20px;
 `;
 
 const TextBox = styled.div`
   display: flex;
   margin-bottom: 3px;
   flex-wrap: wrap;
+  justify-content:center;
 `;
 
-const FooterText = styled.span`
-  font-size: 12px;
-  color: #121212;
-  font-weight: 400;
+const FooterText = styled.span<{Bold?:boolean}>`
+  font-size: 13px;
+  /* color: #121212; */
+  color:white;
+  font-weight: ${(props)=>props.Bold? 'bold':400};
   margin-right: 10px;
   @media only screen and (max-width: 768px) {
-    font-size: 10px;
+    font-size: 12px;
+  }
+  @media only screen and (max-width: 450px) {
+    font-size: 11px;
   }
 `;
 
-const FooterBottomBox = styled.div`
+const InstaBox = styled.div`
   display: flex;
   width: 100%;
   justify-content: flex-end;
@@ -127,6 +146,7 @@ const TextButton = styled.a`
   color: #121212;
   font-weight: 500;
   cursor: pointer;
+  color:white;
   @media only screen and (max-width: 768px) {
     font-size: 10px;
   }
@@ -136,11 +156,11 @@ const InstaButton = styled.a`
   display: inline-block;
   width: 18px;
   height: 18px;
-  margin-left: 20px;
+  margin-right: 20px;
   @media only screen and (max-width: 768px) {
     width: 15px;
     height: 15px;
-    margin-left: 5px;
+    margin-right: 5px;
   }
 `;
 
@@ -148,6 +168,14 @@ const InstaButtonImage = styled.img`
   width: 100%;
   height: 100%;
   vertical-align: top;
+`;
+const TermsBox = styled.div`
+  width:100%;
+  padding:5% 10% 10% 10%;
+  gap:5%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 `;
 
 export default memo(Footer);

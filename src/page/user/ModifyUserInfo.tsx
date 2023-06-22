@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox, Modal, Select } from '@mantine/core';
 import arrDownImage from '../../asset/image/arr_down.png';
+import rightArrowImage from '../../asset/image/pager_right.png';
 import { APIGetTerms } from '../../api/SettingAPI';
 import {
   APICheckPassword,
@@ -100,7 +101,7 @@ function ModifyUserInfo() {
   const getUserDetails = async () => {
     try {
       const res = await APIUserDetails();
-      console.log(res);
+      
       setUserDetails(res);
       setNickname(res.nickname);
       setOriginalNickname(res.nickname);
@@ -126,7 +127,7 @@ function ModifyUserInfo() {
         nickname: nickname,
       };
       const res = await checkNicknameExcludeUser(data);
-      console.log(res);
+      
       setAlertType('nicknameAvailable');
       setIsDuplicatedNickname(false);
     } catch (error) {
@@ -146,7 +147,7 @@ function ModifyUserInfo() {
         phone_number: phone,
       };
       const res = await APISendAuthNumber(data);
-      console.log(res);
+      
       setAlertType('send');
       setTimer(180);
       setIsSend(true);
@@ -164,7 +165,7 @@ function ModifyUserInfo() {
         auth_number: authNumber,
       };
       const res = await APIVerifyAuthNumber(data);
-      console.log(res);
+      
       setIsAuth(true);
       setAlertType('auth');
       setTimer(0);
@@ -183,7 +184,7 @@ function ModifyUserInfo() {
     };
     try {
       const res = await APIModifyUserDetails(data);
-      console.log(res);
+      
       setAlertType('modified');
       setNewPassword('');
       setNewPassword2('');
@@ -200,7 +201,7 @@ function ModifyUserInfo() {
     };
     try {
       const res = await APICheckPassword(data);
-      console.log(res);
+      
       setAlertType('passwordAuth');
       setIsVerifiedPassword(true);
     } catch (error) {
@@ -220,7 +221,7 @@ function ModifyUserInfo() {
         password: newPassword,
       };
       const res = await APIModifyPassword(data);
-      console.log(res);
+      
       setAlertType('password');
     } catch (error) {
       console.log(error);
@@ -237,7 +238,7 @@ function ModifyUserInfo() {
     console.log(data);
     try {
       const res = await APIDeleteAccount(data);
-      console.log(res);
+      
       sessionStorage.clear();
       setDeleteAccountModal(true);
     } catch (error) {
@@ -276,7 +277,7 @@ function ModifyUserInfo() {
     };
     try {
       const res = await APISaveAddress(data);
-      console.log(res);
+      
       setShowSaveAddressModal(true);
     } catch (error) {
       console.log(error);
@@ -284,8 +285,8 @@ function ModifyUserInfo() {
   };
 
   useEffect(() => {
-    getTerms();
-    getUserDetails();
+    // getTerms();
+    // getUserDetails();
   }, []);
 
   useEffect(() => {
@@ -334,61 +335,60 @@ function ModifyUserInfo() {
 
   return (
     <Container style={{ overflow: 'hidden' }}>
-      <LeftBox>
+      {/* <LeftBox>
         <LeftTopBox>
           <Title>개인정보수정</Title>
         </LeftTopBox>
-      </LeftBox>
+      </LeftBox> */}
       <RightBox>
         <RowWap>
-          <LeftText>아이디</LeftText>
-          <RightText>{userDetails?.user_id}</RightText>
+          <LeftText>ID</LeftText>
+          <RightText marginR={35}>{userDetails?.user_id? userDetails?.user_id : 'Id'}</RightText>
         </RowWap>
         <RowWap>
-          <LeftText>이름</LeftText>
-          <RightText>{userDetails?.name}</RightText>
+          <LeftText>Full name</LeftText>
+          <RightText marginR={35}>{userDetails?.name ? userDetails?.name : 'Name'  }</RightText>
         </RowWap>
         <RowWap>
-          <LeftText>닉네임</LeftText>
-          <TextInput maxLength={10} value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="닉네임 입력" />
-          <UnderlineTextButton onClick={onCheckNickname}>중복확인</UnderlineTextButton>
+          <LeftText>User name</LeftText>
+          <RightText marginR={35}>{userDetails?.nickname ? userDetails?.nickname : 'NickName'  }</RightText>
+          {/* <TextInput maxLength={10} value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="닉네임 입력" /> */}
+          {/* <UnderlineTextButton onClick={onCheckNickname}>중복확인</UnderlineTextButton> */}
         </RowWap>
         <RowWap>
-          <LeftText>휴대폰번호</LeftText>
-          <RightText>{userDetails?.phone}</RightText>
+          <LeftText>Phone</LeftText>
+          {/* <RightText marginR={35}>{userDetails?.phone? userDetails?.phone : 'Number'}</RightText> */}
+          <RightText onClick={()=> navigate('/changePhone')}>
+            01010010100
+            <RightArrow src={rightArrowImage}/>
+          </RightText>
         </RowWap>
-        <EmptyRowWrap>
-          <EmptyRowLeftBox />
-          <EmptyRowRightWrap>
-            <EmptyRowInputWrap>
-              <EmptyRowTextInput
-                maxLength={11}
-                value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
-                placeholder="새로운 휴대폰 번호"
-              />
-              <UnderlineTextButton onClick={onSendAuthNumber}>인증번호 전송</UnderlineTextButton>
-            </EmptyRowInputWrap>
-            <EmptyRowInputWrap>
-              <EmptyRowTextInput last maxLength={6} value={authNumber} onChange={(e) => setAuthNumber(e.target.value)} placeholder="인증번호" />
-              <UnderlineTextButton onClick={onCheckAuth}>인증하기</UnderlineTextButton>
-            </EmptyRowInputWrap>
-            <RightText>
-              <AlertText>
-                {isSend &&
-                  (timer > 0
-                    ? Math.floor(timer / 60) + ':' + (timer % 60 > 10 ? timer % 60 : '0' + (timer % 60))
-                    : isAuth
-                    ? '인증되었습니다.'
-                    : '*인증 시간이 지났습니다.')}
-              </AlertText>
-            </RightText>
-          </EmptyRowRightWrap>
-        </EmptyRowWrap>
+        <RowWap>
+          <LeftText>Password</LeftText>
+          <RightText onClick={()=> navigate('/changePassword')}>
+            Edit
+            <RightArrow src={rightArrowImage}/>
+          </RightText>
+        </RowWap>
+        <RowWap style={{paddingTop:60}}>
+          <LeftText>Address</LeftText>
+          <RightText onClick={()=> navigate('/changeAddress')}>
+            Edit
+            <RightArrow src={rightArrowImage}/>
+          </RightText>
+        </RowWap>
+        <RowWap style={{paddingTop:60}}>
+          <LeftText style={{color:'#9C343F'}}>Delete Account</LeftText>
+          <RightText onClick={()=> navigate('/deleteAccount')}>
+            Delete
+            <RightArrow src={rightArrowImage}/>
+          </RightText>
+        </RowWap>
+        
         {userDetails?.type === 1 && (
           <>
             <RowWap>
-              <LeftText>비밀번호</LeftText>
+              <LeftText>Password</LeftText>
               <TextInput
                 maxLength={16}
                 disabled={isVerifiedPassword}
@@ -401,7 +401,7 @@ function ModifyUserInfo() {
             </RowWap>
           </>
         )}
-        <EmptyRowWrap last style={{ height: '100%', alignItems: 'flex-start' }}>
+        {/* <EmptyRowWrap last style={{ height: '100%', alignItems: 'flex-start' }}>
           <EmptyRowLeftBox />
           <EmptyRowRightWrap>
             {userDetails?.type === 1 && (
@@ -434,9 +434,9 @@ function ModifyUserInfo() {
               <Button onClick={onModifyUserInfo} type="black">
                 <ButtonText type="black">수정</ButtonText>
               </Button>
-              {/* <BackButton type="white" onClick={() => navigate(-1)}>
+              <BackButton type="white" onClick={() => navigate(-1)}>
                 <ButtonText type="white">이전</ButtonText>
-              </BackButton> */}
+              </BackButton>
               <AddressModalButton type="white" onClick={() => setShowAddressModal(true)}>
                 <ButtonText type="white">배송지 설정</ButtonText>
               </AddressModalButton>
@@ -445,7 +445,7 @@ function ModifyUserInfo() {
               </Button>
             </ButtonRowWrap>
           </EmptyRowRightWrap>
-        </EmptyRowWrap>
+        </EmptyRowWrap> */}
       </RightBox>
       <EmptyBox />
 
@@ -641,11 +641,10 @@ const LeftBox = styled.div`
   width: 400px;
   flex-direction: column;
   text-align: left;
-  border-right: 1px solid #121212;
+
   @media only screen and (max-width: 768px) {
     width: 100%;
-    border-bottom: 1px solid #121212;
-    border-right: 0;
+
   }
 `;
 
@@ -654,11 +653,12 @@ const RightBox = styled.div`
   flex: 1;
   min-width: 734px;
   flex-direction: column;
-
+  margin: 30px 0;
+  padding:0 20px;
   @media only screen and (max-width: 768px) {
     min-width: 300px;
-    border-bottom: 1px solid #121212;
-    margin-bottom: 10px;
+
+    /* border-top:1px solid #d4d4d4; */
   }
 `;
 
@@ -682,11 +682,10 @@ const Title = styled.h3`
 const RowWap = styled.div<{ last?: boolean }>`
   display: flex;
   align-items: center;
-  border-bottom: ${(props) => (props.last ? 0 : '1px solid #121212')};
-  height: 80px;
   position: relative;
+  justify-content:space-between;
+  border-bottom:1px solid #d4d4d4;
   @media only screen and (max-width: 768px) {
-    height: 50px;
   }
 `;
 
@@ -695,20 +694,17 @@ const EmptyRowWrap = styled(RowWap)`
 `;
 
 const LeftText = styled.span`
+font-family:'Pretendard Variable';
+  font-weight:normal;
   color: #121212;
   font-size: 16px;
-  font-weight: 700;
-  min-width: 200px;
-  max-width: 300px;
-  border-right: 1px solid #121212;
+  font-weight: 500;
+  flex:4;
   height: 100%;
+  text-align: left;
   line-height: 80px;
   @media only screen and (max-width: 768px) {
-    width: 120px;
-    min-width: 80px;
     font-size: 12px;
-    text-align: left;
-    padding: 0 10px;
     line-height: 50px;
   }
 `;
@@ -716,7 +712,7 @@ const LeftText = styled.span`
 const EmptyRowLeftBox = styled.div`
   min-width: 200px;
   max-width: 300px;
-  border-right: 1px solid #121212;
+
   height: 100%;
   @media only screen and (max-width: 768px) {
     width: 120px;
@@ -724,18 +720,24 @@ const EmptyRowLeftBox = styled.div`
   }
 `;
 
-const RightText = styled(LeftText)`
-  min-width: 534px;
-  font-weight: 400;
+const RightText = styled(LeftText)<{marginR?:number}>`
+font-family:'Pretendard Variable';
+  font-weight: 300;
+  width:100%;
   border: 0;
-  padding-left: 20px;
-  font-size: 16px;
-  text-align: left;
+  flex:6;
+  font-size: 14px;
+  text-align: right;
+  margin-right:${(props)=> props.marginR ? props.marginR : 0}px;
   @media only screen and (max-width: 768px) {
-    font-size: 13px;
-    min-width: 240px;
+    font-size: 12px;
   }
 `;
+const RightArrow = styled.img`
+  width:15px;
+  height:15px;
+  margin:0 10px;
+`
 
 const BlackButtonText = styled.span`
   color: #ffffff;
@@ -750,7 +752,7 @@ const BlackButtonText = styled.span`
 const EmptyBox = styled.div`
   width: 280px;
   display: flex;
-  border-left: 1px solid #121212;
+
 `;
 
 const WhiteButtonText = styled(BlackButtonText)`
@@ -805,7 +807,7 @@ const ModalBlackButton = styled.div`
   justify-content: center;
   flex: 1;
   cursor: pointer;
-  border: 1px solid #121212;
+
   @media only screen and (max-width: 768px) {
     flex: none;
     width: 120px;
@@ -847,7 +849,7 @@ const ButtonRowWrap = styled.div`
 const Button = styled.div<{ type: 'black' | 'white' | 'green' }>`
   width: 140px;
   height: 60px;
-  border: 1px solid #121212;
+
   background-color: ${(props) => (props.type === 'black' ? '#121212' : '#fff')};
   border-color: ${(props) => (props.type === 'green' ? '#398049' : '#121212')};
   display: flex;
@@ -865,7 +867,7 @@ const Button = styled.div<{ type: 'black' | 'white' | 'green' }>`
 const BackButton = styled.div<{ type: 'black' | 'white' | 'green' }>`
   width: 140px;
   height: 60px;
-  border: 1px solid #121212;
+
   background-color: ${(props) => (props.type === 'black' ? '#121212' : '#fff')};
   border-color: ${(props) => (props.type === 'green' ? '#398049' : '#121212')};
   display: flex;
@@ -892,7 +894,7 @@ const UnderLineBox = styled.div`
   flex: 1;
   width: 100%;
   padding: 0px 10px;
-  border-bottom: 1px solid #121212;
+
 `;
 
 const DownIcon = styled.img`
@@ -935,7 +937,7 @@ const EmptyRowTextInput = styled(TextInput)<{ last?: boolean }>`
     line-height: 50px;
     font-size: 13px;
     min-width: 240px;
-    border-bottom-width: ${(props) => (props.last ? 0 : 1)}px;
+
   }
 `;
 
@@ -998,7 +1000,7 @@ const CheckboxWrap = styled.div`
 const ReasonInput = styled.textarea`
   width: 100%;
   height: 120px;
-  border: 1px solid #121212;
+
   padding: 10px;
   font-size: 14px;
   font-weight: 400;
@@ -1084,7 +1086,7 @@ const AddressModalTextInput = styled.input`
   padding: 10px;
   border: 0;
   border-radius: 0;
-  border-bottom: 1px solid #121212;
+
   font-size: 14px;
   font-weight: 400;
   outline: 0;

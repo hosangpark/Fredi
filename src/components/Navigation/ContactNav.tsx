@@ -17,7 +17,7 @@ function ContactNav({ selected, setSelected }: { selected: number; setSelected: 
             }}
           >
             {selected === 1 && <Hyphen>―</Hyphen>}
-            <MenuButtonText>1:1 문의</MenuButtonText>
+            <MenuButtonText>1:1 Message</MenuButtonText>
           </MenuButton>
           <MenuButton
             onClick={() => {
@@ -26,7 +26,7 @@ function ContactNav({ selected, setSelected }: { selected: number; setSelected: 
             }}
           >
             {selected === 2 && <Hyphen>―</Hyphen>}
-            <MenuButtonText>입점문의</MenuButtonText>
+            <MenuButtonText>Selling</MenuButtonText>
           </MenuButton>
           <MenuButton
             onClick={() => {

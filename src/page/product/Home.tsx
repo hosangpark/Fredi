@@ -4,12 +4,10 @@ import { createSearchParams, useNavigate, useSearchParams } from 'react-router-d
 import Autoplay from 'embla-carousel-autoplay';
 import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
-import leftButtonMobileImage from '../../asset/image/ico_prev_mobile.png';
-import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
-import { TProductListItem } from '../admin/ProductList';
+import ProductList, { TProductListItem } from '../admin/ProductList';
 import { APIGetBanner } from '../../api/SettingAPI';
 import { TImage } from '../admin/ProducerList';
 import { UserContext } from '../../context/user';
@@ -20,6 +18,10 @@ import ProductCard from '../../components/Product/ProductCard';
 import SearchBox from '../../components/Product/SearchBox';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
+import AppdownModal from '../../components/Modal/AppdownModal';
+import ProductMainList from '../../components/Product/ProductMainList';
+import WeeklyEditionList from '../../components/Product/WeeklyEditionList';
+import Footer from '../../components/Layout/Footer';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -93,6 +95,7 @@ function Home() {
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  const [appdownModal, setAppdownModal] = useState(false);
 
   const { user } = useContext(UserContext);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
@@ -105,8 +108,10 @@ function Home() {
     };
     if(innerWidth > 768){
       console.log('big');
+      setAppdownModal(false)
     } else {
       console.log('s');
+      setAppdownModal(true)
     }
     // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
@@ -126,7 +131,7 @@ function Home() {
           array2.push(list);
         }
       });
-      console.log(array1, array2);
+      // console.log(array1, array2);
       setBannerList(array1);
       setBannerListMobile(array2);
     } catch (error) {
@@ -134,42 +139,42 @@ function Home() {
     }
   };
 
-  const getProductList = async (page: number) => {
-    const data = {
-      page: page,
-      category: category,
-      keyword: keywordParams,
-    };
-    try {
-      if (history) {
-        return setHistory(false);
-      }
-      const { list, total } = await APIProductList(data);
-      setTotal(total);
-      if (page === 1) {
-        setProductList((prev) => [...list]);
-      } else {
-        setProductList((prev) => [...prev, ...list]);
-      }
-      console.log('product', list, page);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getProductList = async (page: number) => {
+  //   const data = {
+  //     page: page,
+  //     category: category,
+  //     keyword: keywordParams,
+  //   };
+  //   try {
+  //     if (history) {
+  //       return setHistory(false);
+  //     }
+  //     const { list, total } = await APIProductList(data);
+  //     setTotal(total);
+  //     if (page === 1) {
+  //       setProductList((prev) => [...list]);
+  //     } else {
+  //       setProductList((prev) => [...prev, ...list]);
+  //     }
+  //     // console.log('product', list, page);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  const onLikeProduct = async (idx: number) => {
-    const data = {
-      product_idx: idx,
-    };
-    try {
-      const res = await APILikeProduct(data);
-      console.log(res);
-      const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-      setProductList(newList);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const onLikeProduct = async (idx: number) => {
+  //   const data = {
+  //     product_idx: idx,
+  //   };
+  //   try {
+  //     const res = await APILikeProduct(data);
+  //     console.log(res);
+  //     const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
+  //     setProductList(newList);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleObserver = useCallback((entries: any) => {
     const target = entries[0];
@@ -207,6 +212,22 @@ function Home() {
     navigate(`/productdetails/${idx}`);
   };
 
+  const onDeleteAsk = async () => {
+    // setAppdownModal(false);
+    // const data = {
+    //   idx: itemIdx,
+    // };
+    // try {
+    //   const res = await APIDeleteAsk(data);
+    //   console.log(res);
+    //   setShowModal(true);
+    //   getAskList();
+    // } catch (error) {
+    //   console.log(error);
+    //   alert(error);
+    // }
+  };
+
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, options);
     if (interSectRef.current) observer.observe(interSectRef.current);
@@ -231,20 +252,20 @@ function Home() {
     }
   }, [productList]);
 
-  useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
-    console.log('카테고리', category);
-    if (page) {
-      findHistory();
-    } else {
-      setPage(1);
-      getProductList(1);
-    }
-  }, [searchParams, category]);
+  // useLayoutEffect(() => {
+  //   const page = Number(sessionStorage.getItem('page'));
+  //   console.log('카테고리', category);
+  //   if (page) {
+  //     findHistory();
+  //   } else {
+  //     setPage(1);
+  //     getProductList(1);
+  //   }
+  // }, [searchParams, category]);
 
-  useEffect(() => {
-    if (page > 1) getProductList(page);
-  }, [page]);
+  // useEffect(() => {
+  //   if (page > 1) getProductList(page);
+  // }, [page]);
 
   const onSearch = () => {
     navigate(
@@ -270,7 +291,7 @@ function Home() {
   const slides = bannerList.map((item:any) => {
     console.log('item', item);
     return(
-      <Carousel.Slide key={item.idx}>
+    <Carousel.Slide key={item.idx}>
       <a href={item?.link}>
         <SlideImage src={item.file_name} className={classes.carouselImages} />
       </a>
@@ -279,7 +300,7 @@ function Home() {
   });
 
   const slidesMobile = bannerListMobile.map((item:any) => {
-    console.log('item', item);
+    // console.log('item', item);
     return(
       <Carousel.Slide key={item.idx}>
       <a href={item?.link}>
@@ -338,46 +359,77 @@ function Home() {
           </Carousel>
         )}
       </CarouselWrap>
-      <SearchBox
-        onClickSearch={onSearch}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            onSearch();
-          }
-        }}
-        onClickFilter={(item) => {
-          chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6');
-        }}
-        categoryList={CATEGORYLIST}
-        category={category}
-        keyword={keyword}
-        onChangeInput={(e) => setKeyword(e.target.value)}
-        onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
-          chageCategory(value as '1' | '2' | '3' | '4' | '5' | '6');
-        }}
-      />
-      {/* <ShowTypeButton onClickType1={() => setShowType(1)} onClickType2={() => setShowType(2)} /> */}
       <ProductListWrap>
-        {productList.map((item, index) => (
-          <ProductCard
-            item={item}
-            key={item.idx}
-            index={index}
-            onClick={(e) => saveHistory(e, item.idx)}
-            onClickLike={(e) => {
-              if (user.idx) {
-                e.stopPropagation();
-                onLikeProduct(item.idx);
-              } else {
-                e.stopPropagation();
-                setShowLogin(true);
-              }
-            }}
-            showType={showType}
-          />
-        ))}
+        <ProductMainList
+        title={'Fairs'}
+        ProductViews={innerWidth <= 768? 1.3 : 3.7}
+        naviArrow = {innerWidth <= 768? false : true}
+        scrollbar = {innerWidth <= 768? false : true}
+        ProducList={bannerListMobile}
+        ProductTitle={15}
+        arrowView={true}
+        productLink={innerWidth <= 768? "FairsM" : "FairsW"}
+        link={'FairContent/'}
+        />
+        <ProductMainList
+        title={'Latest'}
+        ProductViews={innerWidth <= 768? 2.1 : 5.8}
+        naviArrow = {innerWidth <= 768? false : true}
+        scrollbar = {innerWidth <= 768? false : true}
+        ProducList={bannerListMobile}
+        ProductTitle={16}
+        arrowView={true}
+        productLink={'Latest'}
+        link={'Latest'}
+        />
+        <WeeklyEditionList
+        title={'Weekly Edition'}
+        ProductViews={innerWidth <= 768? 1.2 : 3.1}
+        naviArrow = {innerWidth <= 768? false : true}
+        scrollbar = {innerWidth <= 768? false : true}
+        ProducList = {bannerListMobile}
+        ProductTitle={16}
+        arrowView={true}
+        link={'WeeklyEdition'}
+        />
+        <ProductMainList
+        title={'Home & Styling'}
+        ProductViews={innerWidth <= 768? 1.7 : 5.9}
+        naviArrow = {innerWidth <= 768? false : true}
+        scrollbar = {innerWidth <= 768? false : true}
+        ProducList={bannerListMobile}
+        ProductTitle={18}
+        arrowView={true}
+        link={'producer'}
+        />
+        <ProductMainList
+        title={'Trending Artist'}
+        ProductViews={innerWidth <= 768? 1.7 : 5.9}
+        naviArrow = {innerWidth <= 768? false : true}
+        scrollbar = {innerWidth <= 768? false : true}
+        ProducList={bannerListMobile}
+        ProductTitle={18}
+        arrowView={true}
+        link={'producer'}
+        />
+        <ProductMainList
+        title={'Featured Works'}
+        ProductViews={innerWidth <= 768? 1.7 : 5.9}
+        naviArrow = {innerWidth <= 768? false : true}
+        scrollbar = {innerWidth <= 768? false : true}
+        ProducList={bannerListMobile}
+        ProductTitle={18}
+        arrowView={true}
+        link={'producer'}
+        />
       </ProductListWrap>
-      <InterView ref={interSectRef} />
+      {/* <InterView ref={interSectRef} /> */}
+      {appdownModal&&
+      <AppdownModal 
+        onClose={()=>setAppdownModal(false)} 
+        // children={}
+      />
+      }
       <AlertModal
         visible={showLogin}
         setVisible={setShowLogin}
@@ -389,21 +441,22 @@ function Home() {
         text="회원가입 후 이용 가능합니다."
       />
       <TopButton />
+      <Footer />
     </Container>
   );
 }
 
 const Container = styled.div`
-  display: flex;
+  width:100%;
   flex: 1;
-  flex-direction: column;
+  /* display: flex;
+  flex: 1;
+  flex-direction: column; */
 `;
 
 const ProductListWrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 30px;
+  margin: 15px 20px;
+  padding-top:30px;
 `;
 
 const CarouselWrap = styled.div`

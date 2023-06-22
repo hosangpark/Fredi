@@ -95,16 +95,258 @@ function OrderList() {
       navigate('/signin', { replace: true });
     }
   };
-
+  const date = new Date()
   useEffect(() => {
-    getOrderList();
+    // getOrderList();
+    setOrderList([
+      {
+        idx: 1,
+        option: 'ss',
+        code: 'ss',
+        carts: [{
+          idx: 1,
+          option: 'dssdd',
+          amount: 2,
+          code: 'ds',
+          color: 'dsd',
+          price: 3,
+          logisticsCompany: 'ddsa',
+          logisticsNum: 'dsada',
+          state:
+            '입금대기',
+            // | '결제완료'
+            // | '주문취소'
+            // | '주문거부'
+            // | '배송준비중'
+            // | '배송중'
+            // | '배송완료'
+            // | '구매확정'
+            // | '교환요청'
+            // | '반품요청'
+            // | '교환승인'
+            // | '반품승인'
+            // | '교환완료'
+            // | '반품완료'
+            // | '교환거부'
+            // | '반품거부'
+            // | '교환중',
+          sale_product: {
+            idx: 222,
+            name: 'dadadada',
+            designer: 'sdfsdfsdf',
+            image: [
+              {
+                idx: 4444,
+                file_name: '432423fd',
+              }
+            ]
+          }
+        }],
+        createdAt: date,
+        vbankDate: 'dd',
+        vbankName: 'dd',
+        vbankNum: 'dd'
+      },
+      {
+        idx: 1,
+        option: 'ss',
+        code: 'ss',
+        carts: [{
+          idx: 1,
+          option: 'dd',
+          amount: 2,
+          code: 'ds',
+          color: 'dsd',
+          price: 3,
+          logisticsCompany: 'ddsa',
+          logisticsNum: 'dsada',
+          state:
+            '입금대기',
+            // | '결제완료'
+            // | '주문취소'
+            // | '주문거부'
+            // | '배송준비중'
+            // | '배송중'
+            // | '배송완료'
+            // | '구매확정'
+            // | '교환요청'
+            // | '반품요청'
+            // | '교환승인'
+            // | '반품승인'
+            // | '교환완료'
+            // | '반품완료'
+            // | '교환거부'
+            // | '반품거부'
+            // | '교환중',
+          sale_product: {
+            idx: 222,
+            name: 'dadadada',
+            designer: 'sdfsdfsdf',
+            image: [
+              {
+                idx: 4444,
+                file_name: '432423fd',
+              }
+            ]
+          }
+        }],
+        createdAt: date,
+        vbankDate: 'dd',
+        vbankName: 'dd',
+        vbankNum: 'dd'
+      },
+      {
+        idx: 1,
+        option: 'ss',
+        code: 'ss',
+        carts: [{
+          idx: 1,
+          option: 'dd',
+          amount: 2,
+          code: 'ds',
+          color: 'dsd',
+          price: 3,
+          logisticsCompany: 'ddsa',
+          logisticsNum: 'dsada',
+          state:
+            '입금대기',
+            // | '결제완료'
+            // | '주문취소'
+            // | '주문거부'
+            // | '배송준비중'
+            // | '배송중'
+            // | '배송완료'
+            // | '구매확정'
+            // | '교환요청'
+            // | '반품요청'
+            // | '교환승인'
+            // | '반품승인'
+            // | '교환완료'
+            // | '반품완료'
+            // | '교환거부'
+            // | '반품거부'
+            // | '교환중',
+          sale_product: {
+            idx: 222,
+            name: 'dadadada',
+            designer: 'sdfsdfsdf',
+            image: [
+              {
+                idx: 4444,
+                file_name: '432423fd',
+              }
+            ]
+          }
+        }],
+        createdAt: date,
+        vbankDate: 'dd',
+        vbankName: 'dd',
+        vbankNum: 'dd'
+      },
+      {
+        idx: 1,
+        option: 'ss',
+        code: 'ss',
+        carts: [{
+          idx: 1,
+          option: 'dd',
+          amount: 2,
+          code: 'ds',
+          color: 'dsd',
+          price: 3,
+          logisticsCompany: 'ddsa',
+          logisticsNum: 'dsada',
+          state:
+            '입금대기',
+            // | '결제완료'
+            // | '주문취소'
+            // | '주문거부'
+            // | '배송준비중'
+            // | '배송중'
+            // | '배송완료'
+            // | '구매확정'
+            // | '교환요청'
+            // | '반품요청'
+            // | '교환승인'
+            // | '반품승인'
+            // | '교환완료'
+            // | '반품완료'
+            // | '교환거부'
+            // | '반품거부'
+            // | '교환중',
+          sale_product: {
+            idx: 222,
+            name: 'dadadada',
+            designer: 'sdfsdfsdf',
+            image: [
+              {
+                idx: 4444,
+                file_name: '432423fd',
+              }
+            ]
+          }
+        }],
+        createdAt: date,
+        vbankDate: 'dd',
+        vbankName: 'dd',
+        vbankNum: 'dd'
+      },
+      {
+        idx: 1,
+        option: 'ss',
+        code: 'ss',
+        carts: [{
+          idx: 1,
+          option: 'ddd',
+          amount: 2,
+          code: 'ds',
+          color: 'dsd',
+          price: 3,
+          logisticsCompany: 'ddsa',
+          logisticsNum: 'dsada',
+          state:
+            '입금대기',
+            // | '결제완료'
+            // | '주문취소'
+            // | '주문거부'
+            // | '배송준비중'
+            // | '배송중'
+            // | '배송완료'
+            // | '구매확정'
+            // | '교환요청'
+            // | '반품요청'
+            // | '교환승인'
+            // | '반품승인'
+            // | '교환완료'
+            // | '반품완료'
+            // | '교환거부'
+            // | '반품거부'
+            // | '교환중',
+          sale_product: {
+            idx: 222,
+            name: 'dadadada',
+            designer: 'sdfsdfsdf',
+            image: [
+              {
+                idx: 4444,
+                file_name: '432423fd',
+              }
+            ]
+          }
+        }],
+        createdAt: date,
+        vbankDate: 'dd',
+        vbankName: 'dd',
+        vbankNum: 'dd'
+      },
+    ])
   }, [page]);
 
   return (
     <Container>
       <LeftBox>
         <LeftTopBox>
-          <Title>주문 내역</Title>
+          <Title>Order List</Title>
         </LeftTopBox>
       </LeftBox>
       <RightBox>
@@ -208,13 +450,14 @@ const LeftBox = styled.div`
   flex-direction: column;
   text-align: left;
   border-right: 1px solid #121212;
+  padding: 0 20px;
   @media only screen and (max-width: 1100px) {
     width: 300px;
   }
   @media only screen and (max-width: 768px) {
     display: flex;
     width: 100%;
-    border-bottom: 1px solid #121212;
+    /* border-bottom: 1px solid #121212; */
     border-right: 0;
   }
 `;
@@ -231,18 +474,19 @@ const RightBox = styled.div`
 
 const LeftTopBox = styled.div`
   width: 100%;
-  padding: 10px 50px;
+  padding:20px 0;
   @media only screen and (max-width: 768px) {
-    padding: 0 18px;
+    
+    border-bottom:1px solid #C9C9C9;
   }
 `;
 
 const Title = styled.h3`
-  font-weight: 700;
+font-family:'Pretendard Variable';
+  font-weight: 400;
   color: #121212;
-  font-size: 36px;
   @media only screen and (max-width: 768px) {
-    font-size: 22px;
+    font-size: 14px;
   }
 `;
 

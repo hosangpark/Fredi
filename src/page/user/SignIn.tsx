@@ -42,8 +42,8 @@ function SignIn() {
       uuid: uuid,
     };
     try {
-      const res = await APISignIn(data);
-      console.log(res);
+      const res = {token:'dasda',userInfo:{idx:0,level:1}};
+      // console.log(res);
       setAlertType(undefined);
       const token = res.token;
       sessionStorage.setItem('token', token);

@@ -17,7 +17,7 @@ const ContentWrap = styled.div`
   padding-top: 80px;
   @media only screen and (max-width: 768px) {
     padding-top: 50px;
-    padding-bottom: 60px;
+    padding-bottom: 20px;
   }
 `;
 

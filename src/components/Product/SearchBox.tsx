@@ -5,23 +5,10 @@ import arrDownImage from '../../asset/image/arr_down.png';
 import { TextInput, Select } from '@mantine/core';
 
 type TCategory = { value: string; label: string };
-interface ICategorySelectButton {
-  item: TCategory;
-  isSelect: boolean;
-  onClickFilter: (e: TCategory) => void;
-}
 
-const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategorySelectButton) => {
-  return (
-    <CategorySelectButton selected={isSelect} onClick={() => onClickFilter(item)} key={item.label}>
-      <CategorySelectButtonText selected={isSelect}>{item.label}</CategorySelectButtonText>
-    </CategorySelectButton>
-  );
-});
 
 function SearchBox({
   onClickSearch,
-  onClickFilter,
   onKeyDown,
   categoryList,
   category,
@@ -30,7 +17,6 @@ function SearchBox({
   onChangeCategory,
 }: {
   onClickSearch: (e: any) => void;
-  onClickFilter: (e: TCategory) => void;
   onKeyDown: (e: any) => void;
   categoryList: TCategory[];
   category: string;
@@ -41,16 +27,9 @@ function SearchBox({
   return (
     <Wrap>
       <SearchBoxWrap>
-        <SearchButton onClick={onClickSearch} src={searchButtonImage} />
         <Input value={keyword} onChange={onChangeInput} onKeyDown={onKeyDown} type="text" variant="unstyled" />
-        <CategorySelectButtonWrap>
-          {categoryList.map((item) => {
-            return (
-              <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={onClickFilter} />
-            );
-          })}
-        </CategorySelectButtonWrap>
-        <UnderLineBox>
+        <SearchButton onClick={onClickSearch} src={searchButtonImage} />
+        {/* <UnderLineBox>
           <Select
             rightSection={<DownIcon src={arrDownImage} />}
             styles={(theme) => ({
@@ -82,7 +61,7 @@ function SearchBox({
             data={categoryList}
             onChange={onChangeCategory}
           />
-        </UnderLineBox>
+        </UnderLineBox> */}
       </SearchBoxWrap>
     </Wrap>
   );
@@ -93,9 +72,10 @@ const Wrap = styled.div`
   position: sticky;
   top: 80px;
   z-index: 97;
-  background-color: #fff;
+  width:30%;
   @media only screen and (max-width: 768px) {
     top: 50px;
+    width:100%;
   }
 `;
 
@@ -105,13 +85,13 @@ const SearchBoxWrap = styled.div`
   height: 50px;
   border: 1px solid #dfdfdf;
   border-radius: 30px;
-  margin: 30px 30px;
+  margin: 10px 0;
   background-color: #f6f6f6;
   @media only screen and (max-width: 1024px) {
-    margin: 20px 30px;
+    margin: 20px 0px;
   }
   @media only screen and (max-width: 460px) {
-    margin: 15px 20px;
+    margin: 15px 0px;
     height: 40px;
   }
 `;
@@ -119,7 +99,7 @@ const SearchBoxWrap = styled.div`
 const SearchButton = styled.img`
   width: 20px;
   height: 20px;
-  margin-left: 15px;
+  margin-right: 15px;
   cursor: pointer;
   @media only screen and (max-width: 768px) {
     width: 15px;
@@ -128,6 +108,7 @@ const SearchButton = styled.img`
 `;
 
 const Input = styled(TextInput)`
+font-family:'Pretendard Variable';
   flex: 1;
   padding: 5px 10px;
   height: 45px;
@@ -166,36 +147,6 @@ const DownIcon = styled.img`
   }
 `;
 
-const CategorySelectButtonWrap = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  border-left: 1px solid #dfdfdf;
-  height: 100%;
-  background-color: #fff;
-  border-top-right-radius: 30px;
-  border-bottom-right-radius: 30px;
-  @media only screen and (max-width: 1024px) {
-    display: none;
-  }
-`;
 
-const CategorySelectButton = styled.div<{ selected: boolean }>`
-  background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
-  padding: 0 23px;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 27px;
-  cursor: pointer;
-`;
-
-const CategorySelectButtonText = styled.span<{ selected: boolean }>`
-  color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: capitalize;
-`;
 
 export default SearchBox;

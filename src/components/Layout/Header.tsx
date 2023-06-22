@@ -1,22 +1,33 @@
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import logoImage from '../../asset/image/logo.png';
 import AlertModal from '../Modal/AlertModal';
+import menuheart from '../../asset/image/heart.png';
+import menucart from '../../asset/image/menucart.png';
+import menuorderlist from '../../asset/image/orderlist.png';
+import menutextballoon from '../../asset/image/textballoon.png';
+import menucontact from '../../asset/image/contact.png';
+import menusetting from '../../asset/image/setting.png';
+
 import likeOffImage from '../../asset/image/heart_off.png';
 import likeOnImage from '../../asset/image/heart_on.png';
-import cart from '../../asset/image/cart.png';
+import menuicon from '../../asset/image/threecircle.png';
+import cartImage from '../../asset/image/cart.png';
+import ContactImage from '../../asset/image/home05.png';
+import LogoutImage from '../../asset/image/ico_logout.png';
 import { APICheckNew } from '../../api/SettingAPI';
 import { UserContext } from '../../context/user';
 import newIconImage from '../../asset/image/ico_new.png';
 import ConfirmModal from '../Modal/ConfirmModal';
 import signIn from '../../asset/image/sign_in.png';
 import signOut from '../../asset/image/sign_out.png';
-import backButtonImage from '../../asset/image/back.png';
+import backButtonImage from '../../asset/image/leftarrow.png';
 import { Menu, Button, Text } from '@mantine/core';
 import { IconSettings, IconSearch, IconPhoto, IconMessageCircle, IconTrash, IconArrowsLeftRight } from '@tabler/icons';
 import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { Modal } from '@mantine/core';
+import Sheet,{SheetRef} from 'react-modal-sheet';
 
 export const removeHistory = () => {
   sessionStorage.removeItem('products');
@@ -51,22 +62,28 @@ export type TUserDetails = {
 function Header() {
   const location = useLocation();
   const pathName = location.pathname.split('/')[1];
-  console.log('pathName', pathName);
-
+  // console.log('pathName', pathName);
+  const ref = useRef<SheetRef>();
   const navigate = useNavigate();
   const { user, patchUser } = useContext(UserContext);
 
   const token = sessionStorage.getItem('token');
   const [showLogin, setShowLogin] = useState(false);
+  const [showNext, setShowNext] = useState(false);
+  const [showSave, setShowSave] = useState(false);
   const [check, setCheck] = useState<{ product: boolean; producer: boolean }>();
   const [showModal, setShowModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [isMouseOveredLikeButton, setIsMouseOveredLikeButton] = useState(false);
   const [showBackButton, setShowBackButton] = useState(false);
+  const [pageName, setPageName] = useState(false);
+  const [noButton, setNoButton] = useState(false);
   const [userDetails, setUserDetails] = useState<TUserDetails>();
   const [isSnsUser, setIsSnsUser] = useState(false);
   const [password, setPassword] = useState<string>('');
   const [passwordAlert, setPasswordAlert] = useState(false);
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  const [bottomSheetModal, setBottomSheetModal] = useState(false);
 
   const goHome = useCallback(() => {
     removeHistory();
@@ -121,18 +138,20 @@ function Header() {
 
   const goShop = useCallback(() => {
     removeHistory();
-    navigate('/shop');
+    navigate('/admin/registerfaq');
   }, []);
 
   const goLikeList = useCallback(() => {
+    setBottomSheetModal(false)
     removeHistory();
-    if (!token) {
-      return setShowLogin(true);
-    }
-    navigate('/likelist');
+    // if (!token) {
+    //   return setShowLogin(true);
+    // }
+    navigate('/LikeTab');
   }, [token]);
 
   const go_orderList = useCallback(() => {
+    setBottomSheetModal(false)
     removeHistory();
     if (!token) {
       return setShowLogin(true);
@@ -141,6 +160,7 @@ function Header() {
   }, [token]);
 
   const go_requestList = useCallback(() => {
+    setBottomSheetModal(false)
     removeHistory();
     if (!token) {
       return setShowLogin(true);
@@ -149,13 +169,36 @@ function Header() {
   }, [token]);
 
   const goContact = useCallback(() => {
+    setBottomSheetModal(false)
     removeHistory();
     navigate('/contact/asklist');
   }, []);
 
+  const goFair = useCallback(() => {
+    setBottomSheetModal(false)
+    removeHistory();
+    navigate('/Fair');
+  }, []);
+  const goArtwork = useCallback(() => {
+    setBottomSheetModal(false)
+    removeHistory();
+    navigate('/Artwork');
+  }, []);
+  
+  const goArtist = useCallback(() => {
+    setBottomSheetModal(false)
+    removeHistory();
+    navigate('/Artist');
+  }, []);
+
+  const goCommunity = useCallback(() => {
+    setBottomSheetModal(false)
+    removeHistory();
+    navigate('/Community');
+  }, []);
+
   const goMyPage = useCallback(() => {
     removeHistory();
-
     if (!token) {
       setShowLogin(true);
     } else {
@@ -169,6 +212,7 @@ function Header() {
   }, []);
 
   const goCart = useCallback(() => {
+    setBottomSheetModal(false)
     removeHistory();
     if (!token) {
       return setShowLogin(true);
@@ -200,17 +244,134 @@ function Header() {
     patchUser(0, 3);
     window.location.replace('/');
   };
+  const nextHandle = () => {
+    if(pathName === 'AddPhoto'){
+      navigate('/AddPhoto2')
+    } else if (pathName === 'AddPhoto2'){
+      navigate('/AddPhoto')
+    } 
+  };
+  const saveHandle = () => {
+    if(pathName === 'modifyuserinfo'){
+      alert('저장되었습니다.')
+      navigate('/')
+      // navigate('/AddPhoto2')
+    } else if (pathName === 'AddPhoto2'){
+      navigate(-1)
+    } else if (pathName === 'EditProfile'){
+      navigate(-1)
+    } 
+  };
+  const BackbuttonHandle = () => {
+    if(pathName === 'AddPhoto'){
+      navigate(-1)
+    } else if (pathName === 'AddPhoto2'){
+      navigate(-2)
+    
+    } else{
+      navigate(-1)
+    }
+  };
+
+  // useEffect(() => {
+  //   const userAgent = window.navigator.userAgent;
+  //   if (userAgent === 'APP-android' || userAgent === 'APP-ios') {
+  //     if (
+  //       pathName === 'productdetails' ||
+  //       pathName === 'shopdetails' ||
+  //       pathName === 'cart' ||
+  //       pathName === 'order' ||
+  //       pathName === 'shopdetails' ||
+  //       pathName === 'orderlist' ||
+  //       pathName === 'orderdetails' ||
+  //       pathName === 'request' ||
+  //       pathName === 'modifyuserinfo' ||
+  //       pathName === 'finduserid' ||
+  //       pathName === 'findpassword' ||
+  //       pathName === 'signup' ||
+  //       pathName === 'producerdetails' ||
+  //       pathName === 'kakao' ||
+  //       pathName === 'naver' ||
+  //       pathName === 'asklist-shop'
+  //     ) {
+  //       setShowBackButton(true);
+  //     } else {
+  //       setShowBackButton(false);
+  //     }
+  //   } else {
+  //     setShowBackButton(false);
+  //   }
+  // }, [pathName]);
 
   useEffect(() => {
-    const userAgent = window.navigator.userAgent;
-    if (userAgent === 'APP-android' || userAgent === 'APP-ios') {
+    if (
+      pathName === 'modifyuserinfo' ||
+      pathName === 'EditProfile' ||
+      pathName === 'EditLink' ||
+      pathName === 'AddLink' 
+    ) {
+      setPageName(true)
+    }else{
+      setPageName(false)
+    }
+  }, [pathName]);
+
+  useEffect(() => {
+    if (
+      pathName === 'deleteAccount' ||
+      pathName === 'changeAddress' ||
+      pathName === 'changePassword' ||
+      pathName === 'changePhone'
+    ) {
+      setNoButton(true)
+    }else{
+      setNoButton(false)
+    }
+  }, [pathName]);
+  
+  useEffect(() => {
+    if (
+      pathName === 'AddPhoto' ||
+      pathName === 'AddLink'
+    ) {
+      setShowNext(true)
+      setShowSave(false)
+    }else{
+      setShowNext(false)
+    }
+  }, [pathName]);
+
+  useEffect(() => {
+    if (
+      pathName === 'AddPhoto2' ||
+      pathName === 'EditProfile' ||
+      pathName === 'modifyuserinfo' ||
+      pathName === 'AddLink'
+    ) {
+      setShowSave(true)
+      setShowNext(false)
+    }else{
+      setShowSave(false)
+    }
+  }, [pathName]);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    if(innerWidth > 768){
+      setShowBackButton(false);
+      setPageName(false)
+      setShowSave(false)
+      setShowNext(false)
+    } else {
       if (
         pathName === 'productdetails' ||
         pathName === 'shopdetails' ||
         pathName === 'cart' ||
         pathName === 'order' ||
         pathName === 'shopdetails' ||
-        pathName === 'orderlist' ||
+        pathName === 'WeeklyEdition' ||
         pathName === 'orderdetails' ||
         pathName === 'request' ||
         pathName === 'modifyuserinfo' ||
@@ -220,38 +381,122 @@ function Header() {
         pathName === 'producerdetails' ||
         pathName === 'kakao' ||
         pathName === 'naver' ||
-        pathName === 'asklist-shop'
+        pathName === 'asklist-shop' ||
+        pathName === 'ArtistProducts' ||
+        pathName === 'personalpage' ||
+        pathName === 'MainTab' ||
+        pathName === 'FairContent' ||
+        pathName === 'EditProfile' ||
+        pathName === 'AddPhoto' ||
+        pathName === 'AddPhoto2' ||
+        pathName === 'EditLink' ||
+        pathName === 'deleteAccount' ||
+        pathName === 'changeAddress' ||
+        pathName === 'changePassword' ||
+        pathName === 'changePhone' ||
+        pathName === 'AddLink'
       ) {
         setShowBackButton(true);
       } else {
         setShowBackButton(false);
       }
-    } else {
-      setShowBackButton(false);
     }
-  }, [pathName]);
-
-  // const checkNew = async () => {
-  //   const result = await APICheckNew();
-  //   setCheck(result);
-  // };
-
-  // useEffect(() => {
-  //   checkNew();
-  // }, []);
+    // console.log("innerWidth", innerWidth);
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth,pathName]);
 
   return (
     <>
+      <Sheet isOpen={bottomSheetModal} onClose={() => setBottomSheetModal(false)}
+        detent={'content-height'}
+        ref={ref}
+        // snapPoints={[700, 400, 100, 50]}
+        // initialSnap={3}
+        // onClick={() => setBottomSheetModal(false)}
+        >
+          <Sheet.Container>
+            <Sheet.Header>
+              <EmptyHeightBox onClick={() => setBottomSheetModal(false)}>
+              <HeaderButtom/>
+              </EmptyHeightBox>
+            </Sheet.Header>
+            <Sheet.Content>
+              <SheetWrap> 
+                {/* goMyPage */}
+                <SheetMenu onClick={goLikeList}>
+                  <IconImage src={menuheart}/>
+                  {/* 찜한작품 */}
+                  Like
+                </SheetMenu>
+                <SheetMenu onClick={goCart}>
+                  <IconImage src={menucart}/>
+                  {/* 장바구니 */}
+                  Cart
+                </SheetMenu>
+                <SheetMenu onClick={go_orderList}>
+                  <IconImage src={menuorderlist}/>
+                  Order List
+                  {/* 구매내역 */}
+                </SheetMenu>
+                <SheetMenu onClick={()=>{}}>
+                  <IconImage src={menutextballoon}/>
+                  {/* 찜한작품 */}
+                  Product Q & A
+                </SheetMenu>
+                <SheetMenu onClick={goContact}>
+                  <IconImage src={menucontact}/>
+                  {/* 문의내역 */}
+                  Contact
+                </SheetMenu>
+                <SheetMenu onClick={() => {
+                  setBottomSheetModal(false)
+                  if(!token){
+                    setShowLogin(true);
+                  } else {
+                    if (!isSnsUser) {
+                      // setShowModal(true);
+                      navigate('/modifyuserinfo');
+                    } else {
+                      navigate('/modifyuserinfo');
+                    }
+                  } 
+                }}>
+                  <IconImage src={menusetting}/>
+                  {/* 개인정보수정 */}
+                  Settings
+                </SheetMenu>
+                <SheetLogoutMenu>
+                  <div onClick={go_requestList}>
+                    Logout
+                  </div>
+                  {/* <IconImage src={LogoutImage}/> */}
+                </SheetLogoutMenu>
+              </SheetWrap>
+            </Sheet.Content>
+          </Sheet.Container>
+          <Sheet.Backdrop />
+      </Sheet>
+      {bottomSheetModal &&
+      <SheetBackground onClick={() => setBottomSheetModal(false)}></SheetBackground>
+      }
       <HeaderBox>
-        {showBackButton ? <BackButton onClick={() => navigate(-1)} src={backButtonImage} /> : <Logo onClick={goHome} src={logoImage} />}
+        {showBackButton && <BackButton onClick={BackbuttonHandle} src={backButtonImage} />}
+        {pathName === ''&& <Logo onClick={goHome} src={logoImage} /> || innerWidth > 768 && <Logo onClick={goHome} src={logoImage} />}
 
         <WebMenuWrap>
-          {/* <MenuButton>
-            <MenuButtonText>커뮤니티</MenuButtonText>
-          </MenuButton> */}
-          <MenuButton onClick={goProduct}>
-            <MenuButtonText>작품보기</MenuButtonText>
+          <MenuButton onClick={goFair}>
+            <MenuButtonText>Fair</MenuButtonText>
           </MenuButton>
+          <MenuButton onClick={goArtwork}>
+            <MenuButtonText>Artwork</MenuButtonText>
+          </MenuButton>
+          <MenuButton onClick={goArtist}>
+            <MenuButtonText>Artist</MenuButtonText>
+          </MenuButton>
+          <MenuButton onClick={goCommunity}>
+            <MenuButtonText>Community</MenuButtonText>
+          </MenuButton>
+          {/* goShop goLikeList go_orderList go_requestList goContact goMyPage goAdmin goCart */}
 
           {user.level <= 1 && (
             <MenuButton onClick={goProducing}>
@@ -259,15 +504,15 @@ function Header() {
             </MenuButton>
           )}
 
-          <MenuButton onClick={goShop}>
+          {/* <MenuButton onClick={goShop}>
             <MenuButtonText>Shop</MenuButtonText>
-          </MenuButton>
+          </MenuButton> */}
           {/* <MenuButton onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)}>
             <LikeButton onClick={goLikeList} src={!isMouseOveredLikeButton ? likeOffImage : likeOnImage} />
           </MenuButton> */}
-          <MenuButton onClick={goContact}>
+          {/* <MenuButton onClick={goContact}>
             <MenuButtonText>고객센터</MenuButtonText>
-          </MenuButton>
+          </MenuButton> */}
 
           {/* <MenuButton onClick={goMyPage}>
             <MenuButtonText>마이페이지</MenuButtonText>
@@ -279,62 +524,42 @@ function Header() {
             </MenuButton>
           )}
         </WebMenuWrap>
+        {pageName?
+        <PageNameWrap>
+          {pathName === 'EditProfile'&& 'Edit Profile'}
+          {pathName === 'AddLink'&& 'Add Link'}
+          {pathName === 'EditLink'&& 'Edit Link'}
+          {pathName === 'modifyuserinfo'&& 'Settings'}
+          {pathName === 'deleteAccount'&& 'Delete Account'}
+          {pathName === 'changeAddress'&& 'Change Address'}
+          {pathName === 'changePassword'&& 'Change Password'}
+          {pathName === 'changePhone'&& 'Change Phone number'}
+        </PageNameWrap>
+        :
+        null
+        }
         <ButtonWraps>
           {/* <MenuButton onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)}>
             <LikeButton onClick={goLikeList} src={!isMouseOveredLikeButton ? likeOffImage : likeOnImage} onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)} />
           </MenuButton> */}
-          <LikeButton onClick={goLikeList} src={!isMouseOveredLikeButton ? likeOffImage : likeOnImage} onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)} />
-          <CartButton onClick={goCart} src={cart} />
-          <LayoutLine>{` | `}</LayoutLine>
-          <Menu shadow="md" width={150} styles={(theme) => ({
-            item: {
-              fontFamily: 'NotoSans',
-              fontWeight: 500,
-              color: '#121212',
-            },
-            divider: {
-              width: '90%',
-              justifyContent: 'cneter',
-              margin: 'auto',
-              borderTopColor: '#121212',
-              marginTop: 10,
-              marginBottom: 10,
-            },
-          })}>  
-            <Menu.Target>
-              <MyPageButton>MY</MyPageButton>
-            </Menu.Target>
-
-            <Menu.Dropdown>
-              {user.level !== 0 ? (
-                <>
-                <Menu.Item onClick={goMyPage}>MY</Menu.Item>
-                <Menu.Item onClick={() => {
-                  if(!token){
-                    setShowLogin(true);
-                  } else {
-                  if (!isSnsUser) {
-                    setShowModal(true);
-                  } else {
-                    navigate('/modifyuserinfo');
-                  }
-                } 
-                }}>개인정보수정</Menu.Item>
-              <Menu.Item onClick={goLikeList}>찜한작품</Menu.Item>
-              <Menu.Item onClick={goCart}>장바구니</Menu.Item>
-              <Menu.Item onClick={go_orderList}>구매내역</Menu.Item>
-              <Menu.Item onClick={go_requestList}>문의내역</Menu.Item></>
-              ) : (
-                <>
-                <Menu.Item onClick={goMyPage}>MY</Menu.Item>
-                </>
-              )}
-
-              <Menu.Divider />
-
-              <Menu.Item onClick={goSignIn}>{!token ? 'LOGIN' : 'LOGOUT'}</Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+          {
+          noButton?
+          <>
+          </>
+          :
+          showNext?
+            <MyPageButton onClick={nextHandle}>next</MyPageButton>
+          :
+          showSave?
+            <MyPageButton onClick={saveHandle}>save</MyPageButton>
+          :
+          <>
+            <LikeButton onClick={goLikeList} src={likeOffImage} onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)} />
+            <MyPageButton onClick={()=>setBottomSheetModal(true)}>
+              <LikeButton src={menuicon}/>
+            </MyPageButton>
+          </>
+          }
           {/* <SigninButton onClick={goSignIn} src={!token ? signIn : signOut} /> */}
         </ButtonWraps>
       </HeaderBox>
@@ -382,12 +607,14 @@ const HeaderBox = styled.div`
     padding: 0 30px;
   }
   @media only screen and (max-width: 768px) {
-    padding: 0 18px;
+    padding: 0 20px;
     height: 50px;
   }
 `;
 
 const Logo = styled.img`
+  position:absolute;
+  left:20px;
   width: 150px;
   height: 38px;
   cursor: pointer;
@@ -418,10 +645,69 @@ const WebMenuWrap = styled.div`
     display: none;
   }
 `;
+const PageNameWrap = styled.div`
+font-family:'Pretendard Variable';
+  font-weight:normal;
+  position:absolute;
+  left:50%;
+  font-weight:500;
+  transform:translate(-50%,0);
+  @media only screen and (max-width: 768px) {
+    font-size:14px;
+  }
+`;
 
 const ButtonWrap = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const SheetWrap = styled.div`
+// tranform: translateY(-1px);
+  width:100%;
+  padding:20px 8%;
+@media only screen and (max-width: 768px) {
+}
+`;
+const SheetMenu = styled.div`
+// tranform: translateY(-1px);
+font-family:'Pretendard Variable';
+  width:100%;
+  font-weight:400;
+  margin:25px 0;
+@media only screen and (max-width: 768px) {
+  font-size:14px;
+}
+@media only screen and (max-width: 450px) {
+  font-size:14px;
+  margin:20px 0;
+}
+`;
+const SheetLogoutMenu = styled.div`
+// tranform: translateY(-1px);
+display:flex;
+font-family:'Pretendard Variable';
+  justify-content:flex-end;
+  padding: 20px 20px 20px 0;
+  font-weight:350;
+  text-align:right;
+@media only screen and (max-width: 768px) {
+}
+@media only screen and (max-width: 450px) {
+  font-size:14px;
+}
+`;
+
+const SheetBackground = styled.div`
+// tranform: translateY(-1px);
+  position:absolute;
+  display:flex;
+  flex:1;
+  width:100%;
+  height:100%;
+  z-index: 100;
+@media only screen and (max-width: 768px) {
+}
 `;
 
 const LayoutLine = styled.div`
@@ -468,13 +754,13 @@ const CartButton = styled.img`
 `;
 
 const MyPageButton = styled.div`
-  font-family: 'NotoSans';
+font-family:'Pretendard Variable';
   font-weight: 500;
   color: #121212;
   cursor: pointer;
   margin-left: 20px;
     @media only screen and (max-width: 768px) {
-      margin-left: 5px;
+      margin:0 0 0 5px;
     }
 `
 
@@ -500,7 +786,7 @@ const MenuButton = styled.div`
 `;
 
 const MenuButtonText = styled.span`
-  font-family: 'NotoSans';
+font-family:'Pretendard Variable';
   font-weight: 500;
   color: #121212;
   font-size: 15px;
@@ -519,6 +805,16 @@ const MenuButtonText = styled.span`
   }
 `;
 
+const IconImage = styled.img`
+  width: 22px;
+  height: 22px;
+  margin-right:35px;
+@media only screen and (max-width: 450px) {
+  margin-right:25px;
+  width: 18px;
+  height: 18px;
+}
+`;
 const NewIcon = styled.img`
   width: 12px;
   height: 12px;
@@ -534,23 +830,27 @@ const MenuButtonImage = styled.img`
 `;
 
 const BackButton = styled.img`
-  width: 25px;
-  height: 25px;
+  position:absolute;
+  left:20px;
+  width: 10px;
+  height: 15px;
 `;
 
 const ModalBox = styled.div`
   background-color: #fff;
-  padding: 40px 90px;
+  padding: 30px 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   @media only screen and (max-width: 768px) {
-    padding: 20px 40px;
+    padding: 10px 20px;
   }
 `;
 
 const ModalTitle = styled.span`
+font-family:'Pretendard Variable';
+  font-weight:normal;
   font-size: 18px;
   color: #121212;
   font-weight: 700;
@@ -585,7 +885,11 @@ const TextInput = styled.input`
 `;
 
 const ButtonWraps = styled.div`
+  position:absolute;
+  right:20px;
   display: flex;
+  align-items:center;
+  justify-content:center;
   // margin-top: 10px;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -604,19 +908,22 @@ const ModalBlackButton = styled.div`
   border: 1px solid #121212;
   @media only screen and (max-width: 768px) {
     height: 40px;
+    max-width:120px;
   }
 `;
 
 const ModalWhiteButton = styled(ModalBlackButton)`
   background-color: #ffffff;
-  margin-left: 10px;
+  margin-left: 20px;
   @media only screen and (max-width: 768px) {
-    margin-left: 0;
-    margin-top: 5px;
+    margin-left: 10px;
+    max-width:120px;
   }
 `;
 
 const AlertText = styled.span`
+font-family:'Pretendard Variable';
+  font-weight:normal;
   font-weight: 400;
   font-size: 12px;
   color: #d82c19;
@@ -625,6 +932,8 @@ const AlertText = styled.span`
 `;
 
 const BlackButtonText = styled.span`
+font-family:'Pretendard Variable';
+  font-weight:normal;
   color: #ffffff;
   font-size: 16px;
   font-weight: 400;
@@ -635,6 +944,23 @@ const BlackButtonText = styled.span`
 
 const WhiteButtonText = styled(BlackButtonText)`
   color: #121212;
+`;
+const EmptyHeightBox = styled.div`
+  width:100%;
+  height:50px;
+`;
+const HeaderButtom = styled.div`
+// tranform: translateY(-1px);
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translate(-50%,0);
+  width:45px;
+  border:2px solid #d3d3d3;
+  border-radius:20px;
+  @media only screen and (max-width: 768px) {
+    width:35px;
+  }
 `;
 
 

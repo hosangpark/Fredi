@@ -303,9 +303,6 @@ function Shop() {
             onSearch();
           }
         }}
-        onClickFilter={(item) => {
-          chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6');
-        }}
         categoryList={CATEGORYLIST}
         category={category}
         keyword={keyword}

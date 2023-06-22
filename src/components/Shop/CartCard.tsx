@@ -74,6 +74,7 @@ const CartCardWrap = styled.div`
   flex-direction: row;
   @media only screen and (max-width: 768px) {
     padding: 20px 10px;
+    border-bottom: 0
   }
 `;
 
