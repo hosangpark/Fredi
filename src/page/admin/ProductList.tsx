@@ -9,6 +9,7 @@ import arrDownImage from '../../asset/image/arr_down.png';
 import dayjs from 'dayjs';
 import AlertModal from '../../components/Modal/AlertModal';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
+import { CategoryList } from '../../components/List/List';
 
 export type TProductListItem = {
   idx: number;
@@ -39,14 +40,6 @@ export const CATEGORY_PRODUCT = {
   6: 'art&objet',
 };
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'tableware' },
-  { value: '6', label: 'art&objet' },
-];
 
 function ProductList() {
   const navigate = useNavigate();
@@ -141,7 +134,7 @@ function ProductList() {
               })}
               variant="unstyled"
               value={category}
-              data={CATEGORYLIST}
+              data={CategoryList}
               onChange={(value: '1' | '2' | '3' | '4' | '5' | '6') => setCategory(value)}
             />
           </UnderLineBox>

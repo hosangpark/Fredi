@@ -29,6 +29,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import FeedCard from '../../components/Shop/FeedCard';
+import { CategoryList } from '../../components/List/List';
 
 
 export type FairListItem = {
@@ -95,25 +96,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     maxHeight: 700,
   },
 }));
-
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'objet' },
-  { value: '6', label: 'tableware' },
-  { value: '7', label: 'chair' },
-  { value: '8', label: 'table' },
-  { value: '9', label: 'sideTable' },
-  { value: '10', label: 'sofa' },
-  { value: '11', label: 'stool' },
-  { value: '12', label: 'storage' },
-  { value: '13', label: 'mirror' },
-  { value: '14', label: 'deco' },
-  { value: '15', label: 'vase' },
-  { value: '16', label: 'art' },
-];
 
 
 interface ICategorySelectButton {
@@ -459,7 +441,7 @@ function Feed() {
           // onSlideChange={() => console.log('slide change')}
           // style={{paddingBottom:50}}
         >
-          {CATEGORYLIST.map((item) => {
+          {CategoryList.map((item) => {
             return (
             <SwiperSlide>
               <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />

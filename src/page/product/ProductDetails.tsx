@@ -86,6 +86,7 @@ function ProductDetails() {
   const { classes } = useStyles();
   const history = createBrowserHistory();
   const { user } = useContext(UserContext);
+  const [defaultoverlay, setDefaultoverlay] = useState(true)
   const [shopDetails, setShopDetails] = useState<TShopDetails>();
   const [isLike, setIsLike] = useState<boolean>(false);
   const [showImageModal, setShowImageModal] = useState<boolean>(false);
@@ -129,13 +130,13 @@ function ProductDetails() {
     setShopDetails({
       idx: 1,
       category: 1,
-      name: '이름',
+      name: 'Folding chair',
       price: 8000,
-      size: '사이즈',
-      weight: '무게',
+      size: 'W71 x D65 x H60',
+      weight: '스테인레스스틸, 아크릴',
       country: '지역',
       description: '종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 ',
-      designer: '제작자(디자이너)',
+      designer: 'Lee Ji Hong',
       sns: 'SNS',
       email: '이메일',
       website: '웹사이트',
@@ -304,6 +305,8 @@ function ProductDetails() {
     };
     if(innerWidth > 768){
       setBottomSheetModal(false)
+    } else{
+      setBottomSheetModal(true)
     }
     // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
@@ -312,123 +315,86 @@ function ProductDetails() {
   return (
     <ContainerWrap>
       <Container>
+        {bottomSheetModal && 
         <Draggable 
-        bounds={{left: 0, top: 10, right: 0, bottom: window.innerHeight-150}}
+        bounds={{left: 0, top: 1, right: 0, bottom: defaultoverlay? window.innerHeight-210 : window.innerHeight-150 }}
         axis="y"
         // handle={scrollable}
-        defaultPosition={{x: 0, y: window.innerHeight-150}}
+        defaultPosition={{x: 0, y: defaultoverlay? window.innerHeight-210 : window.innerHeight-150}}
         >
           <ModalInfromBox>
-            <EmptyHeightBox>
+            <EmptyHeightBox height={defaultoverlay? 90 : 30}>
+              {defaultoverlay == true ?
+              <OverlayBox>
+                <NameBox>
+                  <NameDesigner>
+                    <ProductName>{shopDetails?.name}</ProductName>
+                    <Designer>{shopDetails?.designer}</Designer>
+                  </NameDesigner>
+                  <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
+                </NameBox>
+              </OverlayBox>
+                :
               <HeaderButtom/>
+              }
+              
             </EmptyHeightBox>
             <LeftTopBox>
               <TitleBox>
+                {defaultoverlay == false &&
                 <NameBox>
-                  <ProductName>{shopDetails?.name}</ProductName>
-                  <ContentRowWrap>
-                    <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
-                  </ContentRowWrap>
+                  <NameDesigner>
+                    <ProductName>{shopDetails?.name}</ProductName>
+                    <Designer>{shopDetails?.designer}</Designer>
+                  </NameDesigner>
+                  <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
                 </NameBox>
-                  <Designer>{shopDetails?.designer}</Designer>
-                  <BottomBoxContent disabled value={shopDetails?.description}></BottomBoxContent>
+                }
+                <BottomBoxContent disabled value={shopDetails?.description}></BottomBoxContent>
               </TitleBox>
               <ContentBox>
-                <ContentRowWrap>
+                {/* <ContentRowWrap>
                   <Title>price</Title>
                   <Content>{shopDetails && replaceString(shopDetails?.price)} ₩</Content>
-                </ContentRowWrap>
+                </ContentRowWrap> */}
                 <ContentRowWrap>
-                  <Title>Size</Title>
+                  <Title>Size(cm)</Title>
                   <Content>{shopDetails?.size}</Content>
                 </ContentRowWrap>
                 <ContentRowWrap>
-                  <Title>Weight</Title>
+                  <Title>Materials</Title>
                   <Content>{shopDetails?.weight}</Content>
                 </ContentRowWrap>
-                <ContentRowWrap>
+                {/* <ContentRowWrap>
+                  <Title>Weight</Title>
+                  <Content>{shopDetails?.weight}</Content>
+                </ContentRowWrap> */}
+                {/* <ContentRowWrap>
                   <Title>Country</Title>
                   <Content>{shopDetails?.country}</Content>
-                </ContentRowWrap>
+                </ContentRowWrap> */}
               </ContentBox>
             </LeftTopBox>
             <RowWrap>
-                <AskButton
-                  onClick={() => {
-                    setBottomSheetModal(false)
-                    if (user.idx) {
-                      navigate('/contact/registerask-shop', {
-                        state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
-                      });
-                    } else {
-                      setShowLogin(true);
-                    }
-                  }}
+              <AskButton
+                onClick={() => {
+                  setBottomSheetModal(false)
+                  if (user.idx) {
+                    navigate('/contact/registerask-shop', {
+                      state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
+                    });
+                  } else {
+                    setShowLogin(true);
+                  }
+                }}
                 >
-                  Contact
-                </AskButton>
+                Contact
+              </AskButton>
             </RowWrap>
-            
           </ModalInfromBox>
         </Draggable>
-        {/* <Sheet isOpen={bottomSheetModal} onClose={() => setBottomSheetModal(false)}
-        >
-          <Sheet.Container>
-            <Sheet.Content style={{ paddingBottom: ref.current?.y }}>
-              <ModalminusButton onClick={() => setBottomSheetModal(!bottomSheetModal)} isopen={!bottomSheetModal} position={'top'}> ㅡ </ModalminusButton>
-              <ModalInfromBox>
-                <LeftTopBox>
-                  <TitleBox>
-                    <NameBox>
-                      <ProductName>{shopDetails?.name}</ProductName>
-                      <ContentRowWrap>
-                        <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
-                      </ContentRowWrap>
-                    </NameBox>
-                      <Designer>{shopDetails?.designer}</Designer>
-                      <BottomBoxContent disabled value={shopDetails?.description}></BottomBoxContent>
-                  </TitleBox>
-                  <ContentBox>
-                    <ContentRowWrap>
-                      <Title>price</Title>
-                      <Content>{shopDetails && replaceString(shopDetails?.price)} ₩</Content>
-                    </ContentRowWrap>
-                    <ContentRowWrap>
-                      <Title>Size</Title>
-                      <Content>{shopDetails?.size}</Content>
-                    </ContentRowWrap>
-                    <ContentRowWrap>
-                      <Title>Weight</Title>
-                      <Content>{shopDetails?.weight}</Content>
-                    </ContentRowWrap>
-                    <ContentRowWrap>
-                      <Title>Country</Title>
-                      <Content>{shopDetails?.country}</Content>
-                    </ContentRowWrap>
-                  </ContentBox>
-                </LeftTopBox>
-                <RowWrap>
-                    <AskButton
-                      onClick={() => {
-                        setBottomSheetModal(false)
-                        if (user.idx) {
-                          navigate('/contact/registerask-shop', {
-                            state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
-                          });
-                        } else {
-                          setShowLogin(true);
-                        }
-                      }}
-                    >
-                      Contact
-                    </AskButton>
-                </RowWrap>
-              </ModalInfromBox>
-            </Sheet.Content>
-          </Sheet.Container>
-
-          <Sheet.Backdrop />
-        </Sheet> */}
+        }
+        
         <LeftBox ref={leftBoxRef}>
           <LeftTopBox>
             <TitleBox>
@@ -492,32 +458,10 @@ function ProductDetails() {
                 </ContentRowWrap>
               )}
             </ContentBox>
-            {/* <OrderButton
-              onClick={async () => {
-                if (user.idx) {
-                  if (option.length > 0) {
-                    if (addOption.length === 0) {
-                      setShowOption(true);
-                    } else {
-                      await onAddCartItem();
-                      navigate('/cart');
-                    }
-                  } else {
-                    await onAddCartItem();
-                    navigate('/cart');
-                  }
-                } else {
-                  setShowLogin(true);
-                }
-              }}
-            >
-              구매하기
-            </OrderButton> */}
           </LeftTopBox>
           {addOption.length >= 1 && (
             <LeftMiddleBox>
               {addOption.map((data: any, index: any) => {
-                // console.log('fdsfdsfsd', data);
                 return (
                   <LeftOption key={index}>
                     <LeftLabelBox>{data.label}</LeftLabelBox>
@@ -640,7 +584,7 @@ function ProductDetails() {
               style={{
                 maxHeight:window.innerHeight,backgroundColor:'white'
               }}
-              slidesPerView={innerWidth <= 768? 1 : 1.2}
+              slidesPerView={innerWidth <= 768? 1.6 : 1.4}
               // navigation={true}
               // pagination={{ clickable: true }}
               // scrollbar={ true }
@@ -750,7 +694,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   border-top: 1px solid #e0e0e0;
-  background-color: #d15555;
+  background-color: #ffffff;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
     border-top: 0;
@@ -798,15 +742,15 @@ const PaginationBox = styled.div`
 const ModalInfromBox = styled.div`
   width:100%;
   position:absolute;
-  height:80vh;
+  height:100vh;
   /* overflow:hidden; */
   /* border-radius:10px; */
   z-index:99;
   background:rgba(255,255,255,0.95);
 `;
-const EmptyHeightBox = styled.div`
+const EmptyHeightBox = styled.div<{height:number}>`
   width:100%;
-  height:50px;
+  height:${props => props.height}px;
 `;
 const HeaderButtom = styled.div`
 // tranform: translateY(-1px);
@@ -815,7 +759,7 @@ const HeaderButtom = styled.div`
   left:50%;
   transform:translate(-50%,0);
   width:55px;
-  border:2px solid #a5a5a5;
+  border:1px solid #a5a5a5;
   border-radius:20px;
   @media only screen and (max-width: 768px) {
     width:45px;
@@ -826,7 +770,7 @@ const LeftTopBox = styled.div`
   width: 100%;
   padding: 20px;
   @media only screen and (max-width: 768px) {
-    padding: 25px 18px;
+    padding: 20px;
     /* position: static;
     bottom:0; */
   }
@@ -869,7 +813,9 @@ const DeliveryInfoWrap = styled(LeftBottomBox)`
     border-top: 1px solid #121212;
   }
 `;
-
+const OverlayBox = styled.div`
+  padding:30px 20px 10px 20px;
+`
 const NameBox = styled.div`
   width:100%;
   display:flex;
@@ -878,12 +824,22 @@ const NameBox = styled.div`
     font-size:14px;
   }
 `;
+const Xbox = styled.div`
+  width:20px;
+  height:20px;
+  position:absolute;
+  top:10px;
+  right:20px;
+  background-color:blue;
+  z-index:9999;
+`
+
 const ProductImage = styled.img`
   width: 100%;
   height:100%;
-  object-fit:fill;
-  @media only screen and (max-width: 1440px) {
-    object-fit:contain;
+  object-fit:cover;
+  @media only screen and (max-width: 450px) {
+    object-fit:cover;
   }
 `;
 const TitleBox = styled.div`
@@ -892,26 +848,28 @@ const TitleBox = styled.div`
     margin-bottom: 18px;
   }
 `;
-
+const NameDesigner = styled.div`
+  text-align:start;
+`
 const ProductName = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 700;
+  font-weight: 400;
   color: #121212;
-  font-size: 22px;
+  font-size: 18px;
   margin: 0px;
   flex-wrap: wrap;
   @media only screen and (max-width: 768px) {
-    font-size: 18px;
+    font-size: 14px;
   }
 `;
 
 const Designer = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 350;
   color: #121212;
-  font-size: 18px;
+  font-size: 14px;
   @media only screen and (max-width: 768px) {
-    font-size: 14px;
+    font-size: 12px;
   }
 `;
 
@@ -938,6 +896,7 @@ const ContentBox = styled.div``;
 
 const Title = styled.span`
 font-family:'Pretendard Variable';
+text-align:start;
   font-weight: 400;
   color: #121212;
   font-size: 16px;
@@ -994,7 +953,7 @@ const BottomBoxContent = styled.textarea`
 font-family:'Pretendard Variable';
   margin-top: 30px;
   width: 100%;
-  height: 250px;
+  height: 35vh;
   overflow: scroll;
   outline: 0;
   line-height: 22px;
@@ -1004,10 +963,13 @@ font-family:'Pretendard Variable';
   resize: none;
   background-color: #fff;
   -webkit-text-fill-color: #121212;
+  overflow:hidden;
+  text-overflow:ellipsis;
   opacity: 1;
   @media only screen and (max-width: 768px) {
     background-color: transparent;
-    height: 220px;
+    margin-top: 20px;
+    height: 30vh;
     font-size: 12px;
     line-height: 20px;
   }
@@ -1026,9 +988,11 @@ const ModalminusButton = styled.div<{isopen:boolean,position:string}>`
   width:100%;
 `;
 const ContentRowWrap = styled.div`
-  margin-bottom: 8px;
+  display:flex;
+  width:100%;
+  justify-content:space-between;
   @media only screen and (max-width: 768px) {
-    margin-bottom: 3px;
+    margin-top: 10px;
   }
 `;
 
@@ -1046,11 +1010,14 @@ const ModalImageBox = styled.div`
 
 const ImageBox2 = styled.div`
   width: 85%;
+  /* aspect-ratio:1; */
+  height:100%;
   /* max-height:800px; */
   object-fit:contain;
   /* overflow: hidden; */
   /* aspect-ratio: 0.8; */
   @media only screen and (max-width: 768px) {
+    aspect-ratio:410/560;
     width: 100%;
   }
 `;
@@ -1151,23 +1118,23 @@ const DownIcon = styled.img`
 
 const AskButton = styled.div`
 font-family:'Pretendard Variable';
-  width: 100%;
+position:fixed;
+left:20px;
+bottom:150px;
+  width:calc(100% - 40px);
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
+  font-weight: 300;
   cursor: pointer;
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 18px;
   background-color: #000000;
   border: solid 1px #000000;
   color: #ececec;
   @media only screen and (max-width: 768px) {
-    width: 100%;
-    height: 45px;
-    font-weight: 500;
-    font-size: 18px;
+    font-size: 15px;
   }
   &:hover {
     background-color: #2e2e2e;
@@ -1176,9 +1143,11 @@ font-family:'Pretendard Variable';
 `;
 
 const RowWrap = styled.div`
+
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+
 `;
 
 const LeftOption = styled.div`

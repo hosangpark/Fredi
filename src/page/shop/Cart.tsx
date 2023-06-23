@@ -414,17 +414,14 @@ const LeftBox = styled.div`
   flex-direction: column;
   text-align: left;
   border-right: 1px solid #121212;
-  @media only screen and (max-width: 1600px) {
+  padding: 0 20px;
+  @media only screen and (max-width: 1100px) {
     width: 300px;
   }
-  @media only screen and (max-width: 1400px) {
-    display: none;
-  }
-
-  @media only screen and (max-width: 1100px) {
+  @media only screen and (max-width: 768px) {
     display: flex;
     width: 100%;
-    border-bottom: 2px solid #dfdfdf;
+    /* border-bottom: 1px solid #121212; */
     border-right: 0;
   }
 `;
@@ -441,14 +438,23 @@ const RightBox = styled.div`
 
 const LeftTopBox = styled.div`
   width: 100%;
-  padding: 10px 50px;
-  @media only screen and (max-width: 1100px) {
-    padding: 0 18px;
+  padding:20px 0;
+  @media only screen and (max-width: 768px) {
+    
+    border-bottom:1px solid #C9C9C9;
   }
 `;
 
+// const Title = styled.h3`
+// font-family:'Pretendard Variable';
+//   font-weight: 400;
+//   color: #121212;
+//   @media only screen and (max-width: 768px) {
+//     font-size: 14px;
+//   }
+// `;
 const Title = styled.h3`
-  font-family: 'NotoSans';
+font-family:'Pretendard Variable';
   font-weight: 700;
   color: #121212;
   font-size: 36px;
@@ -494,7 +500,7 @@ const CheckBoxWrap = styled.div`
 `;
 
 const CheckBoxText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 15px;
   margin-left: 7px;
   font-weight: 500;
@@ -504,7 +510,7 @@ const CheckBoxText = styled.span`
 `;
 
 const EmptyText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 14px;
   color: #121212;
   margin: 130px 0 130px;
@@ -539,7 +545,7 @@ const IconTitleWrap = styled.div`
 `;
 
 const SideTopBoxTitle = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-weight: 600;
   color: #121212;
   font-size: 15px;
@@ -551,7 +557,7 @@ const SideTopBoxTitle = styled.span`
   }
 `;
 const SideTopBoxContent = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-weight: 400;
   color: #121212;
   font-size: 14px;
@@ -577,7 +583,7 @@ const OrderButton = styled.div<{ disabled: boolean }>`
 `;
 
 const OrderButtonText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 15px;
   font-weight: 500;
   color: #fff;
@@ -604,7 +610,7 @@ const DeliveryInfoButton = styled.div`
 `;
 
 const DeliveryInfoButtonText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 14px;
   font-weight: 400;
   color: #121212;
@@ -641,7 +647,7 @@ const TextRowWrap = styled.div`
 `;
 
 const LeftText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   color: #121212;
   font-size: 16px;
   font-weight: 500;
@@ -654,7 +660,7 @@ const LeftText = styled.span`
 `;
 
 const RightText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-weight: 600;
   font-size: 16px;
   @media only screen and (max-width: 1100px) {
@@ -669,7 +675,7 @@ const NoticeBox = styled.div`
 `;
 
 const NoticeText = styled.p`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-weight: 500;
   font-size: 13px;
   color: #666;
@@ -774,7 +780,7 @@ const RecipientInputRowWrap = styled(ContentTextRowWrap)<{ last?: boolean }>`
 `;
 
 const ContentLeftText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   color: #121212;
   font-size: 14px;
   font-weight: 500;
@@ -818,7 +824,7 @@ const DeleteAllButton = styled.div`
 `;
 
 const DeleteText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';
   font-size: 15px;
   font-weight: 500;
   @media only screen and (max-width: 768px) {

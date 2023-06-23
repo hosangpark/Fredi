@@ -9,9 +9,9 @@ function Contact() {
   return (
     <Container>
       <ContactNav selected={selected} setSelected={setSelected} />
-      <RightBox>
+      {/* <RightBox>
         <Outlet />
-      </RightBox>
+      </RightBox> */}
       <EmptyBox />
     </Container>
   );
@@ -19,7 +19,6 @@ function Contact() {
 
 const Container = styled.div`
   display: flex;
-
   flex: 1;
   min-height: calc(100vh - 80px);
   flex-direction: row;

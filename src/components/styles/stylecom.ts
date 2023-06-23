@@ -11,7 +11,7 @@ export const HeaderButtom = styled.div`
   left:50%;
   transform:translate(-50%,0);
   width:65px;
-  border:3px solid #acacac;
+  border:1px solid #acacac;
   border-radius:20px;
   @media only screen and (max-width: 768px) {
     width:50px;

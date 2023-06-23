@@ -33,6 +33,7 @@ function ProductMainList({
   productLink,
   arrowView,
   titlesize,
+  aspect,
   link
 }:{
   title:string
@@ -44,6 +45,7 @@ function ProductMainList({
   productLink?:string
   arrowView?:boolean
   titlesize?:number
+  aspect?:number
   link?:string
 }) {
 
@@ -65,7 +67,7 @@ function ProductMainList({
       // onClick={()=>{navigate(`/${link}`);}}
       >
         {/* <a href={item?.link}> */}
-        <TitleText titlesize={titlesize? titlesize:16}>{title}</TitleText>
+        <TitleText titlesize={titlesize? titlesize:15}>{title}</TitleText>
         {arrowView&&
           <ArrowRightIcon src={rightarrowIcon}/>
         }
@@ -99,7 +101,9 @@ function ProductMainList({
           return(
             <SwiperSlide>
               <ProductWrap onClick={()=>LinkHandler(productLink?productLink:title,item.idx)}>
-                <ProductImage src={item.file_name}/>
+                <ProductImageWrap aspect={aspect? aspect:1} >
+                  <ProductImage src={item.file_name}/>
+                </ProductImageWrap>
                 <ProductTitleText>
                   {item.idx}
                 </ProductTitleText>
@@ -133,7 +137,8 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
 
 const ProductImage = styled.img`
   width: 100%;
-  object-fit:contain;
+  height:100%;
+  object-fit:cover;
 `;
 const ProductContainer = styled.div`
   display: flex;
@@ -145,6 +150,15 @@ const ProductWrap = styled.div`
   /* max-width:350px; */
   margin-right:20px;
   text-align:start;
+  @media only screen and (max-width: 768px) {
+    margin-right:10px;
+  }
+`;
+const ProductImageWrap = styled.div<{aspect:number}>`
+  /* max-width:350px; */
+  width:100%;
+  text-align:start;
+  aspect-ratio:${props => props.aspect? props.aspect : 1};
 `;
 
 
@@ -164,7 +178,7 @@ const TitleBox = styled.div`
 
 const TitleText = styled.span<{titlesize:number}>`
 font-family:'Pretendard Variable';
-  font-size:${props=>props.titlesize? props.titlesize : 14}px;
+  font-size:${props=>props.titlesize? props.titlesize : 15}px;
   font-weight:500;
 `;
 const ArrowRightIcon = styled.img`

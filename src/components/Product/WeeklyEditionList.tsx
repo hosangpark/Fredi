@@ -88,13 +88,21 @@ function WeeklyEditionList({
                 <ProductImage src={item.file_name}/>
               </ProductTopboxLeft>
               <ProductTopboxRight>
-                <ProductImage src={item.file_name} style={{marginBottom:10}}/>
-                <ProductImage src={item.file_name}/>
+                <ProductTopboxRightWrap>
+                  <ProductImage src={item.file_name} style={{marginBottom:10}}/>
+                </ProductTopboxRightWrap>
+                <ProductTopboxRightWrap>
+                  <ProductImage src={item.file_name}/>
+                </ProductTopboxRightWrap>
               </ProductTopboxRight>
             </ProductTopbox>
             <ProductBottombox>
-                <ProductBottomImage src={item.file_name}/>
-                <ProductBottomImage src={item.file_name}/>
+                <ProductBottomImageWrap>
+                  <ProductImage src={item.file_name}/>
+                </ProductBottomImageWrap>
+                <ProductBottomImageWrap>
+                  <ProductImage src={item.file_name}/>
+                </ProductBottomImageWrap>
             </ProductBottombox>
             <ProductTitleText>
               {item.idx}
@@ -114,22 +122,39 @@ function WeeklyEditionList({
 
 const ProductTopbox = styled.div`
   display:flex;
-  margin-bottom:10px;
+  margin-bottom:5px;
+  width:100%;
+  aspect-ratio:340/280;
 `;
 const ProductTopboxLeft = styled.div`
-  width:66.6666%;
-  margin-right:10px;
+  width:67%;
+  aspect-ratio:225/280;
+  margin-right:5px;
 `;
 const ProductTopboxRight = styled.div`
+  width:33%;
   height:100%;
-  width:33.3333%;
-  gap:10px;
+  display:flex;
+  flex-direction:column;
+  /* aspect-ratio:110/280; */
+  gap:5px;
 `;
+
+const ProductTopboxRightWrap = styled.div`
+  width:100%;  
+  height:50%;
+  aspect-ratio:110/140;
+`
+
 const ProductBottombox = styled.div`
   display:flex;
   width:100%;
-  flex:1;
-  gap:10px;
+  aspect-ratio:340/200;
+  gap:5px;
+`;
+const ProductBottomImageWrap = styled.div`
+  width:calc(50% - 2.5px);
+  aspect-ratio:340/200;
 `;
 const ProductBottomInner = styled.div`
   width:100%;
@@ -153,12 +178,12 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
 const ProductImage = styled.img`
   width:100%;
   height: 100%;
-  object-fit:contain;
+  object-fit:cover;
 `;
 const ProductBottomImage = styled.img`
-  width:50%;
+  width:100%;
   height: 100%;
-  object-fit:contain;
+  object-fit:cover;
 `;
 const ProductContainer = styled.div`
   display: flex;
@@ -169,6 +194,9 @@ const ProductContainer = styled.div`
 const ProductWrap = styled.div`
   margin-right:20px;
   text-align:start;
+  @media only screen and (max-width: 768px) {
+    /* margin-right:10px; */
+  }
 `;
 
 
@@ -188,7 +216,7 @@ const TitleBox = styled.div`
 
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-size:14px;
+  font-size:15px;
   font-weight:500;
 `;
 const ArrowRightIcon = styled.img`

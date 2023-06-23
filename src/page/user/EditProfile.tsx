@@ -8,6 +8,8 @@ import ImageCard from '../../components/Shop/ImageCard';
 import { TImage } from '../admin/ProducerList';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import CategoryItem from '../../components/Shop/CategoryItem';
+import linkImage from '../../asset/image/links.png';
+import profileImage from '../../asset/image/profile.png';
 
 export type TUserDetails = {
   idx: number;
@@ -168,14 +170,14 @@ function EditProfile() {
     <Container>
       <ProfileContainer>
         <ImageWrap>
-          <Image/>
+          <ProfileImage src={profileImage}/>
         </ImageWrap>
         <EditPhotoButton style={{paddingLeft:10,paddingRight:10}} onClick={()=>{console.log('adad')}}>
           Edit Photo
         </EditPhotoButton>
         <InputBox>
           <InputWrap>
-            <InputTitle>BRAND NAME</InputTitle>
+            <InputTitle>Title</InputTitle>
             <TextInput
               maxLength={10}
               value={name}
@@ -209,7 +211,7 @@ function EditProfile() {
         </BoxTitle>
         <LayoutWrap onClick={()=>{navigate('/AddLink', { state: 'Add' });}}>
           <LinkImageWrap>
-            <Image/>
+            <Image src={linkImage}/>
           </LinkImageWrap>
           <LinkItemBox>
             <LinkTitleBox>
@@ -219,7 +221,7 @@ function EditProfile() {
         </LayoutWrap>
         <LayoutWrap onClick={()=>{navigate('/EditLink', { state: 'Edit' });}}>
           <LinkImageWrap>
-            <Image/>
+            <Image src={linkImage}/>
           </LinkImageWrap>
           <LinkItemBox>
             <LinkTitleBox>
@@ -236,7 +238,7 @@ function EditProfile() {
           </LinkItemBox>
         </LayoutWrap>
       </BoxWrap>
-        <BoxWrap>
+        {/* <BoxWrap>
           <BoxTitle>
             Category<CategoryCount>{categoryitemList.filter(element => element.checked === true).length}</CategoryCount>
           </BoxTitle>
@@ -252,7 +254,7 @@ function EditProfile() {
               )
             })}
           </CategoryItemContainer>
-        </BoxWrap>
+        </BoxWrap> */}
       </ProfileContainer>
 
       <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
@@ -308,8 +310,8 @@ const InputBox = styled.div`
   justify-content:space-between;
   display: flex;
   flex-direction: column;
-  margin-bottom: 25px;
-  border-bottom:1px solid #c7c7c7;
+  margin-bottom: 15px;
+  border-bottom:1px solid #ECECEC;
 `;
 const BoxWrap = styled.div`
   width:100%;
@@ -334,8 +336,8 @@ const EditPhotoButton = styled.div`
   align-items: center;
   text-decoration : underline;
   /* border-bottom:2px solid #c7c7c7; */
-  margin:10px 0 0 0;
-  font-size:14px;
+  margin:20px 0;
+  font-size:16px;
   font-weight:400;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
@@ -360,6 +362,7 @@ const DescriptionText = styled.p`
   }
   `;
 const BoxTitle = styled.p`
+font-family:'Pretendard Variable';
   font-size:16px;
   font-weight:500;
   text-align:start;
@@ -377,32 +380,42 @@ const CategoryCount = styled.span`
 `
 
 const LinkName = styled.p`
-  font-size:15px;
-  font-weight:500;
+font-family:'Pretendard Variable';
+  font-weight:400;
   text-align:start;
   color:#2b2b2b;
   margin:0;
   @media only screen and (max-width: 768px) {
+    font-size:14px;
   }
 `
 const LinkUrl = styled.p`
-  font-size:13px;
+font-family:'Pretendard Variable';
+  font-size:14px;
   font-weight:500;
   text-align:start;
   color:#b8b8b8;
   margin:0;
   @media only screen and (max-width: 768px) {
+    font-size:12px;
   }
   `;
 const ImageWrap = styled.div`
-  width:210px;
-  aspect-ratio: 1.1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:50%;
+  width:160px;
+  aspect-ratio: 1.0;
+  background-color: #DBDBDB;
   /* width:15%; */
   @media only screen and (max-width: 768px) {
-    width:160px;
+    width:120px;
   }
 `;
 const LinkImageWrap = styled.div`
+display:flex;
+align-items:center;
   width:70px;
   height:70px;
   margin-right:50px;
@@ -414,11 +427,13 @@ const LinkImageWrap = styled.div`
   }
 `;
 const ArrowImageWrap = styled.div`
-  width:40px;
-  height:40px;
+display:flex;
+align-items:center;
+  width:20px;
+  height:20px;
   @media only screen and (max-width: 768px) {
-    width:25px;
-    height:25px;
+    width:15px;
+    height:15px;
   }
 `;
 const ArrowImage = styled.img`
@@ -434,10 +449,13 @@ const LinkItemBox = styled.div`
   }
 `;
 const LinkTitleBox = styled.div`
+font-family:'Pretendard Variable';
   display:flex;
+  font-weight:400;
   flex-direction:column;
   justify-content:center;
   @media only screen and (max-width: 768px) {
+    font-size:14px;
   }
 `;
 const CategoryItemContainer = styled.div`
@@ -446,14 +464,16 @@ const CategoryItemContainer = styled.div`
   gap:15px;
 `;
 
+const ProfileImage = styled.img`
+  width:50%;
+  height:50%;
+  object-fit:contain;
+`;
 const Image = styled.img`
   width:100%;
   height:100%;
-  border-radius:5px;
-  background:#313131;
-  @media only screen and (max-width: 768px) {
-  }
-  `;
+  object-fit:contain;
+`;
 
 
 
@@ -510,12 +530,14 @@ const ModalTitle = styled.span`
 const InputWrap = styled.div`
   display: flex;
   width: 100%;
-  margin: 30px 0 10px;
+  margin: 10px 0px;
   @media only screen and (max-width: 768px) {
-    margin: 20px 0 10px;
+    margin: 0px;
   }
 `;
 const InputTitle = styled.div`
+font-family:'Pretendard Variable';
+font-weight:300;
   white-space:nowrap;
   width:40%;
   max-width:250px;
@@ -525,11 +547,12 @@ const InputTitle = styled.div`
 `;
 
 const TextInput = styled.textarea`
+font-family:'Pretendard Variable';
   border: 0;
   width:60%;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 200;
   text-align:start;
   border-radius: 0;
   padding:5px 10px;
@@ -570,6 +593,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 `;
 
 const AlertText = styled.span`
+font-family:'Pretendard Variable';
   font-weight: 400;
   font-size: 12px;
   color: #d82c19;

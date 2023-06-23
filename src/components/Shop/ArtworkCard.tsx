@@ -32,7 +32,7 @@ function ArtworkCard({
           <ProductName>{item.name}</ProductName>
           <Designer>{item.designer}</Designer>
         </ProductNameWrap>
-        <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} />
+        <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOffImage : likeOffImage} />
         {/* <LikeCount>{replaceString(item.price)} ₩</LikeCount> */}
       </TextWrap>
     </ProductBox>
@@ -57,7 +57,7 @@ const ProductBox = styled.div<{ showType: 1 | 2 }>`
 `;
 const ProductImageWrap = styled.div<{showType: 1 | 2}>`
   width: 100%;
-  aspect-ratio: ${(props) => (props.showType === 1 ? 0.8 : 1.0)};
+  aspect-ratio: 200/235;
   margin-bottom: 5px;
   overflow: hidden;
   position: relative;
@@ -116,7 +116,7 @@ const RowWrap = styled.div<{ showType?: 1 | 2 }>`
 const TextWrap = styled(RowWrap)<{ showType?: 1 | 2 }>`
   padding: 5px;
   flex-direction: ${(props) => (props.showType === 1 ? 'row' : 'column')};
-  align-items: flex-start;
+  align-items: center;
   @media only screen and (max-width: 768px) {
     padding: 10px;
   }

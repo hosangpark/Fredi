@@ -224,7 +224,7 @@ function MobileProfile() {
               </SubTextBox>
             </NameBox>
           </HeaderLeft>
-          {user?
+          {!user?
           <ButtonBox>
             <ImageFlexBox>
               <ButtonImageWrap onClick={() => setBottomSheetModal(true)} style={{marginRight:10}}>
@@ -234,7 +234,7 @@ function MobileProfile() {
                 <ButtonImage src={qrImage}/>
               </ButtonImageWrap>
             </ImageFlexBox>
-            <FollowButtonBox>
+            <FollowButtonBox style={{marginTop:10}}>
               Follow
             </FollowButtonBox>
           </ButtonBox>
@@ -243,7 +243,7 @@ function MobileProfile() {
             <FollowButtonBox style={{paddingLeft:8,paddingRight:8}} onClick={()=>{navigate('/EditProfile')}}>
               Edit Profile
             </FollowButtonBox>
-            <FollowButtonBox style={{paddingLeft:8,paddingRight:8}} onClick={()=>{navigate('/EditProfile')}}>
+            <FollowButtonBox style={{paddingLeft:8,paddingRight:8,marginTop:10}} onClick={()=>{navigate('/EditProfile')}}>
               Share Profile
             </FollowButtonBox>
           </ButtonBox>
@@ -277,18 +277,18 @@ function MobileProfile() {
             )
             })
           }
-          {imageList.length == 0 &&
+          {imageList.length < 4 &&
           <PlusImage onClick={()=>navigate('/AddPhoto')}>
             <PlusText>+</PlusText>
           </PlusImage>
           }
           
       </ProductListWrap>
-      {imageList.length > 0 &&
+      {/* {imageList.length > 0 &&
       <PlusButton onClick={()=>navigate('/AddPhoto')}>
         <PlusText>+</PlusText>
       </PlusButton>
-      }
+      } */}
       {/* <LeftBox>
         <LeftTopBox>
           <Title>Profile</Title>
@@ -438,7 +438,7 @@ const HeaderButtom = styled.div`
   left:50%;
   transform:translate(-50%,0);
   width:45px;
-  border:2px solid #d3d3d3;
+  border:1px solid #d3d3d3;
   border-radius:20px;
   @media only screen and (max-width: 768px) {
     width:35px;
@@ -572,8 +572,9 @@ font-family:'Pretendard Variable';
   height:50%;
   border:0.5px solid #B4B4B4;;
   border-radius:7px;
-  margin:10px 0 0 0;
-  font-weight:400;
+  margin:0;
+  padding:2px 0;
+  font-weight:300;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
     font-size:14px;
@@ -608,8 +609,9 @@ const ImageWrap = styled.div`
   display:flex;
   justify-content:center;
   align-items:center;
+  border-radius:50%;
   width:75px;
-  aspect-ratio: 1.1;
+  aspect-ratio: 1;
   /* width:15%; */
   margin-right:15px;
   background-color: #DBDBDB;

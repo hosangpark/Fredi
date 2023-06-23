@@ -29,6 +29,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
+import { CategoryList } from '../../components/List/List';
 
 export type FairListItem = {
   idx: number;
@@ -91,24 +92,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'objet' },
-  { value: '6', label: 'tableware' },
-  { value: '7', label: 'chair' },
-  { value: '8', label: 'table' },
-  { value: '9', label: 'sideTable' },
-  { value: '10', label: 'sofa' },
-  { value: '11', label: 'stool' },
-  { value: '12', label: 'storage' },
-  { value: '13', label: 'mirror' },
-  { value: '14', label: 'deco' },
-  { value: '15', label: 'vase' },
-  { value: '16', label: 'art' },
-];
 
 
 interface ICategorySelectButton {
@@ -133,7 +116,7 @@ function Artwork() {
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-
+  const pathName = location.pathname.split('/')[1];
   const [shopList, setShopList] = useState<FairListItem[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
@@ -216,7 +199,9 @@ function Artwork() {
       setInnerWidth(window.innerWidth);
     };
     if(innerWidth < 768){
-      navigate('/MainTab')
+      if(pathName === 'Artwork'){
+        navigate('/MainTab')
+      }
     }
     // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
@@ -408,7 +393,7 @@ function Artwork() {
               onSearch();
             }
           }}
-          categoryList={CATEGORYLIST}
+          categoryList={CategoryList}
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -429,7 +414,7 @@ function Artwork() {
           // onSlideChange={() => console.log('slide change')}
           // style={{paddingBottom:50}}
         >
-          {CATEGORYLIST.map((item) => {
+          {CategoryList.map((item) => {
             return (
             <SwiperSlide>
               <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />

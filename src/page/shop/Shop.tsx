@@ -20,6 +20,7 @@ import ShopCard from '../../components/Shop/ShopCard';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
+import { CategoryList } from '../../components/List/List';
 
 export type TShopListItem = {
   idx: number;
@@ -82,14 +83,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'tableware' },
-  { value: '6', label: 'art&objet' },
-];
 
 function Shop() {
   const navigate = useNavigate();
@@ -303,7 +296,7 @@ function Shop() {
             onSearch();
           }
         }}
-        categoryList={CATEGORYLIST}
+        categoryList={CategoryList}
         category={category}
         keyword={keyword}
         onChangeInput={(e) => setKeyword(e.target.value)}

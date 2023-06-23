@@ -6,39 +6,37 @@ function ContactNav({ selected, setSelected }: { selected: number; setSelected: 
   const navigate = useNavigate();
   return (
     <LeftBox>
-      <LeftTopBox>
-        <Title>CONTACT</Title>
+        <Title>Contact</Title>
 
         <MenuBox>
           <MenuButton
             onClick={() => {
               setSelected(1);
-              navigate('/contact/asklist');
+              navigate('/asklist');
             }}
           >
-            {selected === 1 && <Hyphen>―</Hyphen>}
+            {/* {selected === 1 && <Hyphen>―</Hyphen>} */}
             <MenuButtonText>1:1 Message</MenuButtonText>
           </MenuButton>
           <MenuButton
             onClick={() => {
               setSelected(2);
-              navigate('/contact/askinfo');
+              navigate('/askinfo');
             }}
           >
-            {selected === 2 && <Hyphen>―</Hyphen>}
+            {/* {selected === 2 && <Hyphen>―</Hyphen>} */}
             <MenuButtonText>Selling</MenuButtonText>
           </MenuButton>
           <MenuButton
             onClick={() => {
               setSelected(3);
-              navigate('/contact/faqlist');
+              navigate('/faqlist');
             }}
           >
-            {selected === 3 && <Hyphen>―</Hyphen>}
+            {/* {selected === 3 && <Hyphen>―</Hyphen>} */}
             <MenuButtonText>FAQ</MenuButtonText>
           </MenuButton>
         </MenuBox>
-      </LeftTopBox>
     </LeftBox>
   );
 }
@@ -71,24 +69,21 @@ const SubTitle = styled.h4`
 `;
 
 const MenuBox = styled.div`
-  margin-top: 40px;
   @media only screen and (max-width: 1000px) {
     width: 100%;
-    margin-top: 20px;
-    border-bottom: 1px solid #121212;
   }
 `;
 
 const MenuButton = styled.div`
+font-family:'Pretendard Variable';
   padding: 5px 0;
   display: flex;
   cursor: pointer;
   line-height: 30px;
   margin-top: 10px;
-  cursor: pointer;
   @media only screen and (max-width: 1000px) {
     width: 100%;
-    border-top: 1px solid #121212;
+    /* border-top: 1px solid #121212; */
     align-items: center;
     padding-top: 13px;
     padding-bottom: 13px;
@@ -97,7 +92,8 @@ const MenuButton = styled.div`
 `;
 
 const MenuButtonText = styled(SubTitle)`
-  font-weight: 700;
+font-family:'Pretendard Variable';
+  font-weight: 500;
   height: 100%;
 `;
 
@@ -121,13 +117,15 @@ const LeftTopBox = styled.div`
 `;
 
 const Title = styled.h3`
+font-family:'Pretendard Variable';
   font-weight: 700;
   color: #121212;
-  font-size: 36px;
-  margin: 0;
+  font-size: 24px;
+  padding:30px;
+  border-bottom: 1px solid #8b8b8b;
   @media only screen and (max-width: 1000px) {
-    margin-left: 18px;
-    font-size: 25px;
+    padding:20px;
+    font-size: 18px;
   }
 `;
 

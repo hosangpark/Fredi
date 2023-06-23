@@ -9,15 +9,8 @@ import { Loader, Select } from '@mantine/core';
 import dayjs from 'dayjs';
 import { APIModifyProducer, APIProducerDetails, APIRegisterProducer } from '../../api/ProducerAPI';
 import AlertModal from '../../components/Modal/AlertModal';
+import { CategoryList } from '../../components/List/List';
 
-const CATEGORYLIST = [
-  { value: '1', label: '아크릴' },
-  { value: '2', label: '목재' },
-  { value: '3', label: '스틸' },
-  { value: '4', label: '금속' },
-  { value: '5', label: '유리' },
-  { value: '6', label: '도자기' },
-];
 
 function RegisterProducer() {
   const navigate = useNavigate();
@@ -179,7 +172,7 @@ function RegisterProducer() {
               })}
               variant="unstyled"
               value={category}
-              data={CATEGORYLIST}
+              data={CategoryList}
               onChange={(value: '1' | '2' | '3' | '4' | '5' | '6') => setCategory(value)}
             />
           </UnderLineBox>

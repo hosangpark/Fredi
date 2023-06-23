@@ -9,33 +9,35 @@ interface Props {
 function CategoryItem({item,checked,setChecked}: Props) {
   // const [checked, setChecked] = useState(false)
   return (
-  <ProductBox onClick={()=>setChecked(!checked,item)} checked={checked}>
-    {item}
+  <ProductBox  onClick={()=>setChecked(!checked,item)} home={item.includes('&')}>
+    <ProductItem checked={checked} >
+      {item}
+    </ProductItem>
   </ProductBox>
   )
 }
 
-const CheckBoxButton = styled.div`
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
-`;
-
-const ProductBox = styled.div<{checked:boolean }>`
-  font-size:14px;
-  /* width: 16.5%; */
-  cursor: pointer;
-  overflow: hidden;
-  box-sizing:border-box;
-  border:2px solid #d4d4d4;
-  border-radius:5px;
-  padding:5px 10px;
-  /* margin:5px 10px; */
+const ProductItem = styled.div<{checked:boolean}>`
   color: ${(props)=>(props.checked === true? 'white':'black')};
   background-color: ${(props)=>(props.checked === true? 'black':'white')};
+  cursor: pointer;
+  font-weight:300;
+  overflow: hidden;
+  box-sizing:border-box;
+  border:1px solid #bdbdbd;
+  border-radius:5px;
+  padding:5px 1px;
+  margin:3px;
   @media only screen and (max-width: 768px) {
-    font-size:12px;
+    font-size:14px;
   }
+`;
+
+const ProductBox = styled.div<{home?:boolean }>`
+  
+  /* width: 16.5%; */
+  width:${props=>props.home? 50 : 25}%;
+ 
 `;
 
 

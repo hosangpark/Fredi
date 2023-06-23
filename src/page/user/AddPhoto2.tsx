@@ -8,8 +8,10 @@ import ImageCard from '../../components/Shop/ImageCard';
 import { TImage } from '../admin/ProducerList';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import CategoryItem from '../../components/Shop/CategoryItem';
+import linkImage from '../../asset/image/links.png';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Virtual,Pagination,Navigation, Scrollbar } from 'swiper';
+import { CategoryListCheck } from '../../components/List/List';
 
 export type TUserDetails = {
   idx: number;
@@ -40,40 +42,7 @@ function AddPhoto2() {
   const [imageList, setimageList] = useState<TImage[]>([]);
   const [description, setdescription] = useState<string>('');
   
-  const [categoryitemList,setcategoriitemList] = useState([
-    {
-      item:'Home & styling',
-      checked:false
-    },
-    {
-      item:'Furniture',
-      checked:false
-    },
-    {
-      item:'Lighting',
-      checked:false
-    },
-    {
-      item:'Fabric',
-      checked:false
-    },
-    {
-      item:'Object',
-      checked:false
-    },
-    {
-      item:'Tableware',
-      checked:false
-    },
-    {
-      item:'Chair',
-      checked:false
-    },
-    {
-      item:'Table',
-      checked:false
-    },
-  ])
+  const [categoryitemList,setcategoriitemList] = useState(CategoryListCheck)
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
@@ -133,7 +102,7 @@ function AddPhoto2() {
           </BoxTitle>
           <LayoutWrap onClick={()=>{navigate('/AddLink', { state: 'Add' });}}>
             <LinkImageWrap>
-              <Image/>
+              <Image src={linkImage}/>
             </LinkImageWrap>
             <LinkItemBox>
               <LinkTitleBox>
@@ -143,7 +112,7 @@ function AddPhoto2() {
           </LayoutWrap>
           <LayoutWrap onClick={()=>{navigate('/EditLink', { state: 'Edit' });}}>
             <LinkImageWrap>
-              <Image/>
+              <Image src={linkImage}/>
             </LinkImageWrap>
             <LinkItemBox>
               <LinkTitleBox>
@@ -167,7 +136,8 @@ function AddPhoto2() {
           <CategoryItemContainer>
             {categoryitemList.map((item,index)=>{
               return(
-                <CategoryItem item={item.item} checked={item.checked} setChecked={(e,type)=>{
+                <CategoryItem item={item.item} checked={item.checked} 
+                setChecked={(e,type)=>{
                   if(categoryitemList.filter(element => element.checked === true).length < 3){
                     categoryitemList[index].checked = e
                   }else{
@@ -208,7 +178,7 @@ const Container = styled.div`
   }
 `;
 const ProfileContainer = styled.div`
-  margin:20px 30px;
+  margin:20px;
 `;
 const ProductListWrap = styled.div`
   width:100%;
@@ -372,12 +342,13 @@ const DescriptionText = styled.p`
   }
   `;
 const BoxTitle = styled.p`
+font-family:'Pretendard Variable';
+  font-size:16px;
   font-weight:500;
   text-align:start;
   color:#2b2b2b;
   margin:20px 0 10px 0;
   @media only screen and (max-width: 768px) {
-    font-size:14px;
   }
 `
 const CategoryCount = styled.span`
@@ -389,7 +360,7 @@ const CategoryCount = styled.span`
 `
 
 const LinkName = styled.p`
-  font-size:15px;
+font-family:'Pretendard Variable';
   font-weight:500;
   text-align:start;
   color:#2b2b2b;
@@ -399,6 +370,7 @@ const LinkName = styled.p`
   }
 `
 const LinkUrl = styled.p`
+font-family:'Pretendard Variable';
   font-size:14px;
   font-weight:500;
   text-align:start;
@@ -407,7 +379,8 @@ const LinkUrl = styled.p`
   @media only screen and (max-width: 768px) {
     font-size:12px;
   }
-  `;
+`;
+
 const ImageWrap = styled.div`
   width:210px;
   aspect-ratio: 1.1;
@@ -417,6 +390,8 @@ const ImageWrap = styled.div`
   }
 `;
 const LinkImageWrap = styled.div`
+display:flex;
+align-items:center;
   width:70px;
   height:70px;
   margin-right:50px;
@@ -428,11 +403,13 @@ const LinkImageWrap = styled.div`
   }
 `;
 const ArrowImageWrap = styled.div`
-  width:40px;
-  height:40px;
+display:flex;
+align-items:center;
+  width:20px;
+  height:20px;
   @media only screen and (max-width: 768px) {
-    width:25px;
-    height:25px;
+    width:15px;
+    height:15px;
   }
 `;
 const ArrowImage = styled.img`
@@ -448,6 +425,7 @@ const LinkItemBox = styled.div`
   }
 `;
 const LinkTitleBox = styled.div`
+font-family:'Pretendard Variable';
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -458,17 +436,15 @@ const LinkTitleBox = styled.div`
 const CategoryItemContainer = styled.div`
   display:flex;
   flex-wrap:wrap;
-  gap:15px;
+  /* gap:5px; */
 `;
 
 const Image = styled.img`
   width:100%;
   height:100%;
-  border-radius:5px;
-  background:#313131;
-  @media only screen and (max-width: 768px) {
-  }
-  `;
+  object-fit:contain;
+`;
+
 
 const SwiperWrap = styled.div`
   background-color:#cecece;

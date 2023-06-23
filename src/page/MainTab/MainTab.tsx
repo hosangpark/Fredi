@@ -366,7 +366,7 @@ function MainTab() {
       <div className="App">
         <TabButtonWrap>
         {content.map((section, index:number) => (
-          <UnderLineTab onClick={() => {contentChange(index)}} color={section.tab == contentItem.tab? 'black':'none'}>
+          <UnderLineTab onClick={() => {contentChange(index)}} color={section.tab == contentItem.tab? 'black':'#CCCCCC'}>
             {section.tab}
           </UnderLineTab>
           ))}
@@ -415,12 +415,12 @@ const TabButtonWrap = styled.div`
 const TabButton = styled.div`
   flex:1;
   font-size:17px;
-  font-weight:500;
   padding:15px 0;
 `;
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
   border-bottom: solid 1px ${(props) => props.color || "none"};
+  font-weight: ${props => props.color == 'black' ? 600 : 300};
   font-family:'Pretendard Variable';
   padding:10px 0;
   @media only screen and (max-width: 768px) {

@@ -86,7 +86,7 @@ const Container = styled.div`
   }
 `;
 const ProfileContainer = styled.div`
-  margin:20px 30px;
+  margin: 20px 10px 20px 20px;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -284,14 +284,15 @@ const ModalTitle = styled.span`
 const InputWrap = styled.div`
   display: flex;
   width: 100%;
-  margin: 30px 0 10px;
+  margin: 20px 0;
   @media only screen and (max-width: 768px) {
-    margin: 20px 0 10px;
   }
 `;
 const InputTitle = styled.div`
+font-family:'Pretendard Variable';
   white-space:nowrap;
   width:25%;
+  margin-right:30px;
   max-width:250px;
   text-align:start;
   @media only screen and (max-width: 768px) {
@@ -300,15 +301,16 @@ const InputTitle = styled.div`
 `;
 
 const TextInput = styled.input`
+font-family:'Pretendard Variable';
   border: 0;
-  width:70%;
+  width:100%;
   font-size: 16px;
   color: #121212;
   font-weight: 400;
   text-align:start;
   border-radius: 0;
   margin:0;
-  border-bottom:2px solid #c4c4c4;
+  border-bottom:1px solid #ECECEC;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
   }

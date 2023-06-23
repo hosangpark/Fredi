@@ -20,12 +20,12 @@ function FairCard({
   index: number;
   onClick: (e: any) => void;
   onClickLike: (e: any) => void;
-  isLikeList?: boolean;
+  isLikeList?: boolean; 
 }) {
   return (
     <ProductBox showType={showType} isLast={(index + 1) % 4 === 0} onClick={onClick}>
       <ProductImageWrap>
-        <ProductImage src={item.image[0].file_name} />
+        <ProductImage src={item.image[0]?.file_name ? item.image[0].file_name : 'd'} />
         {/* <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
       </ProductImageWrap>
       {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
@@ -56,7 +56,7 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
 `;
 const ProductImageWrap = styled.div`
   width: 100%;
-  min-height:30vh;
+  aspect-ratio:410/280;
   background-color:black;
   margin-bottom: 15px;
 `;

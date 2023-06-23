@@ -71,14 +71,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'tableware' },
-  { value: '6', label: 'art&objet' },
-];
 
 function WeeklyEdition() {
   const navigate = useNavigate();

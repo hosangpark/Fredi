@@ -130,7 +130,9 @@ const TabButton = styled.div`
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
   border-bottom: solid 1px ${(props) => props.color || "none"};
+  font-weight: ${props => props.color == 'black' ? 600 : 300};
   font-family:'Pretendard Variable';
+  padding:10px 0;
   @media only screen and (max-width: 768px) {
     font-size:14px;
   }

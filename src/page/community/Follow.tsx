@@ -31,6 +31,7 @@ import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
 import FeedCard from '../../components/Shop/FeedCard';
 import { FairListItem } from '../../types/Types';
+import { CategoryList } from '../../components/List/List';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -75,24 +76,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'objet' },
-  { value: '6', label: 'tableware' },
-  { value: '7', label: 'chair' },
-  { value: '8', label: 'table' },
-  { value: '9', label: 'sideTable' },
-  { value: '10', label: 'sofa' },
-  { value: '11', label: 'stool' },
-  { value: '12', label: 'storage' },
-  { value: '13', label: 'mirror' },
-  { value: '14', label: 'deco' },
-  { value: '15', label: 'vase' },
-  { value: '16', label: 'art' },
-];
 
 
 interface ICategorySelectButton {
@@ -357,7 +340,7 @@ function Follow() {
             // onSlideChange={() => console.log('slide change')}
             // style={{paddingBottom:50}}
           >
-            {CATEGORYLIST.map((item) => {
+            {CategoryList.map((item) => {
               return (
               <SwiperSlide>
                 <FollowingListWrap>
@@ -427,12 +410,13 @@ const ProductListWrap = styled.div`
 `;
 
 const FollowTitle = styled.div`
-  font-size:16px;
-  font-weight:500;
+font-family:'Pretendard Variable';
+  font-size:14px;
+  font-weight:400;
   text-align:start;
   margin:25px 20px;
   @media only screen and (max-width: 768px) {
-    font-size:14px;
+    font-size:12px;
   }
 `
 
@@ -483,23 +467,24 @@ const TitleWrap = styled.div`
   }
 `;
 const FollowingName = styled.span`
+font-family:'Pretendard Variable';
   width:90%;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
   @media only screen and (max-width: 768px) {
-    font-size: 12px;
+    font-size: 9px;
   }
 `;
 const ImageWrap = styled.div`
-  width:110px;
-  height:110px;
+  width:80px;
+  aspect-ratio:1;
+  border-radius:50%;
   border:1px solid #c9c9c9;
   @media only screen and (max-width: 768px) {
-    width:80px;
-    height:80px;
+    width:70px;
   }
 `
 

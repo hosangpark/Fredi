@@ -72,16 +72,38 @@ function AskList() {
   };
 
   const handleAsk = () => {
-    if (user.idx) {
-      navigate(`/contact/registerask`);
-    } else {
-      setShowLogin(true);
-    }
+    setTotal(1);
+    setAskList([
+      {
+        idx: 1,
+        title: 'title1',
+        question: 'question1',
+        answer: '답변1',
+        created_time: date
+      },
+      {
+        idx: 2,
+        title: 'title2',
+        question: 'question2',
+        answer: null,
+        created_time: date
+      },
+      {
+        idx: 3,
+        title: 'title3',
+        question: 'question3',
+        answer: '답변1',
+        created_time: date
+      },
+    ])
   };
-
+  const date = new Date()
   useEffect(() => {
-    getAskList();
+    // getAskList();
+    setTotal(total);
+    
   }, [page]);
+
 
   useEffect(() => {
     if (itemIdx) {
@@ -90,14 +112,17 @@ function AskList() {
   }, [itemIdx]);
 
   return (
-    <>
+    <Container>
+    <Title>1:1 Message</Title>
       {total === 0 ? (
         <NoDataBox>
+          <>
           {/* <Logo src={logoImage} /> */}
-          <Text>문의글이 없습니다.</Text>
-          <BlackButtonNoData onClick={handleAsk}>
+          <Text onClick={handleAsk}>문의글이 없습니다.</Text>
+          {/* <BlackButtonNoData onClick={handleAsk}>
             <BlackButtonText>문의하기</BlackButtonText>
-          </BlackButtonNoData>
+          </BlackButtonNoData> */}
+          </>
         </NoDataBox>
       ) : (
         <ListWrap>
@@ -120,7 +145,7 @@ function AskList() {
                     </RowWrap>
                     <RowWrap last>
                       <RowWrap>
-                        <Date>{dayjs(item.created_time).format('YYYY.MM.DD. HH:mm:ss')}</Date>
+                        <OnDate>{dayjs(item.created_time).format('YYYY.MM.DD. HH:mm:ss')}</OnDate>
                       </RowWrap>
                     </RowWrap>
                   </TitleBox>
@@ -133,7 +158,7 @@ function AskList() {
                         <ContentText>{item.question}</ContentText>
                       </ContentRowWrap>
                       <ButtonWrap>
-                        <WhiteButton onClick={() => navigate(`/contact/registerask/${item.idx}`)}>
+                        <WhiteButton onClick={() => navigate(`/registerask/${item.idx}`)}>
                           <WhiteButtonText>수정하기</WhiteButtonText>
                         </WhiteButton>
                         <WhiteButton onClick={() => setItemIdx(item.idx)}>
@@ -171,10 +196,10 @@ function AskList() {
               },
             })}
           />
-
+{/* 
           <BlackButton onClick={handleAsk}>
             <BlackButtonText>문의하기</BlackButtonText>
-          </BlackButton>
+          </BlackButton> */}
         </ListWrap>
       )}
       <ConfirmModal visible={confirmModal} setVisible={setConfirmModal} text="1:1 문의를 삭제하시겠습니까?" onOk={onDeleteAsk} />
@@ -196,9 +221,28 @@ function AskList() {
         }}
         text="회원가입 후 이용 가능합니다."
       />
-    </>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width:100%;
+`
+const Title = styled.h3`
+font-family:'Pretendard Variable';
+  font-weight: 700;
+  color: #121212;
+  font-size: 24px;
+  padding:30px;
+  border-bottom: 1px solid #b4b4b4;
+  @media only screen and (max-width: 1000px) {
+    padding:20px;
+    font-size: 18px;
+  }
+`;
 
 const Logo = styled.img`
   width: 150px;
@@ -211,6 +255,7 @@ const Logo = styled.img`
 `;
 
 const Text = styled.h3`
+font-family:'Pretendard Variable';
   font-weight: 500;
   color: #121212;
   font-size: 18px;
@@ -238,23 +283,6 @@ const BlackButton = styled.div`
   }
 `;
 
-const BlackButtonNoData = styled(BlackButton)`
-  width: 350px;
-  height: 60px;
-  align-self: center;
-  @media only screen and (max-width: 1000px) {
-    width: 280px;
-  }
-`;
-
-const BlackButtonText = styled.span`
-  color: #ffffff;
-  font-weight: 400;
-  font-size: 16px;
-  @media only screen and (max-width: 1000px) {
-    font-size: 13px;
-  }
-`;
 
 const ListWrap = styled.div`
   display: flex;
@@ -280,7 +308,7 @@ const RowWrap = styled.div<{ last?: boolean }>`
 `;
 
 const ListItemTitle = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable';
 
   font-weight: 700;
   color: #121212;
@@ -304,8 +332,7 @@ const StatusBox = styled.div<{ answerd: boolean }>`
 `;
 
 const StatusBoxText = styled.span`
-  font-family: 'NotoSans' !important;
-
+  font-family:'Pretendard Variable';
   font-weight: 400;
   color: #fff;
   font-size: 12px;
@@ -314,7 +341,7 @@ const StatusBoxText = styled.span`
   }
 `;
 const Nickname = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable';
 
   font-weight: 400;
   color: #121212;
@@ -323,7 +350,7 @@ const Nickname = styled.span`
     font-size: 12px;
   }
 `;
-const Date = styled(Nickname)`
+const OnDate = styled(Nickname)`
   font-size: 15px;
   @media only screen and (max-width: 1000px) {
     font-size: 12px;
@@ -341,7 +368,7 @@ const AnswerBox = styled(QuestionBox)`
 `;
 
 const IconText = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable';
   align-self: flex-start;
   display: inline-block;
   min-width: 45px;
@@ -356,11 +383,12 @@ const IconText = styled.span`
 `;
 
 const ContentText = styled.pre`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable';
   font-weight: 400;
   color: #121212;
   font-size: 16px;
   text-align: left;
+  margin:5px 0;
   @media only screen and (max-width: 1000px) {
     font-size: 13px;
   }
@@ -381,6 +409,7 @@ const ButtonWrap = styled.div`
 const WhiteButton = styled.div`
   width: 100px;
   height: 40px;
+  text-align:center;
   border: 1px solid #121212;
   margin-left: 17px;
   cursor: pointer;
@@ -391,8 +420,8 @@ const WhiteButton = styled.div`
   }
 `;
 const WhiteButtonText = styled.span`
-  font-family: 'NotoSans' !important;
-
+  font-family:'Pretendard Variable';
+  text-align:center;
   color: #121212;
   font-size: 14px;
   line-height: 40px;

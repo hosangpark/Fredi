@@ -6,15 +6,8 @@ import { dndData, DndList } from '../../components/DnD/DnD';
 import { Loader, Select } from '@mantine/core';
 import AlertModal from '../../components/Modal/AlertModal';
 import { APIModifyProduct, APIProductDetails, APIRegisterProduct } from '../../api/ProductAPI';
+import { CategoryList } from '../../components/List/List';
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'tableware' },
-  { value: '6', label: 'art&objet' },
-];
 
 function RegisterProduct() {
   const navigate = useNavigate();
@@ -147,7 +140,7 @@ function RegisterProduct() {
               })}
               variant="unstyled"
               value={category}
-              data={CATEGORYLIST}
+              data={CategoryList}
               onChange={(value: '1' | '2' | '3' | '4' | '5' | '6') => setCategory(value)}
             />
           </UnderLineBox>

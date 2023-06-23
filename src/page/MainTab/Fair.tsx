@@ -83,14 +83,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'tableware' },
-  { value: '6', label: 'art&objet' },
-];
 
 function Fair() {
   const navigate = useNavigate();
@@ -249,6 +241,7 @@ function Fair() {
     sessionStorage.removeItem('page');
     sessionStorage.removeItem('type');
   };
+  
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
@@ -300,60 +293,97 @@ function Fair() {
       getShopList(1);
     }
   }, [searchParams, category]);
+  
 
   useEffect(() => {
     if (page > 1) getShopList(page);
   }, [page]);
   useEffect(() => {
-    setShopList([
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-        isLike: true,
-      },
-    ]);
-  }, []);
+    if(bannerList){
+      setShopList([
+        {
+          idx: 1,
+          category: 1,
+          name: '일름이름이름',
+          price: 1000,
+          size: '사이즈',
+          weight: '무게',
+          country: '지역,위치',
+          description: '설명',
+          designer: '디자이너',
+          sns: 'SNS',
+          email: "email",
+          website: "website",
+          created_time: Date(),
+          like_count: 11,
+          image: [
+            bannerList[0]
+          ],
+          isLike: true,
+        },
+        {
+          idx: 2,
+          category: 2,
+          name: '이이이이이이잉',
+          price: 2000,
+          size: '사이즈',
+          weight: '무게',
+          country: '지역,위치',
+          description: '설명',
+          designer: '디자이너',
+          sns: 'SNS',
+          email: "email",
+          website: "website",
+          created_time: Date(),
+          like_count: 11,
+          image: [
+            bannerList[1]
+          ],
+          isLike: true,
+        },
+        {
+          idx: 3,
+          category: 2,
+          name: '이이이이이이잉',
+          price: 2000,
+          size: '사이즈',
+          weight: '무게',
+          country: '지역,위치',
+          description: '설명',
+          designer: '디자이너',
+          sns: 'SNS',
+          email: "email",
+          website: "website",
+          created_time: Date(),
+          like_count: 11,
+          image: [
+            bannerList[2]
+          ],
+          isLike: true,
+        },
+        {
+          idx: 4,
+          category: 2,
+          name: '이이이이이이잉',
+          price: 2000,
+          size: '사이즈',
+          weight: '무게',
+          country: '지역,위치',
+          description: '설명',
+          designer: '디자이너',
+          sns: 'SNS',
+          email: "email",
+          website: "website",
+          created_time: Date(),
+          like_count: 11,
+          image: [
+            bannerList[3]
+          ],
+          isLike: true,
+        },
+      ]);
+    }
+  }, [bannerList]);
 
   const onSearch = () => {
     navigate(
@@ -454,7 +484,7 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin:0px;
+  margin-top:5px;
 `;
 
 const ProductListWrap = styled.div`

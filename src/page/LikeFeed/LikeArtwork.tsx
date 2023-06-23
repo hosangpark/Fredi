@@ -29,6 +29,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
+import { CategoryList } from '../../components/List/List';
 
 export type FairListItem = {
   idx: number;
@@ -91,24 +92,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'objet' },
-  { value: '6', label: 'tableware' },
-  { value: '7', label: 'chair' },
-  { value: '8', label: 'table' },
-  { value: '9', label: 'sideTable' },
-  { value: '10', label: 'sofa' },
-  { value: '11', label: 'stool' },
-  { value: '12', label: 'storage' },
-  { value: '13', label: 'mirror' },
-  { value: '14', label: 'deco' },
-  { value: '15', label: 'vase' },
-  { value: '16', label: 'art' },
-];
 
 
 interface ICategorySelectButton {
@@ -242,7 +225,7 @@ function LikeArtwork() {
       sessionStorage.setItem('page', String(page));
       sessionStorage.setItem('type', String(showType));
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/shopdetails/${idx}`);
+      navigate(`/productdetails/${idx}`);
     }
   };
 
@@ -379,7 +362,7 @@ function LikeArtwork() {
               onSearch();
             }
           }}
-          categoryList={CATEGORYLIST}
+          categoryList={CategoryList}
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}

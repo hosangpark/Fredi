@@ -166,22 +166,23 @@ function Router() {
           {/* 네이버 회원가입 페이지 */}
           <Route path="/naver" element={<Naver />} />
           {/* 상품문의내역 페이지 */}
-          <Route index path="/asklist-shop" element={<ShopAskList />} />
+          <Route path="/asklist-shop" element={<ShopAskList />} />
           {/* '고객센터' 라우터 */}
-          <Route path="/contact/*" element={<Contact />}>
+          <Route path="/contact" element={<Contact />}/>
             {/* '고객센터' - 1:1문의 페이지 */}
-            <Route index path="asklist" element={<AskList />} />
-            {/* '고객센터' - 1:1문의 등록 페이지 */}
-            <Route path="registerask" element={<RegisterAsk />} />
-            {/* '고객센터' - 1:1문의 수정 페이지 */}
-            <Route path="registerask/:idx" element={<RegisterAsk />} />
-            {/* '고객센터' - 입점문의 페이지 */}
-            <Route path="askinfo" element={<AskInfo />} />
-            {/* '고객센터' - FAQ 페이지 */}
-            <Route path="faqlist" element={<FaqList />} />
-            {/* '고객센터' - shop 1:1문의 등록 페이지 */}
-            <Route path="registerask-shop" element={<RegisterShopAsk />} />
-          </Route>
+          <Route path="asklist" element={<AskList />} />
+          {/* '고객센터' - 1:1문의 등록 페이지 */}
+          <Route path="registerask" element={<RegisterAsk />} />
+          {/* '고객센터' - 1:1문의 수정 페이지 */}
+          <Route path="registerask/:idx" element={<RegisterAsk />} />
+          {/* '고객센터' - 입점문의 페이지 */}
+          <Route path="askinfo" element={<AskInfo />} />
+          {/* '고객센터' - FAQ 페이지 */}
+          <Route path="faqlist" element={<FaqList />} />
+
+
+          {/* '고객센터' - shop 1:1문의 등록 페이지 */}
+          <Route path="registerask-shop" element={<RegisterShopAsk />} />
           <Route path="/community/*" element={<Community />}/>
           <Route path="/LikeTab" element={<LikeTab />}/>
           {/* 'manager' 라우터 */}

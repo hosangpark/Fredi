@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import AlertModal from '../../components/Modal/AlertModal';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import { CATEGORY_PRODUCER } from './DashBoard';
+import { CategoryList } from '../../components/List/List';
 
 export type TImage = {
   idx: number;
@@ -39,15 +40,6 @@ export type TProducerListItem = {
   like_count: number;
 };
 
-const CATEGORYLIST = [
-  { value: '0', label: '전체' },
-  { value: '1', label: '아크릴' },
-  { value: '2', label: '목재' },
-  { value: '3', label: '스틸' },
-  { value: '4', label: '금속' },
-  { value: '5', label: '유리' },
-  { value: '6', label: '도자기' },
-];
 
 function ProducerList() {
   let [searchParams, setSearchParams] = useSearchParams();
@@ -141,7 +133,7 @@ function ProducerList() {
               })}
               variant="unstyled"
               value={category}
-              data={CATEGORYLIST}
+              data={CategoryList}
               onChange={(value: '0' | '1' | '2' | '3' | '4' | '5' | '6') => setCategory(value)}
             />
           </UnderLineBox>

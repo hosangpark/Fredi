@@ -25,6 +25,7 @@ import Follow from './Follow';
 import Feed from './Feed';
 import BookMark from './BookMark';
 import { FairListItem } from '../../types/Types';
+import { CategoryList } from '../../components/List/List';
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   carousel: {},
@@ -68,14 +69,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'tableware' },
-  { value: '6', label: 'art&objet' },
-];
 const TabImage = styled.img`
   width:25px;
   height:25px;
@@ -323,7 +316,7 @@ function Community() {
               onSearch();
             }
           }}
-          categoryList={CATEGORYLIST}
+          categoryList={CategoryList}
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -366,6 +359,7 @@ const TabButton = styled.div`
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
   border-bottom: solid 1px ${(props) => props.color || "none"};
+  font-weight: ${props => props.color == 'black' ? 600 : 300};
   font-family:'Pretendard Variable';
   padding:10px 0;
   @media only screen and (max-width: 768px) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import viewImage from '../../asset/image/home04.png';
+import viewImage from '../../asset/image/eyeview.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
 import { FairListItem } from '../../types/Types';
@@ -95,11 +95,11 @@ const SpanCount = styled.span`
 `;
 
 const ViewImg = styled.img`
-  width: 18px;
-  height: 18px;
+  width: 13px;
+  object-fit:contain;
+  margin-top:4px;
   @media only screen and (max-width: 768px) {
-    width: 15px;
-    height: 15px;
+    width: 12px;
   }
 `;
 

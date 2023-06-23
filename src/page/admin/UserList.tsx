@@ -24,7 +24,7 @@ const useStyles = createStyles((theme) => ({
   tr: {},
 }));
 
-const CATEGORYLIST = [
+const UserItem = [
   { value: 'all', label: '통합검색' },
   { value: 'user_id', label: '아이디' },
   { value: 'name', label: '이름' },
@@ -132,7 +132,7 @@ function UserList() {
                   },
                 },
               })}
-              data={CATEGORYLIST}
+              data={UserItem}
               onChange={(value: 'all' | 'user_id' | 'name' | 'nickname') => setSearchType(value)}
             />
           </UnderLineBox>

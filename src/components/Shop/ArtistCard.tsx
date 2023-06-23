@@ -10,13 +10,9 @@ import { ArtistItem, FairListItem } from '../../types/Types';
 
 function ArtistCard({
   item,
-  showType,
-  index,
   onClick,
 }: {
   item: ArtistItem;
-  showType: 1 | 2;
-  index: number;
   onClick: (e: any) => void;
 }) {
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
@@ -29,33 +25,33 @@ function ArtistCard({
   }, [innerWidth]);
   
   return (
-    <ProductBox showType={showType} isLast={(index + 1) % 4 === 0} onClick={onClick}>
+    <ProductBox onClick={onClick}>
       <ProductNameWrap>
         <Designer>{item.designer}</Designer>
-        {innerWidth <= 768?
+
+        {/* {innerWidth <= 768?
         <ArrowImage src={arrowImage} />
         :
         null
-        }
+        } */}
       </ProductNameWrap>
     </ProductBox>
   );
 }
 
-const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
+const ProductBox = styled.div`
   position: relative;
   display: column;
   /* width: 24.25%; */
   width: 16.6%;
   margin: 20px 0;
-  margin-right: ${(props) => (props.isLast ? 0 : 1)}%;
   cursor: pointer;
   overflow: hidden;
   @media only screen and (max-width: 1440px) {
     width: 24.25%;
   }
   @media only screen and (max-width: 768px) {
-    width: ${(props) => (props.showType === 1 ? 100 : 100)}%;
+    width: 49%;
   }
 `;
 const ProductImageWrap = styled.div`
@@ -94,13 +90,14 @@ const NewIcon = styled.img`
 
 const Designer = styled.span`
   color: #121212;
-  font-weight: 500;
+  font-weight: 400;
   text-align: left;
   @media only screen and (max-width: 1024px) {
-    font-size: 16px;
+    font-size: 14px;
   }
   @media only screen and (max-width: 768px) {
-    font-size: 15px;
+    font-weight: 300;
+    font-size: 12px;
   }
 `;
 
@@ -136,8 +133,9 @@ const TextWrap = styled(RowWrap)<{ showType?: 1 | 2 }>`
 const ProductNameWrap = styled.div`
   display: flex;
   align-items:center;
+  justify-content:center;
   @media only screen and (max-width: 768px) {
-    justify-content:space-between;
+    /* justify-content:space-between; */
   }
 `;
 

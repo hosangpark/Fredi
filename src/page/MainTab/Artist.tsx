@@ -23,6 +23,7 @@ import { removeHistory } from '../../components/Layout/Header';
 import FairCard from '../../components/Shop/FairCard';
 import ArtistCard from '../../components/Shop/ArtistCard';
 import { ArtistItem } from '../../types/Types';
+import { CategoryList } from '../../components/List/List';
 
 
 
@@ -68,14 +69,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'tableware' },
-  { value: '6', label: 'art&objet' },
-];
 
 function Artist() {
   const navigate = useNavigate();
@@ -185,12 +178,15 @@ function Artist() {
   };
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  const pathName = location.pathname.split('/')[1];
   useEffect(() => {
     const resizeListener = () => {
       setInnerWidth(window.innerWidth);
     };
     if(innerWidth < 768){
-      navigate('/MainTab')
+      if(pathName === 'Artwork'){
+        navigate('/MainTab')
+      }
     }
     // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
@@ -230,13 +226,43 @@ function Artist() {
     setShopList([
       {
         idx: 1,
-        name: '일름이름이름',
+        name: '일름1',
         designer: 'Artis name1',
       },
       {
         idx: 2,
         name: '일름이름이름',
         designer: 'Artis name2',
+      },
+      {
+        idx: 3,
+        name: '일름이름이름',
+        designer: 'Artis name3',
+      },
+      {
+        idx: 4,
+        name: '일름이름이름',
+        designer: 'Artis name4',
+      },
+      {
+        idx: 1,
+        name: '일름1',
+        designer: 'Artis name1',
+      },
+      {
+        idx: 2,
+        name: '일름이름이름',
+        designer: 'Artis name2',
+      },
+      {
+        idx: 3,
+        name: '일름이름이름',
+        designer: 'Artis name3',
+      },
+      {
+        idx: 4,
+        name: '일름이름이름',
+        designer: 'Artis name4',
       },
     ]);
   }, []);
@@ -298,7 +324,6 @@ function Artist() {
         <TitleText>
           Artist
         </TitleText>
-        
         <SearchBox
           onClickSearch={() => onSearch()}
           onKeyDown={(e) => {
@@ -306,7 +331,7 @@ function Artist() {
               onSearch();
             }
           }}
-          categoryList={CATEGORYLIST}
+          categoryList={CategoryList}
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -326,8 +351,6 @@ function Artist() {
               item={item}
               key={item.idx}
               onClick={(e) => saveHistory(e, item.designer)}
-              index={0}
-              showType={showType}
             />
           )
         })
@@ -359,11 +382,11 @@ const Container = styled.div`
 
 const ProductListWrap = styled.div`
   display: flex;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
   align-items: center;
   margin:10px 0;
   @media only screen and (max-width: 768px) {
-    display: block;
+    /* display: block; */
   }
 `;
 

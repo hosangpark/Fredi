@@ -70,14 +70,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-const CATEGORYLIST = [
-  { value: '1', label: 'all' },
-  { value: '2', label: 'furniture' },
-  { value: '3', label: 'lighting' },
-  { value: '4', label: 'fabric' },
-  { value: '5', label: 'tableware' },
-  { value: '6', label: 'art&objet' },
-];
 
 function Home() {
   const navigate = useNavigate();
@@ -252,41 +244,6 @@ function Home() {
     }
   }, [productList]);
 
-  // useLayoutEffect(() => {
-  //   const page = Number(sessionStorage.getItem('page'));
-  //   console.log('카테고리', category);
-  //   if (page) {
-  //     findHistory();
-  //   } else {
-  //     setPage(1);
-  //     getProductList(1);
-  //   }
-  // }, [searchParams, category]);
-
-  // useEffect(() => {
-  //   if (page > 1) getProductList(page);
-  // }, [page]);
-
-  const onSearch = () => {
-    navigate(
-      {
-        pathname: '/',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
-  };
-
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
 
   const slides = bannerList.map((item:any) => {
     console.log('item', item);
@@ -319,15 +276,15 @@ function Home() {
             withIndicators
             loop
             withKeyboardEvents={false}
-            nextControlIcon={<ControlImage src={rightButtonImage} />}
-            previousControlIcon={<ControlImage src={leftButtonImage} />}
+            // nextControlIcon={<ControlImage src={rightButtonImage} />}
+            // previousControlIcon={<ControlImage src={leftButtonImage} />}
             styles={{
               root: { maxHeight: 700 },
               control: { background: 'transparent', width: 45, border: 0, '@media (max-width: 768px)': { width: 25 } },
             }}
             classNames={{
               root: classes.carousel,
-              controls: classes.carouselControls,
+              // controls: classes.carouselControls,
               indicator: classes.carouselIndicator,
               control: classes.carouselControl,
             }}
@@ -341,15 +298,15 @@ function Home() {
             withIndicators
             loop
             withKeyboardEvents={false}
-            nextControlIcon={<ControlImage src={rightButtonImage} />}
-            previousControlIcon={<ControlImage src={leftButtonImage} />}
+            // nextControlIcon={<ControlImage src={rightButtonImage} />}
+            // previousControlIcon={<ControlImage src={leftButtonImage} />}
             styles={{
               root: { maxHeight: 700, aspectRatio: '1/1' },
               control: { background: 'transparent', width: 45, border: 0, aspectRatio: '1/1'},
             }}
             classNames={{
               root: classes.carousel,
-              controls: classes.carouselControls,
+              // controls: classes.carouselControls,
               indicator: classes.carouselIndicator,
               control: classes.carouselControl,
             }}
@@ -362,64 +319,69 @@ function Home() {
       <ProductListWrap>
         <ProductMainList
         title={'Fairs'}
-        ProductViews={innerWidth <= 768? 1.3 : 3.7}
+        ProductViews={innerWidth <= 768? 1.35 : 3.7}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
         ProductTitle={15}
-        arrowView={true}
+        arrowView={false}
         productLink={innerWidth <= 768? "FairsM" : "FairsW"}
+        aspect={285/190}
         link={'FairContent/'}
         />
         <ProductMainList
         title={'Latest'}
-        ProductViews={innerWidth <= 768? 2.1 : 5.8}
+        ProductViews={innerWidth <= 768? 2.05 : 6.9}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
         ProductTitle={16}
-        arrowView={true}
+        arrowView={false}
         productLink={'Latest'}
+        aspect={185/230}
         link={'Latest'}
         />
         <WeeklyEditionList
         title={'Weekly Edition'}
-        ProductViews={innerWidth <= 768? 1.2 : 3.1}
+        ProductViews={innerWidth <= 768? 1.1 : 3.4}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList = {bannerListMobile}
         ProductTitle={16}
-        arrowView={true}
+        arrowView={false}
         link={'WeeklyEdition'}
         />
         <ProductMainList
         title={'Home & Styling'}
-        ProductViews={innerWidth <= 768? 1.7 : 5.9}
+        ProductViews={innerWidth <= 768? 1.5 : 3.4}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
         ProductTitle={18}
-        arrowView={true}
+        arrowView={false}
+        aspect={285/240}
         link={'producer'}
         />
         <ProductMainList
         title={'Trending Artist'}
-        ProductViews={innerWidth <= 768? 1.7 : 5.9}
+        ProductViews={innerWidth <= 768? 2.05 : 6.9}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
         ProductTitle={18}
-        arrowView={true}
+        arrowView={false}
+        aspect={190/230}
         link={'producer'}
         />
         <ProductMainList
         title={'Featured Works'}
-        ProductViews={innerWidth <= 768? 1.7 : 5.9}
+        ProductViews={innerWidth <= 768? 2.05 : 6.9}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
         ProductTitle={18}
-        arrowView={true}
+        arrowView={false}
+        aspect={190/230}
         link={'producer'}
         />
       </ProductListWrap>
@@ -457,6 +419,9 @@ const Container = styled.div`
 const ProductListWrap = styled.div`
   margin: 15px 20px;
   padding-top:30px;
+  @media only screen and (max-width:769px) {
+    margin:15px 0 ;
+  }
 `;
 
 const CarouselWrap = styled.div`

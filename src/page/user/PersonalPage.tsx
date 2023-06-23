@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import likeOnImage from '../../asset/image/heart_on.png';
 import likeOffImage from '../../asset/image/heart_off.png';
-import bookmarkOnImage from '../../asset/image/check_on.png';
-import bookmarkOffImage from '../../asset/image/check_off.png';
+import bookmarkOnImage from '../../asset/image/bookmark.png';
+import bookmarkOffImage from '../../asset/image/bookmark.png';
 import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
@@ -14,6 +14,7 @@ import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import { useRef } from 'react';
 import { createBrowserHistory } from 'history';
+import profileImage from '../../asset/image/profile.png';
 import cart from '../../asset/image/cart.png';
 import ask from '../../asset/image/home05.png';
 import { APIAddCartItem, APILikeShop, APIShopDetails } from '../../api/ShopAPI';
@@ -330,22 +331,24 @@ function PersonalPage() {
         <ProfileHeaderWrap>
           <HeaderLeft>
             <ImageWrap>
-              <Image/>
+              <ProfileImage src={profileImage}/>
             </ImageWrap>
             <NameBox>
+            <FlexBox>
               <NameText>SEOYOON SHIN</NameText>
-              <SubTextBox>
-                {/* <span>79 works · </span> */}
-                <span>951 followers · </span>
-                <span>12 following</span>
-              </SubTextBox>
+              <ButtonBox>
+                <FollowButtonBox style={{paddingLeft:10,paddingRight:10}} onClick={()=>{setFollowed(!followed)}}>
+                  Follow
+                </FollowButtonBox>
+              </ButtonBox>
+            </FlexBox>
+            <ReportImageWrap>
+              <ProfileImage src={profileImage}/>
+            </ReportImageWrap>
+
             </NameBox>
           </HeaderLeft>
-          <ButtonBox>
-            <FollowButtonBox style={{paddingLeft:10,paddingRight:10}} onClick={()=>{setFollowed(!followed)}}>
-              Follow
-            </FollowButtonBox>
-          </ButtonBox>
+          
         </ProfileHeaderWrap>
       <Swiper
         // install Swiper modules
@@ -376,7 +379,10 @@ function PersonalPage() {
         })
         }
       </Swiper>
-      <LinkUrlBox>
+      <LinkUrlBox >
+        <LinkTitle>
+          Link Title
+        </LinkTitle>
         <LinkUrl href={'/'}>
           Link Url
         </LinkUrl>
@@ -455,7 +461,11 @@ const CarouselWrap = styled.div`
 const BottomContainer = styled(Container)`
   min-height: 400px;
 `;
-
+const ProfileImage = styled.img`
+  width:50%;
+  height:50%;
+  object-fit:contain;
+`;
 const LeftBox = styled.div`
   padding:0 2%;
   display: flex;
@@ -537,18 +547,20 @@ const LikeBox = styled.div`
   gap:10px;
 `;
 const DescriptionWrap = styled.div`
-  margin:20px 10px;
+font-family:'Pretendard Variable';
+  margin:20px;
   text-align:start;
   @media only screen and (max-width: 768px) {
     font-size:12px;
   }
 `;
 const LikeButton = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
+  object-fit:contain;
   @media only screen and (max-width: 768px) {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
   }
 `;
 
@@ -670,10 +682,22 @@ const ImageBox = styled.div`
 
 const LinkUrlBox = styled.div`
   width:100%;
-  background:#4d4d4d;
+  display:flex;
+  flex-direction:column;
+  padding:5px 0;
+  background:#000000;
 `;
-const LinkUrl = styled.a`
+const LinkTitle = styled.a`
+font-family:'Pretendard Variable';
   color:#ffffff;
+   font-size:14px;
+   font-weight:400;
+`
+const LinkUrl = styled.a`
+font-family:'Pretendard Variable';
+  color:#ffffff;
+  font-size:12px;
+  font-weight:300;
 `;
 
 const ImageBox2 = styled.div`
@@ -739,62 +763,66 @@ const ProfileHeaderWrap = styled.div`
 const HeaderLeft = styled.div`
 width:100%;
   display:flex;
-  margin:15px 0 ;
   @media only screen and (max-width: 768px) {
   }
 `;
 const NameBox = styled.div`
-  /* width:100%; */
+  width:100%;
   display:flex;
-  flex-direction:column;
+  align-items:center;
   justify-content:space-between;
-  @media only screen and (max-width: 768px) {
-  }
-  `;
+
+`;
 const NameText = styled.p`
-  font-size:24px;
-  font-weight:700;
+font-family:'Pretendard Variable';
+  font-size:16px;
+  font-weight:600;
   text-align:start;
   line-height:31px;
-  margin:0 0 20px 0;
+  margin:0 10px 0 0;
   @media only screen and (max-width: 768px) {
-    font-size:22px;
-  }
-  @media only screen and (max-width: 450px) {
-    font-size:20px;
-    margin:0 0 15px 0;
+    font-size:14px;
   }
 `;
 const FollowButtonBox = styled.div`
+font-family:'Pretendard Variable';
   display: flex;
   justify-content: center;
   align-items: center;
   width:100%;
   height:40%;
-  border:2px solid #c7c7c7;;
+  border:1px solid #c7c7c7;;
   border-radius:7px;
-  font-size:14px;
+  font-size:16px;
+
   font-weight:400;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
-    font-size:12px;
-  }
-  @media only screen and (max-width: 450px) {
-    font-size:11px;
+    font-size:14px;
   }
 `;
+const FlexBox = styled.div`
+  display:flex;
+  align-items:center;
+`
 const ImageWrap = styled.div`
-  width:110px;
-  aspect-ratio: 1.1;
+  width:65px;
   /* width:15%; */
   margin-right:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:50%;
+  aspect-ratio: 1.0;
+  background-color: #DBDBDB;
   @media only screen and (max-width: 768px) {
-    width:80px;
-  }
-  @media only screen and (max-width: 450px) {
-    width:60px;
+    width:55px;
   }
 `;
+const ReportImageWrap = styled.div`
+  width:30px;
+  height:30px;
+`
 const Image = styled.img`
   width:100%;
   height:100%;

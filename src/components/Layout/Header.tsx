@@ -13,6 +13,7 @@ import menusetting from '../../asset/image/setting.png';
 import likeOffImage from '../../asset/image/heart_off.png';
 import likeOnImage from '../../asset/image/heart_on.png';
 import menuicon from '../../asset/image/threecircle.png';
+import profileImage from '../../asset/image/profile.png';
 import cartImage from '../../asset/image/cart.png';
 import ContactImage from '../../asset/image/home05.png';
 import LogoutImage from '../../asset/image/ico_logout.png';
@@ -69,13 +70,14 @@ function Header() {
 
   const token = sessionStorage.getItem('token');
   const [showLogin, setShowLogin] = useState(false);
-  const [showNext, setShowNext] = useState(false);
-  const [showSave, setShowSave] = useState(false);
   const [check, setCheck] = useState<{ product: boolean; producer: boolean }>();
   const [showModal, setShowModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [isMouseOveredLikeButton, setIsMouseOveredLikeButton] = useState(false);
+  const [showNext, setShowNext] = useState(false);
+  const [showSave, setShowSave] = useState(false);
   const [showBackButton, setShowBackButton] = useState(false);
+  const [showsendMessage, showSendMessage] = useState(false);
   const [pageName, setPageName] = useState(false);
   const [noButton, setNoButton] = useState(false);
   const [userDetails, setUserDetails] = useState<TUserDetails>();
@@ -171,7 +173,7 @@ function Header() {
   const goContact = useCallback(() => {
     setBottomSheetModal(false)
     removeHistory();
-    navigate('/contact/asklist');
+    navigate('/contact');
   }, []);
 
   const goFair = useCallback(() => {
@@ -257,7 +259,8 @@ function Header() {
       navigate('/')
       // navigate('/AddPhoto2')
     } else if (pathName === 'AddPhoto2'){
-      navigate(-1)
+      alert('저장되었습니다.')
+      navigate(-2)
     } else if (pathName === 'EditProfile'){
       navigate(-1)
     } 
@@ -305,6 +308,16 @@ function Header() {
 
   useEffect(() => {
     if (
+      pathName === 'asklist'
+    ) {
+      showSendMessage(true)
+    }else{
+      showSendMessage(false)
+    }
+  }, [pathName]);
+  
+  useEffect(() => {
+    if (
       pathName === 'modifyuserinfo' ||
       pathName === 'EditProfile' ||
       pathName === 'EditLink' ||
@@ -318,6 +331,7 @@ function Header() {
 
   useEffect(() => {
     if (
+      pathName === 'registerask' ||
       pathName === 'deleteAccount' ||
       pathName === 'changeAddress' ||
       pathName === 'changePassword' ||
@@ -364,11 +378,12 @@ function Header() {
       setPageName(false)
       setShowSave(false)
       setShowNext(false)
+      showSendMessage(false)
     } else {
       if (
         pathName === 'productdetails' ||
         pathName === 'shopdetails' ||
-        pathName === 'cart' ||
+        // pathName === 'cart' ||
         pathName === 'order' ||
         pathName === 'shopdetails' ||
         pathName === 'WeeklyEdition' ||
@@ -394,6 +409,10 @@ function Header() {
         pathName === 'changeAddress' ||
         pathName === 'changePassword' ||
         pathName === 'changePhone' ||
+        pathName === 'asklist' ||
+        pathName === 'askinfo' ||
+        pathName === 'faqlist' ||
+        pathName === 'registerask' ||
         pathName === 'AddLink'
       ) {
         setShowBackButton(true);
@@ -553,10 +572,16 @@ function Header() {
           showSave?
             <MyPageButton onClick={saveHandle}>save</MyPageButton>
           :
+          showsendMessage?
+            <MyPageButton onClick={()=>navigate('/registerask')}>send message</MyPageButton>
+          :
           <>
+          {innerWidth > 768 &&
+            <LikeButton stylewidth={true} onClick={()=>navigate('/MobileProfile')} src={profileImage}/>
+          }
             <LikeButton onClick={goLikeList} src={likeOffImage} onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)} />
             <MyPageButton onClick={()=>setBottomSheetModal(true)}>
-              <LikeButton src={menuicon}/>
+              <LikeButton stylewidth={true} src={menuicon}/>
             </MyPageButton>
           </>
           }
@@ -722,18 +747,16 @@ margin-left: 20px;
 }
 `;
 
-const LikeButton = styled.img`
-  width: 23px;
+const LikeButton = styled.img<{stylewidth?:boolean}>`
+  width: ${(props)=>props.stylewidth? 20 : 23}px;
   cursor: pointer;
-
+  object-fit:cover;
+  margin-left: 13px;
   transition: all 0.5s ease;
 
-  @media only screen and (max-width: 1290px) {
-    width: 23px;
-  }
-  @media only screen and (max-width: 960px) {
+  @media only screen and (max-width: 768px) {
     margin-left: 10px;
-    width: 22px;
+    width: ${props=>props.stylewidth? 19 : 22}px;
   }
 `;
 
@@ -758,9 +781,8 @@ font-family:'Pretendard Variable';
   font-weight: 500;
   color: #121212;
   cursor: pointer;
-  margin-left: 20px;
     @media only screen and (max-width: 768px) {
-      margin:0 0 0 5px;
+      font-size:14px;
     }
 `
 
@@ -789,20 +811,18 @@ const MenuButtonText = styled.span`
 font-family:'Pretendard Variable';
   font-weight: 500;
   color: #121212;
-  font-size: 15px;
+  font-size: 18px;
   &:hover {
     color: #398049;
   }
   transition: all 0.3s ease;
   @media only screen and (max-width: 1290px) {
-    font-size: 14px;
+    font-size: 17px;
   }
-  @media only screen and (max-width: 1050px) {
-    font-size: 13px;
+  @media only screen and (max-width: 1024px) {
+    font-size: 16px;
   }
-  @media only screen and (max-width: 960px) {
-    font-size: 12px;
-  }
+
 `;
 
 const IconImage = styled.img`
@@ -832,6 +852,7 @@ const MenuButtonImage = styled.img`
 const BackButton = styled.img`
   position:absolute;
   left:20px;
+  
   width: 10px;
   height: 15px;
 `;
@@ -956,7 +977,7 @@ const HeaderButtom = styled.div`
   left:50%;
   transform:translate(-50%,0);
   width:45px;
-  border:2px solid #d3d3d3;
+  border:1px solid #d3d3d3;
   border-radius:20px;
   @media only screen and (max-width: 768px) {
     width:35px;

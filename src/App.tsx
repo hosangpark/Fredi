@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { MantineProvider } from '@mantine/core';
 import { v4 as uuidv4 } from 'uuid';
-import GlobalFonts from './asset/font/font';
+// import GlobalFonts from './asset/font/font';
 import "./asset/font/variable/pretendardvariable-dynamic-subset.css";
 import "./asset/font/variable/PretendardVariable-VF.css";
 import "./asset/font/variable/pretendardvariable.css";
@@ -62,7 +62,7 @@ function App() {
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <UserProvider>
         <div className="App">
-          <GlobalFonts />
+          {/* <GlobalFonts /> */}
           <Router />
         </div>
       </UserProvider>
