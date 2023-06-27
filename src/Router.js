@@ -124,7 +124,7 @@ function Router() {
           <Route path="/ordercompleted-mobile" element={<OrderCompletedMobile />} />
           {/* '마이페이지' 메인 페이지 */}
           <Route path="/profile" element={<Profile />} />
-          <Route path="/MobileProfile" element={<MobileProfile />} />
+          <Route path="/MobileProfile/:name" element={<MobileProfile />} />
           <Route path="/EditProfile" element={<EditProfile />} />
           <Route path="/AddLink" element={<AddLink />} />
           <Route path="/EditLink" element={<EditLink />} />

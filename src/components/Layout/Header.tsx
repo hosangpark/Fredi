@@ -219,7 +219,7 @@ function Header() {
     if (!token) {
       return setShowLogin(true);
     }
-    navigate('/cart');
+    navigate('/askinfo');
   }, [token]);
 
   const goSignIn = useCallback(() => {
@@ -449,19 +449,19 @@ function Header() {
                 </SheetMenu>
                 <SheetMenu onClick={goCart}>
                   <IconImage src={menucart}/>
-                  {/* 장바구니 */}
-                  Cart
+                  
+                  Selling
                 </SheetMenu>
-                <SheetMenu onClick={go_orderList}>
+                {/* <SheetMenu onClick={go_orderList}>
                   <IconImage src={menuorderlist}/>
                   Order List
-                  {/* 구매내역 */}
+                  
                 </SheetMenu>
                 <SheetMenu onClick={()=>{}}>
                   <IconImage src={menutextballoon}/>
-                  {/* 찜한작품 */}
+                  
                   Product Q & A
-                </SheetMenu>
+                </SheetMenu> */}
                 <SheetMenu onClick={goContact}>
                   <IconImage src={menucontact}/>
                   {/* 문의내역 */}
@@ -513,7 +513,7 @@ function Header() {
             <MenuButtonText>Artist</MenuButtonText>
           </MenuButton>
           <MenuButton onClick={goCommunity}>
-            <MenuButtonText>Community</MenuButtonText>
+            <MenuButtonText>Discover</MenuButtonText>
           </MenuButton>
           {/* goShop goLikeList go_orderList go_requestList goContact goMyPage goAdmin goCart */}
 
@@ -577,7 +577,7 @@ function Header() {
           :
           <>
           {innerWidth > 768 &&
-            <LikeButton stylewidth={true} onClick={()=>navigate('/MobileProfile')} src={profileImage}/>
+            <LikeButton stylewidth={true} onClick={()=>navigate(`/MobileProfile/${user}`)} src={profileImage}/>
           }
             <LikeButton onClick={goLikeList} src={likeOffImage} onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)} />
             <MyPageButton onClick={()=>setBottomSheetModal(true)}>
@@ -796,29 +796,23 @@ const SigninButton = styled(CartButton)`
 const MenuButton = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 30px;
+  margin: 0 50px;
   position: relative;
   cursor: pointer;
-  @media only screen and (max-width: 1290px) {
-    margin: 0 22px;
-  }
-  @media only screen and (max-width: 1180px) {
-    margin: 0 15px;
+  @media only screen and (max-width: 1024px) {
+    margin: 0 35px;
   }
 `;
 
 const MenuButtonText = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 400;
   color: #121212;
-  font-size: 18px;
+  font-size: 16px;
   &:hover {
     color: #398049;
   }
   transition: all 0.3s ease;
-  @media only screen and (max-width: 1290px) {
-    font-size: 17px;
-  }
   @media only screen and (max-width: 1024px) {
     font-size: 16px;
   }

@@ -56,9 +56,12 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
 `;
 const ProductImageWrap = styled.div`
   width: 100%;
-  aspect-ratio:410/280;
+  aspect-ratio:2.7042;
   background-color:black;
   margin-bottom: 15px;
+  @media only screen and (max-width: 768px) {
+    aspect-ratio:410/280;
+  }
 `;
 const ProductImage = styled.img`
   width: 100%;
@@ -78,9 +81,10 @@ const NewIcon = styled.img`
 `;
 
 const Designer = styled.span`
+font-family:'Pretendard Variable';
   color: #121212;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 350;
   text-align: left;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
@@ -88,7 +92,8 @@ const Designer = styled.span`
 `;
 
 const ProductName = styled(Designer)`
-  font-weight: 700;
+font-family:'Pretendard Variable';
+  font-weight: 500;
 `;
 
 const LikeButton = styled.img`

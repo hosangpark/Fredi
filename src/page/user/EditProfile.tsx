@@ -369,6 +369,7 @@ font-family:'Pretendard Variable';
   color:#2b2b2b;
   margin:20px 0 10px 0;
   @media only screen and (max-width: 768px) {
+    font-size:14px;
   }
 `
 const CategoryCount = styled.span`
@@ -416,14 +417,14 @@ const ImageWrap = styled.div`
 const LinkImageWrap = styled.div`
 display:flex;
 align-items:center;
-  width:70px;
-  height:70px;
+  width:50px;
+  height:50px;
   margin-right:50px;
   /* width:40%; */
   @media only screen and (max-width: 768px) {
     margin-right:20px;
-    width:55px;
-    height:50px;
+    width:42px;
+    height:42px;
   }
 `;
 const ArrowImageWrap = styled.div`
@@ -543,6 +544,7 @@ font-weight:300;
   max-width:250px;
   text-align:start;
   @media only screen and (max-width: 768px) {
+    font-size:14px;
   }
 `;
 
@@ -555,7 +557,7 @@ font-family:'Pretendard Variable';
   font-weight: 200;
   text-align:start;
   border-radius: 0;
-  padding:5px 10px;
+  /* padding:5px 10px; */
   @media only screen and (max-width: 768px) {
     font-size: 14px;
   }

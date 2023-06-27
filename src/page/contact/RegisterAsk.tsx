@@ -186,14 +186,13 @@ const Container = styled.div`
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 700;
+  font-weight: 500;
   color: #121212;
-  font-size: 24px;
   padding:30px;
   border-bottom: 1px solid b4b4b4;
   @media only screen and (max-width: 1000px) {
     padding:20px;
-    font-size: 18px;
+    font-size: 14px;
   }
 `;
 const CheckBoxContainer = styled.div`
@@ -204,11 +203,11 @@ const CheckBoxContainer = styled.div`
 `
 const CheckBoxText = styled.span`
   font-family:'Pretendard Variable';
-  font-size: 15px;
-  margin-left: 7px;
-  font-weight: 500;
+  margin: 5px 10px;
+  font-weight: 400;
+  font-size: 14px;
   @media only screen and (max-width: 768px) {
-    font-size: 13px;
+    font-size: 12px;
   }
 `;
 const CheckboxItems = styled.div`
@@ -276,11 +275,10 @@ const CheckMessagebox = styled.div`
 `
 const MessageInform = styled.div`
   font-family:'Pretendard Variable';
-  font-weight:500;
-  font-size:14px;
+  font-weight:400;
   margin:20px 0 10px 0;
   @media only screen and (max-width:768){
-    font-size:12px;
+    font-size:14px;
   }
 `
 
@@ -288,7 +286,7 @@ const MessageInform = styled.div`
 const ContentTextArea = styled.textarea`
 font-family:'Pretendard Variable';
   line-height:24px;
-  border: 1px solid #000000;
+  border: 1px solid #e4e4e4;
   padding: 20px;
   width:100%;
   height:200px;

@@ -233,14 +233,13 @@ const Container = styled.div`
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 700;
+  font-weight: 500;
   color: #121212;
-  font-size: 24px;
   padding:30px;
-  border-bottom: 1px solid #b4b4b4;
+  border-bottom: 1px solid #e4e4e4;
   @media only screen and (max-width: 1000px) {
     padding:20px;
-    font-size: 18px;
+    font-size: 14px;
   }
 `;
 
@@ -258,7 +257,6 @@ const Text = styled.h3`
 font-family:'Pretendard Variable';
   font-weight: 500;
   color: #121212;
-  font-size: 18px;
   margin: 30px 0 50px;
   @media only screen and (max-width: 1000px) {
     font-size: 14px;

@@ -116,10 +116,14 @@ const MobileCarouselWrap = styled.div`
 `;
 
 const TabButtonWrap = styled.div`
-  width:100%;
-  
+  width:400px;
   display:flex;
   border-bottom:1px solid #cccccc;
+  margin-bottom:50px;
+  @media only screen and (max-width: 768px) {
+    margin-bottom:0px;
+    width:100%;
+  }
 `;
 const TabButton = styled.div`
   flex:1;
@@ -139,7 +143,7 @@ const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
 `
 
 const TitleWrap = styled.div`
-  margin:20px;
+  margin:20px 20px 40px 20px;
   text-align:start;
 `;
 const TitleText = styled.span`

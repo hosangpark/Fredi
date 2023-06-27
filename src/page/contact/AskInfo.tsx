@@ -128,24 +128,25 @@ const Container = styled.div`
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 700;
+  font-weight: 500;
   color: #121212;
-  font-size: 24px;
   padding:30px;
-  border-bottom: 1px solid #d3d3d3;
+  border-bottom: 1px solid #e2e2e2;
   @media only screen and (max-width: 1000px) {
     padding:20px;
-    font-size: 18px;
+    font-size: 14px;
   }
 `;
 
 const CheckMessagebox = styled.div`
-  font-family:'Pretendard Variable';
-  margin:0 20px 50px 20px;
+max-width:768px;
+margin:0 auto;
+padding:0 20px 50px;
+
 `
 const MessageInform = styled.div`
   font-family:'Pretendard Variable';
-  font-weight:700;
+  font-weight:500;
   font-size:14px;
   margin:20px 0 10px 5px;
   @media only screen and (max-width:768){
@@ -160,11 +161,11 @@ const CheckBoxContainer = styled.div`
 `
 const CheckBoxText = styled.span`
   font-family:'Pretendard Variable';
-  font-size: 15px;
+  font-size: 14px;
   margin-left: 7px;
-  font-weight: 500;
+  font-weight: 400;
   @media only screen and (max-width: 768px) {
-    font-size: 13px;
+    font-size: 12px;
   }
 `;
 const CheckboxItems = styled.div`
@@ -185,14 +186,13 @@ const RowWap = styled.div<{ last?: boolean }>`
 const LeftText = styled.span`
 font-family:'Pretendard Variable';
   color: #121212;
-  font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
   flex:4;
   height: 100%;
   text-align: left;
   line-height: 80px;
   @media only screen and (max-width: 768px) {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 50px;
   }
 `;
@@ -205,6 +205,7 @@ const RightInput = styled.input<{marginR?:number}>`
 font-family:'Pretendard Variable';
   font-weight: 400;
   width:100%;
+  padding:10px 0;
   border: 0;
   flex:6;
   font-size: 14px;

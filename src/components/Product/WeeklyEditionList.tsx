@@ -104,12 +104,14 @@ function WeeklyEditionList({
                   <ProductImage src={item.file_name}/>
                 </ProductBottomImageWrap>
             </ProductBottombox>
-            <ProductTitleText>
-              {item.idx}
-            </ProductTitleText>
-            <ProductSubText>
-              {item.idx}
-            </ProductSubText>
+            <TextWrap>
+              <ProductTitleText>
+                {item.idx}
+              </ProductTitleText>
+              <ProductSubText>
+                {item.idx}
+              </ProductSubText>
+            </TextWrap>
           </ProductWrap>
           </SwiperSlide>
           )
@@ -192,9 +194,10 @@ const ProductContainer = styled.div`
   scrollbar-width: none; 
 `;
 const ProductWrap = styled.div`
-  margin-right:20px;
   text-align:start;
+  margin-right:40px;
   @media only screen and (max-width: 768px) {
+    margin-right:20px;
     /* margin-right:10px; */
   }
 `;
@@ -206,7 +209,7 @@ const ContainerWrap = styled.div`
 const TitleBox = styled.div`
   display: flex;
   align-items:center;
-  margin: 15px 0px;
+  margin: 30px 0px;
   padding: 5px 0;
   @media only screen and (max-width: 768px) {
     justify-content:space-between;
@@ -216,9 +219,16 @@ const TitleBox = styled.div`
 
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-size:15px;
   font-weight:500;
-`;
+  font-size:22px;
+  font-weight:400;
+  @media only screen and (max-width: 1440px) {
+    font-size:18px;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size:15px;
+  }
+`
 const ArrowRightIcon = styled.img`
 margin:0 40px;
 width:20px;
@@ -227,21 +237,27 @@ height:20px;
     margin:0 20px;
   }
 `;
+const TextWrap = styled.div`
+  padding:0 10px;
+`
 
 const ProductTitleText = styled.div`
+font-family:'Pretendard Variable';
   font-size:17px;
-  font-weight:500;
+  font-weight:350;
   margin-top:5px;
   @media only screen and (max-width: 768px) {
-    font-size:15px;
+    font-weight:500;
+    font-size:12px;
   }
 `;
 const ProductSubText = styled.div`
-  font-size:15px;
-  font-weight:400;
+font-family:'Pretendard Variable';
+  font-size:16px;
+  font-weight:300;
   color:#525252;
   @media only screen and (max-width: 768px) {
-    font-size:14px;
+    font-size:12px;
   }
 `;
 

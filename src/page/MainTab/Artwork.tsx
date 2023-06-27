@@ -126,6 +126,7 @@ function Artwork() {
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
+  const [showsearch,setShowsearch] = useState(false)
 
 
   const { user } = useContext(UserContext);
@@ -206,6 +207,15 @@ function Artwork() {
     // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
+
+  useEffect(()=>{
+    if(pathName !== 'Artwork'){
+      setShowsearch(false)
+    }else{
+      setShowsearch(true)
+    }
+    // console.log(pathName)
+  },[pathName])
 
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
@@ -382,7 +392,7 @@ function Artwork() {
         )}
       </CarouselWrap> */}
       
-      <TitleWrap>
+      <TitleWrap showsearch={showsearch}>
         <TitleText>
           Artwork
         </TitleText>
@@ -551,8 +561,8 @@ const CategorySelectButtonText = styled.span<{ selected: boolean }>`
     font-size: 12px;
   }
 `;
-const TitleWrap = styled.div`
-  display:flex;
+const TitleWrap = styled.div<{showsearch:boolean}>`
+  display:${props => props.showsearch? 'flex':'none'};
   justify-content:space-between;
   align-items:center;
   margin:20px 30px;
@@ -562,8 +572,8 @@ const TitleWrap = styled.div`
 `;
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 350;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

@@ -41,15 +41,15 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
   position: relative;
   display: column;
   width: 16.5%;
-  margin-bottom: 2%;
+  margin-bottom: 1%;
   cursor: pointer;
   overflow: hidden;
   @media only screen and (max-width: 1440px) {
     width: 24.25%;
   }
   @media only screen and (max-width: 768px) {
-    width: ${(props) => (props.showType === 1 ? 49.5 : 33)}%;
-    margin-bottom: 1%;
+    width: calc(50% - 2px);
+    margin-bottom: 0px;
   }
 `;
 const ProductImageWrap = styled.div`
@@ -86,18 +86,18 @@ const Designer = styled.span`
 `;
 const SpanCount = styled.span`
   color: #121212;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   margin-left:5px;
   @media only screen and (max-width: 768px) {
-    font-size: 12px;
+    font-size: 10px;
   }
 `;
 
 const ViewImg = styled.img`
   width: 13px;
   object-fit:contain;
-  margin-top:4px;
+  margin-top:3px;
   @media only screen and (max-width: 768px) {
     width: 12px;
   }

@@ -52,7 +52,8 @@ function QrModal({
 
 const ModalBox = styled.div`
   position:absolute;
-  top:-100%;
+  /* top:-100%; */
+  top:100%;
   left:50%;
   transform:translate(-50%,-50%);
   background-color: #fff;
@@ -88,7 +89,8 @@ const ImageRotate = styled.img`
 `
 const PositionBox = styled.div`
   position:absolute;
-  top:-100%;
+  /* top:-100%; */
+  top:100%;
   left:50%;
   transform:translate(-50%,250px);
   display:flex;

@@ -93,8 +93,12 @@ font-family:'Pretendard Variable';
 
 const MenuButtonText = styled(SubTitle)`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 400;
   height: 100%;
+  font-size: 16px;
+  @media only screen and (max-width: 1000px) {
+    font-size: 14px;
+  }
 `;
 
 const Hyphen = styled.span`
@@ -118,14 +122,14 @@ const LeftTopBox = styled.div`
 
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 700;
+  font-weight: 500;
   color: #121212;
-  font-size: 24px;
+  font-size: 16px;
   padding:30px;
-  border-bottom: 1px solid #8b8b8b;
+  border-bottom: 1px solid #e4e4e4;
   @media only screen and (max-width: 1000px) {
     padding:20px;
-    font-size: 18px;
+    font-size: 14px;
   }
 `;
 

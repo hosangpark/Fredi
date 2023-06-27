@@ -351,6 +351,11 @@ function ProductDetails() {
                 </NameBox>
                 }
                 <BottomBoxContent disabled value={shopDetails?.description}></BottomBoxContent>
+                <CategoryBox>
+                  <CategoryItem>Furniture</CategoryItem>
+                  <CategoryItem>Side Table</CategoryItem>
+                  <CategoryItem>Furniture</CategoryItem>
+                </CategoryBox>
               </TitleBox>
               <ContentBox>
                 {/* <ContentRowWrap>
@@ -365,6 +370,23 @@ function ProductDetails() {
                   <Title>Materials</Title>
                   <Content>{shopDetails?.weight}</Content>
                 </ContentRowWrap>
+              <RowWrap>
+                {/* <BottomBoxTitle>디자이너 & 작품설명</BottomBoxTitle> */}
+                <AskButton
+                  onClick={() => {
+                    if (user.idx) {
+                      navigate('/contact/registerask-shop', {
+                        state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
+                      });
+                    } else {
+                      setShowLogin(true);
+                    }
+                  }}
+                >
+                  Contact
+                  {/* <OrderButtonText>문의하기</OrderButtonText> */}
+                </AskButton>
+              </RowWrap>
                 {/* <ContentRowWrap>
                   <Title>Weight</Title>
                   <Content>{shopDetails?.weight}</Content>
@@ -375,22 +397,6 @@ function ProductDetails() {
                 </ContentRowWrap> */}
               </ContentBox>
             </LeftTopBox>
-            <RowWrap>
-              <AskButton
-                onClick={() => {
-                  setBottomSheetModal(false)
-                  if (user.idx) {
-                    navigate('/contact/registerask-shop', {
-                      state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
-                    });
-                  } else {
-                    setShowLogin(true);
-                  }
-                }}
-                >
-                Contact
-              </AskButton>
-            </RowWrap>
           </ModalInfromBox>
         </Draggable>
         }
@@ -399,44 +405,27 @@ function ProductDetails() {
           <LeftTopBox>
             <TitleBox>
               <NameBox>
-                <ProductName>{shopDetails?.name}</ProductName>
-                <ContentRowWrap>
-                  {/* <CartButton
-                    onClick={async () => {
-                      if (option.length > 0) {
-                        if (addOption.length === 0) {
-                          setShowOption(true);
-                        } else {
-                          onAddCartItem();
-                        }
-                      } else {
-                        onAddCartItem();
-                      }
-                    }}
-                    src={cart}
-                  /> */}
-                  <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
-                </ContentRowWrap>
+                <NameDesigner>
+                  <ProductName>{shopDetails?.name}</ProductName>
+                  <Designer>{shopDetails?.designer}</Designer>
+                </NameDesigner>
+                <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
               </NameBox>
-                <Designer>{shopDetails?.designer}</Designer>
-                <BottomBoxContent disabled value={shopDetails?.description}></BottomBoxContent>
+              <BottomBoxContent disabled value={shopDetails?.description}></BottomBoxContent>
+              <CategoryBox>
+                <CategoryItem>Furniture</CategoryItem>
+                <CategoryItem>Side Table</CategoryItem>
+                <CategoryItem>Object</CategoryItem>
+              </CategoryBox>
             </TitleBox>
             <ContentBox>
               <ContentRowWrap>
-                <Title>price</Title>
-                <Content>{shopDetails && replaceString(shopDetails?.price)} ₩</Content>
-              </ContentRowWrap>
-              <ContentRowWrap>
-                <Title>Size</Title>
+                <Title>Size(cm)</Title>
                 <Content>{shopDetails?.size}</Content>
               </ContentRowWrap>
               <ContentRowWrap>
-                <Title>Weight</Title>
+                <Title>Materials</Title>
                 <Content>{shopDetails?.weight}</Content>
-              </ContentRowWrap>
-              <ContentRowWrap>
-                <Title>Country</Title>
-                <Content>{shopDetails?.country}</Content>
               </ContentRowWrap>
               {option && option.length > 0 && (
                 <ContentRowWrap>
@@ -541,35 +530,7 @@ function ProductDetails() {
                 {/* <OrderButtonText>문의하기</OrderButtonText> */}
               </AskButton>
           </RowWrap>
-          {/* <LeftBottomBox>
-            
-            
-            <BottomBoxTitle>CONTACT</BottomBoxTitle>
-            <ContentRowWrap>
-              <ContactTitle>SNS</ContactTitle>
-              {shopDetails?.sns ? (
-                <ContactContent href={`https://www.instagram.com/${shopDetails?.sns.split('@')[1]}`} target="_blank">
-                  {shopDetails?.sns}
-                </ContactContent>
-              ) : (
-                <ContactContent>-</ContactContent>
-              )}
-            </ContentRowWrap>
-            <ContentRowWrap>
-              <ContactTitle>E-mail</ContactTitle>
-              {shopDetails?.email ? <ContactContent>{shopDetails?.email}</ContactContent> : <ContactContent>-</ContactContent>}
-            </ContentRowWrap>
-            <ContentRowWrap>
-              <ContactTitle>Website</ContactTitle>
-              {shopDetails?.website ? (
-                <ContactContent href={`https://${shopDetails?.website}`} target="_blank">
-                  {shopDetails?.website}
-                </ContactContent>
-              ) : (
-                <ContactContent>-</ContactContent>
-              )}
-            </ContentRowWrap>
-          </LeftBottomBox> */}
+          
         </LeftBox>
         <RightBox>
           <SwiperWrap>
@@ -582,15 +543,15 @@ function ProductDetails() {
               // }}
               pagination={pagination}
               style={{
-                maxHeight:window.innerHeight,backgroundColor:'white'
+                maxHeight:1000,backgroundColor:'white'
               }}
-              slidesPerView={innerWidth <= 768? 1.6 : 1.4}
+              slidesPerView={innerWidth <= 450? 2.8 :innerWidth <= 550? 2.3  :innerWidth <= 650? 2.1 : innerWidth <= 1440? 1.7 : 1.4}
               // navigation={true}
               // pagination={{ clickable: true }}
               // scrollbar={ true }
               direction={'vertical'}
               // slidesPerView={3}
-              // spaceBetween={0}
+              spaceBetween={0}
             >
               {shopDetails?.imageList.map((item, index) => (
                 <SwiperSlide key={item.idx} virtualIndex={index}>
@@ -601,6 +562,8 @@ function ProductDetails() {
                   </ImageBox2>
                 </SwiperSlide>
               ))}
+                <SwiperSlide>
+                </SwiperSlide>
             </Swiper>
           </SwiperWrap>
         </RightBox>
@@ -684,7 +647,7 @@ const ContainerWrap = styled.div`
   flex-direction: column;
   width:100%;
   /* margin-bottom:100px; */
-  background-color: palegoldenrod;
+  /* background-color: palegoldenrod; */
   @media only screen and (max-width: 768px) {
     
   }
@@ -692,6 +655,7 @@ const ContainerWrap = styled.div`
 
 const Container = styled.div`
   display: flex;
+  height:100%;
   flex-direction: row;
   border-top: 1px solid #e0e0e0;
   background-color: #ffffff;
@@ -710,7 +674,9 @@ const LeftBox = styled.div`
   display: flex;
   width:35%;
   min-width: 290px;
+  max-height:70vh;
   flex-direction: column;
+  justify-content:space-between;
   text-align: left;
   /* border-right: 1px solid #121212; */
   @media only screen and (max-width: 768px) {
@@ -824,6 +790,20 @@ const NameBox = styled.div`
     font-size:14px;
   }
 `;
+const CategoryBox = styled.div`
+  display:flex;
+  flex-wrap:wrap;
+`
+const CategoryItem = styled.span`
+  font-size:14px;
+  padding:5px 10px;
+  border-radius:5px;
+  margin:0 5px 5px 0;
+  border:1px solid #d6d6d6;
+  @media only screen and (max-width: 768px) {
+    font-size:1px;
+  }
+`
 const Xbox = styled.div`
   width:20px;
   height:20px;
@@ -838,8 +818,11 @@ const ProductImage = styled.img`
   width: 100%;
   height:100%;
   object-fit:cover;
-  @media only screen and (max-width: 450px) {
+  @media only screen and (max-width: 768px) {
     object-fit:cover;
+  }
+  @media only screen and (max-width: 450px) {
+    object-fit:contain;
   }
 `;
 const TitleBox = styled.div`
@@ -892,16 +875,21 @@ const CartButton = styled.img`
   }
 `;
 
-const ContentBox = styled.div``;
+const ContentBox = styled.div`
+
+`;
 
 const Title = styled.span`
 font-family:'Pretendard Variable';
 text-align:start;
   font-weight: 400;
   color: #121212;
-  font-size: 16px;
   display: inline-block;
   width: 80px;
+  font-size: 16px;
+  @media only screen and (max-width: 1440px) {
+    font-size: 14px;
+  }
   @media only screen and (max-width: 768px) {
     width: 60px;
     font-size: 12px;
@@ -910,9 +898,13 @@ text-align:start;
 
 const Content = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 300;
   color: #121212;
-  font-size: 15px;
+  font-size: 16px;
+  margin-left:20px;
+  @media only screen and (max-width: 1440px) {
+    font-size: 14px;
+  }
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -953,7 +945,7 @@ const BottomBoxContent = styled.textarea`
 font-family:'Pretendard Variable';
   margin-top: 30px;
   width: 100%;
-  height: 35vh;
+  height: 30vh;
   overflow: scroll;
   outline: 0;
   line-height: 22px;
@@ -1010,14 +1002,16 @@ const ModalImageBox = styled.div`
 
 const ImageBox2 = styled.div`
   width: 85%;
+
   /* aspect-ratio:1; */
-  height:100%;
+  /* height:100%; */
   /* max-height:800px; */
-  object-fit:contain;
   /* overflow: hidden; */
   /* aspect-ratio: 0.8; */
+  
+
   @media only screen and (max-width: 768px) {
-    aspect-ratio:410/560;
+    aspect-ratio:1;
     width: 100%;
   }
 `;
@@ -1118,10 +1112,8 @@ const DownIcon = styled.img`
 
 const AskButton = styled.div`
 font-family:'Pretendard Variable';
-position:fixed;
-left:20px;
-bottom:150px;
-  width:calc(100% - 40px);
+
+width:100%;
   height: 50px;
   display: flex;
   align-items: center;
@@ -1147,7 +1139,7 @@ const RowWrap = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-
+  margin:30px 0;
 `;
 
 const LeftOption = styled.div`
@@ -1158,11 +1150,12 @@ const CartCardWrap = styled.div``;
 
 const SwiperWrap = styled.div`
   background-color:#cecece;
+  max-width:800px;
   height:100%;
-  max-height:800px;
+  /* max-height:800px; */
   /* width:100%; */
   @media only screen and (max-width: 768px) {
-    max-height:800px;
+    /* max-height:800px; */
   }
 `;
 

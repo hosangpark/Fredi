@@ -86,7 +86,7 @@ const SearchBoxWrap = styled.div`
   border: 1px solid #dfdfdf;
   border-radius: 30px;
   margin: 10px 0;
-  background-color: #f6f6f6;
+  background-color: #ffffff;
   @media only screen and (max-width: 1024px) {
     margin: 20px 0px;
   }

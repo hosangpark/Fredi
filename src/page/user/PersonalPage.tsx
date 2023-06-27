@@ -336,15 +336,16 @@ function PersonalPage() {
             <NameBox>
             <FlexBox>
               <NameText>SEOYOON SHIN</NameText>
-              <ButtonBox>
-                <FollowButtonBox style={{paddingLeft:10,paddingRight:10}} onClick={()=>{setFollowed(!followed)}}>
-                  Follow
-                </FollowButtonBox>
-              </ButtonBox>
+              
             </FlexBox>
-            <ReportImageWrap>
-              <ProfileImage src={profileImage}/>
-            </ReportImageWrap>
+            <ButtonBox>
+              <FollowButtonBox onClick={()=>{setFollowed(!followed)}}>
+                Follow
+              </FollowButtonBox>
+              <ReportImageWrap>
+                <ReportImage src={profileImage}/>
+              </ReportImageWrap>
+            </ButtonBox>
 
             </NameBox>
           </HeaderLeft>
@@ -464,6 +465,11 @@ const BottomContainer = styled(Container)`
 const ProfileImage = styled.img`
   width:50%;
   height:50%;
+  object-fit:contain;
+`;
+const ReportImage = styled.img`
+  width:100%;
+  height:100%;
   object-fit:contain;
 `;
 const LeftBox = styled.div`
@@ -706,7 +712,7 @@ const ImageBox2 = styled.div`
   /* max-height:800px; */
   object-fit:contain;
   /* overflow: hidden; */
-  background-color:aqua;
+  /* background-color:aqua; */
   /* aspect-ratio: 0.8; */
   @media only screen and (max-width: 768px) {
     width: 100%;
@@ -792,10 +798,10 @@ font-family:'Pretendard Variable';
   width:100%;
   height:40%;
   border:1px solid #c7c7c7;;
-  border-radius:7px;
+  border-radius:5px;
   font-size:16px;
-
-  font-weight:400;
+  padding:4px 10px;
+  font-weight:300;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
     font-size:14px;
@@ -822,6 +828,7 @@ const ImageWrap = styled.div`
 const ReportImageWrap = styled.div`
   width:30px;
   height:30px;
+  margin-left:10px;
 `
 const Image = styled.img`
   width:100%;
@@ -835,10 +842,7 @@ const ButtonBox = styled.div`
   display:flex;
   justify-content:center;
   align-items:center;
-  min-width:100px;
-  @media only screen and (max-width: 768px) {
-    min-width:70px;
-  }
+
   /* background-color:black; */
 `;
 const SubTextBox = styled.p`

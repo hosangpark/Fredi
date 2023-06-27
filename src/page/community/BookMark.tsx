@@ -519,7 +519,10 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap:0.5%;
+  gap:1%;
+  @media only screen and (max-width:768px){
+    gap:2px
+  }
 `;
 
 const FollowTitle = styled.p`

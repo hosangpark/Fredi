@@ -447,7 +447,6 @@ function ModifyUserInfo() {
           </EmptyRowRightWrap>
         </EmptyRowWrap> */}
       </RightBox>
-      <EmptyBox />
 
       <Modal opened={showAccountModal} onClose={() => setShowAccountModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
         <ModalBox>
@@ -651,12 +650,13 @@ const LeftBox = styled.div`
 const RightBox = styled.div`
   display: flex;
   flex: 1;
-  min-width: 734px;
+  max-width: 768px;
   flex-direction: column;
-  margin: 30px 0;
   padding:0 20px;
+margin:30px auto;
   @media only screen and (max-width: 768px) {
-    min-width: 300px;
+    /* min-width: 300px; */
+    margin: 30px 0;
 
     /* border-top:1px solid #d4d4d4; */
   }

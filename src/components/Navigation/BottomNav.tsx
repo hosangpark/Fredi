@@ -23,12 +23,25 @@ function BottomNav() {
   const [check, setCheck] = useState<{ product: boolean; producer: boolean }>();
   const [showLogin, setShowLogin] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
+  const [userName, setUserName] = useState('user');
 
   const onLogout = () => {
     sessionStorage.clear();
     patchUser(0, 3);
     window.location.replace('/');
   };
+
+  // const getUserDetails = async () => {
+  //   try {
+  //     const res = await APIUserDetails();
+  //     console.log(res);
+  //     setUserDetails(res);
+  //     setIsSnsUser(res.type !== 1 ? true : false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     navigate('/signin', { replace: true });
+  //   }
+  // };
 
   // const checkNew = async () => {
   //   const result = await APICheckNew();
@@ -51,7 +64,7 @@ function BottomNav() {
         <MenuButtonText>HOME</MenuButtonText>
       </MenuButton>
 
-      {user.level <= 1 && (
+      {/* {user.level <= 1 && (
         <MenuButton
           onClick={() => {
             console.log(user.level);
@@ -67,7 +80,7 @@ function BottomNav() {
           <MenuButtonImage src={home02} />
           <MenuButtonText>Producing</MenuButtonText>
         </MenuButton>
-      )}
+      )} */}
       <MenuButton
         onClick={() => {
           removeHistory();
@@ -98,12 +111,13 @@ function BottomNav() {
         }}
       >
         <MenuButtonImage src={home04} width={26} />
-        <MenuButtonText>SNS</MenuButtonText>
+        <MenuButtonText>Discover</MenuButtonText>
       </MenuButton>
       <MenuButton
         onClick={() => {
           removeHistory();
-          navigate('/MobileProfile');
+          // console.log(user)
+          navigate(`/MobileProfile/${userName}`);
           // if (!token) {
           //   setShowLogin(true);
           // } else {

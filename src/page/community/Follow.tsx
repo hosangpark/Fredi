@@ -343,7 +343,7 @@ function Follow() {
             {CategoryList.map((item) => {
               return (
               <SwiperSlide>
-                <FollowingListWrap>
+                <FollowingListWrap onClick={()=>{navigate(`/MobileProfile/${item.label}`);}}>
                   <ImageWrap>
                     <Image src={item.value}/>
                   </ImageWrap>
@@ -407,6 +407,9 @@ const ProductListWrap = styled.div`
   align-items: center;
   gap:1%;
   margin-top:30px;
+  @media only screen and (max-width:768px){
+    gap:2px
+  }
 `;
 
 const FollowTitle = styled.div`

@@ -87,7 +87,7 @@ function Artist() {
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
-
+  const [showsearch,setShowsearch] = useState(false)
   const { user } = useContext(UserContext);
   const { classes } = useStyles();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
@@ -219,6 +219,15 @@ function Artist() {
     }
   }, [shopList]);
 
+  useEffect(()=>{
+    if(pathName !== 'Artist'){
+      setShowsearch(false)
+    }else{
+      setShowsearch(true)
+    }
+    // console.log(pathName)
+  },[pathName])
+
   useEffect(() => {
     if (page > 1) getShopList(page);
   }, [page]);
@@ -320,7 +329,7 @@ function Artist() {
           </Carousel>
         )}
       </CarouselWrap> */}
-      <TitleWrap>
+      <TitleWrap showsearch={showsearch}>
         <TitleText>
           Artist
         </TitleText>
@@ -416,8 +425,8 @@ const ControlImage = styled.img`
 const InterView = styled.div`
   height: 200px;
 `;
-const TitleWrap = styled.div`
-  display:flex;
+const TitleWrap = styled.div<{showsearch:boolean}>`
+  display:${props => props.showsearch? 'flex':'none'};
   justify-content:space-between;
   align-items:center;
   margin:20px 0;
@@ -426,8 +435,9 @@ const TitleWrap = styled.div`
   }
 `;
 const TitleText = styled.span`
-  font-size: 20px;
-  font-weight: 500;
+font-family:'Pretendard Variable';
+  font-size: 22px;
+  font-weight: 350;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

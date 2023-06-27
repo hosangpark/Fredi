@@ -42,6 +42,7 @@ export type ImageItem = {
 
 function MobileProfile() {
   const navigate = useNavigate();
+  const token = sessionStorage.getItem('token');
   const [showModal, setShowModal] = useState(false);
   const [passwordAlert, setPasswordAlert] = useState(false);
   const [isSnsUser, setIsSnsUser] = useState(false);
@@ -212,9 +213,6 @@ function MobileProfile() {
       <ProfileContainer>
         <ProfileHeaderWrap>
           <HeaderLeft>
-            <ImageWrap>
-              <Image src={profileImage}/>
-            </ImageWrap>
             <NameBox>
               <NameText>SEOYOON SHIN</NameText>
               <SubTextBox>
@@ -223,36 +221,37 @@ function MobileProfile() {
                 <span>12 following</span>
               </SubTextBox>
             </NameBox>
+            <ImageWrap>
+              <Image src={profileImage}/>
+            </ImageWrap>
           </HeaderLeft>
-          {!user?
+          {!token?
           <ButtonBox>
-            <ImageFlexBox>
-              <ButtonImageWrap onClick={() => setBottomSheetModal(true)} style={{marginRight:10}}>
-                <ButtonImage src={cameraImage}/>
-              </ButtonImageWrap>
-              <ButtonImageWrap onClick={()=>setQrModal(true)}>
-                <ButtonImage src={qrImage}/>
-              </ButtonImageWrap>
-            </ImageFlexBox>
-            <FollowButtonBox style={{marginTop:10}}>
+            <ButtonImageWrap onClick={() => setBottomSheetModal(true)}>
+              <ButtonImage src={cameraImage}/>
+            </ButtonImageWrap>
+            <ButtonImageWrap onClick={()=>setQrModal(true)}>
+              <ButtonImage src={qrImage}/>
+            </ButtonImageWrap>
+            <FollowButtonBox style={{marginRight:0}}>
               Follow
             </FollowButtonBox>
           </ButtonBox>
           :
           <ButtonBox>
-            <FollowButtonBox style={{paddingLeft:8,paddingRight:8}} onClick={()=>{navigate('/EditProfile')}}>
+            <FollowButtonBox style={{paddingLeft:8,paddingRight:8,marginRight:5}} onClick={()=>{navigate('/EditProfile')}}>
               Edit Profile
             </FollowButtonBox>
-            <FollowButtonBox style={{paddingLeft:8,paddingRight:8,marginTop:10}} onClick={()=>{navigate('/EditProfile')}}>
+            <FollowButtonBox style={{paddingLeft:8,paddingRight:8}} onClick={()=>{navigate('/EditProfile')}}>
               Share Profile
             </FollowButtonBox>
           </ButtonBox>
           }
         </ProfileHeaderWrap>
-        <DescriptionText>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam perferendis facere non eligendi numquam aperiam dolores quos saepe, ex sint repudiandae ad dolorem adipisci? Dolores obcaecati ipsa animi. Aliquid facilis molestias distinctio culpa, deserunt vitae dolorem ab. Velit ipsa odio animi, debitis, beatae molestias ipsum neque dolores incidunt commodi itaque aperiam recusandae ut error ratione placeat quidem excepturi explicabo non natus voluptate hic minima! Eos, mollitia cupiditate. Natus, ipsam, quam blanditiis ipsa porro illo ratione laborum officia repudiandae ab neque quae amet eveniet commodi repellat beatae nostrum. Quod aut veritatis, neque perferendis porro laudantium deserunt earum similique, eius, nemo molestias?</DescriptionText>
+        <DescriptionText>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus, fugiat. Ea maxime corrupti minus est similique harum id delectus obcaecati?</DescriptionText>
       </ProfileContainer>
       <WorksLengthBox>
-        {imageList.length} works
+        {imageList.length}works
       </WorksLengthBox>
       <ProductListWrap>
         {imageList.length > 0 &&
@@ -530,13 +529,16 @@ const ProfileContainer = styled.div`
 `;
 const ProfileHeaderWrap = styled.div`
   display:flex;
-  justify-content:space-between;
+  flex-direction:column;
+  align-items:center;
   @media only screen and (max-width: 768px) {
   }
 `;
 const HeaderLeft = styled.div`
 width:100%;
   display:flex;
+  flex-direction:column;
+  align-items:center;
   margin:0 ;
   @media only screen and (max-width: 768px) {
   }
@@ -550,17 +552,12 @@ const NameBox = styled.div`
   `;
 const NameText = styled.p`
   font-family:'Pretendard Variable';
-  font-weight:400;
-  font-size:24px;
-  text-align:start;
+  font-weight:600;
+  text-align:center;
   line-height:31px;
   margin:0;
   @media only screen and (max-width: 768px) {
-    font-size:22px;
-  }
-  @media only screen and (max-width: 450px) {
-    font-size:20px;
-    margin:0;
+    font-size:14px;
   }
 `;
 const FollowButtonBox = styled.div`
@@ -569,20 +566,20 @@ font-family:'Pretendard Variable';
   display: flex;
   justify-content: center;
   align-items: center;
-  height:50%;
-  border:0.5px solid #B4B4B4;;
+  border:0.5px solid #c7c7c7;;
   border-radius:7px;
-  margin:0;
-  padding:2px 0;
   font-weight:300;
+  font-size:16px;
   white-space:nowrap;
+  width:100px;
   @media only screen and (max-width: 768px) {
-    font-size:14px;
+    font-size:12px;
+    width:80px;
   }
 `;
 const SubTextBox = styled.p`
   font-family:'Pretendard Variable';
-  font-weight:normal;
+  font-weight:300;
   font-size:14px;
   text-align:start;
   color:#383838;
@@ -610,10 +607,11 @@ const ImageWrap = styled.div`
   justify-content:center;
   align-items:center;
   border-radius:50%;
-  width:75px;
+  width:120px;
   aspect-ratio: 1;
+  margin:20px 0;
   /* width:15%; */
-  margin-right:15px;
+  /* margin-right:15px; */
   background-color: #DBDBDB;
 `;
 const PlusImage = styled.div`
@@ -640,14 +638,11 @@ const ButtonImageWrap = styled.div`
   display:flex;
   align-items:center;
   justify-content:center;
-  border:0.5px solid #B4B4B4;
+  border:0.5px solid #c7c7c7;
   box-sizing:border-box;
   border-radius:5px;
-  width:50px;
+  width:45px;
   @media only screen and (max-width: 768px) {
-    width:40px;
-  }
-  @media only screen and (max-width: 450px) {
     width:35px;
   }
 `;
@@ -698,9 +693,12 @@ const PlusButton = styled.div`
 `;
 const ButtonBox = styled.div`
   display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  @media only screen and (max-width: 450px) {
+    height:45px;
+    gap:10px;
+  /* flex-direction:column; */
+  /* justify-content:space-between; */
+  @media only screen and (max-width: 768px) {
+    height:35px;
   }
 `;
 const ProductListWrap = styled.div`
@@ -713,10 +711,11 @@ const ProductListWrap = styled.div`
 const WorksLengthBox = styled.div`
   text-align:start;
   margin-left:20px;
+  margin-bottom:10px;
   font-size:16px;
   color:#6b6b6b;
   @media only screen and (max-width: 450px) {
-    font-size:14px;
+    font-size:12px;
   }
 `;
 

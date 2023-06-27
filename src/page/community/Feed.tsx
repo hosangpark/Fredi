@@ -501,6 +501,9 @@ const ProductListWrap = styled.div`
   flex-wrap: wrap;
   align-items: center;
   gap:1%;
+  @media only screen and (max-width:768px){
+    gap:2px
+  }
 `;
 
 const CarouselWrap = styled.div`

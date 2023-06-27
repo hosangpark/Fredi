@@ -22,6 +22,7 @@ import AppdownModal from '../../components/Modal/AppdownModal';
 import ProductMainList from '../../components/Product/ProductMainList';
 import WeeklyEditionList from '../../components/Product/WeeklyEditionList';
 import Footer from '../../components/Layout/Footer';
+import MainArtistList from '../../components/Product/MainArtistList';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -319,67 +320,63 @@ function Home() {
       <ProductListWrap>
         <ProductMainList
         title={'Fairs'}
-        ProductViews={innerWidth <= 768? 1.35 : 3.7}
+        ProductViews={innerWidth <= 768? 1.35  : innerWidth <= 1440? 2.7: 3.7}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
-        ProductTitle={15}
         arrowView={false}
         productLink={innerWidth <= 768? "FairsM" : "FairsW"}
-        aspect={285/190}
+        aspect={495/332}
         link={'FairContent/'}
         />
         <ProductMainList
         title={'Latest'}
-        ProductViews={innerWidth <= 768? 2.05 : 6.9}
+        ProductViews={innerWidth <= 768? 1.5  : innerWidth <= 1440? 4.4: 5.9}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
-        ProductTitle={16}
         arrowView={false}
         productLink={'Latest'}
-        aspect={185/230}
+        aspect={300/370}
         link={'Latest'}
         />
         <WeeklyEditionList
         title={'Weekly Edition'}
-        ProductViews={innerWidth <= 768? 1.1 : 3.4}
+        ProductViews={innerWidth <= 768? 1.1 : innerWidth <= 1440? 2.7 :3.4}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList = {bannerListMobile}
-        ProductTitle={16}
         arrowView={false}
         link={'WeeklyEdition'}
         />
         <ProductMainList
         title={'Home & Styling'}
-        ProductViews={innerWidth <= 768? 1.5 : 3.4}
-        naviArrow = {innerWidth <= 768? false : true}
+        ProductViews={innerWidth <= 768? 1.5  : innerWidth <= 1440? 4.4: 5.9}
+        // naviArrow = {innerWidth <= 768? false : true}
+        naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
-        ProductTitle={18}
         arrowView={false}
-        aspect={285/240}
-        link={'producer'}
+        // aspect={285/240}
+        link={''}
         />
-        <ProductMainList
+        <MainArtistList
         title={'Trending Artist'}
-        ProductViews={innerWidth <= 768? 2.05 : 6.9}
-        naviArrow = {innerWidth <= 768? false : true}
+        ProductViews={innerWidth <= 768? 2.05 : innerWidth <= 1440? 4.4 : 5.9}
+        // naviArrow = {innerWidth <= 768? false : true}
+        naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
-        ProductTitle={18}
         arrowView={false}
-        aspect={190/230}
         link={'producer'}
         />
         <ProductMainList
         title={'Featured Works'}
-        ProductViews={innerWidth <= 768? 2.05 : 6.9}
-        naviArrow = {innerWidth <= 768? false : true}
+        ProductViews={innerWidth <= 768? 2.05 : innerWidth <= 1440? 4.4 : 5.9}
+        // naviArrow = {innerWidth <= 768? false : true}
+        naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
-        ProductTitle={18}
         arrowView={false}
         aspect={190/230}
         link={'producer'}
@@ -417,9 +414,18 @@ const Container = styled.div`
 `;
 
 const ProductListWrap = styled.div`
+  display:flex;
+  flex-direction:column;
+  gap:150px;
   margin: 15px 20px;
-  padding-top:30px;
+  padding-top:100px;
+  @media only screen and (max-width:1440px) {
+    padding-top:50px;
+    gap:100px;
+  }
   @media only screen and (max-width:769px) {
+    padding-top:30px;
+    gap:50px;
     margin:15px 0 ;
   }
 `;

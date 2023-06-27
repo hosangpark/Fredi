@@ -34,13 +34,13 @@ function Footer() {
     <FooterWrap>
       <FooterBox>
         <FooterTopBox>
-          {/* <Logo src={logoImage} /> */}
-          <InstaBox>
+          <Logo src={logoImage} />
+          {/* <InstaBox>
             <InstaButton href={companyInfo?.instagram} target="_blank">
               <InstaButtonImage src={instaImage} />
             </InstaButton>
             <TextButton onClick={() => navigate('/contact/askinfo')}>입점문의</TextButton>
-          </InstaBox>
+          </InstaBox> */}
           <TextBox>
             <FooterText>대표 {companyInfo?.representative}</FooterText>
             <FooterText>대표전화 {companyInfo?.phone}</FooterText>
@@ -50,7 +50,7 @@ function Footer() {
             <FooterText>사업자등록번호 {companyInfo?.business_number}</FooterText>
             <FooterText>통신판매업신고 {companyInfo?.business_number2}</FooterText>
           </TextBox>
-            <FooterText Bold={true}>@copyright. FREDI</FooterText>
+            {/* <FooterText Bold={true}>@copyright. FREDI</FooterText> */}
         </FooterTopBox>
         <TermsBox>
           <FooterText>
@@ -73,12 +73,12 @@ const FooterWrap = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* background-color: #ffffff; */
-  background-color: #2e2e2e;
+  background-color: #ffffff;
+  /* background-color: #2e2e2e; */
   /* border-top: 1px solid #121212; */
-  padding: 45px 50px 0;
+  padding: 45px 25px;
   @media only screen and (max-width: 768px) {
-    padding: 25px 18px 0;
+    padding: 25px 20px;
     margin-bottom: 40px;
   }
 `;
@@ -91,6 +91,10 @@ const FooterBox = styled.div`
   width: 100%;
   color:white;
   /* min-width: 768px; */
+  padding-bottom:40px;
+  @media only screen and (max-width: 768px) {
+     padding-bottom:0px;
+  }
 `;
 
 const Logo = styled.img`
@@ -106,21 +110,25 @@ const FooterTopBox = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
-  border-bottom: 1px solid #8b8b8b;
+  border-bottom: 0;
   padding-bottom: 20px;
+  @media only screen and (max-width: 768px) {
+    border-bottom: 1px solid #8b8b8b;
+  }
 `;
 
 const TextBox = styled.div`
   display: flex;
   margin-bottom: 3px;
   flex-wrap: wrap;
-  justify-content:center;
+  /* justify-content:center; */
 `;
 
 const FooterText = styled.span<{Bold?:boolean}>`
+font-family:'Pretendard Variable';
   font-size: 13px;
-  /* color: #121212; */
-  color:white;
+  color: #121212;
+  /* color:white; */
   font-weight: ${(props)=>props.Bold? 'bold':400};
   margin-right: 10px;
   @media only screen and (max-width: 768px) {
@@ -170,12 +178,16 @@ const InstaButtonImage = styled.img`
   vertical-align: top;
 `;
 const TermsBox = styled.div`
+display:none;
   width:100%;
   padding:5% 10% 10% 10%;
   gap:5%;
-  display:flex;
+  /* display:flex; */
   justify-content:center;
   align-items:center;
+  @media only screen and (max-width:768){
+    display:block;
+  }
 `;
 
 export default memo(Footer);

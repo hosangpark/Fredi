@@ -17,7 +17,7 @@ import leftarrowIcon from '../../asset/image/ico_prev_mobile.png'
 import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
 import { TImage } from '../../types/Types';
 
-function ProductMainList({
+function MainArtistList({
   // item,
   // showType,
   // index,
@@ -56,12 +56,6 @@ function ProductMainList({
       navigate(`/FairContent/${idx}`)
     } else if (productLink === 'FairsW'){
       navigate(`/MainTab`)
-    } else if (productLink.includes('Home')) {
-      navigate(`/personalpage/${idx}`)
-    } else if (productLink.includes('Artist')) {
-      navigate(`/personalpage/${idx}`)
-    } else if (productLink.includes('Featured')) {
-      navigate(`/MobileProfile/${idx}`)
     } else {
       navigate(`/productLink`)
     }
@@ -110,13 +104,17 @@ function ProductMainList({
                 <ProductImageWrap aspect={aspect? aspect:1} >
                   <ProductImage src={item.file_name}/>
                 </ProductImageWrap>
-                <TextWrap title={title}>
+                <TextWrap>
                   <ProductTitleText>
-                    {item.idx}
+                    {/* {item.idx} */}
+                    Artis Name
                   </ProductTitleText>
-                  <ProductSubText>
+                  <FollowButtonBox style={{marginRight:0}}>
+                    Follow
+                  </FollowButtonBox>
+                  {/* <ProductSubText>
                     {item.idx}
-                  </ProductSubText>
+                  </ProductSubText> */}
                 </TextWrap>
               </ProductWrap>
             </SwiperSlide>
@@ -142,10 +140,26 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
     margin-bottom: 50px;
   }
 `;
+const FollowButtonBox = styled.span`
+font-family:'Pretendard Variable';
+  font-weight:normal;
+  padding:5px 25px;
+  border:0.5px solid #c7c7c7;;
+  border-radius:12.5px;
+  font-weight:300;
+  font-size:14px;
+  white-space:nowrap;
+
+  @media only screen and (max-width: 768px) {
+    font-size:12px;
+
+  }
+`;
 
 const ProductImage = styled.img`
   width: 100%;
   height:100%;
+  border-radius:50%;
   object-fit:cover;
 `;
 const ProductContainer = styled.div`
@@ -154,17 +168,16 @@ const ProductContainer = styled.div`
   -ms-overflow-style: none;
   scrollbar-width: none; 
 `;
-const TextWrap = styled.div<{title?:string}>`
-  display:${props => props.title?.includes('Home')? 'none':'block'};
-  padding:30px 10px;
+const TextWrap = styled.div`
+  padding:10px 10px;
   @media only screen and (max-width: 768px) {
     padding:0 10px;
   }
 `
 const ProductWrap = styled.div`
   /* max-width:350px; */
+  align-items:center;
   margin-right:20px;
-  text-align:start;
   @media only screen and (max-width: 768px) {
     margin-right:10px;
   }
@@ -172,6 +185,7 @@ const ProductWrap = styled.div`
 const ProductImageWrap = styled.div<{aspect:number}>`
   /* max-width:350px; */
   width:100%;
+  border-radius:50%;
   text-align:start;
   aspect-ratio:${props => props.aspect? props.aspect : 1};
 `;
@@ -214,9 +228,9 @@ height:20px;
 
 const ProductTitleText = styled.div`
 font-family:'Pretendard Variable';
-  font-size:17px;
+  font-size:14px;
   font-weight:350;
-  margin-top:5px;
+  margin: 10px 0;
   @media only screen and (max-width: 768px) {
     font-weight:500;
     font-size:12px;
@@ -244,4 +258,4 @@ const StyledButton = styled.div`
   height:20px;
 `;
 
-export default ProductMainList;
+export default MainArtistList;
