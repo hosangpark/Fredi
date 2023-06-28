@@ -517,11 +517,11 @@ function Header() {
           </MenuButton>
           {/* goShop goLikeList go_orderList go_requestList goContact goMyPage goAdmin goCart */}
 
-          {user.level <= 1 && (
+          {/* {user.level <= 1 && (
             <MenuButton onClick={goProducing}>
               <MenuButtonText>Producing</MenuButtonText>
             </MenuButton>
-          )}
+          )} */}
 
           {/* <MenuButton onClick={goShop}>
             <MenuButtonText>Shop</MenuButtonText>
@@ -624,33 +624,30 @@ const HeaderBox = styled.div`
   display: flex;
   height: 80px;
   background-color: #ffffff;
-  padding: 0 50px;
+
   align-items: center;
   justify-content: space-between;
   z-index: 99;
-  @media only screen and (max-width: 960px) {
-    padding: 0 30px;
+  @media only screen and (max-width: 1440px) {
   }
   @media only screen and (max-width: 768px) {
-    padding: 0 20px;
     height: 50px;
   }
 `;
 
 const Logo = styled.img`
   position:absolute;
-  left:20px;
+  left:50px;
   width: 150px;
   height: 38px;
   cursor: pointer;
-  @media only screen and (max-width: 1290px) {
-    width: 130px;
-    object-fit: contain;
-  }
-  @media only screen and (max-width: 960px) {
-    width: 110px;
-  }
+  object-fit: contain;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    left:20px;
+  } */
   @media only screen and (max-width: 768px) {
+    left:20px;
     width: 80px;
   }
 `;
@@ -748,12 +745,15 @@ margin-left: 20px;
 `;
 
 const LikeButton = styled.img<{stylewidth?:boolean}>`
-  width: ${(props)=>props.stylewidth? 20 : 23}px;
+  width: ${(props)=>props.stylewidth? 24 : 26}px;
   cursor: pointer;
   object-fit:cover;
-  margin-left: 13px;
   transition: all 0.5s ease;
-
+  margin-left: 30px;
+  @media only screen and (max-width: 1440px) {
+    width: ${(props)=>props.stylewidth? 20 : 23}px;
+    margin-left: 20px;
+  }
   @media only screen and (max-width: 768px) {
     margin-left: 10px;
     width: ${props=>props.stylewidth? 19 : 22}px;
@@ -796,11 +796,14 @@ const SigninButton = styled(CartButton)`
 const MenuButton = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 50px;
+  margin: 0 65px;
   position: relative;
   cursor: pointer;
+  @media only screen and (max-width: 1440px) {
+    margin: 0 45px;
+  }
   @media only screen and (max-width: 1024px) {
-    margin: 0 35px;
+    margin: 0 25px;
   }
 `;
 
@@ -813,8 +816,9 @@ font-family:'Pretendard Variable';
     color: #398049;
   }
   transition: all 0.3s ease;
+
   @media only screen and (max-width: 1024px) {
-    font-size: 16px;
+    font-size: 14px;
   }
 
 `;
@@ -901,12 +905,16 @@ const TextInput = styled.input`
 
 const ButtonWraps = styled.div`
   position:absolute;
-  right:20px;
+  right:50px;
   display: flex;
   align-items:center;
   justify-content:center;
-  // margin-top: 10px;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    right:20px;
+  } */
   @media only screen and (max-width: 768px) {
+    right:10px;
     flex-direction: column;
     display: -webkit-inline-box;
   }

@@ -282,32 +282,39 @@ function WeeklyEdition() {
   return (
     <Container id="productContainer">
       <ProductListWrap>
+        <WeeklyTitle>Weekly Edition</WeeklyTitle>
         <ProductMainList
         title={'May 1st'}
-        titlesize={14}
-        ProductViews={innerWidth <= 768? 2.3 : 3.7}
-        naviArrow = {innerWidth <= 768? false : true}
-        scrollbar = {innerWidth <= 768? false : true}
+        titlesize={18}
+        ProductViews={innerWidth <= 768? 2.3 : 5}
+        // naviArrow = {innerWidth <= 768? false : true}
+        // scrollbar = {innerWidth <= 768? false : true}
+        naviArrow={false}
+        scrollbar={false}
+        aspect={348/432}
         ProducList={bannerListMobile}
-        link={'MainTab'}
         />
         <ProductMainList
         title={'April 4th'}
-        titlesize={14}
-        ProductViews={innerWidth <= 768? 2.3 : 5.8}
-        naviArrow = {innerWidth <= 768? false : true}
-        scrollbar = {innerWidth <= 768? false : true}
+        titlesize={18}
+        ProductViews={innerWidth <= 768? 2.3 : 5}
+        // naviArrow = {innerWidth <= 768? false : true}
+        // scrollbar = {innerWidth <= 768? false : true}
+        naviArrow={false}
+        scrollbar={false}
+        aspect={348/432}
         ProducList={bannerListMobile}
-        link={'Latest'}
         />
         <ProductMainList
         title={'April 3th'}
-        titlesize={14}
-        ProductViews={innerWidth <= 768? 2.3 : 5.9}
-        naviArrow = {innerWidth <= 768? false : true}
-        scrollbar = {innerWidth <= 768? false : true}
+        titlesize={18}
+        ProductViews={innerWidth <= 768? 2.3 : 5}
+        // naviArrow = {innerWidth <= 768? false : true}
+        // scrollbar = {innerWidth <= 768? false : true}
+        naviArrow={false}
+        scrollbar={false}
+        aspect={348/432}
         ProducList={bannerListMobile}
-        link={'producer'}
         />
         
       </ProductListWrap>
@@ -342,9 +349,13 @@ const Container = styled.div`
 `;
 
 const ProductListWrap = styled.div`
-  margin: 45px 20px;
+  margin: 45px 50px;
 `;
-
+const WeeklyTitle = styled.div`
+  text-align:start;
+  font-size:18px;
+  font-weight:400;
+`
 const CarouselWrap = styled.div`
   display: block;
   position: relative;

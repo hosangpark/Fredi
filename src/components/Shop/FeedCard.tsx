@@ -8,27 +8,23 @@ import { FairListItem } from '../../types/Types';
 
 function FeedCard({
   item,
-  showType,
   index,
   onClick,
   onClickLike,
-  isLikeList,
 }: {
   item: FairListItem;
-  showType: 1 | 2;
   index: number;
   onClick: (e: any) => void;
   onClickLike: (e: any) => void;
-  isLikeList?: boolean;
 }) {
   return (
-    <ProductBox showType={showType} isLast={(index + 1) % 4 === 0} onClick={onClick}>
+    <ProductBox onClick={onClick}>
       <ProductImageWrap>
         <ProductImage src={item.image[0].file_name} />
         <ViewCount>
           <ViewImg src={viewImage} />
           <SpanCount>
-            {item.image[0].count}
+            {item.image[0].count? item.image[0].count : 41}
           </SpanCount>
         </ViewCount>
       </ProductImageWrap>
@@ -37,16 +33,13 @@ function FeedCard({
   );
 }
 
-const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
+const ProductBox = styled.div`
   position: relative;
   display: column;
-  width: 16.5%;
+  width: 24.20%;
   margin-bottom: 1%;
   cursor: pointer;
   overflow: hidden;
-  @media only screen and (max-width: 1440px) {
-    width: 24.25%;
-  }
   @media only screen and (max-width: 768px) {
     width: calc(50% - 2px);
     margin-bottom: 0px;
@@ -61,6 +54,7 @@ const ProductImageWrap = styled.div`
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
+
   /* &:hover {
     transform: scale(1.1);
   }
@@ -85,9 +79,11 @@ const Designer = styled.span`
   }
 `;
 const SpanCount = styled.span`
-  color: #121212;
+font-family:'Pretendard Variable';
+mix-blend-mode: difference;
+  color: #ffffff;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 200;
   margin-left:5px;
   @media only screen and (max-width: 768px) {
     font-size: 10px;
@@ -97,7 +93,9 @@ const SpanCount = styled.span`
 const ViewImg = styled.img`
   width: 13px;
   object-fit:contain;
-  margin-top:3px;
+  /* mix-blend-mode: difference; */
+  /* background: #ffffff; */
+  margin-top:0px;
   @media only screen and (max-width: 768px) {
     width: 12px;
   }

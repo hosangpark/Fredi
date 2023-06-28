@@ -16,11 +16,9 @@ import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
 import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
-import FairCard from '../../components/Shop/FairCard';
 // swiper
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -30,68 +28,8 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
 import { CategoryList } from '../../components/List/List';
-
-export type FairListItem = {
-  idx: number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  name: string;
-  price: number;
-  size: string;
-  weight: string;
-  country: string;
-  description: string;
-  designer: string;
-  sns: string;
-  email: string;
-  website: string;
-  created_time: string;
-  like_count: number;
-  image: TImage[];
-  isLike: boolean;
-};
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
-
+import { ArtworkListItem } from '../../types/Types';
+import FeedCard from '../../components/Shop/FeedCard';
 
 
 interface ICategorySelectButton {
@@ -109,15 +47,15 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function LikeSns() {
+function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
   const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-
-  const [shopList, setShopList] = useState<FairListItem[]>([]);
+  const pathName = location.pathname.split('/')[1];
+  const [shopList, setShopList] = useState<ArtworkListItem[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
@@ -126,13 +64,11 @@ function LikeSns() {
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
-  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  const [showsearch,setShowsearch] = useState(false)
 
 
   const { user } = useContext(UserContext);
-  const { classes } = useStyles();
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const interSectRef = useRef(null);
+
 
   const getBannerList = async () => {
     try {
@@ -157,7 +93,7 @@ function LikeSns() {
       const { list, total } = await APIShopList(data);
       setTotal(total);
       if (page === 1) {
-        // setShopList((prev) => [...list]);
+        setShopList((prev) => [...list]);
       } else {
         // setShopList((prev) => [...prev, ...list]);
       }
@@ -166,13 +102,6 @@ function LikeSns() {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
 
   const onLikeShop = async (idx: number) => {
     const data = {
@@ -201,6 +130,29 @@ function LikeSns() {
     threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
   };
 
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    if(innerWidth < 768){
+      if(pathName === 'Artwork'){
+        navigate('/MainTab')
+      }
+    }
+    // console.log("innerWidth", innerWidth);
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
+
+  useEffect(()=>{
+    if(pathName !== 'Artwork'){
+      setShowsearch(false)
+    }else{
+      setShowsearch(true)
+    }
+    // console.log(pathName)
+  },[pathName])
+
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
     const page = Number(sessionStorage.getItem('page'));
@@ -216,7 +168,7 @@ function LikeSns() {
     sessionStorage.removeItem('type');
   };
 
-  const saveHistory = (e: React.MouseEvent, name: string) => {
+  const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
@@ -225,16 +177,11 @@ function LikeSns() {
       sessionStorage.setItem('page', String(page));
       sessionStorage.setItem('type', String(showType));
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/personalpage/${name}`);
+      navigate(`/productdetails/${idx}`);
     }
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
-
+  
   useEffect(() => {
     console.log(browserHistory.location);
     console.log(location);
@@ -265,60 +212,11 @@ function LikeSns() {
       getShopList(1);
     }
   }, [searchParams, category]);
+  
 
   useEffect(() => {
     if (page > 1) getShopList(page);
   }, [page]);
-  useEffect(() => {
-    setShopList([
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-        isLike: true,
-      },
-    ]);
-  }, []);
 
   const onSearch = () => {
     navigate(
@@ -341,44 +239,14 @@ function LikeSns() {
     });
   };
 
-  const slides = bannerList.map((item) => (
-    <Carousel.Slide key={item.idx}>
-      <Image src={item.file_name} className={classes.carouselImages} />
-    </Carousel.Slide>
-  ));
-
-  
 
   return (
-    <Container>
-      <TitleWrap>
-        <TitleText>
-          Artwork
-        </TitleText>
-        <SearchBox
-          onClickSearch={() => onSearch()}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              onSearch();
-            }
-          }}
-          categoryList={CategoryList}
-          category={category}
-          keyword={keyword}
-          onChangeInput={(e) => setKeyword(e.target.value)}
-          onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
-            chageCategory(value);
-          }}
-        />
-      </TitleWrap>
-    
-
+    <Container>      
       <ProductListWrap>
-        {/* <div onClick={()=>console.log(shopList)}> ddddddddddddddd</div> */}
-        {shopList.length > 0 &&
-        shopList.map((item,index)=>{
+        {
+        productList? productList.map((item:any,index:number)=>{
           return(
-            <ArtworkCard
+            <FeedCard
               item={item}
               key={item.idx}
               onClick={(e) => saveHistory(e, item.name)}
@@ -391,10 +259,12 @@ function LikeSns() {
                   setShowLogin(true);
                 }
               }}
-              showType={2}
+              index={0}
             />
           )
           })
+        : 
+        <>NO ITEMS</>
         }
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}
@@ -417,6 +287,7 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  width:100%;
 `;
 
 const ProductListWrap = styled.div`
@@ -424,6 +295,10 @@ const ProductListWrap = styled.div`
   flex-wrap: wrap;
   align-items: center;
   gap:1%;
+  margin:0 50px;
+  @media only screen and (max-width: 768px) {
+    margin:0;
+  }
 `;
 
 const CarouselWrap = styled.div`
@@ -456,7 +331,10 @@ const InterView = styled.div`
 const CategorySelectButtonWrap = styled.div`
   /* display:flex; */
   align-items: center;
-  margin: 20px 0;
+  margin: 20px 50px 40px;
+  @media only screen and (max-width: 768px) {
+    margin: 15px 0 15px 10px;
+  }
   /* @media only screen and (max-width: 1024px) {
     display: none;
   } */
@@ -464,7 +342,7 @@ const CategorySelectButtonWrap = styled.div`
 
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
-  border : 1px solid ${(props) => (props.selected ? '#121212' : '#7a7a7a')};
+  border : 1px solid ${(props) => (props.selected ? '#121212' : '#c0c0c0')};
   padding: 0 18px;
   margin-right: 10px;
   border-radius: 5px;
@@ -472,6 +350,7 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
   align-items: center;
   justify-content: center;
   height: 32px;
+  /* box-shadow:2px 3px 3px 0px #aaaaaa; */
   cursor: pointer;
   @media only screen and (max-width: 1440px) {
     height: 27px;
@@ -480,22 +359,28 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   text-transform: capitalize;
+  @media only screen and (max-width: 1024px) {
+    font-size: 14px;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
-const TitleWrap = styled.div`
-  display:flex;
+const TitleWrap = styled.div<{showsearch:boolean}>`
+  display:${props => props.showsearch? 'flex':'none'};
   justify-content:space-between;
   align-items:center;
-  margin:20px 0%;
+  padding:50px 50px 90px 50px;
   @media only screen and (max-width: 768px) {
-    display:none
+    display:none;
   }
 `;
 const TitleText = styled.span`
-  font-size: 20px;
-  font-weight: 500;
+font-family:'Pretendard Variable';
+  font-size: 22px;
+  font-weight: 300;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

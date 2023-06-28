@@ -12,7 +12,7 @@ function Contact() {
       {/* <RightBox>
         <Outlet />
       </RightBox> */}
-      <EmptyBox />
+      {/* <EmptyBox /> */}
     </Container>
   );
 }
@@ -22,12 +22,10 @@ const Container = styled.div`
   flex: 1;
   min-height: calc(100vh - 80px);
   flex-direction: row;
-  border-top: 1px solid #121212;
   background-color: #ffffff;
-  @media only screen and (max-width: 1000px) {
-    flex-direction: column;
-    border-top: 0;
-  }
+  flex-direction: column;
+  border-top: 0;
+  
 `;
 
 const RightBox = styled.div`

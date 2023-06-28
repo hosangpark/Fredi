@@ -14,16 +14,12 @@ import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
-import ShowTypeButton from '../../components/Shop/ShowTypeButton';
-import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
-import TopButton from '../../components/Product/TopButton';
-import { removeHistory } from '../../components/Layout/Header';
-import FairCard from '../../components/Shop/FairCard';
 import LikeArtwork from './LikeArtwork';
 import Fair from '../MainTab/Fair';
 import LikeSns from './LikeSns';
+import Artwork from '../MainTab/Artwork';
+import { ArtworkListItem } from '../../types/Types';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -78,25 +74,7 @@ const TabImage = styled.img`
   }
 `
 
-const content = [
-    {
-      tab: "Artwork",
-      content:<LikeArtwork/>
-    },
-    { 
-      tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-        <TabImage src={snsImage}/></div>,
-      content:<LikeSns/>
-    },
-  ];
-  
-  const useTabs = (initialTabs:any, allTabs:any) => {
-    const [contentIndex, setContentIndex] = useState(initialTabs);
-    return {
-      contentItem: allTabs[contentIndex],
-      contentChange: setContentIndex
-    };
-  };
+
 
 
 function LikeTab() {
@@ -114,12 +92,29 @@ function LikeTab() {
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
+  const [productList,setproductList] = useState<ArtworkListItem[]>([])
+
+  const content = [
+    {
+      tab: "Artwork",
+      content:<Artwork productList={productList}/>
+    },
+    { 
+      tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+        <TabImage src={snsImage}/></div>,
+      content:<LikeSns productList={productList}/>
+    },
+  ];
+
+  const useTabs = (initialTabs:any, allTabs:any) => {
+    const [contentIndex, setContentIndex] = useState(initialTabs);
+    return {
+      contentItem: allTabs[contentIndex],
+      contentChange: setContentIndex
+    };
+  };
   const { contentItem, contentChange } = useTabs(0, content);
 
-  const { user } = useContext(UserContext);
-  const { classes } = useStyles();
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const interSectRef = useRef(null);
 
   const getBannerList = async () => {
     try {
@@ -144,7 +139,7 @@ function LikeTab() {
       const { list, total } = await APIShopList(data);
       setTotal(total);
       if (page === 1) {
-        // setShopList((prev) => [...list]);
+        setproductList((prev) => [...list]);
       } else {
         // setShopList((prev) => [...prev, ...list]);
       }
@@ -195,12 +190,6 @@ function LikeTab() {
       navigate(`/shopdetails/${idx}`);
     }
   };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
 
   useEffect(() => {
     console.log(browserHistory.location);
@@ -258,11 +247,7 @@ function LikeTab() {
     });
   };
 
-  const slides = bannerList.map((item) => (
-    <Carousel.Slide key={item.idx}>
-      <Image src={item.file_name} className={classes.carouselImages} />
-    </Carousel.Slide>
-  ));
+
  
   return (
     <Container>
@@ -285,35 +270,15 @@ const Container = styled.div`
 `;
 
 
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4697/1737;
-  max-height: 700px;
-`;
-
-const MobileCarouselWrap = styled.div`
-  display: none;
-  max-height: 700px;
-  position: relative;
-  @media only screen and (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
-`;
-
 const TabButtonWrap = styled.div`
-  width:100%;
-  margin-top:20px;
+  width:400px;
   display:flex;
   border-bottom:1px solid #cccccc;
+  margin:50px;
+  @media only screen and (max-width: 768px) {
+    margin:0px;
+    width:100%;
+  }
 `;
 const TabButton = styled.div`
   flex:1;
@@ -324,9 +289,10 @@ const TabButton = styled.div`
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
   border-bottom: solid 1px ${(props) => props.color || "none"};
-  font-weight: ${props => props.color == 'black' ? 600 : 300};
+  font-weight: ${props => props.color == 'black' ? 400 : 300};
   font-family:'Pretendard Variable';
   padding:10px 0;
+  font-size:18px;
   @media only screen and (max-width: 768px) {
     font-size:14px;
   }

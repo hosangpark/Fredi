@@ -42,14 +42,10 @@ function ArtistCard({
 const ProductBox = styled.div`
   position: relative;
   display: column;
-  /* width: 24.25%; */
-  width: 16.6%;
+  width: 24.25%;
   margin: 20px 0;
   cursor: pointer;
   overflow: hidden;
-  @media only screen and (max-width: 1440px) {
-    width: 24.25%;
-  }
   @media only screen and (max-width: 768px) {
     width: 49%;
   }
@@ -90,11 +86,8 @@ const NewIcon = styled.img`
 
 const Designer = styled.span`
   color: #121212;
-  font-weight: 400;
-  text-align: left;
-  @media only screen and (max-width: 1024px) {
-    font-size: 14px;
-  }
+  font-weight: 500;
+  font-size: 18px;
   @media only screen and (max-width: 768px) {
     font-weight: 300;
     font-size: 12px;

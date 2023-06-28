@@ -44,13 +44,10 @@ function ContactNav({ selected, setSelected }: { selected: number; setSelected: 
 const LeftBox = styled.div`
   display: flex;
   min-width: 290px;
-  width: 400px;
+  width: 100%;
   flex-direction: column;
   text-align: left;
-  border-right: 1px solid #121212;
-  @media only screen and (max-width: 1400px) {
-    width: 370px;
-  }
+
   @media only screen and (max-width: 1000px) {
     width: 100%;
     border-right: 0;
@@ -62,6 +59,7 @@ const SubTitle = styled.h4`
   font-weight: 500;
   color: #121212;
   font-size: 18px;
+  margin-left: 30px;
   @media only screen and (max-width: 1000px) {
     margin-left: 18px;
     font-size: 15px;

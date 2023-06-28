@@ -34,7 +34,7 @@ function MainArtistList({
   arrowView,
   titlesize,
   aspect,
-  link
+  paddingnum
 }:{
   title:string
   ProductViews:number
@@ -46,7 +46,7 @@ function MainArtistList({
   arrowView?:boolean
   titlesize?:number
   aspect?:number
-  link?:string
+  paddingnum?:number
 }) {
 
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ function MainArtistList({
         // pagination={{ clickable: true }}
         onSwiper={(swiper) => console.log(swiper)}
         onSlideChange={() => console.log('slide change')}
-        style={{paddingBottom:50}}
+        style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
         {ProducList.map(item=>{
           return(
@@ -195,12 +195,14 @@ const ContainerWrap = styled.div`
   width:100%;
 `;
 const TitleBox = styled.div`
-  display: flex;
+   display: flex;
   align-items:center;
-  margin: 50px 0px;
-  padding: 5px 0;
+  margin:170px 0 55px 0;
+  @media only screen and (max-width: 1440px) {
+    margin:135px 0 45px 0;
+  }
   @media only screen and (max-width: 768px) {
-    margin: 15px 0px;
+    margin:100px 0 35px 0;
     justify-content:space-between;
     padding: 5px 15px;
   }
@@ -230,7 +232,7 @@ const ProductTitleText = styled.div`
 font-family:'Pretendard Variable';
   font-size:14px;
   font-weight:350;
-  margin: 10px 0;
+  margin:20px 0 16px 0;
   @media only screen and (max-width: 768px) {
     font-weight:500;
     font-size:12px;

@@ -13,6 +13,7 @@ function SearchBox({
   categoryList,
   category,
   keyword,
+  none,
   onChangeInput,
   onChangeCategory,
 }: {
@@ -21,11 +22,12 @@ function SearchBox({
   categoryList: TCategory[];
   category: string;
   keyword: string;
+  none?:boolean;
   onChangeInput: (e: any) => void;
   onChangeCategory: (value: '1' | '2' | '3' | '4' | '5' | '6') => void;
 }) {
   return (
-    <Wrap>
+    <Wrap none={none}>
       <SearchBoxWrap>
         <Input value={keyword} onChange={onChangeInput} onKeyDown={onKeyDown} type="text" variant="unstyled" />
         <SearchButton onClick={onClickSearch} src={searchButtonImage} />
@@ -67,7 +69,7 @@ function SearchBox({
   );
 }
 
-const Wrap = styled.div`
+const Wrap = styled.div<{none?:boolean}>`
   position: -webkit-sticky;
   position: sticky;
   top: 80px;
@@ -76,6 +78,7 @@ const Wrap = styled.div`
   @media only screen and (max-width: 768px) {
     top: 50px;
     width:100%;
+    display:${props => props.none? 'none':'block'};
   }
 `;
 

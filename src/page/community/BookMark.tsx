@@ -138,7 +138,7 @@ function BookMark() {
       const { list, total } = await APIShopList(data);
       setTotal(total);
       if (page === 1) {
-        // setShopList((prev) => [...list]);
+        setShopList((prev) => [...list]);
       } else {
         // setShopList((prev) => [...prev, ...list]);
       }
@@ -250,202 +250,6 @@ function BookMark() {
   useEffect(() => {
     if (page > 1) getShopList(page);
   }, [page]);
-  useEffect(() => {
-    setShopList([
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:42
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:28
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:42
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:28
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:42
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:28
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:42
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:28
-          }
-        ],
-        isLike: true,
-      },
-    ]);
-  }, []);
 
   const onSearch = () => {
     navigate(
@@ -488,7 +292,6 @@ function BookMark() {
                 }
               }}
               index={0}
-              showType={2}
             />
           )
           })
@@ -513,6 +316,10 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  margin:0 50px;
+  @media only screen and (max-width: 768px){
+    margin:0;
+  }
 `;
 
 const ProductListWrap = styled.div`

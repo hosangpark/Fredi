@@ -16,11 +16,9 @@ import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
 import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
-import FairCard from '../../components/Shop/FairCard';
 // swiper
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -30,6 +28,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
 import { CategoryList } from '../../components/List/List';
+import { ArtworkListItem } from '../../types/Types';
 
 export type FairListItem = {
   idx: number;
@@ -109,7 +108,7 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function Artwork() {
+function Artwork({productList}:{productList?:ArtworkListItem[]}) {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
   const location = useLocation();
@@ -127,12 +126,11 @@ function Artwork() {
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
   const [showsearch,setShowsearch] = useState(false)
+  const [showcategory,setShowCategory] = useState(false)
 
 
   const { user } = useContext(UserContext);
-  const { classes } = useStyles();
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const interSectRef = useRef(null);
+
 
   const getBannerList = async () => {
     try {
@@ -157,7 +155,7 @@ function Artwork() {
       const { list, total } = await APIShopList(data);
       setTotal(total);
       if (page === 1) {
-        // setShopList((prev) => [...list]);
+        setShopList((prev) => [...list]);
       } else {
         // setShopList((prev) => [...prev, ...list]);
       }
@@ -216,6 +214,14 @@ function Artwork() {
     }
     // console.log(pathName)
   },[pathName])
+  useEffect(()=>{
+    if(pathName == 'LikeTab'){
+      setShowCategory(false)
+    }else{
+      setShowCategory(true)
+    }
+    // console.log(pathName)
+  },[pathName])
 
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
@@ -247,12 +253,6 @@ function Artwork() {
 
   
   useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
-
-  useEffect(() => {
     console.log(browserHistory.location);
     console.log(location);
     getBannerList();
@@ -282,60 +282,11 @@ function Artwork() {
       getShopList(1);
     }
   }, [searchParams, category]);
+  
 
   useEffect(() => {
     if (page > 1) getShopList(page);
   }, [page]);
-  useEffect(() => {
-    setShopList([
-      {
-        idx: 1,
-        category: 1,
-        name: 'Title1',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: 'Artist1',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: 'Title2',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: 'Artist2',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-        isLike: true,
-      },
-    ]);
-  }, []);
 
   const onSearch = () => {
     navigate(
@@ -358,43 +309,12 @@ function Artwork() {
     });
   };
 
-  const slides = bannerList.map((item) => (
-    <Carousel.Slide key={item.idx}>
-      <Image src={item.file_name} className={classes.carouselImages} />
-    </Carousel.Slide>
-  ));
-
-  
 
   return (
-    <Container>
-      {/* <CarouselWrap>
-        {bannerList.length > 0 && (
-          <Carousel
-            plugins={[autoplay.current]}
-            withIndicators
-            nextControlIcon={<ControlImage src={rightButtonImage} />}
-            previousControlIcon={<ControlImage src={leftButtonImage} />}
-            loop
-            styles={{
-              root: { maxHeight: 700 },
-              control: { background: 'transparent', width: 45, border: 0, '@media (max-width: 768px)': { width: 25 } },
-            }}
-            classNames={{
-              root: classes.carousel,
-              controls: classes.carouselControls,
-              indicator: classes.carouselIndicator,
-              control: classes.carouselControl,
-            }}
-          >
-            {slides}
-          </Carousel>
-        )}
-      </CarouselWrap> */}
-      
+    <Container>      
       <TitleWrap showsearch={showsearch}>
         <TitleText>
-          Artwork
+          Artworks
         </TitleText>
         <SearchBox
           onClickSearch={() => onSearch()}
@@ -413,7 +333,7 @@ function Artwork() {
         />
       </TitleWrap>
 
-      <CategorySelectButtonWrap>
+      <CategorySelectButtonWrap showcategory={showcategory}>
         <Swiper
           // install Swiper modules
           modules={[Navigation, Pagination, Scrollbar]}
@@ -438,6 +358,26 @@ function Artwork() {
       <ProductListWrap>
         {/* <div onClick={()=>console.log(shopList)}> ddddddddddddddd</div> */}
         {shopList.length > 0 &&
+        productList? productList.map((item:any,index:number)=>{
+          return(
+            <ArtworkCard
+              item={item}
+              key={item.idx}
+              onClick={(e) => saveHistory(e, item.idx)}
+              onClickLike={(e) => {
+                if (user.idx) {
+                  e.stopPropagation();
+                  onLikeShop(item.idx);
+                } else {
+                  e.stopPropagation();
+                  setShowLogin(true);
+                }
+              }}
+              showType={showType}
+            />
+          )
+          })
+        : 
         shopList.map((item,index)=>{
           return(
             <ArtworkCard
@@ -458,7 +398,6 @@ function Artwork() {
           )
           })
         }
-        
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}
       <AlertModal
@@ -488,7 +427,11 @@ const ProductListWrap = styled.div`
   flex-wrap: wrap;
   align-items: center;
   gap:1%;
-  margin:0 20px;
+  margin:0 50px;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin:0 20px;
+  } */
   @media only screen and (max-width: 768px) {
     margin:0;
   }
@@ -521,10 +464,15 @@ const InterView = styled.div`
   height: 200px;
 `;
 
-const CategorySelectButtonWrap = styled.div`
+const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
   /* display:flex; */
+  display:${props => props.showcategory? 'block' : 'none'};
   align-items: center;
-  margin: 20px 0 20px 15px;
+  margin: 20px 50px 40px;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin: 20px 0px 20px 20px;;
+  } */
   @media only screen and (max-width: 768px) {
     margin: 15px 0 15px 10px;
   }
@@ -565,7 +513,11 @@ const TitleWrap = styled.div<{showsearch:boolean}>`
   display:${props => props.showsearch? 'flex':'none'};
   justify-content:space-between;
   align-items:center;
-  margin:20px 30px;
+  padding:50px 50px 90px;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    padding:30px 20px 50px;
+  } */
   @media only screen and (max-width: 768px) {
     display:none;
   }
@@ -573,7 +525,7 @@ const TitleWrap = styled.div<{showsearch:boolean}>`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size: 22px;
-  font-weight: 350;
+  font-weight: 300;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

@@ -33,7 +33,7 @@ function WeeklyEditionList({
   ProducList,
   arrowView,
   productLink,
-  link
+  paddingnum
 }:{
   title:string
   ProductViews:number
@@ -43,12 +43,12 @@ function WeeklyEditionList({
   ProducList:TImage[]
   arrowView?:boolean
   productLink?:boolean
-  link:string
+  paddingnum?:number
 }) { 
   const navigate = useNavigate();
   return (
     <ContainerWrap>
-      <TitleBox onClick={()=>{navigate(`/${link}`);}}>
+      <TitleBox onClick={()=>{navigate(`/`);}}>
         <TitleText>{title}</TitleText>
         {arrowView&&
         <ArrowRightIcon src={rightarrowIcon}/>
@@ -77,12 +77,12 @@ function WeeklyEditionList({
         // pagination={{ clickable: true }}
         onSwiper={(swiper) => console.log(swiper)}
         onSlideChange={() => console.log('slide change')}
-        style={{paddingBottom:50}}
+        style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
         {ProducList.map(item=>{
           return(
           <SwiperSlide>
-          <ProductWrap onClick={()=>{productLink == true ? navigate(`/shopdetails/${item.idx}`): navigate(`/${link}`)}}>
+          <ProductWrap onClick={()=>{navigate(`/WeeklyEdition`)}}>
             <ProductTopbox>
               <ProductTopboxLeft>
                 <ProductImage src={item.file_name}/>
@@ -152,10 +152,10 @@ const ProductBottombox = styled.div`
   display:flex;
   width:100%;
   aspect-ratio:340/200;
-  gap:5px;
+  gap:6px;
 `;
 const ProductBottomImageWrap = styled.div`
-  width:calc(50% - 2.5px);
+  width:calc(50% - 3px);
   aspect-ratio:340/200;
 `;
 const ProductBottomInner = styled.div`
@@ -209,9 +209,12 @@ const ContainerWrap = styled.div`
 const TitleBox = styled.div`
   display: flex;
   align-items:center;
-  margin: 30px 0px;
-  padding: 5px 0;
+  margin:170px 0 55px 0;
+  @media only screen and (max-width: 1440px) {
+    margin:135px 0 45px 0;
+  }
   @media only screen and (max-width: 768px) {
+    margin:100px 0 35px 0;
     justify-content:space-between;
     padding: 5px 15px;
   }

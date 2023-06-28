@@ -30,6 +30,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import FeedCard from '../../components/Shop/FeedCard';
 import { CategoryList } from '../../components/List/List';
+import { ArtworkListItem } from '../../types/Types';
 
 
 export type FairListItem = {
@@ -113,7 +114,7 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function Feed() {
+function Feed({productList}:{productList?:any[]}) {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
   const location = useLocation();
@@ -273,131 +274,7 @@ function Feed() {
   useEffect(() => {
     if (page > 1) getShopList(page);
   }, [page]);
-  useEffect(() => {
-    setShopList([
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:11
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:12
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 144,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:114
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:181
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:911
-          }
-        ],
-        isLike: true,
-      },
-      
-    ]);
-  }, []);
+  
 
   const onSearch = () => {
     navigate(
@@ -419,14 +296,6 @@ function Feed() {
       category: value,
     });
   };
-
-  const slides = bannerList.map((item) => (
-    <Carousel.Slide key={item.idx}>
-      <Image src={item.file_name} className={classes.carouselImages} />
-    </Carousel.Slide>
-  ));
-
-  
 
   return (
     <Container>
@@ -451,8 +320,8 @@ function Feed() {
         </Swiper>
       </CategorySelectButtonWrap>
       <ProductListWrap>
-        {shopList.length > 0 &&
-        shopList.map((item,index)=>{
+        {
+        productList? productList.map((item:any,index:number)=>{
           return(
             <FeedCard
               item={item}
@@ -468,10 +337,11 @@ function Feed() {
                 }
               }}
               index={0}
-              showType={showType}
             />
           )
           })
+        : 
+        <>NO ITEMS</>
         }
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}
@@ -494,6 +364,10 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  margin:0 50px;
+  @media only screen and (max-width: 768px){
+    margin:0;
+  }
 `;
 
 const ProductListWrap = styled.div`
@@ -501,6 +375,10 @@ const ProductListWrap = styled.div`
   flex-wrap: wrap;
   align-items: center;
   gap:1%;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin:0 20px;
+  } */
   @media only screen and (max-width:768px){
     gap:2px
   }
@@ -536,9 +414,13 @@ const InterView = styled.div`
 const CategorySelectButtonWrap = styled.div`
   /* display:flex; */
   align-items: center;
-  margin: 20px 0 20px 15px;
+  margin: 20px 0px;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin: 20px 20px 20px;
+  } */
   @media only screen and (max-width: 768px) {
-    margin: 15px 0 15px 10px;
+    margin: 15px 10px;
   }
 `;
 

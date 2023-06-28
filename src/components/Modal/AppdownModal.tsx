@@ -119,7 +119,10 @@ const ModalBlackButton = styled.div`
   justify-content: center;
   cursor: pointer;
   border: 1px solid #3f3f3f;
-`;
+    @media only screen and (max-width: 769px){
+      width: 140px;
+    }
+  `;
 
 const Image = styled.img`
   width:30px;
@@ -136,6 +139,9 @@ const BlackButtonText = styled.span`
   font-weight: 300;
   color: #ffffff;
   font-size: 18px;
+  @media only screen and (max-width: 769px){
+    font-size: 14px;
+  }
 `;
 const ModalTitle = styled.div`
   font-family: 'NotoSans' !important;

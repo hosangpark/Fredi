@@ -23,7 +23,7 @@ function FairCard({
   isLikeList?: boolean; 
 }) {
   return (
-    <ProductBox showType={showType} isLast={(index + 1) % 4 === 0} onClick={onClick}>
+    <ProductBox showType={showType} onClick={onClick}>
       <ProductImageWrap>
         <ProductImage src={item.image[0]?.file_name ? item.image[0].file_name : 'd'} />
         {/* <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
@@ -40,12 +40,11 @@ function FairCard({
   );
 }
 
-const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
+const ProductBox = styled.div<{showType: 1 | 2}>`
   position: relative;
   display: column;
   width: 100%;
   margin-bottom:30px;
-  margin-right: ${(props) => (props.isLast ? 0 : 1)}%;
   cursor: pointer;
   overflow: hidden;
   /* @media only screen and (max-width: 768px) {
@@ -66,10 +65,6 @@ const ProductImageWrap = styled.div`
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
-  &:hover {
-    transform: scale(1.1);
-  }
-  transition: all 0.5s ease;
 `;
 
 const NewIcon = styled.img`
@@ -83,9 +78,13 @@ const NewIcon = styled.img`
 const Designer = styled.span`
 font-family:'Pretendard Variable';
   color: #121212;
-  font-size: 12px;
-  font-weight: 350;
+  font-size: 22px;
+  margin-bottom:5px;
+  font-weight: 450;
   text-align: left;
+  @media only screen and (max-width: 1440px) {
+    font-size: 16px;
+  }
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
@@ -116,9 +115,15 @@ const RowWrap = styled.div<{ showType?: 1 | 2 }>`
 `;
 
 const TextWrap = styled(RowWrap)<{ showType?: 1 | 2 }>`
-  padding: 0 10px;
+  padding: 40px 50px;
   flex-direction: ${(props) => (props.showType === 1 ? 'row' : 'column')};
   align-items: flex-start;
+  @media only screen and (max-width: 1440px) {
+    padding: 30px 30px;
+  }
+  @media only screen and (max-width: 768px) {
+    padding: 20px 10px;
+  }
 `;
 
 const ProductNameWrap = styled.div`

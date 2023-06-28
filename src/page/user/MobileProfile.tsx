@@ -13,6 +13,9 @@ import qrImage from '../../asset/image/qricon.png';
 import linkImage from '../../asset/image/links.png';
 import profileImage from '../../asset/image/profile.png';
 import QrModal from '../../components/Modal/QrModal';
+import img01 from '../../asset/image/img01.png';
+import img03 from '../../asset/image/img03.png';
+import img04 from '../../asset/image/img05.png';
 
 export type TUserDetails = {
   idx: number;
@@ -109,7 +112,7 @@ function MobileProfile() {
         image: [
           {
             idx: 11,
-            file_name: ''
+            file_name: img01
           }
         ],
       },
@@ -120,7 +123,7 @@ function MobileProfile() {
         image: [
           {
             idx: 11,
-            file_name: ''
+            file_name: img03
           }
         ],
       },
@@ -131,7 +134,7 @@ function MobileProfile() {
         image: [
           {
             idx: 11,
-            file_name: ''
+            file_name: img04
           }
         ],
       },
@@ -407,7 +410,7 @@ const Container = styled.div`
   flex: 1;
   min-height: calc(100vh - 80px);
   /* flex-direction: row; */
-  border-top: 1px solid #121212;
+  /* border-top: 1px solid #121212; */
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -608,6 +611,7 @@ const ImageWrap = styled.div`
   align-items:center;
   border-radius:50%;
   width:120px;
+  height:120px;
   aspect-ratio: 1;
   margin:20px 0;
   /* width:15%; */

@@ -140,7 +140,7 @@ function Follow() {
       const { list, total } = await APIShopList(data);
       setTotal(total);
       if (page === 1) {
-        // setShopList((prev) => [...list]);
+        setShopList((prev) => [...list]);
       } else {
         // setShopList((prev) => [...prev, ...list]);
       }
@@ -252,59 +252,7 @@ function Follow() {
   useEffect(() => {
     if (page > 1) getShopList(page);
   }, [page]);
-  useEffect(() => {
-    setShopList([
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:42
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:28
-          }
-        ],
-        isLike: true,
-      },
-    ]);
-  }, []);
-
+ 
   const onSearch = () => {
     navigate(
       {
@@ -333,22 +281,22 @@ function Follow() {
           <Swiper
             // install Swiper modules
             modules={[Navigation, Pagination, Scrollbar]}
-            slidesPerView={innerWidth <= 400? 3.5 : innerWidth <= 768? 4.4 : innerWidth <= 1440? 6.4 : 10.6}
+            slidesPerView={innerWidth/110}
             // spaceBetween={30}
             // pagination={{ clickable: true }}
             // onSwiper={(swiper) => console.log(swiper)}
             // onSlideChange={() => console.log('slide change')}
-            // style={{paddingBottom:50}}
+
           >
-            {CategoryList.map((item) => {
+            {shopList.map((item) => {
               return (
               <SwiperSlide>
-                <FollowingListWrap onClick={()=>{navigate(`/MobileProfile/${item.label}`);}}>
+                <FollowingListWrap onClick={()=>{navigate(`/MobileProfile/${item.idx}`);}}>
                   <ImageWrap>
-                    <Image src={item.value}/>
+                    <ProfileImage src={item.image[0].file_name}/>
                   </ImageWrap>
                   <FollowingName>
-                    user Nameddddd
+                    {item.designer}
                   </FollowingName>
                 </FollowingListWrap>
               </SwiperSlide>
@@ -374,7 +322,6 @@ function Follow() {
                 }
               }}
               index={0}
-              showType={2}
             />
           )
           })
@@ -399,6 +346,10 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  margin:0 50px;
+  @media only screen and (max-width: 768px){
+    margin:0;
+  }
 `;
 
 const ProductListWrap = styled.div`
@@ -485,7 +436,17 @@ const ImageWrap = styled.div`
   width:80px;
   aspect-ratio:1;
   border-radius:50%;
-  border:1px solid #c9c9c9;
+
+  @media only screen and (max-width: 768px) {
+    width:70px;
+  }
+`
+const ProfileImage = styled.img`
+  width:80px;
+  aspect-ratio:1;
+  box-sizing:border-box;
+  border:1px solid #929292;
+  border-radius:50%;
   @media only screen and (max-width: 768px) {
     width:70px;
   }

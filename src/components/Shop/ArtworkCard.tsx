@@ -23,13 +23,13 @@ function ArtworkCard({
 }) {
   return (
     <ProductBox showType={showType} onClick={onClick}>
-      <ProductImageWrap showType={showType}>
+      <ProductImageWrap>
         <ProductImage src={item.image[0].file_name} />
       </ProductImageWrap>
       {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />}
-      <TextWrap showType={showType}>
+      <TextWrap>
         <ProductNameWrap>
-          <ProductName>{item.name}</ProductName>
+          <ProductName>{item.name}{item.name}{item.name}{item.name}</ProductName>
           <Designer>{item.designer}</Designer>
         </ProductNameWrap>
         <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOffImage : likeOffImage} />
@@ -42,21 +42,18 @@ function ArtworkCard({
 const ProductBox = styled.div<{ showType: 1 | 2 }>`
   position: relative;
   display: column;
-  width: 16.5%;
-  margin-bottom: 110px;
+  width: ${(props) => (props.showType === 1 ? 19.20 : 19.25)}%;
   cursor: pointer;
   overflow: hidden;
 
-  @media only screen and (max-width: 1024px) {
-    width: ${(props) => (props.showType === 1 ? 24.25 : 49.5)}%;
-  }
   @media only screen and (max-width: 768px) {
     width: ${(props) => (props.showType === 1 ? 49.5 : 100)}%;
     margin-bottom: 50px;
   }
 `;
-const ProductImageWrap = styled.div<{showType: 1 | 2}>`
+const ProductImageWrap = styled.div`
   width: 100%;
+  object-fit:cover;
   aspect-ratio: 200/235;
   margin-bottom: 5px;
   overflow: hidden;
@@ -81,9 +78,10 @@ const NewIcon = styled.img`
 `;
 
 const Designer = styled.span`
+font-family:'Pretendard Variable';
   color: #121212;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   text-align: left;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
@@ -91,7 +89,11 @@ const Designer = styled.span`
 `;
 
 const ProductName = styled(Designer)`
-  font-weight: 700;
+  font-weight: 400;
+  -webkit-line-clamp:2;
+  word-break: break-word;
+  overflow:hidden;
+  text-overflow:ellipsis;
 `;
 
 const LikeButton = styled.img`
@@ -106,17 +108,14 @@ const LikeButton = styled.img`
 
 const LikeCount = styled(Designer)``;
 
-const RowWrap = styled.div<{ showType?: 1 | 2 }>`
+
+
+const TextWrap = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: ${(props) => (props.showType === 1 ? 'center' : 'flex-start')};
-  flex-direction: ${(props) => (props.showType === 1 ? 'row' : 'column')};
-`;
 
-const TextWrap = styled(RowWrap)<{ showType?: 1 | 2 }>`
   padding: 5px;
-  flex-direction: ${(props) => (props.showType === 1 ? 'row' : 'column')};
-  align-items: center;
+  
   @media only screen and (max-width: 768px) {
     padding: 10px;
   }
@@ -125,6 +124,20 @@ const TextWrap = styled(RowWrap)<{ showType?: 1 | 2 }>`
 const ProductNameWrap = styled.div`
   display: flex;
   flex-direction: column;
+  margin-right:5px;
+  height:54px;
+  margin-bottom:91px;
+  &:hover{
+    height:145px;
+    margin-bottom:0px;
+  }
+  @media only screen and (max-width: 768px) {
+    margin-bottom:51px;
+    &:hover{
+      height:105px;
+      margin-bottom:0px;
+    }
+  }
 `;
 
 export default ArtworkCard;

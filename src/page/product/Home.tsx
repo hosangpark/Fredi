@@ -96,6 +96,7 @@ function Home() {
   const interSectRef = useRef(null);
 
   useEffect(() => {
+    const userAgent = window.navigator.userAgent;
     const resizeListener = () => {
       setInnerWidth(window.innerWidth);
     };
@@ -103,8 +104,13 @@ function Home() {
       console.log('big');
       setAppdownModal(false)
     } else {
-      console.log('s');
-      setAppdownModal(true)
+      console.log('userAgent',userAgent);
+      // const code = searchParams.get("code");
+      if (userAgent === "APP-android" || userAgent === "APP-ios") {
+        setAppdownModal(false)
+      } else{
+        setAppdownModal(true)
+      }
     }
     // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
@@ -131,43 +137,6 @@ function Home() {
       console.log('Banner', error);
     }
   };
-
-  // const getProductList = async (page: number) => {
-  //   const data = {
-  //     page: page,
-  //     category: category,
-  //     keyword: keywordParams,
-  //   };
-  //   try {
-  //     if (history) {
-  //       return setHistory(false);
-  //     }
-  //     const { list, total } = await APIProductList(data);
-  //     setTotal(total);
-  //     if (page === 1) {
-  //       setProductList((prev) => [...list]);
-  //     } else {
-  //       setProductList((prev) => [...prev, ...list]);
-  //     }
-  //     // console.log('product', list, page);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const onLikeProduct = async (idx: number) => {
-  //   const data = {
-  //     product_idx: idx,
-  //   };
-  //   try {
-  //     const res = await APILikeProduct(data);
-  //     console.log(res);
-  //     const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-  //     setProductList(newList);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const handleObserver = useCallback((entries: any) => {
     const target = entries[0];
@@ -245,6 +214,7 @@ function Home() {
     }
   }, [productList]);
 
+  
 
   const slides = bannerList.map((item:any) => {
     console.log('item', item);
@@ -327,18 +297,18 @@ function Home() {
         arrowView={false}
         productLink={innerWidth <= 768? "FairsM" : "FairsW"}
         aspect={495/332}
-        link={'FairContent/'}
+        paddingnum={50}
         />
         <ProductMainList
         title={'Latest'}
-        ProductViews={innerWidth <= 768? 1.5  : innerWidth <= 1440? 4.4: 5.9}
+        ProductViews={innerWidth <= 768? 2.1  : innerWidth <= 1440? 4.4: 5.9}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
         arrowView={false}
         productLink={'Latest'}
         aspect={300/370}
-        link={'Latest'}
+        paddingnum={50}
         />
         <WeeklyEditionList
         title={'Weekly Edition'}
@@ -347,7 +317,7 @@ function Home() {
         scrollbar = {innerWidth <= 768? false : true}
         ProducList = {bannerListMobile}
         arrowView={false}
-        link={'WeeklyEdition'}
+        paddingnum={50}
         />
         <ProductMainList
         title={'Home & Styling'}
@@ -357,18 +327,18 @@ function Home() {
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
         arrowView={false}
+        paddingnum={80}
         // aspect={285/240}
-        link={''}
         />
         <MainArtistList
         title={'Trending Artist'}
-        ProductViews={innerWidth <= 768? 2.05 : innerWidth <= 1440? 4.4 : 5.9}
+        ProductViews={innerWidth <= 768? 2.05 : innerWidth <= 1440? 4.4 : 5.7}
         // naviArrow = {innerWidth <= 768? false : true}
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
         arrowView={false}
-        link={'producer'}
+        paddingnum={50}
         />
         <ProductMainList
         title={'Featured Works'}
@@ -379,7 +349,7 @@ function Home() {
         ProducList={bannerListMobile}
         arrowView={false}
         aspect={190/230}
-        link={'producer'}
+        paddingnum={80}
         />
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}
@@ -416,17 +386,17 @@ const Container = styled.div`
 const ProductListWrap = styled.div`
   display:flex;
   flex-direction:column;
-  gap:150px;
-  margin: 15px 20px;
-  padding-top:100px;
+  /* gap:170px; */
+  /* margin: 15px 20px; */
+  /* padding-top:100px; */
+  margin-left:40px;
   @media only screen and (max-width:1440px) {
-    padding-top:50px;
-    gap:100px;
+    /* padding-top:50px; */
+    margin-left:20px;
   }
   @media only screen and (max-width:769px) {
     padding-top:30px;
-    gap:50px;
-    margin:15px 0 ;
+    margin-left:0px;
   }
 `;
 

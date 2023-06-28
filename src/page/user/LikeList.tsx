@@ -294,12 +294,11 @@ function LikeList() {
         <TabButton
           onClick={() => {
             sessionStorage.removeItem('tab');
-
             setTab(1);
             setPage(1);
           }}
         >
-          <TabButtonText selected={tab === 1}>관심작품</TabButtonText>
+        <TabButtonText selected={tab === 1}>관심작품</TabButtonText>
         </TabButton>
         {user.level <= 1 && (
           <TabButton

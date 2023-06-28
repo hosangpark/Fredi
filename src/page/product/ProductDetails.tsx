@@ -545,7 +545,7 @@ function ProductDetails() {
               style={{
                 maxHeight:1000,backgroundColor:'white'
               }}
-              slidesPerView={innerWidth <= 450? 2.8 :innerWidth <= 550? 2.3  :innerWidth <= 650? 2.1 : innerWidth <= 1440? 1.7 : 1.4}
+              slidesPerView={innerWidth <= 768? 990/innerWidth : innerWidth <= 1440? 1700/innerWidth :1800/innerWidth}
               // navigation={true}
               // pagination={{ clickable: true }}
               // scrollbar={ true }
@@ -562,8 +562,7 @@ function ProductDetails() {
                   </ImageBox2>
                 </SwiperSlide>
               ))}
-                <SwiperSlide>
-                </SwiperSlide>
+
             </Swiper>
           </SwiperWrap>
         </RightBox>
@@ -674,7 +673,7 @@ const LeftBox = styled.div`
   display: flex;
   width:35%;
   min-width: 290px;
-  max-height:70vh;
+  max-height:850px;
   flex-direction: column;
   justify-content:space-between;
   text-align: left;
@@ -786,6 +785,12 @@ const NameBox = styled.div`
   width:100%;
   display:flex;
   justify-content:space-between;
+  margin-top:100px;
+  margin-bottom:70px;
+  @media only screen and (max-width: 1440px) {
+    margin-top:70px;
+    margin-bottom:50px;
+  }
   @media only screen and (max-width: 768px) {
     font-size:14px;
   }
@@ -793,12 +798,14 @@ const NameBox = styled.div`
 const CategoryBox = styled.div`
   display:flex;
   flex-wrap:wrap;
+
 `
 const CategoryItem = styled.span`
   font-size:14px;
+  font-weight:450;
   padding:5px 10px;
   border-radius:5px;
-  margin:0 5px 5px 0;
+  margin:0 11px 11px 0;
   border:1px solid #d6d6d6;
   @media only screen and (max-width: 768px) {
     font-size:1px;
@@ -838,7 +845,7 @@ const ProductName = styled.h3`
 font-family:'Pretendard Variable';
   font-weight: 400;
   color: #121212;
-  font-size: 18px;
+  font-size: 22px;
   margin: 0px;
   flex-wrap: wrap;
   @media only screen and (max-width: 768px) {
@@ -848,9 +855,9 @@ font-family:'Pretendard Variable';
 
 const Designer = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 350;
+  font-weight: 400;
   color: #121212;
-  font-size: 14px;
+  font-size: 22px;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -876,17 +883,17 @@ const CartButton = styled.img`
 `;
 
 const ContentBox = styled.div`
-
+  margin:90px 0;
 `;
 
 const Title = styled.span`
 font-family:'Pretendard Variable';
 text-align:start;
-  font-weight: 400;
+  font-weight: 350;
   color: #121212;
   display: inline-block;
   width: 80px;
-  font-size: 16px;
+  font-size: 17px;
   @media only screen and (max-width: 1440px) {
     font-size: 14px;
   }
@@ -943,14 +950,14 @@ const BottomBoxTitle = styled.h3`
 
 const BottomBoxContent = styled.textarea`
 font-family:'Pretendard Variable';
-  margin-top: 30px;
   width: 100%;
   height: 30vh;
   overflow: scroll;
   outline: 0;
-  line-height: 22px;
+  line-height: 30px;
   border: 0;
-  font-size: 14px;
+  font-size: 17px;
+  font-weight:200;
   color: #121212;
   resize: none;
   background-color: #fff;
@@ -1139,7 +1146,7 @@ const RowWrap = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin:30px 0;
+  margin-bottom:30px;
 `;
 
 const LeftOption = styled.div`
@@ -1149,14 +1156,15 @@ const LeftOption = styled.div`
 const CartCardWrap = styled.div``;
 
 const SwiperWrap = styled.div`
-  background-color:#cecece;
-  max-width:800px;
+  /* background-color:#cecece; */
+  max-width:850px;
   height:100%;
   /* max-height:800px; */
   /* width:100%; */
-  @media only screen and (max-width: 768px) {
-    /* max-height:800px; */
+  @media only screen and (max-width: 1440px) {
+    max-width:800px;
   }
+
 `;
 
 const AmountControllerWrap = styled.div`

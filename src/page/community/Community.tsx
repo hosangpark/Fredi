@@ -27,47 +27,7 @@ import BookMark from './BookMark';
 import { FairListItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
 
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
 
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
 
 const TabImage = styled.img`
   width:25px;
@@ -79,29 +39,6 @@ const TabImage = styled.img`
   }
 `
 
-const content = [
-    { 
-      tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-        <TabImage src={snsImage}/></div>,
-      content:<Feed/>
-    },
-    {
-      tab: "Follow",
-      content:<Follow/>
-    },
-    {
-      tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-        <TabImage src={bookMarkImage}/></div>,
-      content:<BookMark/>
-    }
-];
-  const useTabs = (initialTabs:any, allTabs:any) => {
-    const [contentIndex, setContentIndex] = useState(initialTabs);
-    return {
-      contentItem: allTabs[contentIndex],
-      contentChange: setContentIndex
-    };
-  };
 
 
 function Community() {
@@ -121,22 +58,32 @@ function Community() {
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
-  const { contentItem, contentChange } = useTabs(0, content);
 
-  const { user } = useContext(UserContext);
-  const { classes } = useStyles();
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const interSectRef = useRef(null);
 
-  const getBannerList = async () => {
-    try {
-      const res = await APIGetBanner();
-      console.log('banner', res);
-      setBannerList(res);
-    } catch (error) {
-      console.log(error);
+  const content = [
+    { 
+      tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+        <TabImage src={snsImage}/></div>,
+      content:<Feed productList={shopList}/>
+    },
+    {
+      tab: "Follow",
+      content:<Follow/>
+    },
+    {
+      tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+        <TabImage src={bookMarkImage}/></div>,
+      content:<BookMark/>
     }
+  ];
+  const useTabs = (initialTabs:any, allTabs:any) => {
+    const [contentIndex, setContentIndex] = useState(initialTabs);
+    return {
+      contentItem: allTabs[contentIndex],
+      contentChange: setContentIndex
+    };
   };
+  const { contentItem, contentChange } = useTabs(0, content);
 
   const getShopList = async (page: number) => {
     const data = {
@@ -151,35 +98,35 @@ function Community() {
       const { list, total } = await APIShopList(data);
       setTotal(total);
       if (page === 1) {
-        // setShopList((prev) => [...list]);
+        setShopList((prev) => [...list]);
       } else {
         // setShopList((prev) => [...prev, ...list]);
-        setShopList([
-          {
-            idx: 1,
-            category: 1,
-            name: '일므',
-            price: 1000,
-            size: '사이즈',
-            weight: '무게',
-            country: '지역,위치',
-            description: '설명',
-            designer: '디자이너',
-            sns: 'SNS',
-            email: "email",
-            website: "website",
-            created_time: Date(),
-            like_count: 11,
-            image: [
-              {
-                idx: 11,
-                file_name: '',
-                count:141
-              }
-            ],
-            isLike: true,
-          }
-        ]);
+        // setShopList([
+        //   {
+        //     idx: 1,
+        //     category: 1,
+        //     name: '일므',
+        //     price: 1000,
+        //     size: '사이즈',
+        //     weight: '무게',
+        //     country: '지역,위치',
+        //     description: '설명',
+        //     designer: '디자이너',
+        //     sns: 'SNS',
+        //     email: "email",
+        //     website: "website",
+        //     created_time: Date(),
+        //     like_count: 11,
+        //     image: [
+        //       {
+        //         idx: 11,
+        //         file_name: '',
+        //         count:141
+        //       }
+        //     ],
+        //     isLike: true,
+        //   }
+        // ]);
       }
       console.log('shop', list, page);
     } catch (error) {
@@ -241,18 +188,6 @@ function Community() {
       navigate(`/shopdetails/${idx}`);
     }
   };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
-
-  useEffect(() => {
-    console.log(browserHistory.location);
-    console.log(location);
-    getBannerList();
-  }, []);
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -345,10 +280,14 @@ const Container = styled.div`
 `;
 
 const TabButtonWrap = styled.div`
-  width:100%;
-  margin-top:10px;
+  width:400px;
   display:flex;
   border-bottom:1px solid #cccccc;
+  margin:50px;
+  @media only screen and (max-width: 768px) {
+    margin:0px;
+    width:100%;
+  }
 `;
 const TabButton = styled.div`
   flex:1;

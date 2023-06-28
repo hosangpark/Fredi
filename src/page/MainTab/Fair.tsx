@@ -14,9 +14,6 @@ import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
-import ShowTypeButton from '../../components/Shop/ShowTypeButton';
-import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
@@ -304,13 +301,13 @@ function Fair() {
         {
           idx: 1,
           category: 1,
-          name: '일름이름이름',
+          name: 'Salone del Mobile 2023',
+          designer: 'April 17-23',
           price: 1000,
           size: '사이즈',
           weight: '무게',
           country: '지역,위치',
           description: '설명',
-          designer: '디자이너',
           sns: 'SNS',
           email: "email",
           website: "website",
@@ -324,13 +321,13 @@ function Fair() {
         {
           idx: 2,
           category: 2,
-          name: '이이이이이이잉',
+          name: 'Salone del Mobile 2023',
+          designer: 'April 17-23',
           price: 2000,
           size: '사이즈',
           weight: '무게',
           country: '지역,위치',
           description: '설명',
-          designer: '디자이너',
           sns: 'SNS',
           email: "email",
           website: "website",
@@ -344,13 +341,13 @@ function Fair() {
         {
           idx: 3,
           category: 2,
-          name: '이이이이이이잉',
+          name: 'Salone del Mobile 2023',
+          designer: 'April 17-23',
           price: 2000,
           size: '사이즈',
           weight: '무게',
           country: '지역,위치',
           description: '설명',
-          designer: '디자이너',
           sns: 'SNS',
           email: "email",
           website: "website",

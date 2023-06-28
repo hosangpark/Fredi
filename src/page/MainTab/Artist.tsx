@@ -14,13 +14,10 @@ import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
-import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
-import { APILikeShop, APIShopList } from '../../api/ShopAPI';
+import { APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
-import FairCard from '../../components/Shop/FairCard';
 import ArtistCard from '../../components/Shop/ArtistCard';
 import { ArtistItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
@@ -306,29 +303,6 @@ function Artist() {
 
   return (
     <Container>
-      {/* <CarouselWrap>
-        {bannerList.length > 0 && (
-          <Carousel
-            plugins={[autoplay.current]}
-            withIndicators
-            nextControlIcon={<ControlImage src={rightButtonImage} />}
-            previousControlIcon={<ControlImage src={leftButtonImage} />}
-            loop
-            styles={{
-              root: { maxHeight: 700 },
-              control: { background: 'transparent', width: 45, border: 0, '@media (max-width: 768px)': { width: 25 } },
-            }}
-            classNames={{
-              root: classes.carousel,
-              controls: classes.carouselControls,
-              indicator: classes.carouselIndicator,
-              control: classes.carouselControl,
-            }}
-          >
-            {slides}
-          </Carousel>
-        )}
-      </CarouselWrap> */}
       <TitleWrap showsearch={showsearch}>
         <TitleText>
           Artist
@@ -364,7 +338,6 @@ function Artist() {
           )
         })
         }
-        
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}
       <AlertModal
@@ -386,7 +359,7 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin:0 30px;
+  width:100%;
 `;
 
 const ProductListWrap = styled.div`
@@ -429,9 +402,9 @@ const TitleWrap = styled.div<{showsearch:boolean}>`
   display:${props => props.showsearch? 'flex':'none'};
   justify-content:space-between;
   align-items:center;
-  margin:20px 0;
+  padding:50px 50px 90px 50px;
   @media only screen and (max-width: 768px) {
-    display:none
+    display:none;
   }
 `;
 const TitleText = styled.span`

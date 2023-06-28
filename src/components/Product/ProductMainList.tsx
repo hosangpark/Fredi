@@ -34,7 +34,7 @@ function ProductMainList({
   arrowView,
   titlesize,
   aspect,
-  link
+  paddingnum
 }:{
   title:string
   ProductViews:number
@@ -46,7 +46,7 @@ function ProductMainList({
   arrowView?:boolean
   titlesize?:number
   aspect?:number
-  link?:string
+  paddingnum?:number
 }) {
 
   const navigate = useNavigate();
@@ -69,11 +69,12 @@ function ProductMainList({
  
   return (
     <ContainerWrap>
+      
       <TitleBox 
       // onClick={()=>{navigate(`/${link}`);}}
       >
         {/* <a href={item?.link}> */}
-        <TitleText>{title}</TitleText>
+        <TitleText titlesize={titlesize}>{title}</TitleText>
         {arrowView&&
           <ArrowRightIcon src={rightarrowIcon}/>
         }
@@ -101,7 +102,7 @@ function ProductMainList({
         // pagination={{ clickable: true }}
         onSwiper={(swiper) => console.log(swiper)}
         onSlideChange={() => console.log('slide change')}
-        style={{paddingBottom:50}}
+        style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
         {ProducList.map(item=>{
           return(
@@ -110,6 +111,7 @@ function ProductMainList({
                 <ProductImageWrap aspect={aspect? aspect:1} >
                   <ProductImage src={item.file_name}/>
                 </ProductImageWrap>
+                {!title?.includes('Featured') &&
                 <TextWrap title={title}>
                   <ProductTitleText>
                     {item.idx}
@@ -118,6 +120,7 @@ function ProductMainList({
                     {item.idx}
                   </ProductSubText>
                 </TextWrap>
+                }
               </ProductWrap>
             </SwiperSlide>
           )
@@ -180,21 +183,23 @@ const ProductImageWrap = styled.div<{aspect:number}>`
 const ContainerWrap = styled.div`
   width:100%;
 `;
-const TitleBox = styled.div`
+export const TitleBox = styled.div`
   display: flex;
   align-items:center;
-  margin: 50px 0px;
-  padding: 5px 0;
+  margin:170px 0 55px 0;
+  @media only screen and (max-width: 1440px) {
+    margin:135px 0 45px 0;
+  }
   @media only screen and (max-width: 768px) {
-    margin: 15px 0px;
+    margin:100px 0 35px 0;
     justify-content:space-between;
     padding: 5px 15px;
   }
 `;
 
-const TitleText = styled.span`
+const TitleText = styled.span<{titlesize?:number}>`
 font-family:'Pretendard Variable';
-  font-size:22px;
+  font-size:${props=>props.titlesize? props.titlesize : 22}px;
   font-weight:400;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
