@@ -399,7 +399,7 @@ const Button = styled.div<{ type: 'black' | 'white' | 'green' }>`
 const ButtonText = styled.span<{ type: 'black' | 'white' | 'green' }>`
   color: ${(props) => (props.type === 'black' ? '#ffffff' : props.type === 'white' ? '#121212' : '#398049')};
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
 `;
 
 const RowWap = styled.div`
@@ -424,7 +424,7 @@ const LeftText = styled.span`
 const TextInput = styled.input`
   color: #121212;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   border: 0;
   height: 100%;
   line-height: 80px;
@@ -434,7 +434,7 @@ const TextInput = styled.input`
 `;
 
 const RightText = styled(LeftText)`
-  font-weight: 400;
+  font-weight: 410;
   border: 0;
   width: auto;
   padding-left: 20px;
@@ -453,7 +453,7 @@ const DownIcon = styled.img`
 `;
 
 const UnderlineTextButton = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 15px;
   color: #121212;
   position: absolute;
@@ -513,7 +513,7 @@ const ModalBlackButton = styled.div`
 `;
 
 const BlackButtonText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 16px;
   @media only screen and (max-width: 768px) {

@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import ImageCard from '../../components/Shop/ImageCard';
 import { TImage } from '../admin/ProducerList';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 
@@ -152,7 +151,9 @@ const InputBox = styled.div`
   border-bottom:1px solid #c7c7c7;
 `;
 const DeleteText = styled.p`
-  color:#b40000;
+font-family:'Pretendard Variable';
+font-weight : 310;
+  color:#9C343F;
 `;
 const LinkBox = styled.div`
   width:100%;
@@ -176,14 +177,14 @@ const EditPhotoButton = styled.div`
   /* border-bottom:2px solid #c7c7c7; */
   margin:10px 0 0 0;
   font-size:14px;
-  font-weight:400;
+  font-weight: 410;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
   }
   `;
 const SubTextBox = styled.p`
   font-size:14px;
-  font-weight:400;
+  font-weight: 410;
   text-align:start;
   color:#a1a1a1;
   margin:0;
@@ -192,7 +193,7 @@ const SubTextBox = styled.p`
   `;
 const DescriptionText = styled.p`
   font-size:14px;
-  font-weight:400;
+  font-weight: 410;
   text-align:start;
   color:#2b2b2b;
   margin:30px 0;
@@ -302,7 +303,7 @@ const BlackButton = styled.div`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
@@ -343,9 +344,8 @@ const InputWrap = styled.div`
 const InputTitle = styled.div`
 font-family:'Pretendard Variable';
   white-space:nowrap;
-  width:25%;
-  margin-right:30px;
-  max-width:250px;
+  width:40%;
+  max-width:300px;
   text-align:start;
   @media only screen and (max-width: 768px) {
     font-size:14px;
@@ -358,7 +358,7 @@ font-family:'Pretendard Variable';
   width:100%;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   text-align:start;
   border-radius: 0;
   margin:0;
@@ -400,7 +400,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;

@@ -198,7 +198,7 @@ const InnerMenuButton = styled.div`
 
 const InnerMenuButtonText = styled.span`
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   font-size: 15px;
 `;
 

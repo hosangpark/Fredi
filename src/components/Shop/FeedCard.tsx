@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import viewImage from '../../asset/image/eyeview.png';
@@ -15,45 +15,56 @@ function FeedCard({
   item: FairListItem;
   index: number;
   onClick: (e: any) => void;
-  onClickLike: (e: any) => void;
+  onClickLike?: (e: any) => void;
 }) {
+  
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
+
   return (
-    <ProductBox onClick={onClick}>
-      <ProductImageWrap>
-        <ProductImage src={item.image[0].file_name} />
-        <ViewCount>
-          <ViewImg src={viewImage} />
-          <SpanCount>
-            {item.image[0].count? item.image[0].count : 41}
-          </SpanCount>
-        </ViewCount>
-      </ProductImageWrap>
-      {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
+    <ProductBox onClick={onClick} index={(index+1)} height={innerWidth}>
+      <ProductImage src={item.image[0].file_name} />
+      <ViewCount>
+        <ViewImg src={viewImage} />
+        <SpanCount>
+          {item.image[0].count? item.image[0].count : 41}
+        </SpanCount>
+      </ViewCount>
     </ProductBox>
   );
 }
 
-const ProductBox = styled.div`
+const ProductBox = styled.div<{index:number,height:number}>`
   position: relative;
   display: column;
-  width: 24.20%;
-  margin-bottom: 1%;
+  width: calc(25% - 7.5px);
+  aspect-ratio:1;
+  margin-bottom: 10px;
   cursor: pointer;
   overflow: hidden;
+  margin-right: ${(props) => ((props.index) % 4 === 0 ? 0:10)}px;
   @media only screen and (max-width: 768px) {
+    margin-right: ${(props) => ((props.index) % 2 === 0 ? 0:2)}px;
     width: calc(50% - 2px);
-    margin-bottom: 0px;
+    height:${props => (props.height/2-2)}px;
+    margin-bottom: 2px;
   }
 `;
 const ProductImageWrap = styled.div`
   width: 100%;
-  aspect-ratio: 1.0;
+
   overflow: hidden;
   position: relative;
 `;
 const ProductImage = styled.img`
   width: 100%;
-  height: 100%;
+  height:100%;
+
 
   /* &:hover {
     transform: scale(1.1);
@@ -80,10 +91,10 @@ const Designer = styled.span`
 `;
 const SpanCount = styled.span`
 font-family:'Pretendard Variable';
-mix-blend-mode: difference;
-  color: #ffffff;
+/* mix-blend-mode: difference; */
+  color: #000000;
   font-size: 12px;
-  font-weight: 200;
+  font-weight: 410;
   margin-left:5px;
   @media only screen and (max-width: 768px) {
     font-size: 10px;

@@ -354,39 +354,8 @@ const ProductListWrap = styled.div`
 const WeeklyTitle = styled.div`
   text-align:start;
   font-size:18px;
-  font-weight:400;
+  font-weight: 410;
 `
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  @media only screen and (max-width: 769px) {
-    aspect-ratio: 4697/1737;
-  }
-  @media only screen and (max-width: 768px) {
-    aspect-ratio: 1/1;
-    // height: 100%;
-  }
-`;
-const MobileCarouselWrap = styled.div`
-  display: none;
-  max-height: 700px;
-  position: relative;
-  @media only screen and (max-width: 991px) {
-    display: block;
-  }
-`;
-
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
-`;
-
-const InterView = styled.div`
-  height: 200px;
-`;
 
 const SlideImage = styled.img`
   vertical-align: middle;

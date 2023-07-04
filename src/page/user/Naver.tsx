@@ -478,7 +478,7 @@ const TextInput = styled.input`
   border: 0;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   height: 36px;
   padding-left: 10px;
@@ -491,7 +491,7 @@ const TextInput = styled.input`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;
@@ -515,7 +515,7 @@ const WhiteButton = styled(BlackButton)`
 `;
 
 const BlackButtonText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 16px;
   @media only screen and (max-width: 768px) {
@@ -541,7 +541,7 @@ const CheckboxText = styled.span`
   margin-left: 10px;
   font-size: 14px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
   }
@@ -613,7 +613,7 @@ const ModalContentBox = styled.textarea`
   margin: 5px 0;
   resize: none;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   outline: 0;
   line-height: 25px;
@@ -631,7 +631,7 @@ const ModalContentBox = styled.textarea`
 
 const UnderlineTextButton = styled.span`
   font-family: 'NotoSans' !important;
-  font-weight: 400;
+  font-weight: 410;
   font-size: 14px;
   color: #121212;
   text-decoration: underline;
@@ -643,7 +643,7 @@ const UnderlineTextButton = styled.span`
 `;
 
 const CountText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 14px;
   color: #d82c19;
   padding: 0px 5px;

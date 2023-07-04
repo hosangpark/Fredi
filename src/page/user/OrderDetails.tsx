@@ -460,7 +460,7 @@ const ContentRightText = styled.span`
   font-family: 'NotoSans';
   color: #121212;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }

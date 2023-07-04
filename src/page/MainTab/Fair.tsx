@@ -18,6 +18,7 @@ import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 import FairCard from '../../components/Shop/FairCard';
+import { APIProductList } from '../../api/ProductAPI';
 
 export type FairListItem = {
   idx: number;
@@ -136,7 +137,7 @@ function Fair() {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         // setShopList((prev) => [...list]);
@@ -411,33 +412,7 @@ function Fair() {
 
   return (
     <Container>
-      {/* <CarouselWrap>
-        {bannerList.length > 0 && (
-          <Carousel
-            plugins={[autoplay.current]}
-            withIndicators
-            nextControlIcon={<ControlImage src={rightButtonImage} />}
-            previousControlIcon={<ControlImage src={leftButtonImage} />}
-            loop
-            styles={{
-              root: { maxHeight: 700 },
-              control: { background: 'transparent', width: 45, border: 0, '@media (max-width: 768px)': { width: 25 } },
-            }}
-            classNames={{
-              root: classes.carousel,
-              controls: classes.carouselControls,
-              indicator: classes.carouselIndicator,
-              control: classes.carouselControl,
-            }}
-          >
-            {slides}
-          </Carousel>
-        )}
-      </CarouselWrap> */}
-      
-      {/* <ShowTypeButton onClickType1={() => setShowType(1)} onClickType2={() => setShowType(2)} /> */}
       <ProductListWrap>
-        {/* <div onClick={()=>console.log(shopList)}> ddddddddddddddd</div> */}
         {shopList.length > 0 &&
         shopList.map((item,index)=>{
           return(
@@ -461,7 +436,6 @@ function Fair() {
         })
         }
       </ProductListWrap>
-      <InterView ref={interSectRef} />
       <AlertModal
         visible={showLogin}
         setVisible={setShowLogin}
@@ -489,29 +463,6 @@ const ProductListWrap = styled.div`
   flex-wrap: wrap;
   align-items: center;
   margin-bottom: 30px;
-`;
-
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4697/1737;
-  max-height: 700px;
-`;
-const MobileCarouselWrap = styled.div`
-  display: none;
-  max-height: 700px;
-  position: relative;
-  @media only screen and (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
 `;
 
 const InterView = styled.div`

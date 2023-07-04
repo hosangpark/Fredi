@@ -218,7 +218,7 @@ export function BannerDnD({ initList }: BannerDnDProps) {
 
 const UploadButton = styled(Button)`
   width: 170px;
-  font-weight: 400;
+  font-weight: 410;
   border: 1px solid #121212;
   background-color: #fff;
   color: #121212;
@@ -253,7 +253,7 @@ const ImageBox = styled.div`
   /* aspect-ratio: 2.5/1; */
 `;
 const SaveButton = styled.div`
-  font-weight: 400;
+  font-weight: 410;
   background-color: #121212;
   color: #fff;
   font-size: 14px;

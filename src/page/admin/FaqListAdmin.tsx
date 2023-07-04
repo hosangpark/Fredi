@@ -209,7 +209,7 @@ const BlackButtonNoData = styled(BlackButton)`
 const BlackButtonText = styled.span`
   font-family: 'NotoSans';
   color: #ffffff;
-  font-weight: 400;
+  font-weight: 410;
   font-size: 16px;
 `;
 
@@ -253,14 +253,14 @@ const DeleteButton = styled.div`
 
 const DeleteButtonText = styled.span`
   font-family: 'NotoSans';
-  font-weight: 400;
+  font-weight: 410;
   color: #fff;
   font-size: 12px;
 `;
 
 const Nickname = styled.span`
   font-family: 'NotoSans';
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
 `;
@@ -302,7 +302,7 @@ const ContentText = styled.pre`
   flex: 1;
 
   font-family: 'NotoSans';
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   text-align: left;

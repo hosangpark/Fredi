@@ -26,10 +26,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import ArtworkCard from '../../components/Shop/ArtworkCard';
-import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
 import FeedCard from '../../components/Shop/FeedCard';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 interface ICategorySelectButton {
@@ -90,7 +89,7 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         setShopList((prev) => [...list]);
@@ -259,7 +258,7 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
                   setShowLogin(true);
                 }
               }}
-              index={0}
+              index={index}
             />
           )
           })
@@ -294,7 +293,6 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap:1%;
   margin:0 50px;
   @media only screen and (max-width: 768px) {
     margin:0;
@@ -328,17 +326,7 @@ const InterView = styled.div`
   height: 200px;
 `;
 
-const CategorySelectButtonWrap = styled.div`
-  /* display:flex; */
-  align-items: center;
-  margin: 20px 50px 40px;
-  @media only screen and (max-width: 768px) {
-    margin: 15px 0 15px 10px;
-  }
-  /* @media only screen and (max-width: 1024px) {
-    display: none;
-  } */
-`;
+
 
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
@@ -359,7 +347,7 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-weight: 400;
+  font-weight: 410;
   text-transform: capitalize;
   @media only screen and (max-width: 1024px) {
     font-size: 14px;
@@ -380,7 +368,7 @@ const TitleWrap = styled.div<{showsearch:boolean}>`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size: 22px;
-  font-weight: 300;
+  font-weight: 310;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

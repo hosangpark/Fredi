@@ -181,7 +181,7 @@ const BlackButton = styled.div`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   line-height: 60px;
   cursor: pointer;
   @media only screen and (max-width: 1000px) {
@@ -206,7 +206,7 @@ const TextInput = styled.input`
   border: 0;
   padding-left: 20px;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   outline: 0;
   @media only screen and (max-width: 1000px) {
@@ -228,7 +228,7 @@ const RightText = styled.span`
   border: 0;
   padding-left: 20px;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   align-items: center;
   @media only screen and (max-width: 1000px) {
@@ -246,7 +246,7 @@ const ContentTextArea = styled.textarea`
   border: 0;
   padding: 20px;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   vertical-align: top;
   resize: none;

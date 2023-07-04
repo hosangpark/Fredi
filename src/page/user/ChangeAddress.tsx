@@ -749,7 +749,7 @@ const EmptyRowLeftBox = styled.div`
 
 const RightText = styled(LeftText)<{marginR?:number}>`
 font-family:'Pretendard Variable';
-  font-weight: 300;
+  font-weight: 310;
   width:100%;
   border: 0;
   flex:6;
@@ -769,7 +769,7 @@ const RightArrow = styled.img`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   line-height: 60px;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
@@ -852,7 +852,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 15px;
   color: #d82c19;
   margin-top: 8px;
@@ -910,7 +910,7 @@ const BackButton = styled.div<{ type: 'black' | 'white' | 'green' }>`
 const ButtonText = styled.span<{ type: 'black' | 'white' | 'green' }>`
   color: ${(props) => (props.type === 'black' ? '#ffffff' : props.type === 'white' ? '#121212' : '#398049')};
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
   }
@@ -933,7 +933,7 @@ const DownIcon = styled.img`
 const TextInput = styled.input`
   color: #121212;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   border: 0;
   height: 100%;
   padding: 10px;
@@ -969,7 +969,7 @@ const EmptyRowTextInput = styled(TextInput)<{ last?: boolean }>`
 `;
 
 const UnderlineTextButton = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 15px;
   color: #121212;
   position: absolute;
@@ -1000,7 +1000,7 @@ const ModalContentBox = styled.textarea`
   margin: 5px 0;
   resize: none;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   outline: 0;
   line-height: 25px;
@@ -1030,7 +1030,7 @@ const ReasonInput = styled.textarea`
 
   padding: 10px;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   vertical-align: top;
   resize: none;
@@ -1060,7 +1060,7 @@ const SearchButton = styled.div`
 `;
 
 const SearchButtonText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 12px;
   @media only screen and (max-width: 768px) {
@@ -1115,7 +1115,7 @@ const AddressModalTextInput = styled.input`
   border-radius: 0;
 
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   margin-bottom: 10px;
   @media only screen and (max-width: 768px) {

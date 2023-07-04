@@ -7,11 +7,12 @@ import { UserContext } from '../../context/user';
 import ImageCard from '../../components/Shop/ImageCard';
 import { TImage } from '../admin/ProducerList';
 import Sheet,{SheetRef} from 'react-modal-sheet';
-import RightArrowImage from '../../asset/image/ico_next_mobile.png'
-import cameraImage from '../../asset/image/camera.png';
-import qrImage from '../../asset/image/qricon.png';
-import linkImage from '../../asset/image/links.png';
-import profileImage from '../../asset/image/profile.png';
+import RightArrowImage from '../../asset/image/right.svg'
+import LinksIcon from '../../asset/image/m10_home.svg';
+import qrImage from '../../asset/image/qr.svg';
+import linkImage from '../../asset/image/rink.svg';
+import xImage from '../../asset/image/close.svg';
+import profileImage from '../../asset/image/Profile.svg';
 import QrModal from '../../components/Modal/QrModal';
 import img01 from '../../asset/image/img01.png';
 import img03 from '../../asset/image/img03.png';
@@ -57,6 +58,14 @@ function MobileProfile() {
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
   const [qrmodal,setQrModal] = useState(false);
   const { user } = useContext(UserContext);
+
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
 
   const getUserDetails = async () => {
     try {
@@ -141,19 +150,19 @@ function MobileProfile() {
     ]);
     setlinkList([
       {
-        linktitle:'Website(FREDI)',
+        linktitle:'Website (FREDI)',
         linkurl:'www.fredi.co.kr'
       },
       {
-        linktitle:'Website(FREDI)',
+        linktitle:'Website (FREDI)',
         linkurl:'www.fredi.co.kr'
       },
       {
-        linktitle:'Website(FREDI)',
+        linktitle:'Website (FREDI)',
         linkurl:'www.fredi.co.kr'
       },
       {
-        linktitle:'Website(FREDI)',
+        linktitle:'Website (FREDI)',
         linkurl:'www.fredi.co.kr'
       },
     ])
@@ -173,6 +182,7 @@ function MobileProfile() {
               <Sheet.Header>
                 <EmptyHeightBox onClick={() => setBottomSheetModal(false)}>
                 <HeaderButtom/>
+                <XIcon src={xImage}/>
                 </EmptyHeightBox>
               </Sheet.Header>
               <SheetWrap>
@@ -183,7 +193,7 @@ function MobileProfile() {
                   <LinkImageWrap>
                     <LinksImage src={linkImage}/>
                   </LinkImageWrap>
-                  <LinkItemBox>
+                  <LinkItemBox href={'https://www.naver.com'}>
                     <LinkTitleBox>
                       <LinkName>
                         {item.linktitle}
@@ -230,22 +240,22 @@ function MobileProfile() {
           </HeaderLeft>
           {!token?
           <ButtonBox>
-            <ButtonImageWrap onClick={() => setBottomSheetModal(true)}>
-              <ButtonImage src={cameraImage}/>
+            <ButtonImageWrap style={{marginRight:10}} onClick={() => setBottomSheetModal(true)}>
+              <ButtonImage src={LinksIcon}/>
             </ButtonImageWrap>
-            <ButtonImageWrap onClick={()=>setQrModal(true)}>
+            <ButtonImageWrap  style={{marginRight:6}} onClick={()=>setQrModal(true)}>
               <ButtonImage src={qrImage}/>
             </ButtonImageWrap>
-            <FollowButtonBox style={{marginRight:0}}>
+            <FollowButtonBox style={{marginLeft:6}}>
               Follow
             </FollowButtonBox>
           </ButtonBox>
           :
           <ButtonBox>
-            <FollowButtonBox style={{paddingLeft:8,paddingRight:8,marginRight:5}} onClick={()=>{navigate('/EditProfile')}}>
+            <FollowButtonBox style={{marginRight:12}} onClick={()=>{navigate('/EditProfile')}}>
               Edit Profile
             </FollowButtonBox>
-            <FollowButtonBox style={{paddingLeft:8,paddingRight:8}} onClick={()=>{navigate('/EditProfile')}}>
+            <FollowButtonBox onClick={()=>{navigate('/EditProfile')}}>
               Share Profile
             </FollowButtonBox>
           </ButtonBox>
@@ -264,113 +274,18 @@ function MobileProfile() {
                 item={item}
                 key={item.idx}
                 onClick={(e) => saveHistory(e, item.name)}
-                // onClickLike={(e) => {
-                //   if (user.idx) {
-                //     e.stopPropagation();
-                //     onLikeShop(item.idx);
-                //   } else {
-                //     e.stopPropagation();
-                //     setShowLogin(true);
-                //   }
-                // }}
-                index={0}
-                showType={showType}
+                index={index}
               />
             )
             })
           }
           {imageList.length < 4 &&
-          <PlusImage onClick={()=>navigate('/AddPhoto')}>
-            <PlusText>+</PlusText>
+          <PlusImage onClick={()=>navigate('/AddPhoto')} height={innerWidth}>
+            <PlusH></PlusH>
+            <PlusV></PlusV>
           </PlusImage>
           }
-          
       </ProductListWrap>
-      {/* {imageList.length > 0 &&
-      <PlusButton onClick={()=>navigate('/AddPhoto')}>
-        <PlusText>+</PlusText>
-      </PlusButton>
-      } */}
-      {/* <LeftBox>
-        <LeftTopBox>
-          <Title>Profile</Title>
-        </LeftTopBox>
-      </LeftBox>
-      <RightBox>
-        {user.level !== 0 ? (
-          <>
-            <RowWap>
-              <LeftText>아이디</LeftText>
-              <RightText>{userDetails?.user_id}</RightText>
-            </RowWap>
-            <RowWap>
-              <LeftText>회원등급</LeftText>
-              <RightText>
-                {userDetails?.level === 1
-                  ? '입점업체회원'
-                  : userDetails?.level === 2
-                  ? '일반회원2'
-                  : userDetails?.level === 3
-                  ? '일반회원1'
-                  : userDetails?.level === 0
-                  ? '관리자'
-                  : ''}
-              </RightText>
-            </RowWap>
-            <RowWap>
-              <LeftText>이름</LeftText>
-              <RightText>{userDetails?.name}</RightText>
-            </RowWap>
-            <RowWap>
-              <LeftText>닉네임</LeftText>
-              <RightText>{userDetails?.nickname}</RightText>
-            </RowWap>
-            <RowWap>
-              <LeftText>휴대폰번호</LeftText>
-              <RightText>{userDetails?.phone}</RightText>
-            </RowWap>
-            <RowWap>
-              <LeftText>성별</LeftText>
-              <RightText>{userDetails?.gender === 1 ? '남자' : userDetails?.gender === 2 ? '여자' : '-'}</RightText>
-            </RowWap>
-            <RowWap>
-              <LeftText>생년월일</LeftText>
-              <RightText>{userDetails?.birth ?? '-'}</RightText>
-            </RowWap>
-            <BottomRowWrap>
-              <GreenButton onClick={() => navigate('/orderlist')}>
-                <BlackButtonText>주문내역</BlackButtonText>
-              </GreenButton>
-              <WhiteButton onClick={() => navigate('/asklist-shop')}>
-                <GreenBorderbuttonText>상품문의내역</GreenBorderbuttonText>
-              </WhiteButton>
-              <BlackButton
-                onClick={() => {
-                  if (!isSnsUser) {
-                    setShowModal(true);
-                  } else {
-                    navigate('/modifyuserinfo');
-                  }
-                }}
-              >
-                <BlackButtonText>개인정보수정</BlackButtonText>
-              </BlackButton>
-            </BottomRowWrap>
-          </>
-        ) : (
-          <>
-            <RowWap>
-              <LeftText>아이디</LeftText>
-              <RightText>admin</RightText>
-            </RowWap>
-            <RowWap>
-              <LeftText>회원 등급</LeftText>
-              <RightText>관리자</RightText>
-            </RowWap>
-          </>
-        )}
-      </RightBox> */}
-      {/* <EmptyBox /> */}
       <QrModal
         visible={qrmodal}
         setVisible={setQrModal}
@@ -419,51 +334,63 @@ const Container = styled.div`
 `;
 
 const ArrowImageWrap = styled.div`
-  width:20px;
-  height:20px;
+  width:9px;
+  height:18px;
   display:flex;
   align-items:center;
   @media only screen and (max-width: 768px) {
-    width:15px;
-    height:15px;
+    width:6px;
+    height:12px;
   }
 `;
 const ArrowImage = styled.img`
   width:100%;
   height:100%;
 `;
+const XIcon = styled.img`
+position:absolute;
+top:20px;
+right:20px;
+  width:20px;
+  height:20px;
+`;
+
 
 const HeaderButtom = styled.div`
 // tranform: translateY(-1px);
   position:absolute;
-  top:20px;
+  top:15px;
   left:50%;
   transform:translate(-50%,0);
   width:45px;
-  border:1px solid #d3d3d3;
-  border-radius:20px;
+  border-bottom:1px solid #000000;
+
   @media only screen and (max-width: 768px) {
-    width:35px;
+    width:41px;
   }
 `;
 const SheetWrap = styled.div`
 // tranform: translateY(-1px);
   width:100%;
-  padding:30px 15px;
+  min-height:250px;
+  padding:25px 20px 50px;
   @media only screen and (max-width: 768px) {
+    padding:25px 20px 30px;
   }
 `;
 const LayoutWrap = styled.div`
   display: flex;
-  margin: 10px 0 ;
+  margin:10px 0;
 `;
 const LinkImageWrap = styled.div`
   display:flex;
   justify-content:center;
   align-items:center;
-  width:70px;
-  height:70px;
+  width:60px;
+  height:60px;
   margin-right:30px;
+  border: 1px solid #B8B7B8;
+  border-radius:50%;
   /* width:40%; */
   @media only screen and (max-width: 768px) {
     margin-right:20px;
@@ -471,8 +398,9 @@ const LinkImageWrap = styled.div`
     height:45px;
   }
 `;
-const LinkItemBox = styled.div`
-  width:100%;
+const LinkItemBox = styled.a`
+  text-decoration:none;
+  flex:1;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -489,7 +417,7 @@ const LinkTitleBox = styled.div`
 
 const LinkName = styled.p`
   font-family:'Pretendard Variable';
-  font-weight:normal;
+  font-weight:450;
   text-align:start;
   color:#2b2b2b;
   margin:0;
@@ -499,7 +427,7 @@ const LinkName = styled.p`
 `
 const LinkUrl = styled.p`
   font-family:'Pretendard Variable';
-  font-weight:normal;
+  font-weight: 310;
   text-align:start;
   color:#7c7c7c;
   font-size:14px;
@@ -565,24 +493,26 @@ const NameText = styled.p`
 `;
 const FollowButtonBox = styled.div`
 font-family:'Pretendard Variable';
-  font-weight:normal;
+  font-weight: 310;
   display: flex;
   justify-content: center;
   align-items: center;
-  border:0.5px solid #c7c7c7;;
+  border:0.5px solid #B4B4B4;;
   border-radius:7px;
-  font-weight:300;
-  font-size:16px;
+  font-size:15px;
   white-space:nowrap;
-  width:100px;
+  width:120px;
+  margin:2px 0;
   @media only screen and (max-width: 768px) {
-    font-size:12px;
-    width:80px;
+    height:30px;
+    font-size:14px;
+    width:94px;
+    margin:1px 0;
   }
 `;
 const SubTextBox = styled.p`
   font-family:'Pretendard Variable';
-  font-weight:300;
+  font-weight: 310;
   font-size:14px;
   text-align:start;
   color:#383838;
@@ -591,14 +521,14 @@ const SubTextBox = styled.p`
     font-size:12px;
   }
 `;
-const PlusText = styled.p`
+const PlusIcon = styled.img`
   margin:0;
   `;
 const DescriptionText = styled.p`
   font-family:'Pretendard Variable';
-  font-weight:normal;
+  font-weight: 310;
   text-align:start;
-  color:#2b2b2b;
+  color:#000000;
   margin:30px 0;
   font-size:14px;
   @media only screen and (max-width: 768px) {
@@ -618,31 +548,56 @@ const ImageWrap = styled.div`
   /* margin-right:15px; */
   background-color: #DBDBDB;
 `;
-const PlusImage = styled.div`
+const PlusImage = styled.div<{height:number}>`
   /* border:1px solid #a1a1a1;; */
+  position:relative;
   display:flex;
   justify-content:center;
   align-items:center;
-  aspect-ratio: 1.2;
+  aspect-ratio: 1;
   background-color:#d1d1d1;
-  width: 24.25%;
+  width: calc(25% - 10px);
   cursor: pointer;
   overflow: hidden;
   margin-bottom: 30px;
   @media only screen and (max-width: 1440px) {
+    margin-bottom: 10px;
     /* width: 24.25%; */
-    width: 32.66%
+    width: calc(33.3333% - 5px)
   }
   @media only screen and (max-width: 768px) {
-    width: 49.5%;
-    margin-bottom: 10px;
+    width: calc(50% - 1px);
+    margin-bottom: 5px;
+    height:${props => (props.height/2-1)}px;
   }
 `;
+const PlusH = styled.div`
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:30px;
+  transform:translate(-50%,-50%);
+  border-bottom:1px solid #585858;
+  @media only screen and (max-width: 768px) {
+    width:20px;
+  }
+`
+const PlusV = styled.div`
+  position:absolute;
+  left:50%;
+  top:50%;
+  height:30px;
+  transform:translate(-50%,-50%);
+  border-right:1px solid #585858;
+  @media only screen and (max-width: 768px) {
+    height:20px;
+  }
+`
 const ButtonImageWrap = styled.div`
   display:flex;
   align-items:center;
   justify-content:center;
-  border:0.5px solid #c7c7c7;
+  border:0.5px solid #B4B4B4;
   box-sizing:border-box;
   border-radius:5px;
   width:45px;
@@ -656,14 +611,14 @@ const Image = styled.img`
   object-fit:contain;
 `;
 const LinksImage = styled.img`
-  width:100%;
-  height:100%;
+  width:45%;
+  height:45%;
   object-fit:contain;
 `;
 const ButtonImage = styled.img`
-  border-radius:7px;
-  width:70%;
-  height:70%;
+
+  width:65%;
+  height:65%;
   object-fit:contain;
 `;
 const ImageFlexBox = styled.div`
@@ -679,7 +634,7 @@ const PlusButton = styled.div`
   bottom:100px;
   border:1px solid black;
   border-radius:50%;
-  font-weight:400;
+  font-weight: 410;
   display:none;
   @media only screen and (max-width: 768px) {
     display:block;
@@ -697,8 +652,7 @@ const PlusButton = styled.div`
 `;
 const ButtonBox = styled.div`
   display:flex;
-    height:45px;
-    gap:10px;
+  height:45px;
   /* flex-direction:column; */
   /* justify-content:space-between; */
   @media only screen and (max-width: 768px) {
@@ -707,17 +661,22 @@ const ButtonBox = styled.div`
 `;
 const ProductListWrap = styled.div`
   display: flex;
-  gap:1%;
   flex-wrap: wrap;
   align-items: center;
+  margin-bottom:100px;
+  @media only screen and (max-width: 768px) {
+    margin-bottom:100px;
+  }
 `;
 
 const WorksLengthBox = styled.div`
+font-family:'Pretendard Variable';
   text-align:start;
   margin-left:20px;
+  font-weight: 310;
   margin-bottom:10px;
   font-size:16px;
-  color:#6b6b6b;
+  color:#000000;
   @media only screen and (max-width: 450px) {
     font-size:12px;
   }
@@ -781,7 +740,7 @@ const LeftText = styled.span`
 
 const RightText = styled(LeftText)`
   min-width: 400px;
-  font-weight: 400;
+  font-weight: 410;
   border: 0;
   text-align: left;
   font-size: 16px;
@@ -833,7 +792,7 @@ const WhiteButton = styled(BlackButton)`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
@@ -849,6 +808,7 @@ const EmptyBox = styled.div`
 const EmptyHeightBox = styled.div`
   width:100%;
   height:50px;
+  background-color:#ffff;
 `;
 
 const WhiteButtonText = styled(BlackButtonText)`
@@ -893,7 +853,7 @@ const TextInput = styled.input`
   padding-bottom: 3px;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   border-radius: 0;
   @media only screen and (max-width: 768px) {
@@ -933,7 +893,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;

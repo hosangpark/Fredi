@@ -5,11 +5,11 @@ import newIconImage from '../../asset/image/ico_new.png';
 import { APICheckNew } from '../../api/SettingAPI';
 import { UserContext } from '../../context/user';
 import AlertModal from '../Modal/AlertModal';
-import home01 from '../../asset/image/homeicon.png';
+import home01 from '../../asset/image/home.svg';
 import home02 from '../../asset/image/home02.png';
-import home03 from '../../asset/image/searchicon.png';
-import home04 from '../../asset/image/snsicon.png';
-import home05 from '../../asset/image/profile.png';
+import home03 from '../../asset/image/Fair.svg';
+import home04 from '../../asset/image/discover.svg';
+import home05 from '../../asset/image/my.svg';
 import likeOffImage from '../../asset/image/heart_off.png';
 import ConfirmModal from '../Modal/ConfirmModal';
 import { removeHistory } from '../Layout/Header';
@@ -53,64 +53,32 @@ function BottomNav() {
   // }, []);
 
   return (
-    <BottomNavWrap>
+    <BottomNavWrap draggable={false}>
       <MenuButton
         onClick={() => {
           removeHistory();
           navigate('/');
         }}
       >
-        <MenuButtonImage src={home01} />
+        <MenuButtonImage src={home01} width={29}/>
         <MenuButtonText>HOME</MenuButtonText>
       </MenuButton>
-
-      {/* {user.level <= 1 && (
-        <MenuButton
-          onClick={() => {
-            console.log(user.level);
-            removeHistory();
-
-            if (user.level > 1) {
-              setShowModal(true);
-            } else {
-              navigate('/producer');
-            }
-          }}
-        >
-          <MenuButtonImage src={home02} />
-          <MenuButtonText>Producing</MenuButtonText>
-        </MenuButton>
-      )} */}
       <MenuButton
         onClick={() => {
           removeHistory();
           navigate('/MainTab');
         }}
       >
-        <MenuButtonImage src={home03} />
+        <MenuButtonImage src={home03} width={29}/>
         <MenuButtonText>FAIR</MenuButtonText>
       </MenuButton>
-
-      {/* <MenuButton
-        onClick={() => {
-          removeHistory();
-          if (!token) {
-            return setShowLogin(true);
-          }
-          navigate('/likelist');
-        }}
-      >
-        <MenuButtonImage src={likeOffImage} width={26} />
-        <MenuButtonText>관심작품</MenuButtonText>
-      </MenuButton> */}
-      
       <MenuButton
         onClick={() => {
           removeHistory();
           navigate('/community');
         }}
       >
-        <MenuButtonImage src={home04} width={26} />
+        <MenuButtonImage src={home04} width={29}/>
         <MenuButtonText>Discover</MenuButtonText>
       </MenuButton>
       <MenuButton
@@ -125,7 +93,7 @@ function BottomNav() {
           // }
         }}
       >
-        <MenuButtonImage src={home05} />
+        <MenuButtonImage src={home05} width={29}/>
         <MenuButtonText>MY</MenuButtonText>
       </MenuButton>
       <AlertModal
@@ -158,8 +126,8 @@ const BottomNavWrap = styled.div`
   display: none;
   width: 100%;
   background-color: #fff;
-  border-top: 1px solid #efefef;
-  height: 60px;
+  /* border-top: 1px solid #efefef; */
+  height: 70px;
   align-items: center;
   justify-content: space-between;
   z-index: 99;
@@ -195,21 +163,16 @@ const MenuButton = styled.div`
 `;
 
 const MenuButtonImage = styled.img<{ width?: number }>`
-  width: ${(props) => (props.width ? props.width : 27)}px;
-  height: 27px;
-  margin-bottom: 3px;
-  @media only screen and (max-width: 768px) {
-    width: 23px;
-    height: 23px;
-  }
-
+  width: ${(props) => (props.width ? props.width : 24)}px;
+  height: ${(props) => (props.width ? props.width : 24)}px;
+  margin-bottom:8px;
 `;
 
 const MenuButtonText = styled.span`
-  font-weight: 400;
+font-family:'Pretendard Variable';
+  font-weight: 360;
   color: #121212;
   font-size: 10px;
-  display:none;
 `;
 
 export default memo(BottomNav);

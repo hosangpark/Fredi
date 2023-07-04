@@ -47,9 +47,10 @@ const LeftBox = styled.div`
   width: 100%;
   flex-direction: column;
   text-align: left;
-
+  padding:30px;
   @media only screen and (max-width: 1000px) {
     width: 100%;
+    padding:20px;
     border-right: 0;
   }
 `;
@@ -59,9 +60,9 @@ const SubTitle = styled.h4`
   font-weight: 500;
   color: #121212;
   font-size: 18px;
-  margin-left: 30px;
+
   @media only screen and (max-width: 1000px) {
-    margin-left: 18px;
+
     font-size: 15px;
   }
 `;
@@ -74,7 +75,7 @@ const MenuBox = styled.div`
 
 const MenuButton = styled.div`
 font-family:'Pretendard Variable';
-  padding: 5px 0;
+  padding: 20px 0;
   display: flex;
   cursor: pointer;
   line-height: 30px;
@@ -83,15 +84,14 @@ font-family:'Pretendard Variable';
     width: 100%;
     /* border-top: 1px solid #121212; */
     align-items: center;
-    padding-top: 13px;
-    padding-bottom: 13px;
+    padding:20px 0;
     margin: 0;
   }
 `;
 
 const MenuButtonText = styled(SubTitle)`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 360;
   height: 100%;
   font-size: 16px;
   @media only screen and (max-width: 1000px) {
@@ -120,19 +120,18 @@ const LeftTopBox = styled.div`
 
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 360;
   color: #121212;
   font-size: 16px;
-  padding:30px;
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid  #ECECEC;
   @media only screen and (max-width: 1000px) {
-    padding:20px;
+  padding-bottom:40px;
     font-size: 14px;
   }
 `;
 
 const BusinessHourText = styled.p`
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   margin-top: 30px;

@@ -25,6 +25,7 @@ import Footer from '../../components/Layout/Footer';
 import MainArtistList from '../../components/Product/MainArtistList';
 
 
+
 const useStyles = createStyles((theme, _params, getRef) => ({
   carousel: {
     width: '100%',
@@ -308,12 +309,14 @@ function Home() {
         arrowView={false}
         productLink={'Latest'}
         aspect={300/370}
+        titlesize={21}
         paddingnum={50}
+        marginRight={18}
         />
         <WeeklyEditionList
         title={'Weekly Edition'}
         ProductViews={innerWidth <= 768? 1.1 : innerWidth <= 1440? 2.7 :3.4}
-        naviArrow = {innerWidth <= 768? false : true}
+        naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList = {bannerListMobile}
         arrowView={false}
@@ -326,8 +329,10 @@ function Home() {
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
+        productLink={'Home'}
         arrowView={false}
-        paddingnum={80}
+        paddingnum={90}
+        marginRight={18}
         // aspect={285/240}
         />
         <MainArtistList
@@ -337,6 +342,7 @@ function Home() {
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
         ProducList={bannerListMobile}
+        productLink={'Trending'}
         arrowView={false}
         paddingnum={50}
         />
@@ -349,7 +355,8 @@ function Home() {
         ProducList={bannerListMobile}
         arrowView={false}
         aspect={190/230}
-        paddingnum={80}
+        paddingnum={90}
+        marginRight={15}
         />
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}
@@ -412,25 +419,7 @@ const CarouselWrap = styled.div`
     // height: 100%;
   }
 `;
-const MobileCarouselWrap = styled.div`
-  display: none;
-  max-height: 700px;
-  position: relative;
-  @media only screen and (max-width: 991px) {
-    display: block;
-  }
-`;
 
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
-`;
-
-const InterView = styled.div`
-  height: 200px;
-`;
 
 const SlideImage = styled.img`
   vertical-align: middle;

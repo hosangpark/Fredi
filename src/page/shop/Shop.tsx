@@ -21,6 +21,7 @@ import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 import { CategoryList } from '../../components/List/List';
+import { APIProductList } from '../../api/ProductAPI';
 
 export type TShopListItem = {
   idx: number;
@@ -127,7 +128,7 @@ function Shop() {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         setShopList((prev) => [...list]);

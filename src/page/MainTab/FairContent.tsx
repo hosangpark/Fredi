@@ -24,6 +24,7 @@ import FairCard from '../../components/Shop/FairCard';
 import Artwork, { FairListItem } from './Artwork';
 import Artist from './Artist';
 import { CategoryList } from '../../components/List/List';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 
@@ -62,6 +63,7 @@ function FairContent() {
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
   const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
+
   const onSearch = () => {
     navigate(
       {
@@ -80,6 +82,25 @@ function FairContent() {
       keyword,
       category: value,
     });
+  };
+
+  const getShopList = async (page: number) => {
+    const data = {
+      page: page,
+      category: category,
+      keyword: keywordParams,
+    };
+    try {
+      const { list, total } = await APIProductList(data);
+      if (page === 1) {
+        setproductList((prev) => [...list]);
+      } else {
+        // setShopList((prev) => [...prev, ...list]);
+      }
+      console.log('shop', list, page);
+    } catch (error) {
+      console.log(error);
+    }
   };
   
   const getBannerList = async () => {
@@ -105,6 +126,7 @@ function FairContent() {
 
   useEffect(()=>{
     getBannerList()
+    getShopList(1)
   },[])
   
 
@@ -178,7 +200,7 @@ const TabButtonWrap = styled.div`
   width:400px;
   display:flex;
   border-bottom:1px solid #cccccc;
-  margin:0 0 50px 40px;
+  margin:0 50px 40px;
   @media only screen and (max-width: 768px) {
     margin:0px;
     width:100%;
@@ -192,10 +214,12 @@ const TabButton = styled.div`
 `;
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
-  border-bottom: solid 1px ${(props) => props.color || "none"};
-  font-weight: ${props => props.color == 'black' ? 400 : 300};
+  border-bottom: solid 1.7px ${(props) => props.color || "none"};
+  font-weight: ${props => props.color == 'black' ? 460 : 360};
+  color:#000000;
   font-family:'Pretendard Variable';
   padding:10px 0;
+  margin-top:5px;
   font-size:18px;
   @media only screen and (max-width: 768px) {
     font-size:14px;
@@ -214,13 +238,13 @@ const TitleWrap = styled.div`
   display:flex;
   justify-content:space-between;
   @media only screen and (max-width: 768px) {
-    margin:20px 0px 80px 20px;
+    margin:20px 0px 25px 20px;
   }
 `;
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   display:block;
-  font-weight: 400;
+  font-weight: 410;
   text-transform: capitalize;
   margin: 2px 0;
   font-size:26px;
@@ -234,7 +258,7 @@ font-family:'Pretendard Variable';
 const SubText = styled.span`
   font-family:'Pretendard Variable';
   display:block;
-  font-weight: 350;
+  font-weight: 360;
   text-transform: capitalize;
   margin: 2px 0;
   font-size:22px;

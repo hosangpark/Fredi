@@ -370,14 +370,14 @@ function ModifyUserInfo() {
             <RightArrow src={rightArrowImage}/>
           </RightText>
         </RowWap>
-        <RowWap style={{paddingTop:60}}>
+        <RowWap style={{paddingTop:100}}>
           <LeftText>Address</LeftText>
           <RightText onClick={()=> navigate('/changeAddress')}>
             Edit
             <RightArrow src={rightArrowImage}/>
           </RightText>
         </RowWap>
-        <RowWap style={{paddingTop:60}}>
+        <RowWap style={{paddingTop:100}}>
           <LeftText style={{color:'#9C343F'}}>Delete Account</LeftText>
           <RightText onClick={()=> navigate('/deleteAccount')}>
             Delete
@@ -684,8 +684,9 @@ const RowWap = styled.div<{ last?: boolean }>`
   align-items: center;
   position: relative;
   justify-content:space-between;
-  border-bottom:1px solid #d4d4d4;
+  border-bottom:1px solid #ECECEC;
   @media only screen and (max-width: 768px) {
+    padding:20px 0;
   }
 `;
 
@@ -693,26 +694,11 @@ const EmptyRowWrap = styled(RowWap)`
   height: auto;
 `;
 
-const LeftText = styled.span`
-font-family:'Pretendard Variable';
-  font-weight:normal;
-  color: #121212;
-  font-size: 16px;
-  font-weight: 500;
-  flex:4;
-  height: 100%;
-  text-align: left;
-  line-height: 80px;
-  @media only screen and (max-width: 768px) {
-    font-size: 12px;
-    line-height: 50px;
-  }
-`;
 
 const EmptyRowLeftBox = styled.div`
   min-width: 200px;
   max-width: 300px;
-
+  
   height: 100%;
   @media only screen and (max-width: 768px) {
     width: 120px;
@@ -720,9 +706,26 @@ const EmptyRowLeftBox = styled.div`
   }
 `;
 
+const LeftText = styled.span`
+display:flex;
+align-items:center;
+  font-family:'Pretendard Variable';
+    font-weight:normal;
+    color: #000000;
+    font-size: 16px;
+    font-weight: 500;
+    flex:4;
+    height: 100%;
+    text-align: left;
+    @media only screen and (max-width: 768px) {
+      font-size: 12px;
+  }
+`;
 const RightText = styled(LeftText)<{marginR?:number}>`
+justify-content:flex-end;
 font-family:'Pretendard Variable';
-  font-weight: 300;
+  font-weight: 310;
+  color:#000000;
   width:100%;
   border: 0;
   flex:6;
@@ -742,7 +745,7 @@ const RightArrow = styled.img`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   line-height: 60px;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
@@ -825,7 +828,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 15px;
   color: #d82c19;
   margin-top: 8px;
@@ -883,7 +886,7 @@ const BackButton = styled.div<{ type: 'black' | 'white' | 'green' }>`
 const ButtonText = styled.span<{ type: 'black' | 'white' | 'green' }>`
   color: ${(props) => (props.type === 'black' ? '#ffffff' : props.type === 'white' ? '#121212' : '#398049')};
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
   }
@@ -906,7 +909,7 @@ const DownIcon = styled.img`
 const TextInput = styled.input`
   color: #121212;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   border: 0;
   height: 100%;
   padding: 10px;
@@ -942,7 +945,7 @@ const EmptyRowTextInput = styled(TextInput)<{ last?: boolean }>`
 `;
 
 const UnderlineTextButton = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 15px;
   color: #121212;
   position: absolute;
@@ -973,7 +976,7 @@ const ModalContentBox = styled.textarea`
   margin: 5px 0;
   resize: none;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   outline: 0;
   line-height: 25px;
@@ -1003,7 +1006,7 @@ const ReasonInput = styled.textarea`
 
   padding: 10px;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   vertical-align: top;
   resize: none;
@@ -1033,7 +1036,7 @@ const SearchButton = styled.div`
 `;
 
 const SearchButtonText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 12px;
   @media only screen and (max-width: 768px) {
@@ -1088,7 +1091,7 @@ const AddressModalTextInput = styled.input`
   border-radius: 0;
 
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   margin-bottom: 10px;
   @media only screen and (max-width: 768px) {

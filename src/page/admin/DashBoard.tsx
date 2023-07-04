@@ -338,7 +338,7 @@ const TabButton = styled.div<{ selected: boolean }>`
 `;
 
 const TabButtonText = styled.span<{ selected: boolean }>`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
 `;

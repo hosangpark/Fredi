@@ -5,7 +5,7 @@ import { APIAskDetails, APIModifyAsk, APIRegisterAsk } from '../../api/AskAPI';
 import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import axios from 'axios';
-import CheckBox from '../../components/Shop/CheckBox';
+
 
 function RegisterAsk() {
   const { idx } = useParams();
@@ -93,29 +93,57 @@ function RegisterAsk() {
         </MessageInform>
         <CheckBoxContainer>
             <CheckboxItems onClick={()=>setChecked(1)}>
-              <CheckBox checked={checked==1} size={20}/>
+              <Check>
+                {checked == 1 &&
+                <CheckImage src={require('../../asset/image/check_on2.png')}/>
+                }
+              </Check>
               <CheckBoxText>About Product</CheckBoxText>
             </CheckboxItems>
             <CheckboxItems onClick={()=>setChecked(2)}>
-              <CheckBox checked={checked==2} size={20}/>
+              <Check>
+                {checked == 2 &&
+                <CheckImage src={require('../../asset/image/check_on2.png')}/>
+                }
+              </Check>
               <CheckBoxText>Availability</CheckBoxText>
             </CheckboxItems>
             <CheckboxItems onClick={()=>setChecked(3)}>
-              <CheckBox checked={checked==3} size={20}/>
+              <Check>
+                {checked == 3 &&
+                <CheckImage src={require('../../asset/image/check_on2.png')}/>
+                }
+              </Check>
               <CheckBoxText>Shipping</CheckBoxText>
             </CheckboxItems>
             <CheckboxItems onClick={()=>setChecked(4)}>
-              <CheckBox checked={checked==4} size={20}/>
+              <Check>
+                {checked == 4 &&
+                <CheckImage src={require('../../asset/image/check_on2.png')}/>
+                }
+              </Check>
               <CheckBoxText>Payment</CheckBoxText>
             </CheckboxItems>
             <CheckboxItems onClick={()=>setChecked(5)}>
-              <CheckBox checked={checked==5} size={20}/>
+              <Check>
+                {checked == 5 &&
+                <CheckImage src={require('../../asset/image/check_on2.png')}/>
+                }
+              </Check>
               <CheckBoxText>Condition & Provenance</CheckBoxText>
+            </CheckboxItems>
+            <CheckboxItems onClick={()=>setChecked(6)}>
+              <Check>
+                {checked == 6 &&
+                <CheckImage src={require('../../asset/image/check_on2.png')}/>
+                }
+              </Check>
+              <CheckBoxText>Others</CheckBoxText>
             </CheckboxItems>
         </CheckBoxContainer>
       </CheckMessagebox>
       <CheckMessagebox>
-        <MessageInform>
+        <MessageInform style={{marginTop:40,marginBottom:30}}>
           ADD MESSAGE
         </MessageInform>
         <ContentTextArea
@@ -139,12 +167,12 @@ function RegisterAsk() {
         />
       </ContentInputRowWrap> */}
     <ButtonWrap>
-      <WhiteButton onClick={() => navigate(-1)}>
-        <WhiteButtonText>Cancel</WhiteButtonText>
-      </WhiteButton>
       <BlackButton onClick={idx ? onModifyAsk : onRegisterAsk}>
         <BlackButtonText>Send</BlackButtonText>
       </BlackButton>
+      <WhiteButton onClick={() => navigate(-1)}>
+        <WhiteButtonText>Cancel</WhiteButtonText>
+      </WhiteButton>
     </ButtonWrap>
       
     <AlertModal
@@ -180,18 +208,24 @@ function RegisterAsk() {
 
 const Container = styled.div`
   display: flex;
+  min-width: 290px;
+  width: 100%;
   flex-direction: column;
   text-align: left;
-  width:100%;
+  padding:30px;
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
+    padding:20px;
+    border-right: 0;
+  }
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 360;
   color: #121212;
-  padding:30px;
-  border-bottom: 1px solid b4b4b4;
+  font-size: 16px;
   @media only screen and (max-width: 1000px) {
-    padding:20px;
+  padding-bottom:40px;
     font-size: 14px;
   }
 `;
@@ -203,8 +237,8 @@ const CheckBoxContainer = styled.div`
 `
 const CheckBoxText = styled.span`
   font-family:'Pretendard Variable';
-  margin: 5px 10px;
-  font-weight: 400;
+  margin: 0px 20px;
+  font-weight: 310;
   font-size: 14px;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
@@ -214,6 +248,19 @@ const CheckboxItems = styled.div`
   display:flex;
   align-items:center;
   padding:10px 15px;
+`
+const Check = styled.div`
+  width:20px;
+  height:20px;
+  border:1px solid #707070;
+  display:flex;
+  align-items:center;
+
+  cursor: pointer;
+`
+const CheckImage = styled.img`
+  width:100%;
+  height:100%;
 `
 
 const InputRowWrap = styled.div`
@@ -227,9 +274,9 @@ const InputRowWrap = styled.div`
 
 const ButtonWrap = styled.div`
   display: flex;
-  gap:20px;
-  width:80%;
-  margin:30px auto;
+  gap:10px;
+  width:100%;
+  margin:37px auto;
   min-height:55px;
   
   @media only screen and (max-width: 1000px) {
@@ -270,12 +317,11 @@ const WhiteButtonText = styled(BlackButtonText)`
 `;
 
 const CheckMessagebox = styled.div`
-  font-family:'Pretendard Variable';
-  margin:0 20px;
+
 `
 const MessageInform = styled.div`
   font-family:'Pretendard Variable';
-  font-weight:400;
+  font-weight: 360;
   margin:20px 0 10px 0;
   @media only screen and (max-width:768){
     font-size:14px;
@@ -285,20 +331,23 @@ const MessageInform = styled.div`
 
 const ContentTextArea = styled.textarea`
 font-family:'Pretendard Variable';
+font-weight: 310;
   line-height:24px;
   border: 1px solid #e4e4e4;
-  padding: 20px;
+  padding: 22px;
   width:100%;
   height:200px;
   font-size: 16px;
-  font-weight: 400;
   color: #121212;
   vertical-align: top;
   resize: none;
   outline: 0;
+  ::placeholder{
+    color:#AAAAAA;
+  }
   @media only screen and (max-width: 1000px) {
     font-size: 14px;
-    padding: 15px;
+
     line-height: 22px;
   }
 `;

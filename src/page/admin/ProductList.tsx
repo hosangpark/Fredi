@@ -322,7 +322,7 @@ const WhiteButton = styled.div`
 const WhiteButtonText = styled.span`
   color: #121212;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   line-height: 40px;
 `;
 const UnderLineBox = styled.div`

@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import likeOnImage from '../../asset/image/heart_on.png';
@@ -22,14 +22,23 @@ function FairCard({
   onClickLike: (e: any) => void;
   isLikeList?: boolean; 
 }) {
+
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
+
   return (
-    <ProductBox showType={showType} onClick={onClick}>
-      <ProductImageWrap>
+    <ProductBox onClick={onClick}>
+      <ProductImageWrap height={innerWidth}>
         <ProductImage src={item.image[0]?.file_name ? item.image[0].file_name : 'd'} />
         {/* <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
       </ProductImageWrap>
       {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
-      <TextWrap showType={showType}>
+      <TextWrap>
         <ProductNameWrap>
           <ProductName>{item.name}</ProductName>
           <Designer>{item.designer}</Designer>
@@ -40,26 +49,25 @@ function FairCard({
   );
 }
 
-const ProductBox = styled.div<{showType: 1 | 2}>`
+const ProductBox = styled.div`
   position: relative;
   display: column;
   width: 100%;
-  margin-bottom:30px;
   cursor: pointer;
   overflow: hidden;
   /* @media only screen and (max-width: 768px) {
-    width: ${(props) => (props.showType === 1 ? 50 : 50)}%;
     margin-right: 0;
     margin-bottom: 50px;
   } */
 `;
-const ProductImageWrap = styled.div`
+const ProductImageWrap = styled.div<{height:number}>`
   width: 100%;
-  aspect-ratio:2.7042;
+  aspect-ratio:2.7118;
   background-color:black;
-  margin-bottom: 15px;
+  
   @media only screen and (max-width: 768px) {
-    aspect-ratio:410/280;
+    /* aspect-ratio:410/280; */
+    height:${props => (props.height/(410/280))}px;
   }
 `;
 const ProductImage = styled.img`
@@ -67,32 +75,25 @@ const ProductImage = styled.img`
   height: 100%;
 `;
 
-const NewIcon = styled.img`
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  left: 10px;
-  top: 10px;
-`;
 
 const Designer = styled.span`
 font-family:'Pretendard Variable';
   color: #121212;
   font-size: 22px;
-  margin-bottom:5px;
+  margin-bottom:10px;
   font-weight: 450;
   text-align: left;
   @media only screen and (max-width: 1440px) {
     font-size: 16px;
   }
   @media only screen and (max-width: 768px) {
+    font-weight: 360;
     font-size: 11px;
   }
 `;
 
 const ProductName = styled(Designer)`
 font-family:'Pretendard Variable';
-  font-weight: 500;
 `;
 
 const LikeButton = styled.img`
@@ -122,7 +123,7 @@ const TextWrap = styled(RowWrap)<{ showType?: 1 | 2 }>`
     padding: 30px 30px;
   }
   @media only screen and (max-width: 768px) {
-    padding: 20px 10px;
+    padding: 20px 20px 32.5px;
   }
 `;
 

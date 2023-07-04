@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Button, FileButton, Image } from '@mantine/core';
+import { Button, Image } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import ImageCard from '../../components/Shop/ImageCard';
 import { TImage } from '../admin/ProducerList';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -15,6 +14,9 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { DndList, dndData } from '../../components/DnD/DnD';
+import img01 from '../../asset/image/img01.png';
+import img03 from '../../asset/image/img03.png';
+import img04 from '../../asset/image/img05.png';
 
 export type TUserDetails = {
   idx: number;
@@ -47,7 +49,13 @@ function AddPhoto() {
   const types = useLocation();
   const propsData = types.state;
   const { user } = useContext(UserContext);
-  const [imageList, setimageList] = useState<dndData[]>([]);
+  const [imageList, setimageList] = useState<dndData[]>([
+    {
+          symbol: 'sdad',
+          name: '1사',
+          url:'ddd'
+        },
+  ]);
   const [description, setdescription] = useState<string>('');
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
@@ -61,6 +69,13 @@ function AddPhoto() {
       console.log('Error: ', error);
     };
   };
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
   
   const handleImage = (value: File) => {
     getBase64(value, (url) => {
@@ -83,17 +98,17 @@ function AddPhoto() {
         {
           symbol: 'sdad',
           name: '1사',
-          url:'ddd'
+          url:img01
         },
         {
           symbol: 'sdad',
           name: '2사',
-          url:'ddd'
+          url:img03
         },
         {
           symbol: 'sdad',
           name: '3사',
-          url:'ddd'
+          url:img04
         },
         {
           symbol: 'sdad',
@@ -105,80 +120,51 @@ function AddPhoto() {
   }
   
   useEffect(() => {
-    
+    setimageList([
+      {
+        symbol: 'sdad',
+        name: '1사',
+        url:img01
+      },
+      {
+        symbol: 'sdad',
+        name: '2사',
+        url:img03
+      },
+      {
+        symbol: 'sdad',
+        name: '3사',
+        url:img04
+      },
+      {
+        symbol: 'sdad',
+        name: '4사',
+        url:''
+      },
+    ]);
   }, []);
 
 
   return (
     <Container>
       <ProfileContainer>
-        {imageList.length > 0 &&
-          <SwiperWrap>
-            <Swiper 
-              style={{height:300,marginBottom:20,backgroundColor:'white'}}
-              spaceBetween={10}
-              thumbs={{ swiper: thumbsSwiper }}
-              modules={[FreeMode, Navigation, Thumbs]}
-              className="mySwiper2"
-            >
-              {imageList.map((item, index) => (
-                <SwiperSlide key={index} virtualIndex={index}>
-                  {/* {slideContent} */}
-                  <ImageBox2 width={80}>
-                    {/* <img src={item.url}/> */}
-                    {item.url}
-                  </ImageBox2>
-                </SwiperSlide>
-              ))}
-              <PlusImageBtnWrap onClick={()=>PhotoHandle('bb')}>
-                <PlusImageBtn src={'dd'}/>
-              </PlusImageBtnWrap>
-            </Swiper>
-            <Swiper
-              style={{height:100}}
-              onSwiper={setThumbsSwiper}
-              spaceBetween={10}
-              slidesPerView={4}
-              freeMode={true}
-              watchSlidesProgress={true}
-              modules={[FreeMode, Navigation, Thumbs]}
-              className="mySwiper"
-            >
-            {imageList.map((item, index) => (
-              <SwiperSlide key={index} virtualIndex={index}>
-                {/* {slideContent} */}
-                <ImageBox2>
-                  {item.name}
-                  {item.url}
-                  <Xtext onClick={()=>{
-                    PhotoHandle('aa',index)
-                    }}>
-                    X
-                  </Xtext>
-                </ImageBox2>
-              </SwiperSlide>
-            ))}
-            {imageList.length < 4 &&
-            <SwiperSlide>
-              
-                <ImagePlus>
-                  +
-                </ImagePlus>
-              
-            </SwiperSlide>
+        <SwiperWrap>
+          {imageList.map((item,index)=>{
+            return(
+            <PlusImage onClick={()=>{}} height={innerWidth} index={index}>
+            {item.url !== ''? 
+              <ImageItem src={item.url}/>
+              :
+              <label>
+              <UploadButton type={'file'} multiple name='addButton'/>
+              <PlusH></PlusH>
+              <PlusV></PlusV>
+              </label>
             }
-          </Swiper>
-          </SwiperWrap>
-        }
-        {imageList.length == 0 &&
-        <LabelBox>
-          <label>
-          <UploadButton type={'file'} multiple name='addButton'/>
-          <PlusText>+</PlusText>
-            select your image
-            </label>
-        </LabelBox>
-        }
+            </PlusImage>
+            )
+          })}
+        </SwiperWrap>
         <AboutWrap>
           About
         </AboutWrap>
@@ -210,22 +196,50 @@ const Container = styled.div`
   }
 `;
 const SwiperWrap = styled.div`
+display:flex;
+flex-wrap:wrap;
   background-color:#ffffff;
   /* width:400px; */
   /* max-height:1000px; */
   width:100%;
-  margin-bottom:50px;
+  margin-bottom:20px;
 `;
 const ProfileContainer = styled.div`
-  margin:20px 30px;
+  margin:20px;
 `;
 const ProductListWrap = styled.div`
   width:100%;
   height:100%;
 
 `;
+const PlusImage = styled.div<{height:number,index:number}>`
+  /* border:1px solid #a1a1a1;; */
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  aspect-ratio: 1;
+  background-color:#d1d1d1;
+  margin-right: ${(props) => ((props.index) % 3 === 0 ? 12:0)}px;
+  width: calc(25% - 9px);
+  cursor: pointer;
+  overflow: hidden;
+  margin-bottom: 30px;
+  @media only screen and (max-width: 1440px) {
+    margin-bottom: 12px;
+    margin-right: ${(props) => ((props.index) % 3 === 0 ? 12:0)}px;
+    /* width: 24.25%; */
+    width: calc(33.3333% - 8px)
+  }
+  @media only screen and (max-width: 768px) {
+    margin-right: ${(props) => ((props.index) % 2 === 0 ? 12:0)}px;
+    width: calc(50% - 6px);
+    margin-bottom: 12px;
+    height:${props => (props.height/2-6)}px;
+  }
+`;
 
-const PlusImage = styled.div`
+const PrevPlusImage = styled.div`
   /* border:1px solid #a1a1a1;; */
   display:flex;
   justify-content:center;
@@ -244,6 +258,29 @@ const PlusImage = styled.div`
     margin-bottom: 10px;
   }
 `;
+
+const PlusH = styled.div`
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:30px;
+  transform:translate(-50%,-50%);
+  border-bottom:1px solid #585858;
+  @media only screen and (max-width: 768px) {
+    width:20px;
+  }
+`
+const PlusV = styled.div`
+  position:absolute;
+  left:50%;
+  top:50%;
+  height:30px;
+  transform:translate(-50%,-50%);
+  border-right:1px solid #585858;
+  @media only screen and (max-width: 768px) {
+    height:20px;
+  }
+`
 const PlusText = styled.p`
   font-size:25px;
   font-weight:bold;
@@ -264,6 +301,10 @@ const ImageBox2 = styled.img<{width?:number}>`
   @media only screen and (max-width: 768px) {
   }
 `;
+const ImageItem = styled.img`
+  width:100%;
+  height:100%;
+`
 const UploadButton = styled.input`
   display:none;
 `

@@ -259,7 +259,7 @@ const LeftText = styled.span`
 
 const RightText = styled(LeftText)`
   min-width: 400px;
-  font-weight: 400;
+  font-weight: 410;
   border: 0;
   text-align: left;
   font-size: 16px;
@@ -311,7 +311,7 @@ const WhiteButton = styled(BlackButton)`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
@@ -369,7 +369,7 @@ const TextInput = styled.input`
   padding-bottom: 3px;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   border-radius: 0;
   @media only screen and (max-width: 768px) {
@@ -409,7 +409,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;

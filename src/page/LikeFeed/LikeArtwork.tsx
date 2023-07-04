@@ -29,6 +29,7 @@ import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
 import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
+import { APIProducerList } from '../../api/ProducerAPI';
 
 
 interface ICategorySelectButton {
@@ -89,7 +90,7 @@ function LikeArtwork({productList}:{productList?:ArtworkListItem[]}) {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProducerList(data);
       setTotal(total);
       if (page === 1) {
         setShopList((prev) => [...list]);
@@ -284,6 +285,7 @@ function LikeArtwork({productList}:{productList?:ArtworkListItem[]}) {
                 }
               }}
               showType={showType}
+              index={index}
             />
           )
           })
@@ -304,6 +306,7 @@ function LikeArtwork({productList}:{productList?:ArtworkListItem[]}) {
                 }
               }}
               showType={showType}
+              index={index}
             />
           )
           })
@@ -336,51 +339,12 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap:1%;
   margin:0 50px;
   @media only screen and (max-width: 768px) {
     margin:0;
   }
 `;
 
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4697/1737;
-  max-height: 700px;
-`;
-const MobileCarouselWrap = styled.div`
-  display: none;
-  max-height: 700px;
-  position: relative;
-  @media only screen and (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
-`;
-
-const InterView = styled.div`
-  height: 200px;
-`;
-
-const CategorySelectButtonWrap = styled.div`
-  /* display:flex; */
-  align-items: center;
-  margin: 20px 50px 40px;
-  @media only screen and (max-width: 768px) {
-    margin: 15px 0 15px 10px;
-  }
-  /* @media only screen and (max-width: 1024px) {
-    display: none;
-  } */
-`;
 
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
@@ -401,7 +365,7 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-weight: 400;
+  font-weight: 410;
   text-transform: capitalize;
   @media only screen and (max-width: 1024px) {
     font-size: 14px;
@@ -422,7 +386,7 @@ const TitleWrap = styled.div<{showsearch:boolean}>`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size: 22px;
-  font-weight: 300;
+  font-weight: 310;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

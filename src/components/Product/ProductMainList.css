@@ -1,0 +1,8 @@
+.swiper-scrollbar{
+  left: 0 !important;
+  }
+
+.swiper-horizontal>.swiper-scrollbar,
+.swiper-scrollbar.swiper-scrollbar-horizontal{
+  left: 0 !important;
+}

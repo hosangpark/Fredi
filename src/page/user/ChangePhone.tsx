@@ -139,7 +139,7 @@ function ChangePhone() {
             maxLength={11}
             value={phone}
             onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
-            placeholder="New Number"
+            placeholder="01012345678"
           />
           <UnderlineTextButton onClick={
             ()=>{
@@ -276,7 +276,7 @@ font-family:'Pretendard Variable';
 `;
 const RightText = styled(LeftText)<{marginR?:number}>`
 font-family:'Pretendard Variable';
-  font-weight: 300;
+  font-weight: 310;
   width:100%;
   border: 0;
   font-size: 14px;
@@ -292,29 +292,28 @@ const ContainerWrap = styled.div`
   flex: 1;
   min-width: 734px;
   flex-direction: column;
-  margin: 30px 0;
   padding:0 20px;
   @media only screen and (max-width: 768px) {
     min-width: 300px;
-
     /* border-top:1px solid #d4d4d4; */
   }
 `;
 const UnderlineTextButton = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 310;
   color: #000000;
-  border:2px solid #292929;
+  border:1px solid #000000;
   border-radius:5px;
-  padding: 5px 10px;
+  padding: 8px 10px;
   margin-top:17px;
   cursor: pointer;
+  font-size: 14px;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
 `;
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 15px;
   color: #d82c19;
   margin-top: 8px;
@@ -326,10 +325,14 @@ const AlertText = styled.span`
 `;
 const RowWap = styled.div<{ last?: boolean }>`
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   position: relative;
   justify-content:space-between;
   border-bottom:1px solid #d4d4d4;
+  padding: 20px 10px 16px;
+  @media only screen and (max-width: 768px) {
+    padding: 20px 10px 11px;
+  }
 `;
 const SelectBox = styled.div`
   display:flex;
@@ -340,23 +343,26 @@ const SelectBox = styled.div`
 `
 const CustomSelect = styled.select`
 font-family:'Pretendard Variable';
+font-weight: 310;
 border:0;
 font-size:14px;
-font-weight:500;
 box-sizing:border-box;
 width:60px;
 margin-left:20px;
-  @media only screen and (max-width:768){
+@media only screen and (max-width:768){
+    margin-left:10px;
     font-size:12px;
   }
 `
 const CustomOption = styled.option`
-  border:0;
+font-family:'Pretendard Variable';
+font-weight: 310;
+border:0;
 `
 const TimerBox = styled.div`
   height:30px;
   text-align:start;
-  margin-left:20px;
+  margin-left:15px;
 `
 const AuthText = styled.span<{color?:string}>`
 color:${props => props.color? '#006eff' : '#e00d0d'} ;
@@ -368,16 +374,15 @@ color:${props => props.color? '#006eff' : '#e00d0d'} ;
 
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-weight:500;
+  font-weight: 360;
   font-size: 16px;
   text-align: left;
-  line-height: 80px;
-  margin-bottom:20px;
+  margin:50px 0;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
-    line-height: 50px;
   }
 `;
+
 const BlackButton = styled.div`
 font-family:'Pretendard Variable';
   background-color:#000000;
@@ -394,30 +399,25 @@ font-family:'Pretendard Variable';
   }
 `
 const TextInput = styled.input`
-  color: #121212;
+  color: #000000;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 310;
   border: 0;
-  height: 100%;
-  padding: 20px 0 0px 20px;
   outline: 0;
   flex: 1;
-
   @media only screen and (max-width: 768px) {
-    font-size: 13px;
+
+    font-size: 14px;
   }
 `;
 
 const EmptyRowTextInput = styled(TextInput)<{ last?: boolean }>`
   font-family:'Pretendard Variable';
-  font-weight:normal;
-  height: 80px;
+  font-weight: 310;
   border-radius: 0;
   background:white;
-  @media only screen and (max-width: 768px) {
-    height: 50px;
-    line-height: 50px;
-    font-size: 13px;
+  ::placeholder {
+      color: #828282;
   }
 `;
 

@@ -42,12 +42,12 @@ function ArtistCard({
 const ProductBox = styled.div`
   position: relative;
   display: column;
-  width: 24.25%;
-  margin: 20px 0;
+  width: 25%;
+  margin: 18px 0;
   cursor: pointer;
   overflow: hidden;
   @media only screen and (max-width: 768px) {
-    width: 49%;
+    width: 50%;
   }
 `;
 const ProductImageWrap = styled.div`
@@ -89,7 +89,7 @@ const Designer = styled.span`
   font-weight: 500;
   font-size: 18px;
   @media only screen and (max-width: 768px) {
-    font-weight: 300;
+    font-weight: 310;
     font-size: 12px;
   }
 `;

@@ -31,14 +31,14 @@ const GlobalFonts = createGlobalStyle`
 
 @font-face {
 	font-family: 'NotoSans';
-	font-weight: 400;
+	font-weight: 410;
 	font-display: swap;
 	src: local('NotoSans Regular'), url(${NotoSansRegular}) format('woff2');
 }
 
 @font-face {
 	font-family: 'NotoSans';
-	font-weight: 300;
+	font-weight: 310;
 	font-display: swap;
 	src: local('NotoSans Light'), url(${NotoSansLight}) format('woff2');
 }

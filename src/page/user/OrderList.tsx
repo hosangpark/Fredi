@@ -483,7 +483,7 @@ const LeftTopBox = styled.div`
 
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   @media only screen and (max-width: 768px) {
     font-size: 14px;

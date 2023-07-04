@@ -2,8 +2,8 @@ import React from 'react';
 import { Modal } from '@mantine/core';
 import styled from 'styled-components';
 import downImage from './../../asset/image/sign_in.png'
-import linkImage from './../../asset/image/links.png'
-import QrImage from './../../asset/image/img02.png'
+import linkImage from './../../asset/image/rink.svg'
+import QrImage from './../../asset/image/qr.svg'
 
 function QrModal({
   visible,
@@ -29,7 +29,7 @@ function QrModal({
         {/* <EmptyBox/> */}
       </ModalBox>
       <PositionBox>
-        <ButtonWrap>
+        <ButtonWrap style={{marginRight:15}}>
           <ImageWrap>
             <ImageRotate src={downImage}/>
           </ImageWrap>
@@ -74,6 +74,10 @@ const Image = styled.img`
   width:30px;
   height:30px;
   aspect-ratio:1.0;
+  @media only screen and (max-width: 768px) {
+    width:20px;
+    height:20px;
+  }
 `
 const QrcodeImage = styled.img`
   width:100%;
@@ -86,6 +90,10 @@ const ImageRotate = styled.img`
   height:30px;
   aspect-ratio:1.0;
   transform:rotate(90deg);
+  @media only screen and (max-width: 768px) {
+    width:22px;
+    height:20px;
+  }
 `
 const PositionBox = styled.div`
   position:absolute;
@@ -95,15 +103,14 @@ const PositionBox = styled.div`
   transform:translate(-50%,250px);
   display:flex;
   justify-content:space-between;
+  
   bottom:0px;
   width:450px;
-  height:105px;
-  gap:18px;
+  height:80px;
   @media only screen and (max-width: 768px) {
     transform:translate(-50%,170px);
     width:300px;
-    height: 70px;
-    gap:15px
+    height: 58px;
   }
   `;
 const ButtonWrap = styled.div`
@@ -114,13 +121,13 @@ const ButtonWrap = styled.div`
   flex-direction:column;
   justify-content:center;
   align-items:center;
+  padding-top:7px;
 `;
 const ImageWrap = styled.div`
   display:flex;
   justify-content:center;
   align-items:center;
   width:100%;
-  height:60%;
   border:0;
 
 `;
@@ -130,7 +137,7 @@ font-family:'Pretendard Variable';
   justify-content:center;
   align-items:center;
   font-size:14px;
-  font-weight:300;
+  font-weight: 310;
   margin:0;
   height:40%;
    @media only screen and (max-width: 768px) {
@@ -141,7 +148,7 @@ font-family:'Pretendard Variable';
 
 const BlackButtonText = styled.span`
   font-family: 'NotoSans' !important;
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 14px;
   @media only screen and (max-width: 768px) {

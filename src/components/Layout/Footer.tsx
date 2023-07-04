@@ -76,10 +76,12 @@ const FooterWrap = styled.div`
   background-color: #ffffff;
   /* background-color: #2e2e2e; */
   /* border-top: 1px solid #121212; */
-  padding: 45px 25px;
-  @media only screen and (max-width: 768px) {
+  padding: 90px 50px 95px;
+  @media only screen and (max-width: 1440px) {
     padding: 25px 20px;
-    margin-bottom: 40px;
+  }
+  @media only screen and (max-width: 768px) {
+    display:none;
   }
 `;
 
@@ -91,7 +93,7 @@ const FooterBox = styled.div`
   width: 100%;
   color:white;
   /* min-width: 768px; */
-  padding-bottom:40px;
+  padding-bottom:37px;
   @media only screen and (max-width: 768px) {
      padding-bottom:0px;
   }
@@ -119,20 +121,20 @@ const FooterTopBox = styled.div`
 
 const TextBox = styled.div`
   display: flex;
-  margin-bottom: 3px;
+  margin-bottom: 7px;
   flex-wrap: wrap;
   /* justify-content:center; */
 `;
 
 const FooterText = styled.span<{Bold?:boolean}>`
 font-family:'Pretendard Variable';
-  font-size: 13px;
+  font-size: 15px;
   color: #121212;
   /* color:white; */
   font-weight: ${(props)=>props.Bold? 'bold':400};
   margin-right: 10px;
   @media only screen and (max-width: 768px) {
-    font-size: 12px;
+    font-size: 13px;
   }
   @media only screen and (max-width: 450px) {
     font-size: 11px;
@@ -181,7 +183,7 @@ const TermsBox = styled.div`
 display:none;
   width:100%;
   padding:5% 10% 10% 10%;
-  gap:5%;
+  gap:10px;
   /* display:flex; */
   justify-content:center;
   align-items:center;

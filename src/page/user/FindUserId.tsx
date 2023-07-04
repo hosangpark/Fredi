@@ -225,7 +225,7 @@ const TextInput = styled.input`
   padding-bottom: 3px;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
@@ -233,7 +233,7 @@ const TextInput = styled.input`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;
@@ -297,7 +297,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 `;
 
 const BlackButtonText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 16px;
   @media only screen and (max-width: 768px) {
@@ -335,7 +335,7 @@ const ModalTextGreen = styled(ModalText)`
 `;
 
 const UnderlineTextButton = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 14px;
   color: #121212;
   text-decoration: underline;
@@ -347,7 +347,7 @@ const UnderlineTextButton = styled.span`
 `;
 
 const CountText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #d82c19;
   font-size: 14px;
 

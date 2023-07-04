@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState,MouseEvent } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
-import likeOnImage from '../../asset/image/heart_on.png';
-import likeOffImage from '../../asset/image/heart_off.png';
+import likeOnImage from '../../asset/image/heart.svg';
+import likeOffImage from '../../asset/image/heart.svg';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { createStyles, Modal } from '@mantine/core';
 import { TImage } from '../admin/ProducerList';
@@ -48,45 +48,13 @@ export type OptionDetailList = {
   name: string;
 };
 
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    width: 150,
-    justifyContent: 'space-between',
-    top: 'unset',
-    left: 50,
-    bottom: 50,
-    padding: '0 20px',
-    '@media (max-width: 768px)': { width: '100%', left: 0, bottom: 15 },
-  },
-
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-  },
-
-  carouselIndicator: {
-    width: 16,
-    height: 16,
-    transition: 'width 250ms ease',
-    borderRadius: 50,
-    backgroundColor: '#121212',
-
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 16,
-      borderRadius: 50,
-    },
-  },
-}));
 
 function ProductDetails() {
   const { idx } = useParams();
   const navigate = useNavigate();
-  const { classes } = useStyles();
   const history = createBrowserHistory();
   const { user } = useContext(UserContext);
-  const [defaultoverlay, setDefaultoverlay] = useState(true)
+  const [defaultoverlay, setDefaultoverlay] = useState(false)
   const [shopDetails, setShopDetails] = useState<TShopDetails>();
   const [isLike, setIsLike] = useState<boolean>(false);
   const [showImageModal, setShowImageModal] = useState<boolean>(false);
@@ -135,7 +103,7 @@ function ProductDetails() {
       size: 'W71 x D65 x H60',
       weight: '스테인레스스틸, 아크릴',
       country: '지역',
-      description: '종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 ',
+      description: '종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 ',
       designer: 'Lee Ji Hong',
       sns: 'SNS',
       email: '이메일',
@@ -220,7 +188,7 @@ function ProductDetails() {
 
   useEffect(() => {
     getShopDetails();
-    // console.log('shopDetails', shopDetails);
+    console.log('shopDetails', window.innerHeight);
   }, []);
 
   useEffect(() => {
@@ -317,13 +285,13 @@ function ProductDetails() {
       <Container>
         {bottomSheetModal && 
         <Draggable 
-        bounds={{left: 0, top: 1, right: 0, bottom: defaultoverlay? window.innerHeight-210 : window.innerHeight-150 }}
+        bounds={{left: 0, top: 1, right: 0, bottom: defaultoverlay? window.innerHeight-230 : window.innerHeight-170 }}
         axis="y"
         // handle={scrollable}
-        defaultPosition={{x: 0, y: defaultoverlay? window.innerHeight-210 : window.innerHeight-150}}
+        defaultPosition={{x: 0, y: defaultoverlay? window.innerHeight-230 : window.innerHeight-170}}
         >
           <ModalInfromBox>
-            <EmptyHeightBox height={defaultoverlay? 90 : 30}>
+            <EmptyHeightBox height={defaultoverlay? 110 : 50}>
               {defaultoverlay == true ?
               <OverlayBox>
                 <NameBox>
@@ -337,7 +305,6 @@ function ProductDetails() {
                 :
               <HeaderButtom/>
               }
-              
             </EmptyHeightBox>
             <LeftTopBox>
               <TitleBox>
@@ -362,14 +329,16 @@ function ProductDetails() {
                   <Title>price</Title>
                   <Content>{shopDetails && replaceString(shopDetails?.price)} ₩</Content>
                 </ContentRowWrap> */}
-                <ContentRowWrap>
-                  <Title>Size(cm)</Title>
-                  <Content>{shopDetails?.size}</Content>
-                </ContentRowWrap>
-                <ContentRowWrap>
-                  <Title>Materials</Title>
-                  <Content>{shopDetails?.weight}</Content>
-                </ContentRowWrap>
+              <ContentRowWrap>
+                <Title>Size(cm)</Title>
+                <Content>{shopDetails?.size}</Content>
+              </ContentRowWrap>
+              <ContentRowWrap>
+                <Title>Materials</Title>
+                <Content>{shopDetails?.weight}</Content>
+              </ContentRowWrap>
+              
+              </ContentBox>
               <RowWrap>
                 {/* <BottomBoxTitle>디자이너 & 작품설명</BottomBoxTitle> */}
                 <AskButton
@@ -384,18 +353,8 @@ function ProductDetails() {
                   }}
                 >
                   Contact
-                  {/* <OrderButtonText>문의하기</OrderButtonText> */}
                 </AskButton>
               </RowWrap>
-                {/* <ContentRowWrap>
-                  <Title>Weight</Title>
-                  <Content>{shopDetails?.weight}</Content>
-                </ContentRowWrap> */}
-                {/* <ContentRowWrap>
-                  <Title>Country</Title>
-                  <Content>{shopDetails?.country}</Content>
-                </ContentRowWrap> */}
-              </ContentBox>
             </LeftTopBox>
           </ModalInfromBox>
         </Draggable>
@@ -448,71 +407,6 @@ function ProductDetails() {
               )}
             </ContentBox>
           </LeftTopBox>
-          {addOption.length >= 1 && (
-            <LeftMiddleBox>
-              {addOption.map((data: any, index: any) => {
-                return (
-                  <LeftOption key={index}>
-                    <LeftLabelBox>{data.label}</LeftLabelBox>
-                    <AmountControllerWrap>
-                      <AmountControllerBox>
-                        <AmountControllerButton
-                          onClick={() => {
-                            const array = addOption;
-                            console.log(array);
-                            if (data.count - 1 === 0) {
-                              console.log('dd');
-                              array.splice(index, 1);
-                              setAddOption(array);
-                              getShopDetails();
-                            } else {
-                              console.log('ss');
-                              array[index].count = array[index].count - 1;
-                              console.log(array);
-                              setAddOption(array);
-                              getShopDetails();
-                            }
-                          }}
-                        >
-                          <AmountControllerButtonImageMinus src={require('../../asset/image/minus.png')} />
-                        </AmountControllerButton>
-                        <AmountText>{data.count}</AmountText>
-                        <AmountControllerButton
-                          onClick={() => {
-                            const array = addOption;
-                            console.log(array);
-                            array[index].count = array[index].count + 1;
-                            console.log(array);
-                            setAddOption(array);
-                            getTotal();
-                            getShopDetails();
-                          }}
-                        >
-                          <AmountControllerButtonImage src={require('../../asset/image/plus.png')} />
-                        </AmountControllerButton>
-                      </AmountControllerBox>
-                      <DeleteButton
-                        onClick={() => {
-                          const array = addOption;
-                          console.log(array);
-                          array.splice(index, 1);
-                          setAddOption(array);
-                          getTotal();
-                          getShopDetails();
-                        }}
-                      >
-                        <DeleteButtonImage src={require('../../asset/image/close.png')} />
-                      </DeleteButton>
-                    </AmountControllerWrap>
-                  </LeftOption>
-                );
-              })}
-              <LeftMiddleTotal>
-                <span style={{ fontSize: '12px' }}>총 구매금액</span>
-                <span style={{ marginLeft: '10px', fontSize: '18px' }}>{replaceString(getPrice())} ₩</span>
-              </LeftMiddleTotal>
-            </LeftMiddleBox>
-          )}
           <RowWrap>
               {/* <BottomBoxTitle>디자이너 & 작품설명</BottomBoxTitle> */}
               <AskButton
@@ -538,14 +432,22 @@ function ProductDetails() {
               // modules={[Navigation,Pagination]}
               // mousewheel={true}
               modules={[Pagination,Scrollbar]}
+              // onSlideChange={() => {/*...*/}}
+              // allowTouchMove={false}
+              // noSwiping={false}
+              // oneWayMovement={true}
               // pagination={{
               //   clickable: true,
               // }}
-              pagination={pagination}
+              simulateTouch={false}
+              // shortSwipes={false}
+              // setWrapperSize={true}
+              pagination={innerWidth <= 768? false :pagination}
               style={{
-                maxHeight:1000,backgroundColor:'white'
+                maxHeight:window.innerHeight,backgroundColor:'white'
               }}
-              slidesPerView={innerWidth <= 768? 990/innerWidth : innerWidth <= 1440? 1700/innerWidth :1800/innerWidth}
+              // slidesPerView={innerWidth <= 768? 990/innerWidth : innerWidth <= 1440? 1700/innerWidth :1800/innerWidth}
+              slidesPerView={'auto'}
               // navigation={true}
               // pagination={{ clickable: true }}
               // scrollbar={ true }
@@ -562,7 +464,9 @@ function ProductDetails() {
                   </ImageBox2>
                 </SwiperSlide>
               ))}
-
+                <SwiperSlide>
+                  <EmptyHeightBox2 height={300}/>
+                </SwiperSlide>
             </Swiper>
           </SwiperWrap>
         </RightBox>
@@ -584,51 +488,7 @@ function ProductDetails() {
           }}
           text="옵션을 선택해주세요"
         />
-        {/* <Modal
-          opened={showImageModal}
-          onClose={() => setShowImageModal(false)}
-          transitionDuration={TRANSITION_DURATION}
-          overlayOpacity={0.5}
-          size="90vw"
-          padding={0}
-          withCloseButton={false}
-          styles={{
-            root: { backgroundColor: 'rgba(255,255,255,0.6)', '& div': { backgroundColor: 'transparent', boxShadow: 'none' } },
-          }}
-        >
-          {initcar && (
-            <Carousel
-              initialSlide={imageIdx}
-              getEmblaApi={setEmbla}
-              nextControlIcon={<RightButtonMobile src={rightButtonImage} />}
-              previousControlIcon={<LeftButtonMobile src={leftButtonImage} />}
-              styles={{
-                control: { background: 'transparent', width: 45, border: 0 },
-                controls: { width: 140, top: 'unset', left: '50%', bottom: 50, transform: 'translateX(-50%)' },
-              }}
-              classNames={{
-                control: classes.carouselControl,
-              }}
-            >
-              {shopDetails?.imageList.map((item, index) => (
-                <Carousel.Slide key={`modal-${item.idx}`}>
-                  <ModalImageBox onClick={() => setShowImageModal(false)}>
-                    <SliderImage src={item.file_name} style={{ objectFit: 'contain', width: '100%' }} />
-                  </ModalImageBox>
-                </Carousel.Slide>
-              ))}
-            </Carousel>
-          )}
-        </Modal> */}
       </Container>
-      {/* <BottomContainer>
-        <LeftBox>
-          <DeliveryInfoWrap>
-            <BottomBoxContent disabled value={shopDetails?.delivery_info ?? '배송정보 없음'}></BottomBoxContent>
-          </DeliveryInfoWrap>
-        </LeftBox>
-        <RightBox></RightBox>
-      </BottomContainer> */}
       <AlertModal
         visible={showModal}
         setVisible={setShowModal}
@@ -656,7 +516,7 @@ const Container = styled.div`
   display: flex;
   height:100%;
   flex-direction: row;
-  border-top: 1px solid #e0e0e0;
+  /* border-top: 1px solid #e0e0e0; */
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -716,6 +576,11 @@ const ModalInfromBox = styled.div`
 const EmptyHeightBox = styled.div<{height:number}>`
   width:100%;
   height:${props => props.height}px;
+  border-bottom:1px solid #D9D9D9;
+`;
+const EmptyHeightBox2 = styled.div<{height:number}>`
+  width:100%;
+  height:${props => props.height}px;
 `;
 const HeaderButtom = styled.div`
 // tranform: translateY(-1px);
@@ -733,9 +598,10 @@ const HeaderButtom = styled.div`
 const LeftTopBox = styled.div`
   position: relative;
   width: 100%;
-  padding: 20px;
+  height: calc(100vh - 200px);
+  padding: 0 20px 20px;
   @media only screen and (max-width: 768px) {
-    padding: 20px;
+    padding: 0 20px 20px;
     /* position: static;
     bottom:0; */
   }
@@ -779,7 +645,7 @@ const DeliveryInfoWrap = styled(LeftBottomBox)`
   }
 `;
 const OverlayBox = styled.div`
-  padding:30px 20px 10px 20px;
+  padding:30px 20px 10px;
 `
 const NameBox = styled.div`
   width:100%;
@@ -792,23 +658,33 @@ const NameBox = styled.div`
     margin-bottom:50px;
   }
   @media only screen and (max-width: 768px) {
+    margin-top:10px;
+    margin-bottom:10px;
     font-size:14px;
   }
 `;
 const CategoryBox = styled.div`
   display:flex;
   flex-wrap:wrap;
+  margin-top:49px;
+  @media only screen and (max-width: 1440px) {
+    margin-top:20px;
+  }
 
 `
 const CategoryItem = styled.span`
-  font-size:14px;
-  font-weight:450;
-  padding:5px 10px;
+  font-size:17px;
+  font-weight:460;
+  padding:10px 17px;
   border-radius:5px;
   margin:0 11px 11px 0;
-  border:1px solid #d6d6d6;
+  border:1px solid #B4B4B4;
+  @media only screen and (max-width: 1440px) {
+    font-size:15px;
+  }
   @media only screen and (max-width: 768px) {
-    font-size:1px;
+    padding:5px 10px;
+    font-size:14px;
   }
 `
 const Xbox = styled.div`
@@ -843,7 +719,7 @@ const NameDesigner = styled.div`
 `
 const ProductName = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+font-weight:460;
   color: #121212;
   font-size: 22px;
   margin: 0px;
@@ -855,7 +731,7 @@ font-family:'Pretendard Variable';
 
 const Designer = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 360;
   color: #121212;
   font-size: 22px;
   @media only screen and (max-width: 768px) {
@@ -864,7 +740,8 @@ font-family:'Pretendard Variable';
 `;
 
 const LikeButton = styled.img`
-  height: 35px;
+  width:35px;
+  height: 30px;
   cursor: pointer;
   margin-top: 5px;
   @media only screen and (max-width: 768px) {
@@ -880,16 +757,19 @@ const CartButton = styled.img`
   @media only screen and (max-width: 768px) {
     height: 25px;
   }
-`;
+  `;
 
 const ContentBox = styled.div`
-  margin:90px 0;
+  margin:65px 0 0;
+  @media only screen and (max-width: 768px) {
+
+  }
 `;
 
 const Title = styled.span`
 font-family:'Pretendard Variable';
 text-align:start;
-  font-weight: 350;
+  font-weight: 360;
   color: #121212;
   display: inline-block;
   width: 80px;
@@ -905,7 +785,7 @@ text-align:start;
 
 const Content = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 300;
+  font-weight: 310;
   color: #121212;
   font-size: 16px;
   margin-left:20px;
@@ -927,7 +807,7 @@ const ContactTitle = styled(Title)`
 const ContactContent = styled.a`
   flex: 1;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
   text-decoration: none;
@@ -951,18 +831,18 @@ const BottomBoxTitle = styled.h3`
 const BottomBoxContent = styled.textarea`
 font-family:'Pretendard Variable';
   width: 100%;
-  height: 30vh;
+  min-height: 230px;
   overflow: scroll;
   outline: 0;
   line-height: 30px;
   border: 0;
   font-size: 17px;
-  font-weight:200;
+  font-weight:310;
   color: #121212;
   resize: none;
   background-color: #fff;
   -webkit-text-fill-color: #121212;
-  overflow:hidden;
+  /* overflow:hidden; */
   text-overflow:ellipsis;
   opacity: 1;
   @media only screen and (max-width: 768px) {
@@ -1009,8 +889,7 @@ const ModalImageBox = styled.div`
 
 const ImageBox2 = styled.div`
   width: 85%;
-
-  /* aspect-ratio:1; */
+  aspect-ratio:1;
   /* height:100%; */
   /* max-height:800px; */
   /* overflow: hidden; */
@@ -1018,7 +897,6 @@ const ImageBox2 = styled.div`
   
 
   @media only screen and (max-width: 768px) {
-    aspect-ratio:1;
     width: 100%;
   }
 `;
@@ -1118,20 +996,21 @@ const DownIcon = styled.img`
 `;
 
 const AskButton = styled.div`
-font-family:'Pretendard Variable';
-
-width:100%;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  font-weight: 300;
-  cursor: pointer;
-  font-size: 18px;
-  background-color: #000000;
-  border: solid 1px #000000;
-  color: #ececec;
+    font-family: "Pretendard Variable";
+    width: 100%;
+    height: 53px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    border-radius: 7px;
+    font-weight: 310;
+    cursor: pointer;
+    font-size: 17px;
+    background-color: rgb(0, 0, 0);
+    border: 0;
+    color: rgb(236, 236, 236);
   @media only screen and (max-width: 768px) {
     font-size: 15px;
   }
@@ -1142,11 +1021,15 @@ width:100%;
 `;
 
 const RowWrap = styled.div`
-
-  display: flex;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content:flex-end;
   margin-bottom:30px;
+  @media only screen and (max-width: 768px) {
+    position:fixed;
+    width:calc(100% - 40px);
+    bottom:150px;
+    margin-bottom:0px;
+  }
 `;
 
 const LeftOption = styled.div`

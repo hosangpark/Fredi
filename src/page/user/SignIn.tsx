@@ -213,7 +213,7 @@ const TextInput = styled.input`
   padding-bottom: 5px;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -225,7 +225,7 @@ const TextInput = styled.input`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;
@@ -244,7 +244,7 @@ const BlackButton = styled.div`
 `;
 
 const BlackButtonText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 18px;
   @media only screen and (max-width: 768px) {
@@ -267,7 +267,7 @@ const FindIdText = styled.span`
   flex: 1;
   font-size: 14px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   justify-content: center;
   cursor: pointer;
   @media only screen and (max-width: 768px) {
@@ -303,7 +303,7 @@ const SnsButton = styled.img`
 const BottomText = styled.span`
   font-size: 14px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   margin-top: 50px;
   display: flex;
   flex: 1;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import likeOnImage from '../../asset/image/heart_on.png';
@@ -9,63 +9,60 @@ import { ImageItem } from '../../page/user/MobileProfile';
 
 function ImageCard({
   item,
-  showType,
   index,
   onClick,
   // onClickLike,
   isLikeList,
 }: {
   item: ImageItem;
-  showType: 1 | 2;
   index: number;
   onClick: (e: any) => void;
   // onClickLike: (e: any) => void;
   isLikeList?: boolean;
 }) {
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
+
   return (
-    <ProductBox showType={showType} isLast={(index + 1) % 4 === 0} onClick={onClick}>
-      <ProductImageWrap>
-        <ProductImage src={item.image[0].file_name} />
-        {/* <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
-      </ProductImageWrap>
-      {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />}
-      <TextWrap showType={showType}>
-        <ProductNameWrap>
-          <ProductName>{item.name}</ProductName>
-          <Designer>{item.designer}</Designer>
-        </ProductNameWrap>
-        <LikeCount>{replaceString(item.price)} ₩</LikeCount>
-      </TextWrap> */}
+    <ProductBox index={(index + 1)} onClick={onClick} height={innerWidth}>
+      <ProductImage src={item.image[0].file_name} />
     </ProductBox>
   );
 }
 
-const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
-  width: 24.25%;
+const ProductBox = styled.div<{ index:number; height:number}>`
+  width: calc(25% - 10px);
+  aspect-ratio: 1;
   cursor: pointer;
   overflow: hidden;
   margin-bottom: 30px;
+  margin-right: ${(props) => ((props.index) % 4 === 0 ? 0:10)}px;
   @media only screen and (max-width: 1440px) {
     /* width: 24.25%; */
-    width: 32.66%
+    margin-bottom: 10px;
+    margin-right: ${(props) => ((props.index) % 3 === 0 ? 0:5)}px;
+    width: calc(33.3333% - 5px)
   }
   @media only screen and (max-width: 768px) {
-    width: ${(props) => (props.showType === 1 ? 49.5 : 49.5)}%;
-    margin-bottom: 10px;
+    margin-bottom: 2px;
+    width: calc(50% - 1px);
+    margin-right: ${(props) => ((props.index) % 2 === 0 ? 0:2)}px;
+    height:${props => (props.height/2-1)}px;
   }
 `;
-const ProductImageWrap = styled.div`
-  width: 100%;
-  aspect-ratio: 1.2;
-  background-color:#d1d1d1;
-`;
+
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
-  &:hover {
+  /* &:hover {
     transform: scale(1.1);
   }
-  transition: all 0.5s ease;
+  transition: all 0.5s ease; */
 `;
 
 const NewIcon = styled.img`

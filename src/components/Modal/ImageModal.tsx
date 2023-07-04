@@ -53,7 +53,7 @@ const ModalBlackButton = styled.div`
 `;
 
 const BlackButtonText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 16px;
 `;

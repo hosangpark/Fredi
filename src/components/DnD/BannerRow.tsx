@@ -1,4 +1,4 @@
-import { Button, FileButton, Image, TextInput } from '@mantine/core';
+import { Button, Image, TextInput } from '@mantine/core';
 import { IconPhotoPlus } from '@tabler/icons';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';

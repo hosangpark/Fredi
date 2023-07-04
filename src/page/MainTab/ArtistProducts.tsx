@@ -27,9 +27,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import ArtworkCard from '../../components/Shop/ArtworkCard';
 import FeedCard from '../../components/Shop/FeedCard';
 import { FairListItem } from '../../types/Types';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -134,10 +134,10 @@ function ArtistProducts() {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
-        // setShopList((prev) => [...list]);
+        setShopList((prev) => [...list]);
       } else {
         // setShopList((prev) => [...prev, ...list]);
       }
@@ -250,58 +250,6 @@ function ArtistProducts() {
   useEffect(() => {
     if (page > 1) getShopList(page);
   }, [page]);
-  useEffect(() => {
-    setShopList([
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름',
-        price: 1000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:42
-          }
-        ],
-        isLike: true,
-      },
-      {
-        idx: 2,
-        category: 2,
-        name: '이이이이이이잉',
-        price: 2000,
-        size: '사이즈',
-        weight: '무게',
-        country: '지역,위치',
-        description: '설명',
-        designer: '디자이너',
-        sns: 'SNS',
-        email: "email",
-        website: "website",
-        created_time: Date(),
-        like_count: 11,
-        image: [
-          {
-            idx: 11,
-            file_name: '',
-            count:28
-          }
-        ],
-        isLike: true,
-      },
-    ]);
-  }, []);
 
 
   return (
@@ -324,7 +272,7 @@ function ArtistProducts() {
                   setShowLogin(true);
                 }
               }}
-              index={0}
+              index={index}
             />
           )
           })
@@ -363,7 +311,11 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap:1%;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin:0 20px;
+  } */
+
 `;
 
 const FollowTitle = styled.p`

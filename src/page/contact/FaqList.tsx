@@ -189,7 +189,7 @@ const ListItemTitle = styled.span`
 const Nickname = styled.span`
   font-family: 'NotoSans' !important;
 
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
   @media only screen and (max-width: 1000px) {
@@ -232,7 +232,7 @@ const ContentText = styled.pre`
   display: flex;
   flex: 1;
   font-family: 'NotoSans';
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   text-align: left;

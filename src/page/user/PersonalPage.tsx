@@ -2,15 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import likeOnImage from '../../asset/image/heart_on.png';
-import likeOffImage from '../../asset/image/heart_off.png';
-import bookmarkOnImage from '../../asset/image/bookmark.png';
-import bookmarkOffImage from '../../asset/image/bookmark.png';
+import likeOffImage from '../../asset/image/heart.svg';
+import bookmarkOnImage from '../../asset/image/Bookoff.svg';
+import bookmarkOffImage from '../../asset/image/Bookoff.svg';
 import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { createStyles, Modal } from '@mantine/core';
 import { TImage } from '../admin/ProducerList';
 import AlertModal from '../../components/Modal/AlertModal';
+import reporticon from '../../asset/image/threecircle.png';
 import { UserContext } from '../../context/user';
 import { useRef } from 'react';
 import { createBrowserHistory } from 'history';
@@ -342,8 +343,8 @@ function PersonalPage() {
               <FollowButtonBox onClick={()=>{setFollowed(!followed)}}>
                 Follow
               </FollowButtonBox>
-              <ReportImageWrap>
-                <ReportImage src={profileImage}/>
+              <ReportImageWrap onClick={()=>{alert('구현예정')}}>
+                <ImageRotate src={reporticon}/>
               </ReportImageWrap>
             </ButtonBox>
 
@@ -366,7 +367,7 @@ function PersonalPage() {
         // spaceBetween={30}
         scrollbar={{hide:true}}
         // pagination={{ type: "progressbar" }}
-        style={{paddingBottom:10,}}
+        style={{paddingBottom:2.5,}}
       >
         {bannerListMobile.map((item:any) => {
           // console.log('item', item);
@@ -390,7 +391,7 @@ function PersonalPage() {
       </LinkUrlBox>
       <LikeButtonWrap>
         <LikeBox>
-          <LikeButton onClick={()=>{setIsLikeList(!isLikeList)}
+          <LikeButton style={{marginRight:10}} onClick={()=>{setIsLikeList(!isLikeList)}
             // e.stopPropagation();
             // onCancelLikeProduct(item.product.idx);
           } src={isLikeList ? likeOnImage : likeOffImage} />
@@ -446,100 +447,12 @@ const Container = styled.div`
   width:100%;
   flex: 1;
 `;
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  @media only screen and (max-width: 769px) {
-    aspect-ratio: 4697/1737;
-  }
-  @media only screen and (max-width: 768px) {
-    aspect-ratio: 1/1;
-    // height: 100%;
-  }
-`;
 
-const BottomContainer = styled(Container)`
-  min-height: 400px;
-`;
 const ProfileImage = styled.img`
   width:50%;
   height:50%;
   object-fit:contain;
 `;
-const ReportImage = styled.img`
-  width:100%;
-  height:100%;
-  object-fit:contain;
-`;
-const LeftBox = styled.div`
-  padding:0 2%;
-  display: flex;
-  width:35%;
-  min-width: 290px;
-  flex-direction: column;
-  text-align: left;
-  /* border-right: 1px solid #121212; */
-  @media only screen and (max-width: 768px) {
-    width: 100%;
-    /* border-right: 0;
-    position:absolute;
-    bottom:500px;
-    z-index:9999; */
-    display:none
-  }
-`;
-
-const RightBox = styled.div`
-  display: flex;
-  width:100%;
-  flex-direction: column;
-  overflow: hidden;
-  @media only screen and (max-width: 768px) {
-    width:100%;
-  }
-`;
-const PaginationBox = styled.div`
-   @media only screen and (max-width: 768px) {
-    /* display:none; */
-  }
-`;
-
-const ModalInfromBox = styled.div`
-  padding:0 3%;
-`;
-const LeftTopBox = styled.div`
-  position: relative;
-  width: 100%;
-  padding: 20px;
-  @media only screen and (max-width: 768px) {
-    padding: 25px 18px;
-    /* position: static;
-    bottom:0; */
-  }
-`;
-
-const LeftMiddleBox = styled.div`
-  width: 100%;
-  position: relative;
-  padding: 10px 50px 60px 50px;
-  @media only screen and (max-width: 768px) {
-    padding: 10px 18px 70px;
-  }
-`;
-
-const LeftConBox = styled.div`
-  width: 100%;
-  height: 100%;
-  padding-bottom: 5rem;
-  // border-bottom: 1px solid #121212;
-  // padding: 0 50px 50px 50px;
-  // @media only screen and (max-width: 768px) {
-  //   padding: 0 18px 30px;
-  // }
-`;
-
-
 const LikeButtonWrap = styled.div`
   width:100%;
   display:flex;
@@ -550,11 +463,12 @@ const LikeBox = styled.div`
   display: flex;
   align-items: center;
   margin:10px;
-  gap:10px;
 `;
 const DescriptionWrap = styled.div`
 font-family:'Pretendard Variable';
-  margin:20px;
+font-weight:310;
+  margin:25px 22px 45px;
+  padding-right:10px;
   text-align:start;
   @media only screen and (max-width: 768px) {
     font-size:12px;
@@ -570,21 +484,8 @@ const LikeButton = styled.img`
   }
 `;
 
-
-const CartButton = styled.img`
-  height: 33px;
-  cursor: pointer;
-  margin-top: 5px;
-  margin-right: 10px;
-  @media only screen and (max-width: 768px) {
-    height: 25px;
-  }
-`;
-
-const ContentBox = styled.div``;
-
 const Title = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
   display: inline-block;
@@ -595,96 +496,6 @@ const Title = styled.span`
   }
 `;
 
-const Content = styled.span`
-  font-weight: 400;
-  color: #121212;
-  font-size: 15px;
-  @media only screen and (max-width: 768px) {
-    font-size: 12px;
-  }
-`;
-
-const ContactTitle = styled(Title)`
-  font-size: 14px;
-  @media only screen and (max-width: 768px) {
-    font-size: 12px;
-  }
-`;
-
-const ContactContent = styled.a`
-  flex: 1;
-  font-size: 14px;
-  font-weight: 400;
-  color: #121212;
-  font-size: 15px;
-  text-decoration: none;
-  @media only screen and (max-width: 768px) {
-    font-size: 12px;
-  }
-`;
-
-const BottomBoxTitle = styled.h3`
-  font-weight: 500;
-  color: #121212;
-  font-size: 16px;
-  margin-bottom: 15px;
-  margin-top: 50px;
-  @media only screen and (max-width: 768px) {
-    margin-top: 30px;
-    font-size: 14px;
-  }
-`;
-
-const BottomBoxContent = styled.textarea`
-  margin-top: 50px;
-  font-family: 'NotoSans' !important;
-  width: 100%;
-  height: 320px;
-  overflow: scroll;
-  outline: 0;
-  line-height: 22px;
-  border: 0;
-  font-size: 14px;
-  color: #121212;
-  resize: none;
-  background-color: #fff;
-  -webkit-text-fill-color: #121212;
-  opacity: 1;
-  @media only screen and (max-width: 768px) {
-    background-color: transparent;
-    height: 220px;
-    font-size: 12px;
-    line-height: 20px;
-  }
-  &::-webkit-scrollbar {
-    width: 0;
-  }
-`;
-
-const ModalminusButton = styled.div<{isopen:boolean,position:string}>`
-  display:${(props)=> props.isopen? 'none':'block'};
-  position:${(props)=> props.position == 'bottom' && 'fixed'};
-  bottom:${(props)=> props.position == 'bottom' && '60px'};
-  text-align:center;
-  font-size:23px;
-  font-weight:bold;
-  z-index:9999;
-  width:100%;
-  background-color:rgba(255, 255, 255, 0.7);
-`;
-const ContentRowWrap = styled.div`
-  margin-bottom: 8px;
-  @media only screen and (max-width: 768px) {
-    margin-bottom: 3px;
-  }
-`;
-
-const ImageBox = styled.div`
-  height: 100%;
-  width: 100%;
-  text-align: left;
-  overflow: hidden;
-`;
 
 const LinkUrlBox = styled.div`
   width:100%;
@@ -695,15 +506,16 @@ const LinkUrlBox = styled.div`
 `;
 const LinkTitle = styled.a`
 font-family:'Pretendard Variable';
+font-weight: 410;
   color:#ffffff;
    font-size:14px;
-   font-weight:400;
 `
 const LinkUrl = styled.a`
 font-family:'Pretendard Variable';
+font-size:12px;
   color:#ffffff;
-  font-size:12px;
-  font-weight:300;
+  font-weight: 210;
+  text-decoration:none;
 `;
 
 const ImageBox2 = styled.div`
@@ -762,7 +574,7 @@ const SliderImage = styled.img`
 const ProfileHeaderWrap = styled.div`
   display:flex;
   justify-content:space-between;
-  margin:20px;
+  margin:10px 20px 40px;
   @media only screen and (max-width: 768px) {
   }
 `;
@@ -782,7 +594,7 @@ const NameBox = styled.div`
 const NameText = styled.p`
 font-family:'Pretendard Variable';
   font-size:16px;
-  font-weight:600;
+  font-weight:500;
   text-align:start;
   line-height:31px;
   margin:0 10px 0 0;
@@ -796,15 +608,14 @@ font-family:'Pretendard Variable';
   justify-content: center;
   align-items: center;
   width:100%;
-  height:40%;
   border:1px solid #c7c7c7;;
-  border-radius:5px;
-  font-size:16px;
-  padding:4px 10px;
-  font-weight:300;
+  border-radius:4.93px;
+  font-size:12px;
+  padding:2px 10px;
+  font-weight: 310;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
-    font-size:14px;
+    font-size:10px;
   }
 `;
 const FlexBox = styled.div`
@@ -812,8 +623,8 @@ const FlexBox = styled.div`
   align-items:center;
 `
 const ImageWrap = styled.div`
-  width:65px;
-  /* width:15%; */
+  /* width:65px;
+  height:65px; */
   margin-right:10px;
   display:flex;
   justify-content:center;
@@ -822,13 +633,24 @@ const ImageWrap = styled.div`
   aspect-ratio: 1.0;
   background-color: #DBDBDB;
   @media only screen and (max-width: 768px) {
-    width:55px;
+    width:36px;
+    height:36px;
   }
 `;
 const ReportImageWrap = styled.div`
-  width:30px;
-  height:30px;
   margin-left:10px;
+  display:flex;
+  align-items:center;
+`
+const ImageRotate = styled.img`
+  width:24px;
+  height: 6px;
+  aspect-ratio:1.0;
+  transform:rotate(90deg);
+  @media only screen and (max-width: 768px) {
+    width:14px;
+    height: 3px;
+  }
 `
 const Image = styled.img`
   width:100%;
@@ -847,7 +669,7 @@ const ButtonBox = styled.div`
 `;
 const SubTextBox = styled.p`
   font-size:14px;
-  font-weight:400;
+  font-weight: 410;
   text-align:start;
   color:#a1a1a1;
   margin:0;

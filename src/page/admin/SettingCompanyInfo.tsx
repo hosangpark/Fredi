@@ -129,7 +129,7 @@ const BlackButton = styled.div`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
 `;
 
 const RowWap = styled.div`
@@ -155,7 +155,7 @@ const TextInput = styled.input`
   min-width: 700px;
   color: #121212;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   border: 0;
   height: 100%;
   line-height: 80px;

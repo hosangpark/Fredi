@@ -10,10 +10,10 @@ import menutextballoon from '../../asset/image/textballoon.png';
 import menucontact from '../../asset/image/contact.png';
 import menusetting from '../../asset/image/setting.png';
 
-import likeOffImage from '../../asset/image/heart_off.png';
+import profileImage from '../../asset/image/my.svg';
+import likeOffImage from '../../asset/image/heart.svg';
 import likeOnImage from '../../asset/image/heart_on.png';
 import menuicon from '../../asset/image/threecircle.png';
-import profileImage from '../../asset/image/profile.png';
 import cartImage from '../../asset/image/cart.png';
 import ContactImage from '../../asset/image/home05.png';
 import LogoutImage from '../../asset/image/ico_logout.png';
@@ -23,7 +23,7 @@ import newIconImage from '../../asset/image/ico_new.png';
 import ConfirmModal from '../Modal/ConfirmModal';
 import signIn from '../../asset/image/sign_in.png';
 import signOut from '../../asset/image/sign_out.png';
-import backButtonImage from '../../asset/image/leftarrow.png';
+import backButtonImage from '../../asset/image/back.svg';
 import { Menu, Button, Text } from '@mantine/core';
 import { IconSettings, IconSearch, IconPhoto, IconMessageCircle, IconTrash, IconArrowsLeftRight } from '@tabler/icons';
 import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
@@ -485,9 +485,21 @@ function Header() {
                   Settings
                 </SheetMenu>
                 <SheetLogoutMenu>
-                  <div onClick={go_requestList}>
+                  {token ?
+                  <div onClick={()=>{
+                    setBottomSheetModal(false)
+                    setConfirmModal(true)
+                    }}>
                     Logout
                   </div>
+                  :
+                  <div onClick={()=>{
+                    setBottomSheetModal(false)
+                    navigate('/signin');
+                    }}>
+                    Login
+                  </div>
+                  }
                   {/* <IconImage src={LogoutImage}/> */}
                 </SheetLogoutMenu>
               </SheetWrap>
@@ -515,28 +527,6 @@ function Header() {
           <MenuButton onClick={goCommunity}>
             <MenuButtonText>Discover</MenuButtonText>
           </MenuButton>
-          {/* goShop goLikeList go_orderList go_requestList goContact goMyPage goAdmin goCart */}
-
-          {/* {user.level <= 1 && (
-            <MenuButton onClick={goProducing}>
-              <MenuButtonText>Producing</MenuButtonText>
-            </MenuButton>
-          )} */}
-
-          {/* <MenuButton onClick={goShop}>
-            <MenuButtonText>Shop</MenuButtonText>
-          </MenuButton> */}
-          {/* <MenuButton onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)}>
-            <LikeButton onClick={goLikeList} src={!isMouseOveredLikeButton ? likeOffImage : likeOnImage} />
-          </MenuButton> */}
-          {/* <MenuButton onClick={goContact}>
-            <MenuButtonText>고객센터</MenuButtonText>
-          </MenuButton> */}
-
-          {/* <MenuButton onClick={goMyPage}>
-            <MenuButtonText>마이페이지</MenuButtonText>
-          </MenuButton> */}
-
           {token && user.level === 0 && (
             <MenuButton onClick={goAdmin}>
               <MenuButtonText>MANAGER</MenuButtonText>
@@ -558,9 +548,6 @@ function Header() {
         null
         }
         <ButtonWraps>
-          {/* <MenuButton onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)}>
-            <LikeButton onClick={goLikeList} src={!isMouseOveredLikeButton ? likeOffImage : likeOnImage} onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)} />
-          </MenuButton> */}
           {
           noButton?
           <>
@@ -570,18 +557,28 @@ function Header() {
             <MyPageButton onClick={nextHandle}>next</MyPageButton>
           :
           showSave?
-            <MyPageButton onClick={saveHandle}>save</MyPageButton>
+            <MyPageButton onClick={saveHandle}>Save</MyPageButton>
           :
           showsendMessage?
             <MyPageButton onClick={()=>navigate('/registerask')}>send message</MyPageButton>
           :
           <>
           {innerWidth > 768 &&
-            <LikeButton stylewidth={true} onClick={()=>navigate(`/MobileProfile/${user}`)} src={profileImage}/>
+          <ProfileButton onClick={()=>navigate(`/MobileProfile/${user}`)}>
+            <ProfileImage src={profileImage}/>
+          </ProfileButton>
           }
-            <LikeButton onClick={goLikeList} src={likeOffImage} onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)} />
+          {
+            innerWidth < 768 &&
+            pathName == 'MobileProfile' || 
+            pathName == 'community' ?
+            <>
+            </>
+            :
+            <HeartButton onClick={goLikeList} src={likeOffImage} onMouseOver={() => setIsMouseOveredLikeButton(true)} onMouseOut={() => setIsMouseOveredLikeButton(false)} />
+          }
             <MyPageButton onClick={()=>setBottomSheetModal(true)}>
-              <LikeButton stylewidth={true} src={menuicon}/>
+              <LikeButton src={menuicon}/>
             </MyPageButton>
           </>
           }
@@ -622,24 +619,22 @@ const HeaderBox = styled.div`
   position: fixed;
   width: 100%;
   display: flex;
-  height: 80px;
+  height: 100px;
   background-color: #ffffff;
 
   align-items: center;
   justify-content: space-between;
   z-index: 99;
-  @media only screen and (max-width: 1440px) {
-  }
   @media only screen and (max-width: 768px) {
-    height: 50px;
+    height: 60px;
   }
 `;
 
 const Logo = styled.img`
   position:absolute;
-  left:50px;
-  width: 150px;
-  height: 38px;
+  left:35px;
+  width: 142px;
+
   cursor: pointer;
   object-fit: contain;
   /* 1440px */
@@ -647,8 +642,8 @@ const Logo = styled.img`
     left:20px;
   } */
   @media only screen and (max-width: 768px) {
-    left:20px;
-    width: 80px;
+    left:18.42px;
+    width: 73.61px;
   }
 `;
 
@@ -658,21 +653,15 @@ const WebMenuWrap = styled.div`
   height: 100%;
   align-items: center;
   justify-content: center;
-  padding: 0 30px;
-  @media only screen and (max-width: 1000px) {
-    padding: 0 15px;
-    flex-wrap: wrap;
-  }
   @media only screen and (max-width: 768px) {
     display: none;
   }
 `;
 const PageNameWrap = styled.div`
 font-family:'Pretendard Variable';
-  font-weight:normal;
+  font-weight: 410;
   position:absolute;
   left:50%;
-  font-weight:500;
   transform:translate(-50%,0);
   @media only screen and (max-width: 768px) {
     font-size:14px;
@@ -687,20 +676,18 @@ const ButtonWrap = styled.div`
 const SheetWrap = styled.div`
 // tranform: translateY(-1px);
   width:100%;
-  padding:20px 8%;
-@media only screen and (max-width: 768px) {
+  padding:20px 50px;
+  @media only screen and (max-width: 768px) {
+  padding:00px 20px;
 }
 `;
 const SheetMenu = styled.div`
 // tranform: translateY(-1px);
 font-family:'Pretendard Variable';
   width:100%;
-  font-weight:400;
-  margin:25px 0;
+  font-weight: 410;
+  margin:30px 0;
 @media only screen and (max-width: 768px) {
-  font-size:14px;
-}
-@media only screen and (max-width: 450px) {
   font-size:14px;
   margin:20px 0;
 }
@@ -710,8 +697,8 @@ const SheetLogoutMenu = styled.div`
 display:flex;
 font-family:'Pretendard Variable';
   justify-content:flex-end;
-  padding: 20px 20px 20px 0;
-  font-weight:350;
+  padding: 20px 0px 20px 0;
+  font-weight: 360;
   text-align:right;
 @media only screen and (max-width: 768px) {
 }
@@ -744,8 +731,29 @@ margin-left: 20px;
 }
 `;
 
-const LikeButton = styled.img<{stylewidth?:boolean}>`
-  width: ${(props)=>props.stylewidth? 24 : 26}px;
+const ProfileImage = styled.img`
+  width:31px;
+  height:36px;
+   
+`
+
+const LikeButton = styled.img`
+  width: 23px;
+  cursor: pointer;
+  object-fit:cover;
+  transition: all 0.5s ease;
+  margin-left: 30px;
+  @media only screen and (max-width: 1440px) {
+    margin-left: 20px;
+  }
+  @media only screen and (max-width: 768px) {
+    margin-left: 10px;
+    width: 17px;
+  }
+`;
+
+const HeartButton = styled.img<{stylewidth?:boolean}>`
+  width: ${(props)=>props.stylewidth? 20 : 23}px;
   cursor: pointer;
   object-fit:cover;
   transition: all 0.5s ease;
@@ -756,7 +764,8 @@ const LikeButton = styled.img<{stylewidth?:boolean}>`
   }
   @media only screen and (max-width: 768px) {
     margin-left: 10px;
-    width: ${props=>props.stylewidth? 19 : 22}px;
+    width:18px;
+    height:15px;
   }
 `;
 
@@ -775,10 +784,15 @@ const CartButton = styled.img`
     margin-left: 10px;
   }
 `;
+const ProfileButton = styled.div`
+  width:31px;
+  height:36px;
+ 
+`
 
 const MyPageButton = styled.div`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 310;
   color: #121212;
   cursor: pointer;
     @media only screen and (max-width: 768px) {
@@ -796,7 +810,7 @@ const SigninButton = styled(CartButton)`
 const MenuButton = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 65px;
+  margin: 0 70px;
   position: relative;
   cursor: pointer;
   @media only screen and (max-width: 1440px) {
@@ -809,7 +823,7 @@ const MenuButton = styled.div`
 
 const MenuButtonText = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   &:hover {
@@ -895,7 +909,7 @@ const TextInput = styled.input`
   padding-bottom: 3px;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   border-radius: 0;
   @media only screen and (max-width: 768px) {
@@ -914,7 +928,7 @@ const ButtonWraps = styled.div`
     right:20px;
   } */
   @media only screen and (max-width: 768px) {
-    right:10px;
+    right:20px;
     flex-direction: column;
     display: -webkit-inline-box;
   }
@@ -947,7 +961,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 const AlertText = styled.span`
 font-family:'Pretendard Variable';
   font-weight:normal;
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;
@@ -959,7 +973,7 @@ font-family:'Pretendard Variable';
   font-weight:normal;
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }

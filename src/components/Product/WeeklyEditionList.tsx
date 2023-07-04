@@ -7,7 +7,7 @@ import likeOffImage from '../../asset/image/heart_off.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Button, FileButton, Image } from '@mantine/core';
+import { Button, Image } from '@mantine/core';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -88,7 +88,7 @@ function WeeklyEditionList({
                 <ProductImage src={item.file_name}/>
               </ProductTopboxLeft>
               <ProductTopboxRight>
-                <ProductTopboxRightWrap>
+                <ProductTopboxRightWrap style={{marginBottom:5}}>
                   <ProductImage src={item.file_name} style={{marginBottom:10}}/>
                 </ProductTopboxRightWrap>
                 <ProductTopboxRightWrap>
@@ -97,7 +97,7 @@ function WeeklyEditionList({
               </ProductTopboxRight>
             </ProductTopbox>
             <ProductBottombox>
-                <ProductBottomImageWrap>
+                <ProductBottomImageWrap style={{marginRight:6}}>
                   <ProductImage src={item.file_name}/>
                 </ProductBottomImageWrap>
                 <ProductBottomImageWrap>
@@ -106,17 +106,16 @@ function WeeklyEditionList({
             </ProductBottombox>
             <TextWrap>
               <ProductTitleText>
-                {item.idx}
+                MoreTitleMoreTitleMoreTitleMoreTitle{item.idx}
               </ProductTitleText>
               <ProductSubText>
-                {item.idx}
+                MoreTextMoreTextMoreTextMoreTextMoreText{item.idx}
               </ProductSubText>
             </TextWrap>
           </ProductWrap>
           </SwiperSlide>
           )
         })}
-        
       </Swiper>
     </ContainerWrap>
   );
@@ -139,20 +138,18 @@ const ProductTopboxRight = styled.div`
   display:flex;
   flex-direction:column;
   /* aspect-ratio:110/280; */
-  gap:5px;
 `;
 
 const ProductTopboxRightWrap = styled.div`
   width:100%;  
   height:50%;
-  aspect-ratio:110/140;
+  aspect-ratio:0.7857;
 `
 
 const ProductBottombox = styled.div`
   display:flex;
   width:100%;
   aspect-ratio:340/200;
-  gap:6px;
 `;
 const ProductBottomImageWrap = styled.div`
   width:calc(50% - 3px);
@@ -180,12 +177,10 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
 const ProductImage = styled.img`
   width:100%;
   height: 100%;
-  object-fit:cover;
 `;
 const ProductBottomImage = styled.img`
   width:100%;
   height: 100%;
-  object-fit:cover;
 `;
 const ProductContainer = styled.div`
   display: flex;
@@ -222,9 +217,8 @@ const TitleBox = styled.div`
 
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-weight:500;
-  font-size:22px;
-  font-weight:400;
+  font-size:20px;
+  font-weight: 360;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
@@ -246,9 +240,13 @@ const TextWrap = styled.div`
 
 const ProductTitleText = styled.div`
 font-family:'Pretendard Variable';
+color:#000000;
   font-size:17px;
-  font-weight:350;
+  font-weight: 360;
   margin-top:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
   @media only screen and (max-width: 768px) {
     font-weight:500;
     font-size:12px;
@@ -257,8 +255,11 @@ font-family:'Pretendard Variable';
 const ProductSubText = styled.div`
 font-family:'Pretendard Variable';
   font-size:16px;
-  font-weight:300;
-  color:#525252;
+  font-weight: 310;
+  color:#000000;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
   @media only screen and (max-width: 768px) {
     font-size:12px;
   }

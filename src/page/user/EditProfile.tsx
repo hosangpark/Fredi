@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import ImageCard from '../../components/Shop/ImageCard';
 import { TImage } from '../admin/ProducerList';
-import RightArrowImage from '../../asset/image/ico_next_mobile.png'
+import RightArrowImage from '../../asset/image/right.svg'
 import CategoryItem from '../../components/Shop/CategoryItem';
-import linkImage from '../../asset/image/links.png';
-import profileImage from '../../asset/image/profile.png';
+import linkImage from '../../asset/image/rink.svg';
+import profileImage from '../../asset/image/Profile.svg';
 
 export type TUserDetails = {
   idx: number;
@@ -177,8 +176,9 @@ function EditProfile() {
         </EditPhotoButton>
         <InputBox>
           <InputWrap>
-            <InputTitle>Title</InputTitle>
+            <InputTitle>BRNAD NAME</InputTitle>
             <TextInput
+              // onResize={}
               maxLength={10}
               value={name}
               onChange={(e) => {
@@ -187,7 +187,6 @@ function EditProfile() {
               placeholder="Brand name or Nickname"
             />
           </InputWrap>
-          {alertType?.includes('nameEmpty') && <AlertText>*이름을 입력해 주세요.</AlertText>}
         </InputBox>
         <InputBox>
           <InputWrap>
@@ -203,7 +202,6 @@ function EditProfile() {
               placeholder="Add a brief bio"
             />
           </InputWrap>
-          {alertType?.includes('nameEmpty') && <AlertText>*설명을 입력해 주세요.</AlertText>}
         </InputBox>
       <BoxWrap>
         <BoxTitle>
@@ -211,7 +209,9 @@ function EditProfile() {
         </BoxTitle>
         <LayoutWrap onClick={()=>{navigate('/AddLink', { state: 'Add' });}}>
           <LinkImageWrap>
-            <Image src={linkImage}/>
+            <PlusH></PlusH>
+            <PlusV></PlusV>
+            {/* <LinksImage src={linkImage}/> */}
           </LinkImageWrap>
           <LinkItemBox>
             <LinkTitleBox>
@@ -221,7 +221,7 @@ function EditProfile() {
         </LayoutWrap>
         <LayoutWrap onClick={()=>{navigate('/EditLink', { state: 'Edit' });}}>
           <LinkImageWrap>
-            <Image src={linkImage}/>
+            <LinksImage src={linkImage}/>
           </LinkImageWrap>
           <LinkItemBox>
             <LinkTitleBox>
@@ -238,48 +238,7 @@ function EditProfile() {
           </LinkItemBox>
         </LayoutWrap>
       </BoxWrap>
-        {/* <BoxWrap>
-          <BoxTitle>
-            Category<CategoryCount>{categoryitemList.filter(element => element.checked === true).length}</CategoryCount>
-          </BoxTitle>
-          <CategoryItemContainer>
-            {categoryitemList.map((item,index)=>{
-              return(
-                <CategoryItem item={item.item} checked={item.checked} setChecked={(e,type)=>{
-                  categoryitemList[index].checked = e
-                  setcategoriitemList([
-                    ...categoryitemList,
-                  ])
-                }}/>
-              )
-            })}
-          </CategoryItemContainer>
-        </BoxWrap> */}
       </ProfileContainer>
-
-      <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
-        <ModalBox>
-          <ModalTitle>개인정보 수정을 위해서</ModalTitle>
-          <ModalTitle>비밀번호를 입력해 주세요.</ModalTitle>
-          <InputWrap>
-            <TextInput maxLength={16} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="입력해 주세요" />
-            {passwordAlert && <AlertText>*비밀번호를 확인해 주세요.</AlertText>}
-          </InputWrap>
-          <ButtonWrap>
-            <ModalBlackButton onClick={onCheckPassword}>
-              <BlackButtonText>확인</BlackButtonText>
-            </ModalBlackButton>
-            <ModalWhiteButton
-              onClick={() => {
-                setPassword('');
-                setShowModal(false);
-              }}
-            >
-              <WhiteButtonText>취소</WhiteButtonText>
-            </ModalWhiteButton>
-          </ButtonWrap>
-        </ModalBox>
-      </Modal>
     </Container>
   );
 }
@@ -310,7 +269,7 @@ const InputBox = styled.div`
   justify-content:space-between;
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   border-bottom:1px solid #ECECEC;
 `;
 const BoxWrap = styled.div`
@@ -322,45 +281,23 @@ const BoxWrap = styled.div`
 
 const LayoutWrap = styled.div`
   display: flex;
-  margin: 15px 0 ;
+  margin:10px 0;
 `;
-const EditInputWrap = styled.div`
-  display: flex;
-  padding-bottom: 3px;
-  align-items: center;
-  border-bottom: 1px solid #121212;
-`;
+
 const EditPhotoButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   text-decoration : underline;
   /* border-bottom:2px solid #c7c7c7; */
-  margin:20px 0;
+  margin:20px 0 44px;
   font-size:16px;
-  font-weight:400;
+  font-weight: 410;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
   }
-  `;
-const SubTextBox = styled.p`
-  font-size:14px;
-  font-weight:400;
-  text-align:start;
-  color:#a1a1a1;
-  margin:0;
-  @media only screen and (max-width: 768px) {
-  }
-  `;
-const DescriptionText = styled.p`
-  font-size:14px;
-  font-weight:400;
-  text-align:start;
-  color:#2b2b2b;
-  margin:30px 0;
-  @media only screen and (max-width: 768px) {
-  }
-  `;
+`;
+
 const BoxTitle = styled.p`
 font-family:'Pretendard Variable';
   font-size:16px;
@@ -372,17 +309,9 @@ font-family:'Pretendard Variable';
     font-size:14px;
   }
 `
-const CategoryCount = styled.span`
-  font-size:13px;
-  font-weight:500;
-  text-align:start;
-  color:#adadad;
-  margin-left:20px;
-`
-
 const LinkName = styled.p`
 font-family:'Pretendard Variable';
-  font-weight:400;
+  font-weight: 410;
   text-align:start;
   color:#2b2b2b;
   margin:0;
@@ -407,42 +336,47 @@ const ImageWrap = styled.div`
   align-items:center;
   border-radius:50%;
   width:160px;
+  height:160px;
   aspect-ratio: 1.0;
   background-color: #DBDBDB;
   /* width:15%; */
   @media only screen and (max-width: 768px) {
     width:120px;
+    height:120px;
   }
 `;
 const LinkImageWrap = styled.div`
-display:flex;
-align-items:center;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   width:50px;
   height:50px;
-  margin-right:50px;
+  margin-right:30px;
+  border: 1px solid #B8B7B8;
+  border-radius:50%;
   /* width:40%; */
   @media only screen and (max-width: 768px) {
-    margin-right:20px;
-    width:42px;
-    height:42px;
+    width:40px;
+    height:40px;
   }
 `;
 const ArrowImageWrap = styled.div`
-display:flex;
-align-items:center;
-  width:20px;
-  height:20px;
+  width:9px;
+  height:18px;
+  display:flex;
+  align-items:center;
   @media only screen and (max-width: 768px) {
-    width:15px;
-    height:15px;
+    width:6px;
+    height:12px;
   }
-`;
+`
 const ArrowImage = styled.img`
   width:100%;
   height:100%;
 `;
 const LinkItemBox = styled.div`
-  width:100%;
+  flex:1;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -452,17 +386,12 @@ const LinkItemBox = styled.div`
 const LinkTitleBox = styled.div`
 font-family:'Pretendard Variable';
   display:flex;
-  font-weight:400;
+  font-weight: 410;
   flex-direction:column;
   justify-content:center;
   @media only screen and (max-width: 768px) {
     font-size:14px;
   }
-`;
-const CategoryItemContainer = styled.div`
-  display:flex;
-  flex-wrap:wrap;
-  gap:15px;
 `;
 
 const ProfileImage = styled.img`
@@ -470,42 +399,34 @@ const ProfileImage = styled.img`
   height:50%;
   object-fit:contain;
 `;
-const Image = styled.img`
-  width:100%;
-  height:100%;
+const LinksImage = styled.img`
+  width:45%;
+  height:45%;
   object-fit:contain;
 `;
 
-
-
-const BlackButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 160px;
-  height: 60px;
-  background-color: #121212;
-  cursor: pointer;
-  margin-left: 15px;
+const PlusH = styled.div`
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:20px;
+  transform:translate(-50%,-50%);
+  border-bottom:1px solid #585858;
   @media only screen and (max-width: 768px) {
-    width: 90px;
-    height: 35px;
-    margin-left: 10px;
+    width:17px;
   }
-`;
-
-const BlackButtonText = styled.span`
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 400;
+`
+const PlusV = styled.div`
+  position:absolute;
+  left:50%;
+  top:50%;
+  height:20px;
+  transform:translate(-50%,-50%);
+  border-right:1px solid #585858;
   @media only screen and (max-width: 768px) {
-    font-size: 11px;
+    height:17px;
   }
-`;
-
-const WhiteButtonText = styled(BlackButtonText)`
-  color: #121212;
-`;
+`
 
 const ModalBox = styled.div`
   background-color: #fff;
@@ -538,7 +459,7 @@ const InputWrap = styled.div`
 `;
 const InputTitle = styled.div`
 font-family:'Pretendard Variable';
-font-weight:300;
+font-weight: 310;
   white-space:nowrap;
   width:40%;
   max-width:250px;
@@ -552,11 +473,13 @@ const TextInput = styled.textarea`
 font-family:'Pretendard Variable';
   border: 0;
   width:60%;
+  height:26px;
   font-size: 16px;
   color: #121212;
-  font-weight: 200;
+  font-weight: 310;
   text-align:start;
   border-radius: 0;
+  resize:none;
   /* padding:5px 10px; */
   @media only screen and (max-width: 768px) {
     font-size: 14px;
@@ -596,7 +519,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 
 const AlertText = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;

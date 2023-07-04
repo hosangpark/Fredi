@@ -29,6 +29,7 @@ import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
 import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
+import { APIProductList } from '../../api/ProductAPI';
 
 export type FairListItem = {
   idx: number;
@@ -108,7 +109,7 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function Artwork({productList}:{productList?:ArtworkListItem[]}) {
+function Artwork({productList,showType}:{productList?:ArtworkListItem[],showType?:number}) {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
   const location = useLocation();
@@ -124,7 +125,6 @@ function Artwork({productList}:{productList?:ArtworkListItem[]}) {
   const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
   const [showsearch,setShowsearch] = useState(false)
   const [showcategory,setShowCategory] = useState(false)
 
@@ -152,7 +152,7 @@ function Artwork({productList}:{productList?:ArtworkListItem[]}) {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         setShopList((prev) => [...list]);
@@ -179,18 +179,6 @@ function Artwork({productList}:{productList?:ArtworkListItem[]}) {
     }
   };
 
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      setPage((prev) => prev + 1);
-    }
-  }, []);
-
-  const options = {
-    root: null, //기본 null, 관찰대상의 부모요소를 지정
-    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
-    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
-  };
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
@@ -231,7 +219,6 @@ function Artwork({productList}:{productList?:ArtworkListItem[]}) {
     setShopList(list);
     setHistory(true);
     setPage(page);
-    setShowType(type);
 
     sessionStorage.removeItem('shop');
     sessionStorage.removeItem('page');
@@ -334,7 +321,7 @@ function Artwork({productList}:{productList?:ArtworkListItem[]}) {
       </TitleWrap>
 
       <CategorySelectButtonWrap showcategory={showcategory}>
-        <Swiper
+        {/* <Swiper
           // install Swiper modules
           modules={[Navigation, Pagination, Scrollbar]}
           slidesPerView={innerWidth <= 768? 4.8 : innerWidth <= 1440? 9.3 : 16}
@@ -351,7 +338,14 @@ function Artwork({productList}:{productList?:ArtworkListItem[]}) {
             </SwiperSlide>
             );
           })}
-        </Swiper>
+        </Swiper> */}
+        {CategoryList.map((item) => {
+          return (
+
+            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
+
+          );
+        })}
       </CategorySelectButtonWrap>
       
       {/* <ShowTypeButton onClickType1={() => setShowType(1)} onClickType2={() => setShowType(2)} /> */}
@@ -373,7 +367,8 @@ function Artwork({productList}:{productList?:ArtworkListItem[]}) {
                   setShowLogin(true);
                 }
               }}
-              showType={showType}
+              showType={showType? 2:1}
+              index={index}
             />
           )
           })
@@ -393,7 +388,8 @@ function Artwork({productList}:{productList?:ArtworkListItem[]}) {
                   setShowLogin(true);
                 }
               }}
-              showType={showType}
+              showType={showType? 2:1}
+              index={index}
             />
           )
           })
@@ -426,7 +422,6 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap:1%;
   margin:0 50px;
   /* 1440px */
   /* @media only screen and (max-width: 1440px) {
@@ -466,9 +461,16 @@ const InterView = styled.div`
 
 const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
   /* display:flex; */
-  display:${props => props.showcategory? 'block' : 'none'};
+  display:${props => props.showcategory? 'flex' : 'none'};
   align-items: center;
-  margin: 20px 50px 40px;
+  margin: 20px 60px 40px;
+
+  overflow-x: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar{
+    display:none;
+  }
   /* 1440px */
   /* @media only screen and (max-width: 1440px) {
     margin: 20px 0px 20px 20px;;
@@ -500,7 +502,7 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-weight: 400;
+  font-weight: 410;
   text-transform: capitalize;
   @media only screen and (max-width: 1024px) {
     font-size: 14px;
@@ -513,11 +515,7 @@ const TitleWrap = styled.div<{showsearch:boolean}>`
   display:${props => props.showsearch? 'flex':'none'};
   justify-content:space-between;
   align-items:center;
-  padding:50px 50px 90px;
-  /* 1440px */
-  /* @media only screen and (max-width: 1440px) {
-    padding:30px 20px 50px;
-  } */
+  padding:40px 50px 90px;
   @media only screen and (max-width: 768px) {
     display:none;
   }
@@ -525,7 +523,7 @@ const TitleWrap = styled.div<{showsearch:boolean}>`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size: 22px;
-  font-weight: 300;
+  font-weight: 310;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

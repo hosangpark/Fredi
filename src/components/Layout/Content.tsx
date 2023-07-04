@@ -14,9 +14,9 @@ const ContentWrap = styled.div`
   display: flex;
   min-height: calc(100vh - 80px);
   background-color: #ffffff;
-  padding-top: 80px;
+  padding-top: 100px;
   @media only screen and (max-width: 768px) {
-    padding-top: 50px;
+    padding-top: 60px;
     padding-bottom: 20px;
   }
 `;

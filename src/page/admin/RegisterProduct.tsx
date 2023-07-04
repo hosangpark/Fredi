@@ -249,7 +249,7 @@ const TitleBox = styled.div`
 const SubTitle = styled.p`
   color: #121212;
   font-size: 12px;
-  font-weight: 300;
+  font-weight: 310;
   margin: 0;
 `;
 
@@ -273,7 +273,7 @@ const TextInput = styled.input`
   border: 0;
   border-bottom: 1px solid #121212;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
 `;
 
@@ -283,7 +283,7 @@ const TextArea = styled.textarea`
   border: 1px solid #121212;
   padding: 15px;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   vertical-align: top;
   resize: none;
@@ -306,14 +306,14 @@ const BlackButton = styled.div<{ isLoading: boolean }>`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
 `;
 
 const InputDescription = styled.span`
   display: inline-block;
   color: #121212;
   font-size: 12px;
-  font-weight: 300;
+  font-weight: 310;
 `;
 
 const UnderLineBox = styled.div`

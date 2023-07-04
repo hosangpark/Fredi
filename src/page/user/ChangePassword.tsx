@@ -207,11 +207,9 @@ const ContainerWrap = styled.div`
   flex: 1;
   min-width: 734px;
   flex-direction: column;
-  margin: 30px 0;
   padding:0 20px;
   @media only screen and (max-width: 768px) {
     min-width: 300px;
-
     /* border-top:1px solid #d4d4d4; */
   }
 `;
@@ -221,7 +219,7 @@ const RowWap = styled.div<{ last?: boolean }>`
   align-items: center;
   position: relative;
   justify-content:space-between;
-  border-bottom:1px solid #d4d4d4;
+  border-bottom:1px solid #ECECEC;
   @media only screen and (max-width: 768px) {
   }
 `;
@@ -229,15 +227,12 @@ const RowWap = styled.div<{ last?: boolean }>`
 
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-weight:500;
+  font-weight: 360;
   font-size: 16px;
   text-align: left;
-  line-height: 80px;
-  margin-bottom:60px;
-  
+  margin:50px 0;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
-    line-height: 50px;
   }
 `;
 const BlackButton = styled.div`
@@ -256,31 +251,29 @@ font-family:'Pretendard Variable';
   }
 `
 const TextInput = styled.input`
-  color: #121212;
+  color: #000000;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   border: 0;
   height: 100%;
-  padding: 20px 0 0px 20px;
+  padding: 50px 10px 20px;
   outline: 0;
   flex: 1;
-
   @media only screen and (max-width: 768px) {
-    font-size: 13px;
+    padding: 47px 10px 16px;
+    font-size: 14px;
   }
 `;
 
 const EmptyRowTextInput = styled(TextInput)<{ last?: boolean }>`
   font-family:'Pretendard Variable';
   font-weight:normal;
-  height: 80px;
   border-radius: 0;
   background:white;
-  @media only screen and (max-width: 768px) {
-    height: 50px;
-    line-height: 50px;
-    font-size: 13px;
+  ::placeholder {
+      color: #828282
   }
+
 `;
 
 export default ChangePassword;

@@ -104,7 +104,7 @@ const Title = styled.h4`
 `;
 
 const SaveButton = styled.div`
-  font-weight: 400;
+  font-weight: 410;
   background-color: #121212;
   color: #fff;
   font-size: 14px;

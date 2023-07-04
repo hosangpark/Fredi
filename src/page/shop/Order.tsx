@@ -509,7 +509,7 @@ const CheckBoxText = styled.span`
 `;
 
 const PaymentTypeCheckboxText = styled(CheckBoxText)`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 14px;
   margin-right: 15px;
   @media only screen and (max-width: 768px) {
@@ -577,7 +577,7 @@ const DeliveryInfoButton = styled.div`
 const DeliveryInfoButtonText = styled.span`
   font-family: 'NotoSans';
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   @media only screen and (max-width: 1100px) {
     font-size: 13px;
@@ -663,7 +663,7 @@ const CartCardWrap = styled.div``;
 
 const InnerCheckBoxText = styled(CheckBoxText)`
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
@@ -737,7 +737,7 @@ const ContentRightText = styled.span`
   font-family: 'NotoSans';
   color: #121212;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -758,7 +758,7 @@ const TextInput = styled.input`
   border-radius: 0;
   border-bottom: 1px solid #121212;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   margin-bottom: 10px;
   @media only screen and (max-width: 768px) {
@@ -792,7 +792,7 @@ const SearchButton = styled.div`
 `;
 
 const SearchButtonText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 13px;
   @media only screen and (max-width: 768px) {
@@ -822,7 +822,7 @@ const TextArea = styled.textarea`
   border-radius: 0;
   border: 1px solid #121212;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   outline: 0;
   margin-bottom: 10px;
   width: 100%;

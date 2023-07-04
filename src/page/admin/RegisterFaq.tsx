@@ -122,7 +122,7 @@ const BlackButton = styled.div`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   line-height: 60px;
   cursor: pointer;
 `;
@@ -143,7 +143,7 @@ const Input = styled.input`
   border: 0;
   padding-left: 30px;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   outline: 0;
 `;
@@ -155,7 +155,7 @@ const ContentTextArea = styled.textarea`
   border: 0;
   padding: 30px;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   vertical-align: top;
   resize: none;

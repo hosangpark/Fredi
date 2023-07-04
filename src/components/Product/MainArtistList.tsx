@@ -52,13 +52,7 @@ function MainArtistList({
   const navigate = useNavigate();
 
   const LinkHandler = (productLink:string,idx?:number)=>{
-    if(productLink === 'FairsM'){
-      navigate(`/FairContent/${idx}`)
-    } else if (productLink === 'FairsW'){
-      navigate(`/MainTab`)
-    } else {
-      navigate(`/productLink`)
-    }
+      navigate(`/MobileProfile/${idx}`)
   }
  
   return (
@@ -107,7 +101,7 @@ function MainArtistList({
                 <TextWrap>
                   <ProductTitleText>
                     {/* {item.idx} */}
-                    Artis Name
+                    More Artis Name More Artis Name More Artis Name
                   </ProductTitleText>
                   <FollowButtonBox style={{marginRight:0}}>
                     Follow
@@ -144,10 +138,10 @@ const FollowButtonBox = styled.span`
 font-family:'Pretendard Variable';
   font-weight:normal;
   padding:5px 25px;
-  border:0.5px solid #c7c7c7;;
+  border:0.5px solid #000000;
   border-radius:12.5px;
-  font-weight:300;
-  font-size:14px;
+  font-weight: 310;
+  font-size:15px;
   white-space:nowrap;
 
   @media only screen and (max-width: 768px) {
@@ -160,7 +154,6 @@ const ProductImage = styled.img`
   width: 100%;
   height:100%;
   border-radius:50%;
-  object-fit:cover;
 `;
 const ProductContainer = styled.div`
   display: flex;
@@ -169,7 +162,7 @@ const ProductContainer = styled.div`
   scrollbar-width: none; 
 `;
 const TextWrap = styled.div`
-  padding:10px 10px;
+text-align:center;
   @media only screen and (max-width: 768px) {
     padding:0 10px;
   }
@@ -211,7 +204,7 @@ const TitleBox = styled.div`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size:22px;
-  font-weight:400;
+  font-weight: 410;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
@@ -229,11 +222,17 @@ height:20px;
 `;
 
 const ProductTitleText = styled.div`
+width:70%;
 font-family:'Pretendard Variable';
-  font-size:14px;
-  font-weight:350;
-  margin:20px 0 16px 0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:17px;
+  font-weight: 310;
+  color:#000000;
+  margin:20px auto 16px auto;
   @media only screen and (max-width: 768px) {
+    margin:10px auto 12px auto;
     font-weight:500;
     font-size:12px;
   }
@@ -241,7 +240,7 @@ font-family:'Pretendard Variable';
 const ProductSubText = styled.div`
 font-family:'Pretendard Variable';
   font-size:16px;
-  font-weight:300;
+  font-weight: 310;
   color:#525252;
   @media only screen and (max-width: 768px) {
     font-size:12px;

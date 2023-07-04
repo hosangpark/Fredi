@@ -373,7 +373,7 @@ const LikeButton = styled.img`
 const ContentBox = styled.div``;
 
 const Title = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
   display: inline-block;
@@ -385,7 +385,7 @@ const Title = styled.span`
 `;
 
 const Content = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
   @media only screen and (max-width: 768px) {
@@ -394,7 +394,7 @@ const Content = styled.span`
 `;
 
 const Phone = styled.a`
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
   text-decoration: none;
@@ -413,7 +413,7 @@ const ContactTitle = styled(Title)`
 const ContactContent = styled.a`
   flex: 1;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
   text-decoration: none;

@@ -70,11 +70,12 @@ function SearchBox({
 }
 
 const Wrap = styled.div<{none?:boolean}>`
-  position: -webkit-sticky;
   position: sticky;
   top: 80px;
   z-index: 97;
-  width:30%;
+  /* width:30%; */
+  max-width:610px;
+  width:35%;
   @media only screen and (max-width: 768px) {
     top: 50px;
     width:100%;
@@ -85,9 +86,9 @@ const Wrap = styled.div<{none?:boolean}>`
 const SearchBoxWrap = styled.div`
   display: flex;
   align-items: center;
-  height: 50px;
-  border: 1px solid #dfdfdf;
-  border-radius: 30px;
+  height: 57px;
+  border: 1px solid #b4b4b4;
+  border-radius: 25px;
   margin: 10px 0;
   background-color: #ffffff;
   @media only screen and (max-width: 1024px) {

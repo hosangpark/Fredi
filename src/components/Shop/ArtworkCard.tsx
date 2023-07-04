@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import likeOnImage from '../../asset/image/heart_on.png';
@@ -14,23 +14,33 @@ function ArtworkCard({
   onClick,
   onClickLike,
   isLikeList,
+  index
 }: {
   item: FairListItem;
   showType: 1 | 2;
   onClick: (e: any) => void;
   onClickLike: (e: any) => void;
   isLikeList?: boolean;
+  index:number
 }) {
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
+
   return (
-    <ProductBox showType={showType} onClick={onClick}>
-      <ProductImageWrap>
+    <ProductBox showType={showType} onClick={onClick} index={(index+1)}>
+      <ProductImageWrap showType={showType} height={innerWidth}>
         <ProductImage src={item.image[0].file_name} />
       </ProductImageWrap>
-      {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />}
+      {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
       <TextWrap>
         <ProductNameWrap>
-          <ProductName>{item.name}{item.name}{item.name}{item.name}</ProductName>
-          <Designer>{item.designer}</Designer>
+          <ProductName>{item.name}{item.name}</ProductName>
+          <Designer style={{marginTop:7}}>{item.designer}</Designer>
         </ProductNameWrap>
         <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOffImage : likeOffImage} />
         {/* <LikeCount>{replaceString(item.price)} ₩</LikeCount> */}
@@ -39,34 +49,38 @@ function ArtworkCard({
   );
 }
 
-const ProductBox = styled.div<{ showType: 1 | 2 }>`
+const ProductBox = styled.div<{ showType: 1 | 2, index:number }>`
   position: relative;
   display: column;
-  width: ${(props) => (props.showType === 1 ? 19.20 : 19.25)}%;
+  width: calc(20% - 16px);
   cursor: pointer;
   overflow: hidden;
-
+  margin-right: ${(props) => ((props.index) % 5 === 0 ? 0:20)}px;
   @media only screen and (max-width: 768px) {
-    width: ${(props) => (props.showType === 1 ? 49.5 : 100)}%;
-    margin-bottom: 50px;
+    ${(props) => (props.showType === 1? `margin-right: ${(props.index) % 2 === 0 ? 0:5}px;` : `margin-right:0;`  )}
+    ${(props) => (props.showType === 1? `width:calc(50% - 5px);` : `width:100%;`  )}
   }
 `;
-const ProductImageWrap = styled.div`
+const ProductImageWrap = styled.div<{showType: 1 | 2, height:number }>`
   width: 100%;
-  object-fit:cover;
-  aspect-ratio: 200/235;
-  margin-bottom: 5px;
+  aspect-ratio: 0.851;
   overflow: hidden;
   position: relative;
   background:#000000;
+  margin-bottom: 30px;
+  @media only screen and (max-width: 768px) {
+    margin-bottom: 10px;
+    height:${props =>  props.showType === 1 && (props.height/2-5)/0.851}px;
+  }
 `;
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
-  &:hover {
+
+  /* &:hover {
     transform: scale(1.1);
   }
-  transition: all 0.5s ease;
+  transition: all 0.5s ease; */
 `;
 
 const NewIcon = styled.img`
@@ -81,25 +95,30 @@ const Designer = styled.span`
 font-family:'Pretendard Variable';
   color: #121212;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 410;
   text-align: left;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
 `;
 
-const ProductName = styled(Designer)`
-  font-weight: 400;
+const ProductName = styled.span`
+font-family:'Pretendard Variable';
   -webkit-line-clamp:2;
   word-break: break-word;
-  overflow:hidden;
   text-overflow:ellipsis;
+  color: #121212;
+  font-size: 12px;
+  font-weight: 410;
+  text-align: left;
+  @media only screen and (max-width: 768px) {
+    font-size: 11px;
+  }
 `;
 
 const LikeButton = styled.img`
   width: 20px;
   height: 20px;
-  margin-right:10px;
   @media only screen and (max-width: 768px) {
     width: 20px;
     height: 20px;
@@ -127,11 +146,13 @@ const ProductNameWrap = styled.div`
   margin-right:5px;
   height:54px;
   margin-bottom:91px;
+
   &:hover{
     height:145px;
     margin-bottom:0px;
   }
   @media only screen and (max-width: 768px) {
+
     margin-bottom:51px;
     &:hover{
       height:105px;

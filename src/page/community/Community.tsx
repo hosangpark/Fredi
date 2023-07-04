@@ -5,7 +5,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import leftButtonImage from '../../asset/image/home02.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import snsImage from '../../asset/image/snsicon.png';
-import bookMarkImage from '../../asset/image/bookmark.png';
+import bookMarkImage from '../../asset/image/Bookoff.svg';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
@@ -16,8 +16,7 @@ import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
 import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
-import { APILikeShop, APIShopList } from '../../api/ShopAPI';
+import { APILikeShop, } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 import FairCard from '../../components/Shop/FairCard';
@@ -26,6 +25,7 @@ import Feed from './Feed';
 import BookMark from './BookMark';
 import { FairListItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 
@@ -72,7 +72,8 @@ function Community() {
     },
     {
       tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-        <TabImage src={bookMarkImage}/></div>,
+        <TabImage src={bookMarkImage}/>
+        </div>,
       content:<BookMark/>
     }
   ];
@@ -95,7 +96,7 @@ function Community() {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         setShopList((prev) => [...list]);
@@ -162,11 +163,11 @@ function Community() {
   };
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
+    // const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
     const page = Number(sessionStorage.getItem('page'));
     const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    setShopList(list);
+    // setShopList(list);
     setHistory(true);
     setPage(page);
     setShowType(type);
@@ -285,7 +286,7 @@ const TabButtonWrap = styled.div`
   border-bottom:1px solid #cccccc;
   margin:50px;
   @media only screen and (max-width: 768px) {
-    margin:0px;
+    margin:0;
     width:100%;
   }
 `;
@@ -297,10 +298,13 @@ const TabButton = styled.div`
 `;
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
-  border-bottom: solid 1px ${(props) => props.color || "none"};
-  font-weight: ${props => props.color == 'black' ? 600 : 300};
+  border-bottom: solid 1.7px ${(props) => props.color || "none"};
+  font-weight: ${props => props.color == 'black' ? 460 : 360};
+  color:#000000;
   font-family:'Pretendard Variable';
   padding:10px 0;
+  margin-top:5px;
+  font-size:18px;
   @media only screen and (max-width: 768px) {
     font-size:14px;
   }
@@ -310,9 +314,10 @@ const TitleWrap = styled.div`
   display:none;
   justify-content:space-between;
   align-items:center;
+  margin: 0 30px;
   @media only screen and (max-width: 768px) {
     display:flex;
-    margin: 0 30px;
+    margin: 0 10px;
   }
 `;
 

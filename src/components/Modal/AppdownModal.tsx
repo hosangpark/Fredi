@@ -3,7 +3,7 @@ import { Modal } from '@mantine/core';
 import styled,{keyframes} from 'styled-components';
 import googleImage from '../../asset/image/google.png';
 import appleImage from '../../asset/image/apple.png';
-import closeImage from '../../asset/image/close.png';
+import closeImage from '../../asset/image/close.svg';
 
 function AppdownModal({
 
@@ -31,12 +31,10 @@ const [isAnimationComplete, setIsAnimationComplete] = useState(false);
     <ModalWrapper>
       <ModalContent onAnimationEnd={handleAnimationEnd}>
         <Xbutton onClick={onClose}>
-          <XbuttonText>
-            <Image src={closeImage} />
-          </XbuttonText>
+          <Image src={closeImage} />
         </Xbutton>
         <ButtonWrap>
-          <ModalBlackButton onClick={()=>console.log('app')}>
+          <ModalBlackButton style={{marginRight:26}} onClick={()=>console.log('app')}>
             <Image src={appleImage}/>
             <BlackButtonText>
               App Store
@@ -81,10 +79,12 @@ const ModalWrapper = styled.div`
 `;
 
 const ModalContent = styled.div`
+  position:relative;
   animation: ${slideUp} 0.3s ease-in-out;
   background-color: #fff;
   width: 100%;
-  max-height: 40vh;
+  /* max-height: 40vh; */
+  padding:110px 0 70px;
   overflow-y: auto;
   border-top-right-radius:20px;
   border-top-left-radius:20px;
@@ -103,17 +103,16 @@ const Overlay = styled.div`
 const ButtonWrap = styled.div`
   display: flex;
   flex-direction: row;
-  gap:20px;
-  margin-top:30px;
+  margin-bottom:48px;
   align-items:center;
   justify-content:center;
 `;
 
 const ModalBlackButton = styled.div`
-  width: 160px;
-  height: 60px;
+  width: 154px;
+  height: 59px;
   background-color: #3f3f3f;
-  border-radius:20px;
+  border-radius:15px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -125,18 +124,18 @@ const ModalBlackButton = styled.div`
   `;
 
 const Image = styled.img`
-  width:30px;
-  height:30px;
+  width:25px;
+  height:25px;
   margin-right:10px;
   @media only screen and (max-width: 769px){
     margin-right:5px;
-    width:25px;
-    height:25px;
+    width:20px;
+    height:20px;
   }
 `;
 const BlackButtonText = styled.span`
-  font-family:'vdvd';
-  font-weight: 300;
+  font-family:'Pretendard Variable';
+  font-weight: 310;
   color: #ffffff;
   font-size: 18px;
   @media only screen and (max-width: 769px){
@@ -144,27 +143,24 @@ const BlackButtonText = styled.span`
   }
 `;
 const ModalTitle = styled.div`
-  font-family: 'NotoSans' !important;
-  font-size: 14px;
+  font-family:'Pretendard Variable';
+  font-size: 16px;
   color: #121212;
-  font-weight: 400;
-  margin: 30px auto;
+  font-weight: 310;
   @media only screen and (max-width: 769px){
     font-size: 14px;
   }
   
 `;
 const Xbutton = styled.div`
-  display: flex;
-  margin: 20px auto;
-  flex-direction:row;
-  justify-content:flex-end;
+  position:absolute;
+  top:20px;
+  right:20px;
 `;
 const XbuttonText = styled.div`
-  font-size: 15px;
-  color: #121212;
-  font-weight: 400;
-  margin-right:20px;
+  position:absolute;
+  top:20px;
+  right:20px;
 `;
 
 export default AppdownModal;

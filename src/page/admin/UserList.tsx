@@ -242,14 +242,14 @@ const WhiteButton = styled.div`
 const WhiteButtonText = styled.span`
   color: #121212;
   line-height: 38px;
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
 `;
 
 const UnderlinedTextButton = styled.span`
   color: #121212;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   text-decoration: underline;
   cursor: pointer;
 `;

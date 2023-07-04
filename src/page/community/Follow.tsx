@@ -16,7 +16,6 @@ import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
 import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
@@ -28,10 +27,10 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import ArtworkCard from '../../components/Shop/ArtworkCard';
-import FeedCard from '../../components/Shop/FeedCard';
 import { FairListItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
+import FollowCard from '../../components/Shop/FollowCard';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -137,7 +136,7 @@ function Follow() {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         setShopList((prev) => [...list]);
@@ -281,12 +280,11 @@ function Follow() {
           <Swiper
             // install Swiper modules
             modules={[Navigation, Pagination, Scrollbar]}
-            slidesPerView={innerWidth/110}
+            slidesPerView={innerWidth<=768? innerWidth/110:(innerWidth-100)/110}
             // spaceBetween={30}
             // pagination={{ clickable: true }}
             // onSwiper={(swiper) => console.log(swiper)}
             // onSlideChange={() => console.log('slide change')}
-
           >
             {shopList.map((item) => {
               return (
@@ -308,20 +306,11 @@ function Follow() {
         {shopList.length > 0 &&
         shopList.map((item,index)=>{
           return(
-            <FeedCard
+            <FollowCard
               item={item}
               key={item.idx}
               onClick={(e) => saveHistory(e, item.name)}
-              onClickLike={(e) => {
-                if (user.idx) {
-                  e.stopPropagation();
-                  onLikeShop(item.idx);
-                } else {
-                  e.stopPropagation();
-                  setShowLogin(true);
-                }
-              }}
-              index={0}
+              index={index}
             />
           )
           })
@@ -356,17 +345,13 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap:1%;
   margin-top:30px;
-  @media only screen and (max-width:768px){
-    gap:2px
-  }
 `;
 
 const FollowTitle = styled.div`
 font-family:'Pretendard Variable';
   font-size:14px;
-  font-weight:400;
+  font-weight: 410;
   text-align:start;
   margin:25px 20px;
   @media only screen and (max-width: 768px) {
@@ -425,6 +410,7 @@ font-family:'Pretendard Variable';
   width:90%;
   font-size: 12px;
   font-weight: 500;
+  margin-top:5px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -434,16 +420,18 @@ font-family:'Pretendard Variable';
 `;
 const ImageWrap = styled.div`
   width:80px;
+  height:80px;
   aspect-ratio:1;
   border-radius:50%;
 
   @media only screen and (max-width: 768px) {
     width:70px;
+    height:70px;
   }
 `
 const ProfileImage = styled.img`
   width:80px;
-  aspect-ratio:1;
+  height:100%;
   box-sizing:border-box;
   border:1px solid #929292;
   border-radius:50%;

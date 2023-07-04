@@ -244,7 +244,7 @@ const Date = styled.span`
 
 const OrderNumber = styled(Date)`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 410;
   color: #777;
   margin-left: 5px;
   font-size:14px;

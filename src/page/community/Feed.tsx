@@ -16,7 +16,6 @@ import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
 import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
@@ -31,6 +30,8 @@ import 'swiper/css/scrollbar';
 import FeedCard from '../../components/Shop/FeedCard';
 import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
+import { APIProducerList } from '../../api/ProducerAPI';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 export type FairListItem = {
@@ -159,7 +160,7 @@ function Feed({productList}:{productList?:any[]}) {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         // setShopList((prev) => [...list]);
@@ -300,24 +301,11 @@ function Feed({productList}:{productList?:any[]}) {
   return (
     <Container>
       <CategorySelectButtonWrap>
-        <Swiper
-          // install Swiper modules
-          modules={[Navigation, Pagination, Scrollbar]}
-          slidesPerView={innerWidth <= 450? 4.8 : innerWidth <= 768? 5.5 : innerWidth <= 1440? 7.3 : 10.2}
-          // spaceBetween={30}
-          // pagination={{ clickable: true }}
-          // onSwiper={(swiper) => console.log(swiper)}
-          // onSlideChange={() => console.log('slide change')}
-          // style={{paddingBottom:50}}
-        >
-          {CategoryList.map((item) => {
-            return (
-            <SwiperSlide>
-              <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
-            </SwiperSlide>
-            );
-          })}
-        </Swiper>
+        {CategoryList.map((item) => {
+          return (
+          <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
+          );
+        })}
       </CategorySelectButtonWrap>
       <ProductListWrap>
         {
@@ -336,7 +324,7 @@ function Feed({productList}:{productList?:any[]}) {
                   setShowLogin(true);
                 }
               }}
-              index={0}
+              index={index}
             />
           )
           })
@@ -374,23 +362,13 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap:1%;
   /* 1440px */
   /* @media only screen and (max-width: 1440px) {
     margin:0 20px;
   } */
-  @media only screen and (max-width:768px){
-    gap:2px
-  }
+
 `;
 
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4697/1737;
-  max-height: 700px;
-`;
 const MobileCarouselWrap = styled.div`
   display: none;
   max-height: 700px;
@@ -413,12 +391,16 @@ const InterView = styled.div`
 
 const CategorySelectButtonWrap = styled.div`
   /* display:flex; */
+  display:flex;
   align-items: center;
   margin: 20px 0px;
-  /* 1440px */
-  /* @media only screen and (max-width: 1440px) {
-    margin: 20px 20px 20px;
-  } */
+  overflow-x: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar{
+    display:none;
+  }
+
   @media only screen and (max-width: 768px) {
     margin: 15px 10px;
   }
@@ -443,7 +425,7 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-weight: 400;
+  font-weight: 410;
   text-transform: capitalize;
   @media only screen and (max-width: 1024px) {
     font-size: 14px;

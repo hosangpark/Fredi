@@ -71,7 +71,7 @@ const ModalBlackButton = styled.div`
 
 const BlackButtonText = styled.span`
   font-family: 'NotoSans' !important;
-  font-weight: 400;
+  font-weight: 410;
   color: #ffffff;
   font-size: 14px;
   @media only screen and (max-width: 768px) {

@@ -302,14 +302,14 @@ const StatusBox = styled.div<{ answerd: boolean }>`
 
 const StatusBoxText = styled.span`
   font-family: 'NotoSans';
-  font-weight: 400;
+  font-weight: 410;
   color: #fff;
   font-size: 12px;
 `;
 
 const Nickname = styled.span`
   font-family: 'NotoSans';
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
 `;
@@ -349,7 +349,7 @@ const IconText = styled.span`
 
 const ContentText = styled.pre`
   font-family: 'NotoSans';
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   text-align: left;
@@ -391,7 +391,7 @@ const WhiteButton = styled.div`
 const WhiteButtonText = styled.span`
   color: #121212;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
 `;
 const AnswerTextArea = styled.textarea`
   display: flex;
@@ -400,7 +400,7 @@ const AnswerTextArea = styled.textarea`
   border: 1px solid #e9e9e9;
   padding: 15px;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   vertical-align: top;
   resize: none;

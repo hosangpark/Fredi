@@ -2,15 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
-import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import ImageCard from '../../components/Shop/ImageCard';
 import { TImage } from '../admin/ProducerList';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import CategoryItem from '../../components/Shop/CategoryItem';
 import linkImage from '../../asset/image/links.png';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Virtual,Pagination,Navigation, Scrollbar } from 'swiper';
 import { CategoryListCheck } from '../../components/List/List';
 
 export type TUserDetails = {
@@ -206,7 +202,7 @@ const PlusImage = styled.div`
 `;
 const PlusText = styled.p`
   font-size:25px;
-  font-weight:400;
+  font-weight: 410;
   margin:0;
   @media only screen and (max-width: 768px) {
   }
@@ -233,7 +229,7 @@ const TextInput = styled.textarea`
   width:100%;
   font-size: 16px;
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   text-align:start;
   border-radius: 0;
   min-height:35px;
@@ -247,7 +243,7 @@ const TextInput = styled.textarea`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
@@ -278,7 +274,7 @@ const ModalWhiteButton = styled(ModalBlackButton)`
 `;
 
 const AlertText = styled.span`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 12px;
   color: #d82c19;
   margin-top: 8px;
@@ -318,14 +314,14 @@ const EditPhotoButton = styled.div`
   /* border-bottom:2px solid #c7c7c7; */
   margin:10px 0 0 0;
   font-size:14px;
-  font-weight:400;
+  font-weight: 410;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
   }
   `;
 const SubTextBox = styled.p`
   font-size:14px;
-  font-weight:400;
+  font-weight: 410;
   text-align:start;
   color:#a1a1a1;
   margin:0;
@@ -334,7 +330,7 @@ const SubTextBox = styled.p`
   `;
 const DescriptionText = styled.p`
   font-size:14px;
-  font-weight:400;
+  font-weight: 410;
   text-align:start;
   color:#2b2b2b;
   margin:30px 0;
@@ -394,10 +390,10 @@ display:flex;
 align-items:center;
   width:70px;
   height:70px;
-  margin-right:50px;
+  margin-right:30px;
+
   /* width:40%; */
   @media only screen and (max-width: 768px) {
-    margin-right:20px;
     width:55px;
     height:50px;
   }
@@ -436,7 +432,6 @@ font-family:'Pretendard Variable';
 const CategoryItemContainer = styled.div`
   display:flex;
   flex-wrap:wrap;
-  /* gap:5px; */
 `;
 
 const Image = styled.img`

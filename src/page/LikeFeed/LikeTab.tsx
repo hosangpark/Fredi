@@ -20,6 +20,7 @@ import Fair from '../MainTab/Fair';
 import LikeSns from './LikeSns';
 import Artwork from '../MainTab/Artwork';
 import { ArtworkListItem } from '../../types/Types';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -97,7 +98,7 @@ function LikeTab() {
   const content = [
     {
       tab: "Artwork",
-      content:<Artwork productList={productList}/>
+      content:<Artwork productList={productList} showType={2}/>
     },
     { 
       tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
@@ -136,7 +137,7 @@ function LikeTab() {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         setproductList((prev) => [...list]);
@@ -288,10 +289,12 @@ const TabButton = styled.div`
 `;
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
-  border-bottom: solid 1px ${(props) => props.color || "none"};
-  font-weight: ${props => props.color == 'black' ? 400 : 300};
+  border-bottom: solid 1.7px ${(props) => props.color || "none"};
+  font-weight: ${props => props.color == 'black' ? 460 : 360};
+  color:#000000;
   font-family:'Pretendard Variable';
   padding:10px 0;
+  margin-top:5px;
   font-size:18px;
   @media only screen and (max-width: 768px) {
     font-size:14px;

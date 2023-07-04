@@ -21,6 +21,7 @@ import { removeHistory } from '../../components/Layout/Header';
 import ArtistCard from '../../components/Shop/ArtistCard';
 import { ArtistItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 
@@ -110,7 +111,7 @@ function Artist() {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         // setShopList((prev) => [...list]);
@@ -366,43 +367,18 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin:10px 0;
+  margin:13px 0;
   @media only screen and (max-width: 768px) {
     /* display: block; */
   }
 `;
 
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4697/1737;
-  max-height: 700px;
-`;
-const MobileCarouselWrap = styled.div`
-  display: none;
-  max-height: 700px;
-  position: relative;
-  @media only screen and (max-width: 768px) {
-    display: block;
-  }
-`;
 
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
-`;
-
-const InterView = styled.div`
-  height: 200px;
-`;
 const TitleWrap = styled.div<{showsearch:boolean}>`
   display:${props => props.showsearch? 'flex':'none'};
   justify-content:space-between;
   align-items:center;
-  padding:50px 50px 90px 50px;
+  padding:40px 50px 90px;
   @media only screen and (max-width: 768px) {
     display:none;
   }
@@ -410,7 +386,7 @@ const TitleWrap = styled.div<{showsearch:boolean}>`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size: 22px;
-  font-weight: 350;
+  font-weight: 360;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

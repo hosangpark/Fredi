@@ -292,7 +292,7 @@ const BlackButtonNoData = styled(BlackButton)`
 
 const BlackButtonText = styled.span`
   color: #ffffff;
-  font-weight: 400;
+  font-weight: 410;
   font-size: 16px;
   @media only screen and (max-width: 1000px) {
     font-size: 13px;
@@ -349,7 +349,7 @@ const StatusBox = styled.div<{ answerd: boolean }>`
 const StatusBoxText = styled.span`
   font-family: 'NotoSans' !important;
 
-  font-weight: 400;
+  font-weight: 410;
   color: #fff;
   font-size: 12px;
   @media only screen and (max-width: 1000px) {
@@ -359,7 +359,7 @@ const StatusBoxText = styled.span`
 const Nickname = styled.span`
   font-family: 'NotoSans' !important;
 
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   @media only screen and (max-width: 1000px) {
@@ -400,7 +400,7 @@ const IconText = styled.span`
 
 const ContentText = styled.pre`
   font-family: 'NotoSans' !important;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   text-align: left;
@@ -441,7 +441,7 @@ const WhiteButtonText = styled.span`
 
   color: #121212;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 1000px) {
     font-size: 12px;
   }

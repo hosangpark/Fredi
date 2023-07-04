@@ -16,7 +16,6 @@ import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
 import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
@@ -28,9 +27,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import ArtworkCard from '../../components/Shop/ArtworkCard';
-import FeedCard from '../../components/Shop/FeedCard';
 import { FairListItem } from '../../types/Types';
+import FollowCard from '../../components/Shop/FollowCard';
+import { APIProductList } from '../../api/ProductAPI';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -135,7 +134,7 @@ function BookMark() {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIShopList(data);
+      const { list, total } = await APIProductList(data);
       setTotal(total);
       if (page === 1) {
         setShopList((prev) => [...list]);
@@ -278,20 +277,11 @@ function BookMark() {
         {shopList.length > 0 &&
         shopList.map((item,index)=>{
           return(
-            <FeedCard
+            <FollowCard
               item={item}
               key={item.idx}
               onClick={(e) => saveHistory(e, item.name)}
-              onClickLike={(e) => {
-                if (user.idx) {
-                  e.stopPropagation();
-                  onLikeShop(item.idx);
-                } else {
-                  e.stopPropagation();
-                  setShowLogin(true);
-                }
-              }}
-              index={0}
+              index={index}
             />
           )
           })
@@ -326,10 +316,7 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap:1%;
-  @media only screen and (max-width:768px){
-    gap:2px
-  }
+
 `;
 
 const FollowTitle = styled.p`

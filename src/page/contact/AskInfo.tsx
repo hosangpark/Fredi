@@ -122,18 +122,25 @@ function AskInfo() {
 
 const Container = styled.div`
   display: flex;
+  min-width: 290px;
+  width: 100%;
   flex-direction: column;
   text-align: left;
-  width:100%;
+  padding:30px;
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
+    padding:20px;
+    border-right: 0;
+  }
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 360;
   color: #121212;
-  padding:30px;
-  border-bottom: 1px solid #e2e2e2;
+  font-size: 16px;
+  border-bottom: 1px solid  #ECECEC;
   @media only screen and (max-width: 1000px) {
-    padding:20px;
+  padding-bottom:40px;
     font-size: 14px;
   }
 `;
@@ -163,7 +170,7 @@ const CheckBoxText = styled.span`
   font-family:'Pretendard Variable';
   font-size: 14px;
   margin-left: 7px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -186,7 +193,7 @@ const RowWap = styled.div<{ last?: boolean }>`
 const LeftText = styled.span`
 font-family:'Pretendard Variable';
   color: #121212;
-  font-weight: 400;
+  font-weight: 410;
   flex:4;
   height: 100%;
   text-align: left;
@@ -203,7 +210,7 @@ const CheckBoxWrap = styled.div`
 
 const RightInput = styled.input<{marginR?:number}>`
 font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 410;
   width:100%;
   padding:10px 0;
   border: 0;

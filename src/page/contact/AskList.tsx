@@ -227,18 +227,25 @@ function AskList() {
 
 const Container = styled.div`
   display: flex;
+  min-width: 290px;
+  width: 100%;
   flex-direction: column;
   text-align: left;
-  width:100%;
+  padding:30px;
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
+    padding:20px;
+    border-right: 0;
+  }
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 360;
   color: #121212;
-  padding:30px;
-  border-bottom: 1px solid #e4e4e4;
+  font-size: 16px;
+  border-bottom: 1px solid  #ECECEC;
   @media only screen and (max-width: 1000px) {
-    padding:20px;
+  padding-bottom:40px;
     font-size: 14px;
   }
 `;
@@ -331,7 +338,7 @@ const StatusBox = styled.div<{ answerd: boolean }>`
 
 const StatusBoxText = styled.span`
   font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 410;
   color: #fff;
   font-size: 12px;
   @media only screen and (max-width: 1000px) {
@@ -341,7 +348,7 @@ const StatusBoxText = styled.span`
 const Nickname = styled.span`
   font-family:'Pretendard Variable';
 
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   @media only screen and (max-width: 1000px) {
@@ -382,7 +389,7 @@ const IconText = styled.span`
 
 const ContentText = styled.pre`
   font-family:'Pretendard Variable';
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   text-align: left;
@@ -423,7 +430,7 @@ const WhiteButtonText = styled.span`
   color: #121212;
   font-size: 14px;
   line-height: 40px;
-  font-weight: 400;
+  font-weight: 410;
   @media only screen and (max-width: 1000px) {
     font-size: 12px;
     line-height: 35px;

@@ -111,7 +111,7 @@ const TabButton = styled.div<{ selected: boolean }>`
 `;
 
 const TabButtonText = styled.span<{ selected: boolean }>`
-  font-weight: 400;
+  font-weight: 410;
   font-size: 13px;
   line-height: 38px;
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
@@ -130,7 +130,7 @@ const TabContentTextArea = styled.textarea`
   padding: 20px;
   resize: none;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 410;
   color: #121212;
   outline: 0;
   line-height: 25px;
@@ -151,7 +151,7 @@ const BlackButton = styled.div`
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 410;
 `;
 
 export default SettingTerms;
