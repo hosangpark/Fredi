@@ -5,6 +5,7 @@ import kakaoImage from '../../asset/image/sns_kakao.png';
 import { APISignIn } from '../../api/UserAPI';
 import NaverLoginButton from '../../components/Login/NaverLoginButton';
 import { UserContext } from '../../context/user';
+import { removeHistory } from '../../components/Layout/Header';
 
 const JAVASCRIPT_KEY = '1abc385bc918f8e46dfb85b5128a89d5';
 const REDIRECT_URI = 'https://fredi.co.kr/kakao';
@@ -25,10 +26,8 @@ function SignIn() {
           action: 'kakao',
         })
       );
-
       return;
     }
-
     window.Kakao.Auth.authorize({ redirectUri: REDIRECT_URI });
   };
 
@@ -42,12 +41,14 @@ function SignIn() {
       uuid: uuid,
     };
     try {
-      const res = {token:'dasda',userInfo:{idx:0,level:1}};
-      // console.log(res);
+      // const res = {token:'dasda',userInfo:{idx:0,level:1}};
+      const res = await APISignIn(data);
+      console.log(res);
       setAlertType(undefined);
       const token = res.token;
       sessionStorage.setItem('token', token);
       patchUser(res.userInfo.idx, res.userInfo.level);
+      removeHistory()
       navigate('/');
     } catch (error) {
       console.log(error);

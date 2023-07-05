@@ -58,7 +58,6 @@ function ChangePassword() {
     | 'deleted'
   >();
 
-  const [timer, setTimer] = useState(0);
   const [isVerifiedPassword, setIsVerifiedPassword] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
@@ -102,23 +101,10 @@ function ChangePassword() {
   };
 
   useEffect(() => {
-    if (alertType) {
-      setAlertModal(true);
+    if (newPassword2.length > 0) {
+      onCheckPassword()
     }
-  }, [alertType]);
-
-  useEffect(() => {
-    if (timer > 0) {
-      if (!countRef.current) {
-        countRef.current = setInterval(() => {
-          setTimer((prev) => prev - 1);
-        }, 1000);
-      }
-    } else {
-      clearInterval(countRef.current);
-      countRef.current = null;
-    }
-  }, [timer]);
+  }, [newPassword2]);
 
   return (
     <Container style={{ overflow: 'hidden' }}>
@@ -144,6 +130,27 @@ function ChangePassword() {
             type="password"
           />
         </RowWap>
+        {/* {isSend && authNumber.length > 0  ?
+        <TimerBox>
+           {
+             isAuth ?
+             <AuthText color='blue'>
+            인증되었습니다.
+            </AuthText>
+            : 
+            // timer > 0 ?
+            <AuthText>
+            인증번호를 잘못 입력하셨습니다.
+            </AuthText>
+            // :
+            // <AuthText>
+            // 인증유효기간이 만료되었습니다. 재전송하여 다시 인증번호를 입력해주세요
+            // </AuthText>
+            }
+        </TimerBox>
+          :
+        <Emptybox/>
+        } */}
 
         <BlackButton onClick={()=>{
           alert('수정되었습니다.')
@@ -153,7 +160,7 @@ function ChangePassword() {
         </BlackButton>
       </ContainerWrap>
 
-      <AlertModal
+      {/* <AlertModal
         visible={alertModal}
         setVisible={setAlertModal}
         onClick={() => {
@@ -185,7 +192,7 @@ function ChangePassword() {
             ? '새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.'
             : ''
         }
-      />
+      /> */}
     </Container>
   );
 }
@@ -275,5 +282,13 @@ const EmptyRowTextInput = styled(TextInput)<{ last?: boolean }>`
   }
 
 `;
+const TimerBox = styled.div`
+  height:30px;
+  text-align:start;
+  margin-left:15px;
+`
+const Emptybox = styled.div`
+  height:30px;
+`
 
 export default ChangePassword;

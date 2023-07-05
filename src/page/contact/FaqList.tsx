@@ -142,7 +142,7 @@ const Logo = styled.img`
 `;
 
 const Text = styled.h3`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
 
   font-weight: 500;
   color: #121212;
@@ -176,7 +176,7 @@ const RowWrap = styled.div<{ last?: boolean }>`
 `;
 
 const ListItemTitle = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
 
   font-weight: 700;
   color: #121212;
@@ -187,7 +187,7 @@ const ListItemTitle = styled.span`
 `;
 
 const Nickname = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
 
   font-weight: 410;
   color: #121212;
@@ -216,7 +216,7 @@ const AnswerBox = styled(QuestionBox)`
 `;
 
 const IconText = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   align-self: flex-start;
   font-weight: 700;
   font-size: 30px;
@@ -231,7 +231,7 @@ const IconText = styled.span`
 const ContentText = styled.pre`
   display: flex;
   flex: 1;
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 410;
   color: #121212;
   font-size: 16px;

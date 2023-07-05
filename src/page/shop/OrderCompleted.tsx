@@ -180,7 +180,7 @@ const LeftTopBox = styled.div`
 `;
 
 const Title = styled.h3`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 700;
   color: #121212;
   font-size: 36px;
@@ -238,7 +238,7 @@ const TextRowWrap = styled.div`
 `;
 
 const LeftText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
   font-weight: 500;
@@ -251,7 +251,7 @@ const LeftText = styled.span`
 `;
 
 const RightText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 600;
   font-size: 15px;
   @media only screen and (max-width: 1100px) {
@@ -300,7 +300,7 @@ const ContentTextRowWrap = styled.div<{ last?: boolean }>`
 `;
 
 const ContentLeftText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
   font-weight: 500;
@@ -314,7 +314,7 @@ const ContentLeftText = styled.span`
 const ContentRightText = styled.span`
   display: flex;
   flex: 1;
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
   font-weight: 410;

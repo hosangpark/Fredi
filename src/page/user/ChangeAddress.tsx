@@ -1090,7 +1090,7 @@ const RecipientInputRowWrap = styled(ContentTextRowWrap)<{ last?: boolean }>`
 `;
 
 const ContentLeftText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
   font-weight: 500;

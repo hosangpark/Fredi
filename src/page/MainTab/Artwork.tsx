@@ -463,7 +463,7 @@ const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
   /* display:flex; */
   display:${props => props.showcategory? 'flex' : 'none'};
   align-items: center;
-  margin: 20px 60px 40px;
+  margin: 20px 62.68px 40px;
 
   overflow-x: scroll;
   -ms-overflow-style: none; /* IE and Edge */
@@ -476,7 +476,7 @@ const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
     margin: 20px 0px 20px 20px;;
   } */
   @media only screen and (max-width: 768px) {
-    margin: 15px 0 15px 10px;
+    margin: 20px 0 20px 10px;
   }
   /* @media only screen and (max-width: 1024px) {
     display: none;
@@ -486,13 +486,13 @@ const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
   border : 1px solid ${(props) => (props.selected ? '#121212' : '#c0c0c0')};
-  padding: 0 18px;
-  margin-right: 10px;
+  padding: 13px 24px 14px 22px;
+  margin-right: 11px;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
+  height: 47.25px;
   /* box-shadow:2px 3px 3px 0px #aaaaaa; */
   cursor: pointer;
   @media only screen and (max-width: 1440px) {
@@ -501,10 +501,12 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 `;
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
+  font-family:'Pretendard Variable';
+  font-size:17px;
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-weight: 410;
+  font-weight: 360;
   text-transform: capitalize;
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1440px) {
     font-size: 14px;
   }
   @media only screen and (max-width: 768px) {

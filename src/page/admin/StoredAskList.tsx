@@ -234,7 +234,7 @@ const Logo = styled.img`
 `;
 
 const Text = styled.h3`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 500;
   color: #121212;
   font-size: 18px;
@@ -264,7 +264,7 @@ const RowWrap = styled.div<{ last?: boolean }>`
 `;
 
 const ListItemTitle = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 700;
   color: #121212;
   font-size: 17px;
@@ -280,7 +280,7 @@ const StatusBox = styled.div<{ answerd: boolean }>`
 `;
 
 const StatusBoxText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 410;
   color: #fff;
   font-size: 12px;
@@ -293,7 +293,7 @@ const Line = styled.div`
 `;
 
 const Nickname = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 410;
   color: #121212;
   font-size: 15px;
@@ -313,7 +313,7 @@ const AnswerBox = styled(QuestionBox)`
   border-top: 1px solid #e9e9e9;
 `;
 const IconText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   display: inline-block;
   min-width: 45px;
   text-align: left;
@@ -328,7 +328,7 @@ const ContentText = styled.pre`
   display: flex;
   flex: 1;
 
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 410;
   color: #121212;
   font-size: 16px;
@@ -370,14 +370,14 @@ const WhiteButton = styled.div`
   cursor: pointer;
 `;
 const WhiteButtonText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
   font-weight: 410;
 `;
 
 const AnswerTextArea = styled.textarea`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   display: flex;
   flex: 1;
   min-height: 160px;

@@ -296,7 +296,7 @@ const Container = styled.div`
 
 const LeftBox = styled.div`
   display: flex;
-  width: 450px;
+  width: 540px;
   min-width: 290px;
   flex-direction: column;
   text-align: left;
@@ -435,7 +435,7 @@ const BottomBoxTitle = styled.h3`
 `;
 
 const BottomBoxContent = styled.textarea`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
 
   width: 100%;
   height: 320px;

@@ -47,14 +47,10 @@ export type ImageItem = {
 function MobileProfile() {
   const navigate = useNavigate();
   const token = sessionStorage.getItem('token');
-  const [showModal, setShowModal] = useState(false);
-  const [passwordAlert, setPasswordAlert] = useState(false);
   const [isSnsUser, setIsSnsUser] = useState(false);
   const [imageList, setimageList] = useState<ImageItem[]>([]);
   const [linkList, setlinkList] = useState<{linktitle:string,linkurl:string}[]>([]);
-  const [showType, setShowType] = useState<1 | 2>(1);
   const [userDetails, setUserDetails] = useState<TUserDetails>();
-  const [password, setPassword] = useState<string>('');
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
   const [qrmodal,setQrModal] = useState(false);
   const { user } = useContext(UserContext);
@@ -70,7 +66,7 @@ function MobileProfile() {
   const getUserDetails = async () => {
     try {
       const res = await APIUserDetails();
-      console.log(res);
+      console.log('APIUserDetails',res);
       setUserDetails(res);
       setIsSnsUser(res.type !== 1 ? true : false);
     } catch (error) {
@@ -79,20 +75,20 @@ function MobileProfile() {
     }
   };
 
-  const onCheckPassword = async () => {
-    if (!password) return setPasswordAlert(true);
-    const data = {
-      password: password,
-    };
-    try {
-      const res = await APICheckPassword(data);
-      console.log(res);
-      navigate('/modifyuserinfo');
-    } catch (error) {
-      console.log(error);
-      setPasswordAlert(true);
-    }
-  };
+  // const onCheckPassword = async () => {
+  //   if (!password) return setPasswordAlert(true);
+  //   const data = {
+  //     password: password,
+  //   };
+  //   try {
+  //     const res = await APICheckPassword(data);
+  //     console.log(res);
+  //     navigate('/modifyuserinfo');
+  //   } catch (error) {
+  //     console.log(error);
+  //     setPasswordAlert(true);
+  //   }
+  // };
   
   const saveHistory = (e: React.MouseEvent, name: string) => {
     const div = document.getElementById('root');
@@ -106,6 +102,7 @@ function MobileProfile() {
       navigate(`/personalpage/${name}`);
     }
   };
+  
 
   const gotoLink = (e:string)=>{
 
@@ -227,7 +224,7 @@ function MobileProfile() {
         <ProfileHeaderWrap>
           <HeaderLeft>
             <NameBox>
-              <NameText>SEOYOON SHIN</NameText>
+              <NameText>{userDetails?.nickname}</NameText>
               <SubTextBox>
                 {/* <span>79 works · </span> */}
                 <span>951 followers · </span>
@@ -261,7 +258,22 @@ function MobileProfile() {
           </ButtonBox>
           }
         </ProfileHeaderWrap>
-        <DescriptionText>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus, fugiat. Ea maxime corrupti minus est similique harum id delectus obcaecati?</DescriptionText>
+        <DescriptionText>{
+        // userDetails?.birth,
+        // userDetails?.gender,
+        // userDetails?.idx,
+        // userDetails?.level,
+        // userDetails?.login_time,
+        // userDetails?.name,
+        // userDetails?.nickname,
+        // userDetails?.password,
+        // userDetails?.phone,
+        // userDetails?.reason,
+        // userDetails?.status,
+        // userDetails?.type,
+        // userDetails?.user_id,
+        // userDetails?.visit_count
+        }</DescriptionText>
       </ProfileContainer>
       <WorksLengthBox>
         {imageList.length}works
@@ -293,29 +305,6 @@ function MobileProfile() {
           setQrModal(false);
         }}
       />
-      <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
-        <ModalBox>
-          <ModalTitle>개인정보 수정을 위해서</ModalTitle>
-          <ModalTitle>비밀번호를 입력해 주세요.</ModalTitle>
-          <InputWrap>
-            <TextInput maxLength={16} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="입력해 주세요" />
-            {passwordAlert && <AlertText>*비밀번호를 확인해 주세요.</AlertText>}
-          </InputWrap>
-          <ButtonWrap>
-            <ModalBlackButton onClick={onCheckPassword}>
-              <BlackButtonText>확인</BlackButtonText>
-            </ModalBlackButton>
-            <ModalWhiteButton
-              onClick={() => {
-                setPassword('');
-                setShowModal(false);
-              }}
-            >
-              <WhiteButtonText>취소</WhiteButtonText>
-            </ModalWhiteButton>
-          </ButtonWrap>
-        </ModalBox>
-      </Modal>
     </Container>
   );
 }
@@ -436,11 +425,6 @@ const LinkUrl = styled.p`
     font-size:12px;
   }
   `;
-const IconImage = styled.img`
-  width: 40px;
-  height: 40px;
-  margin-right:20px;
-`;
 
 const SheetBackground = styled.div`
 // tranform: translateY(-1px);
@@ -682,43 +666,6 @@ font-family:'Pretendard Variable';
   }
 `;
 
-const RightBox = styled.div`
-  display: flex;
-  flex: 1;
-  /* min-width: 734px; */
-  flex-direction: column;
-  @media only screen and (max-width: 768px) {
-    min-width: 300px;
-  }
-`;
-
-const LeftTopBox = styled.div`
-  width: 100%;
-  padding: 10px 50px;
-  @media only screen and (max-width: 768px) {
-    padding: 0 18px;
-  }
-`;
-
-const Title = styled.h3`
-  font-weight: 700;
-  color: #121212;
-  font-size: 36px;
-  @media only screen and (max-width: 768px) {
-    font-size: 22px;
-  }
-`;
-
-const RowWap = styled.div`
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #121212;
-  height: 80px;
-  @media only screen and (max-width: 768px) {
-    height: 50px;
-  }
-`;
-
 const LeftText = styled.span`
   color: #121212;
   font-size: 16px;
@@ -738,32 +685,6 @@ const LeftText = styled.span`
   }
 `;
 
-const RightText = styled(LeftText)`
-  min-width: 400px;
-  font-weight: 410;
-  border: 0;
-  text-align: left;
-  font-size: 16px;
-  padding-left: 20px;
-  @media only screen and (max-width: 768px) {
-    font-size: 13px;
-    min-width: 220px;
-  }
-`;
-
-const BottomRowWrap = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin: 20px;
-  @media only screen and (max-width: 768px) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    margin: 15px;
-  }
-`;
-
 const BlackButton = styled.div`
   display: flex;
   align-items: center;
@@ -780,14 +701,6 @@ const BlackButton = styled.div`
   }
 `;
 
-const GreenButton = styled(BlackButton)`
-  background-color: #398049;
-`;
-
-const WhiteButton = styled(BlackButton)`
-  background-color: #fff;
-  border: 1px solid #398049;
-`;
 
 const BlackButtonText = styled.span`
   color: #ffffff;
@@ -798,9 +711,6 @@ const BlackButtonText = styled.span`
   }
 `;
 
-const GreenBorderbuttonText = styled(BlackButtonText)`
-  color: #398049;
-`;
 
 const EmptyBox = styled.div`
   height:15vh;

@@ -31,6 +31,7 @@ import { Modal } from '@mantine/core';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 
 export const removeHistory = () => {
+  sessionStorage.removeItem('signin');
   sessionStorage.removeItem('products');
   sessionStorage.removeItem('producers');
   sessionStorage.removeItem('shop');
@@ -107,21 +108,21 @@ function Header() {
     }
   }, [user]);
 
-  useEffect(() => {
-    getUserDetails();
-  }, []);
+  // useEffect(() => {
+  //   getUserDetails();
+  // }, []);
   
-  const getUserDetails = async () => {
-    try {
-      const res = await APIUserDetails();
-      console.log(res);
-      setUserDetails(res);
-      setIsSnsUser(res.type !== 1 ? true : false);
-    } catch (error) {
-      console.log(error);
-      // navigate('/signin', { replace: true });
-    }
-  };
+  // const getUserDetails = async () => {
+  //   try {
+  //     const res = await APIUserDetails();
+  //     console.log(res);
+  //     setUserDetails(res);
+  //     setIsSnsUser(res.type !== 1 ? true : false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     // navigate('/signin', { replace: true });
+  //   }
+  // };
 
   const onCheckPassword = async () => {
     if (!password) return setPasswordAlert(true);
@@ -362,7 +363,8 @@ function Header() {
       pathName === 'modifyuserinfo' ||
       pathName === 'AddLink'
     ) {
-      setShowSave(true)
+      setNoButton(true)
+      // setShowSave(true)
       setShowNext(false)
     }else{
       setShowSave(false)
@@ -632,15 +634,15 @@ const HeaderBox = styled.div`
 
 const Logo = styled.img`
   position:absolute;
-  left:35px;
+  left:50px;
   width: 142px;
 
   cursor: pointer;
   object-fit: contain;
   /* 1440px */
-  /* @media only screen and (max-width: 1440px) {
+  @media only screen and (max-width: 1440px) {
     left:20px;
-  } */
+  }
   @media only screen and (max-width: 768px) {
     left:18.42px;
     width: 73.61px;
@@ -743,11 +745,11 @@ const LikeButton = styled.img`
   object-fit:cover;
   transition: all 0.5s ease;
   margin-left: 30px;
-  @media only screen and (max-width: 1440px) {
-    margin-left: 20px;
-  }
+  /* @media only screen and (max-width: 1440px) {
+    margin-left: 30px;
+  } */
   @media only screen and (max-width: 768px) {
-    margin-left: 10px;
+    margin-left: 17.63px;
     width: 17px;
   }
 `;
@@ -755,7 +757,7 @@ const LikeButton = styled.img`
 const HeartButton = styled.img<{stylewidth?:boolean}>`
   width: ${(props)=>props.stylewidth? 20 : 23}px;
   cursor: pointer;
-  object-fit:cover;
+  object-fit:contain;
   transition: all 0.5s ease;
   margin-left: 30px;
   @media only screen and (max-width: 1440px) {
@@ -797,7 +799,7 @@ font-family:'Pretendard Variable';
   cursor: pointer;
     @media only screen and (max-width: 768px) {
       font-size:14px;
-    }
+  }
 `
 
 const SigninButton = styled(CartButton)`

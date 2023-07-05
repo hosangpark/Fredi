@@ -136,7 +136,6 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
 `;
 const FollowButtonBox = styled.span`
 font-family:'Pretendard Variable';
-  font-weight:normal;
   padding:5px 25px;
   border:0.5px solid #000000;
   border-radius:12.5px;
@@ -204,11 +203,12 @@ const TitleBox = styled.div`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size:22px;
-  font-weight: 410;
+  font-weight:360;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
   @media only screen and (max-width: 768px) {
+    font-weight: 450;
     font-size:15px;
   }
 `;
@@ -233,7 +233,6 @@ font-family:'Pretendard Variable';
   margin:20px auto 16px auto;
   @media only screen and (max-width: 768px) {
     margin:10px auto 12px auto;
-    font-weight:500;
     font-size:12px;
   }
 `;

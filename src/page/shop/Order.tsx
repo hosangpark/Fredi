@@ -459,7 +459,7 @@ const LeftTopBox = styled.div`
 `;
 
 const Title = styled.h3`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 700;
   color: #121212;
   font-size: 36px;
@@ -499,7 +499,7 @@ const CheckBoxWrap = styled.div`
 `;
 
 const CheckBoxText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 15px;
   margin-left: 7px;
   font-weight: 500;
@@ -549,7 +549,7 @@ const OrderButton = styled.div<{ disabled: boolean }>`
 `;
 
 const OrderButtonText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 15px;
   font-weight: 500;
   color: #fff;
@@ -575,7 +575,7 @@ const DeliveryInfoButton = styled.div`
 `;
 
 const DeliveryInfoButtonText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 14px;
   font-weight: 410;
   color: #121212;
@@ -614,7 +614,7 @@ const TextRowWrap = styled.div`
 `;
 
 const LeftText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 16px;
   font-weight: 500;
@@ -627,7 +627,7 @@ const LeftText = styled.span`
 `;
 
 const RightText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 600;
   font-size: 16px;
   @media only screen and (max-width: 1100px) {
@@ -642,7 +642,7 @@ const NoticeBox = styled.div`
 `;
 
 const NoticeText = styled.p`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 500;
   font-size: 13px;
   color: #666;
@@ -714,7 +714,7 @@ const RecipientInputRowWrap = styled(ContentTextRowWrap)<{ last?: boolean }>`
 `;
 
 const ContentLeftText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
   font-weight: 500;
@@ -734,7 +734,7 @@ const RecipientInputLeftText = styled(ContentLeftText)`
 const ContentRightText = styled.span`
   display: flex;
   flex: 1;
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
   font-weight: 410;

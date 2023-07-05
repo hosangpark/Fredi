@@ -147,7 +147,7 @@ font-family:'Pretendard Variable';
 
 
 const BlackButtonText = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   font-weight: 410;
   color: #ffffff;
   font-size: 14px;

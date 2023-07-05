@@ -439,7 +439,7 @@ const BottomBoxTitle = styled.h3`
 `;
 
 const BottomBoxContent = styled.textarea`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   width: 100%;
   height: 320px;
   overflow: scroll;

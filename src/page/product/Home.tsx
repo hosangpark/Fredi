@@ -248,8 +248,8 @@ function Home() {
             withIndicators
             loop
             withKeyboardEvents={false}
-            // nextControlIcon={<ControlImage src={rightButtonImage} />}
-            // previousControlIcon={<ControlImage src={leftButtonImage} />}
+            nextControlIcon={<ControlImage left={true} src={rightButtonImage} />}
+            previousControlIcon={<ControlImage src={leftButtonImage} />}
             styles={{
               root: { maxHeight: 700 },
               control: { background: 'transparent', width: 45, border: 0, '@media (max-width: 768px)': { width: 25 } },
@@ -396,7 +396,7 @@ const ProductListWrap = styled.div`
   /* gap:170px; */
   /* margin: 15px 20px; */
   /* padding-top:100px; */
-  margin-left:40px;
+  margin-left:50px;
   @media only screen and (max-width:1440px) {
     /* padding-top:50px; */
     margin-left:20px;
@@ -420,6 +420,14 @@ const CarouselWrap = styled.div`
   }
 `;
 
+const ControlImage = styled.img<{left?:boolean}>`
+  margin:${props => props.left? '0 50px 0 0' : '0 0 0 50px'};
+  width: 37.94px;
+  height: 36.89px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+  }
+`;
 
 const SlideImage = styled.img`
   vertical-align: middle;

@@ -218,11 +218,12 @@ const TitleBox = styled.div`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size:20px;
-  font-weight: 360;
+  font-weight:360;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
   @media only screen and (max-width: 768px) {
+    font-weight: 450;
     font-size:15px;
   }
 `
@@ -244,19 +245,18 @@ color:#000000;
   font-size:17px;
   font-weight: 360;
   margin-top:5px;
-  white-space:nowrap;
+  /* white-space:nowrap; */
   overflow:hidden;
   text-overflow:ellipsis;
   @media only screen and (max-width: 768px) {
-    font-weight:500;
     font-size:12px;
   }
 `;
 const ProductSubText = styled.div`
 font-family:'Pretendard Variable';
+color:#000000;
   font-size:16px;
-  font-weight: 310;
-  color:#000000;
+  font-weight: 360;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;

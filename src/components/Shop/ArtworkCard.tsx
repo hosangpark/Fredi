@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart_on.png';
-import likeOffImage from '../../asset/image/heart_off.png';
+import likeOnImage from '../../asset/image/heart.svg';
+import likeOffImage from '../../asset/image/heart.svg';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
 import { FairListItem } from '../../types/Types';
@@ -40,7 +40,7 @@ function ArtworkCard({
       <TextWrap>
         <ProductNameWrap>
           <ProductName>{item.name}{item.name}</ProductName>
-          <Designer style={{marginTop:7}}>{item.designer}</Designer>
+          <Designer>{item.designer}</Designer>
         </ProductNameWrap>
         <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOffImage : likeOffImage} />
         {/* <LikeCount>{replaceString(item.price)} ₩</LikeCount> */}
@@ -94,10 +94,15 @@ const NewIcon = styled.img`
 const Designer = styled.span`
 font-family:'Pretendard Variable';
   color: #121212;
-  font-size: 12px;
-  font-weight: 410;
+  font-size: 17px;
+  font-weight: 310;
+  line-height:1;
   text-align: left;
+  @media only screen and (max-width: 1440px) {
+    font-size: 14px;
+  }
   @media only screen and (max-width: 768px) {
+    margin-top:5px;
     font-size: 11px;
   }
 `;
@@ -108,9 +113,12 @@ font-family:'Pretendard Variable';
   word-break: break-word;
   text-overflow:ellipsis;
   color: #121212;
-  font-size: 12px;
-  font-weight: 410;
+  font-weight: 310;
   text-align: left;
+  font-size: 17px;
+  @media only screen and (max-width: 1440px) {
+    font-size: 14px;
+  }
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
@@ -118,10 +126,9 @@ font-family:'Pretendard Variable';
 
 const LikeButton = styled.img`
   width: 20px;
-  height: 20px;
+  height: 26px;
+  object-fit:contain;
   @media only screen and (max-width: 768px) {
-    width: 20px;
-    height: 20px;
   }
 `;
 
@@ -145,7 +152,7 @@ const ProductNameWrap = styled.div`
   flex-direction: column;
   margin-right:5px;
   height:54px;
-  margin-bottom:91px;
+  margin-bottom:81px;
 
   &:hover{
     height:145px;
@@ -153,7 +160,7 @@ const ProductNameWrap = styled.div`
   }
   @media only screen and (max-width: 768px) {
 
-    margin-bottom:51px;
+    margin-bottom:41px;
     &:hover{
       height:105px;
       margin-bottom:0px;

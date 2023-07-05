@@ -509,7 +509,7 @@ const SideBox = styled.div`
 `;
 
 const EmptyText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 14px;
   color: #121212;
   margin-top: 100px;

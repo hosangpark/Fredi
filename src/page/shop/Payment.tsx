@@ -175,7 +175,7 @@ const LeftTopBox = styled.div`
 `;
 
 const Title = styled.h3`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 700;
   color: #121212;
   font-size: 36px;
@@ -188,7 +188,7 @@ const Title = styled.h3`
 `;
 
 const Text = styled.p`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 500;
   color: #121212;
   font-size: 15px;

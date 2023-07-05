@@ -323,7 +323,7 @@ const RowWrap = styled.div<{ last?: boolean }>`
 `;
 
 const ListItemTitle = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
 
   font-weight: 700;
   color: #121212;
@@ -347,7 +347,7 @@ const StatusBox = styled.div<{ answerd: boolean }>`
 `;
 
 const StatusBoxText = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
 
   font-weight: 410;
   color: #fff;
@@ -357,7 +357,7 @@ const StatusBoxText = styled.span`
   }
 `;
 const Nickname = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
 
   font-weight: 410;
   color: #121212;
@@ -384,7 +384,7 @@ const AnswerBox = styled(QuestionBox)`
 `;
 
 const IconText = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   align-self: flex-start;
   display: inline-block;
   min-width: 45px;
@@ -399,7 +399,7 @@ const IconText = styled.span`
 `;
 
 const ContentText = styled.pre`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   font-weight: 410;
   color: #121212;
   font-size: 16px;
@@ -437,7 +437,7 @@ const WhiteButton = styled.div`
   }
 `;
 const WhiteButtonText = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
 
   color: #121212;
   font-size: 14px;

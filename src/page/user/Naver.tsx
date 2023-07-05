@@ -560,7 +560,7 @@ const ModalBox = styled.div`
 `;
 
 const ModalTitle = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   font-size: 24px;
   color: #121212;
   font-weight: 700;
@@ -594,7 +594,7 @@ const TabButton = styled.div`
 `;
 
 const TabButtonText = styled.span<{ selected: boolean }>`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   font-weight: ${(props) => (props.selected ? 700 : 400)};
   color: ${(props) => (props.selected ? '#121212' : '#888888')};
   font-size: 16px;
@@ -604,7 +604,7 @@ const TabButtonText = styled.span<{ selected: boolean }>`
 `;
 
 const ModalContentBox = styled.textarea`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   width: 400px;
   height: 300px;
   border: 1px solid #121212;
@@ -630,7 +630,7 @@ const ModalContentBox = styled.textarea`
 `;
 
 const UnderlineTextButton = styled.span`
-  font-family: 'NotoSans' !important;
+  font-family:'Pretendard Variable'; !important;
   font-weight: 410;
   font-size: 14px;
   color: #121212;

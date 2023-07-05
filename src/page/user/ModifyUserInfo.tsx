@@ -106,13 +106,13 @@ function ModifyUserInfo() {
       setNickname(res.nickname);
       setOriginalNickname(res.nickname);
       setOriginalPhone(res.phone);
-
-      const addressData = res.address;
-      setZipCode(addressData.zipcode);
-      setAddress1(addressData.address1);
-      setAddress2(addressData.address2);
-      setRecipient(addressData.recipient);
-      setRecipientPhone(addressData.hp);
+      console.log('ddddd',res)
+      // const addressData = res.address;
+      // setZipCode(addressData.zipcode);
+      // setAddress1(addressData.address1);
+      // setAddress2(addressData.address2);
+      // setRecipient(addressData.recipient);
+      // setRecipientPhone(addressData.hp);
     } catch (error) {
       console.log(error);
       alert(error);
@@ -127,7 +127,6 @@ function ModifyUserInfo() {
         nickname: nickname,
       };
       const res = await checkNicknameExcludeUser(data);
-      
       setAlertType('nicknameAvailable');
       setIsDuplicatedNickname(false);
     } catch (error) {
@@ -138,24 +137,7 @@ function ModifyUserInfo() {
     }
   };
 
-  const onSendAuthNumber = async () => {
-    if (isOriginalPhone) return setAlertType('originalPhone');
-    if (!phone) return setAlertType('sendFaild');
-    if (!testPhoneReg) return setAlertType('sendFaild');
-    try {
-      const data = {
-        phone_number: phone,
-      };
-      const res = await APISendAuthNumber(data);
-      
-      setAlertType('send');
-      setTimer(180);
-      setIsSend(true);
-    } catch (error) {
-      console.log(error);
-      setAlertType('member');
-    }
-  };
+
 
   const onCheckAuth = async () => {
     if (!authNumber) return setAlertType('authFaild');
@@ -286,7 +268,7 @@ function ModifyUserInfo() {
 
   useEffect(() => {
     // getTerms();
-    // getUserDetails();
+    getUserDetails();
   }, []);
 
   useEffect(() => {
@@ -335,6 +317,9 @@ function ModifyUserInfo() {
 
   return (
     <Container style={{ overflow: 'hidden' }}>
+      <SaveButton>
+        Save
+      </SaveButton>
       {/* <LeftBox>
         <LeftTopBox>
           <Title>개인정보수정</Title>
@@ -359,7 +344,7 @@ function ModifyUserInfo() {
           <LeftText>Phone</LeftText>
           {/* <RightText marginR={35}>{userDetails?.phone? userDetails?.phone : 'Number'}</RightText> */}
           <RightText onClick={()=> navigate('/changePhone')}>
-            01010010100
+            {originalPhone}
             <RightArrow src={rightArrowImage}/>
           </RightText>
         </RowWap>
@@ -379,13 +364,13 @@ function ModifyUserInfo() {
         </RowWap>
         <RowWap style={{paddingTop:100}}>
           <LeftText style={{color:'#9C343F'}}>Delete Account</LeftText>
-          <RightText onClick={()=> navigate('/deleteAccount')}>
+          <RightText onClick={()=>setShowAccountModal(true)}>
             Delete
             <RightArrow src={rightArrowImage}/>
           </RightText>
         </RowWap>
         
-        {userDetails?.type === 1 && (
+        {/* {userDetails?.type === 1 && (
           <>
             <RowWap>
               <LeftText>Password</LeftText>
@@ -400,7 +385,7 @@ function ModifyUserInfo() {
               {!isVerifiedPassword && <UnderlineTextButton onClick={onCheckPassword}>인증하기</UnderlineTextButton>}
             </RowWap>
           </>
-        )}
+        )} */}
         {/* <EmptyRowWrap last style={{ height: '100%', alignItems: 'flex-start' }}>
           <EmptyRowLeftBox />
           <EmptyRowRightWrap>
@@ -488,11 +473,11 @@ function ModifyUserInfo() {
           </CheckboxWrap>
           <ButtonWrap>
             <ModalBlackButton onClick={onDeleteAccount}>
-              <BlackButtonText>탈퇴하기</BlackButtonText>
+              <BlackButtonText>Delete</BlackButtonText>
             </ModalBlackButton>
-            <ModalWhiteButton onClick={() => setShowAccountModal(false)}>
+            {/* <ModalWhiteButton onClick={() => setShowAccountModal(false)}>
               <WhiteButtonText>닫기</WhiteButtonText>
-            </ModalWhiteButton>
+            </ModalWhiteButton> */}
           </ButtonWrap>
         </ModalBox>
       </Modal>
@@ -534,6 +519,29 @@ function ModifyUserInfo() {
             </ModalWhiteButton>
           </AddressModalButtonWrap>
         </AddressModalBox>
+      </Modal>
+      <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
+        <ModalBox>
+          <ModalTitle>개인정보 수정을 위해서</ModalTitle>
+          <ModalTitle>비밀번호를 입력해 주세요.</ModalTitle>
+          <InputWrap>
+            <TextInput maxLength={16} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="입력해 주세요" />
+            {alertType === 'passwordFaild' && <AlertText>*비밀번호를 확인해 주세요.</AlertText>}
+          </InputWrap>
+          <ButtonWrap>
+            <ModalBlackButton onClick={onCheckPassword}>
+              <BlackButtonText>확인</BlackButtonText>
+            </ModalBlackButton>
+            <ModalWhiteButton
+              onClick={() => {
+                setPassword('');
+                setShowModal(false);
+              }}
+            >
+              <WhiteButtonText>취소</WhiteButtonText>
+            </ModalWhiteButton>
+          </ButtonWrap>
+        </ModalBox>
       </Modal>
       <AlertModal
         visible={alertModal}
@@ -633,7 +641,19 @@ const Container = styled.div`
     border-top: 0;
   }
 `;
-
+const SaveButton = styled.div`
+  position:absolute;
+  right:30px;
+  top:20px;
+  z-index:101;
+  font-family:'Pretendard Variable';
+  font-weight: 310;
+  color: #121212;
+  cursor: pointer;
+    @media only screen and (max-width: 768px) {
+      font-size:14px;
+  }
+`;
 const LeftBox = styled.div`
   display: flex;
   min-width: 290px;
@@ -748,7 +768,7 @@ const BlackButtonText = styled.span`
   font-weight: 410;
   line-height: 60px;
   @media only screen and (max-width: 768px) {
-    font-size: 13px;
+    font-size: 14px;
   }
 `;
 
@@ -785,9 +805,10 @@ const AddressModalBox = styled(ModalBox)`
 `;
 
 const ModalTitle = styled.span`
-  font-size: 18px;
-  color: #121212;
-  font-weight: 700;
+font-family:'Pretendard Variable';
+  font-size: 16px;
+  color: #000000;
+  font-weight: 450;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
   }
@@ -795,6 +816,7 @@ const ModalTitle = styled.span`
 
 const ButtonWrap = styled.div`
   display: flex;
+  width:100%;
   margin-top: 10px;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -802,18 +824,18 @@ const ButtonWrap = styled.div`
 `;
 
 const ModalBlackButton = styled.div`
-  width: 160px;
+  width: 100%;
   height: 60px;
   background-color: #121212;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
+
   cursor: pointer;
 
   @media only screen and (max-width: 768px) {
     flex: none;
-    width: 120px;
+    width: 100%;
     height: 45px;
     margin-bottom: 5px;
   }
@@ -1066,7 +1088,7 @@ const RecipientInputRowWrap = styled(ContentTextRowWrap)<{ last?: boolean }>`
 `;
 
 const ContentLeftText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
   font-weight: 500;

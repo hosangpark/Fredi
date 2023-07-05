@@ -5,4 +5,7 @@
 .swiper-horizontal>.swiper-scrollbar,
 .swiper-scrollbar.swiper-scrollbar-horizontal{
   left: 0 !important;
+  top: var(--swiper-scrollbar-top, auto) !important;
+  height: var(--swiper-scrollbar-size, 0.5px) !important;
+  width: calc(100% - 2 * var(--swiper-scrollbar-sides-offset, 1%)) !important;
 }

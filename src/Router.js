@@ -71,7 +71,6 @@ import ProductDetails from './page/product/ProductDetails';
 import ChangePassword from './page/user/ChangePassword';
 import ChangePhone from './page/user/ChangePhone';
 import ChangeAddress from './page/user/ChangeAddress';
-import DeleteAccount from './page/user/DeleteAccount';
 
 
 function Router() {
@@ -157,8 +156,6 @@ function Router() {
           <Route path="/changePhone" element={<ChangePhone />} />
           {/* 개인정보 수정 페이지 */}
           <Route path="/changeAddress" element={<ChangeAddress />} />
-          {/* 개인정보 수정 페이지 */}
-          <Route path="/deleteAccount" element={<DeleteAccount />} />
           {/* 찜한상품 페이지 */}
           <Route path="/likelist" element={<LikeList />} />
           {/* 카카오 회원가입 페이지 */}

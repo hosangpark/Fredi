@@ -406,24 +406,24 @@ function ProductDetails() {
                 </ContentRowWrap>
               )}
             </ContentBox>
+            <RowWrap>
+                {/* <BottomBoxTitle>디자이너 & 작품설명</BottomBoxTitle> */}
+                <AskButton
+                  onClick={() => {
+                    if (user.idx) {
+                      navigate('/contact/registerask-shop', {
+                        state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
+                      });
+                    } else {
+                      setShowLogin(true);
+                    }
+                  }}
+                >
+                  Contact
+                  {/* <OrderButtonText>문의하기</OrderButtonText> */}
+                </AskButton>
+            </RowWrap>
           </LeftTopBox>
-          <RowWrap>
-              {/* <BottomBoxTitle>디자이너 & 작품설명</BottomBoxTitle> */}
-              <AskButton
-                onClick={() => {
-                  if (user.idx) {
-                    navigate('/contact/registerask-shop', {
-                      state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
-                    });
-                  } else {
-                    setShowLogin(true);
-                  }
-                }}
-              >
-                Contact
-                {/* <OrderButtonText>문의하기</OrderButtonText> */}
-              </AskButton>
-          </RowWrap>
           
         </LeftBox>
         <RightBox>
@@ -432,6 +432,7 @@ function ProductDetails() {
               // modules={[Navigation,Pagination]}
               // mousewheel={true}
               modules={[Pagination,Scrollbar]}
+              scrollbar={innerWidth <= 768? false : true}
               // onSlideChange={() => {/*...*/}}
               // allowTouchMove={false}
               // noSwiping={false}
@@ -439,12 +440,12 @@ function ProductDetails() {
               // pagination={{
               //   clickable: true,
               // }}
-              simulateTouch={false}
+              // simulateTouch={false}
               // shortSwipes={false}
               // setWrapperSize={true}
               pagination={innerWidth <= 768? false :pagination}
               style={{
-                maxHeight:window.innerHeight,backgroundColor:'white'
+                maxHeight:window.innerHeight*1.5,backgroundColor:'white'
               }}
               // slidesPerView={innerWidth <= 768? 990/innerWidth : innerWidth <= 1440? 1700/innerWidth :1800/innerWidth}
               slidesPerView={'auto'}
@@ -529,10 +530,11 @@ const BottomContainer = styled(Container)`
 `;
 
 const LeftBox = styled.div`
-  padding:0 2%;
+  padding: 0 4.21875% 0 2.708333%;
   display: flex;
-  width:35%;
-  min-width: 290px;
+  min-width:28.12%;
+  max-width:540px;
+  /* min-width: 540px; */
   max-height:850px;
   flex-direction: column;
   justify-content:space-between;
@@ -599,9 +601,9 @@ const LeftTopBox = styled.div`
   position: relative;
   width: 100%;
   height: calc(100vh - 200px);
-  padding: 0 20px 20px;
+  padding: 0;
   @media only screen and (max-width: 768px) {
-    padding: 0 20px 20px;
+    padding: 0 20px;
     /* position: static;
     bottom:0; */
   }
@@ -719,7 +721,7 @@ const NameDesigner = styled.div`
 `
 const ProductName = styled.h3`
 font-family:'Pretendard Variable';
-font-weight:460;
+font-weight: 360;
   color: #121212;
   font-size: 22px;
   margin: 0px;
@@ -760,7 +762,7 @@ const CartButton = styled.img`
   `;
 
 const ContentBox = styled.div`
-  margin:65px 0 0;
+  margin:65px 3.48px 90.85px 6.63px;
   @media only screen and (max-width: 768px) {
 
   }
@@ -1040,12 +1042,17 @@ const CartCardWrap = styled.div``;
 
 const SwiperWrap = styled.div`
   /* background-color:#cecece; */
-  max-width:850px;
+  width:80%;
+  max-width:1000px;
   height:100%;
   /* max-height:800px; */
   /* width:100%; */
   @media only screen and (max-width: 1440px) {
-    max-width:800px;
+    min-width:49.27%;
+    max-width:1000px;
+  }
+  @media only screen and (max-width: 768px) {
+    width:100%;
   }
 
 `;
@@ -1093,7 +1100,7 @@ const AmountControllerButtonImageMinus = styled(AmountControllerButtonImage)`
 `;
 
 const AmountText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 12px;
   width: 30px;
   text-align: center;

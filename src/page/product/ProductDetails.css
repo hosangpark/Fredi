@@ -1,12 +1,13 @@
 
 .swiper-pagination-vertical.swiper-pagination-bullets{
+  /* width: 3.541; */
   top: 0;
-  right: 3%;
+  right: 0%;
   transform: translate3d(0px, 0, 0);
   
 }
 .swiper-pagination{
-  width: 10%;
+  
   @media only screen and (max-width: 768px) {
     display:none
   }
@@ -15,6 +16,7 @@
   width: 100%;
   height: 100px;
   background: none;
+  /* margin: 0 !important; */
   @media only screen and (max-width: 1440px) {
     height: 80px;
   };
@@ -34,3 +36,10 @@
 /* .swiper-slide{
   height: 100% !important;
 } */
+
+.swiper-scrollbar {
+  top:0 !important;
+  left: var(--swiper-scrollbar-left, auto) !important;
+  right: 12% !important;
+  width: var(--swiper-scrollbar-size, 1.5px) !important;
+}

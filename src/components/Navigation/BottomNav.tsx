@@ -85,12 +85,12 @@ function BottomNav() {
         onClick={() => {
           removeHistory();
           // console.log(user)
-          navigate(`/MobileProfile/${userName}`);
-          // if (!token) {
-          //   setShowLogin(true);
-          // } else {
-          //   navigate('/profile');
-          // }
+          if (!token) {
+            setShowLogin(true);
+          } else {
+            // navigate('/profile');
+            navigate(`/MobileProfile/${user}`);
+          }
         }}
       >
         <MenuButtonImage src={home05} width={29}/>

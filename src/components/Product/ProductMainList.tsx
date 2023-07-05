@@ -267,11 +267,12 @@ export const TitleBox = styled.div`
 const TitleText = styled.span<{titlesize?:number}>`
 font-family:'Pretendard Variable';
   font-size:${props=>props.titlesize? props.titlesize : 22}px;
-  font-weight: 360;
+  font-weight:360;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
   @media only screen and (max-width: 768px) {
+    font-weight: 450;
     font-size:15px;
   }
 `;
@@ -288,13 +289,12 @@ const ProductTitleText = styled.div`
 font-family:'Pretendard Variable';
 color:#000000;
   font-size:17px;
-  font-weight: 360;
+  font-weight: 310;
   margin-top:5px;
   /* white-space:nowrap; */
   overflow:hidden;
   text-overflow:ellipsis;
   @media only screen and (max-width: 768px) {
-    font-weight:500;
     font-size:12px;
   }
 `;
@@ -309,7 +309,6 @@ width:70%;
   overflow:hidden;
   text-overflow:ellipsis;
   @media only screen and (max-width: 768px) {
-    font-weight: 410;
     font-size:12px;
   }
 `;

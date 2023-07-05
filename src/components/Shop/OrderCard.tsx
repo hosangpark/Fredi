@@ -71,7 +71,7 @@ const CartItemImage = styled.img`
 `;
 
 const CartItemTitle = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 15px;
   margin-left: 8px;
   font-weight: 500;
@@ -109,7 +109,7 @@ const DeleteButtonImage = styled.img`
 `;
 
 const CartItemAuthor = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 15px;
   color: #121212;
   font-weight: 500;
@@ -157,7 +157,7 @@ const AmountControllerButtonImageMinus = styled(AmountControllerButtonImage)`
 `;
 
 const AmountText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 13px;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
@@ -184,7 +184,7 @@ const PriceWrapMobile = styled.div`
 `;
 
 const PriceText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-size: 16px;
   margin-right: 20px;
   font-weight: 600;

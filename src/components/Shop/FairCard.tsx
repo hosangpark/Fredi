@@ -81,6 +81,7 @@ font-family:'Pretendard Variable';
   color: #121212;
   font-size: 22px;
   margin-bottom:10px;
+  line-height:1;
   font-weight: 450;
   text-align: left;
   @media only screen and (max-width: 1440px) {

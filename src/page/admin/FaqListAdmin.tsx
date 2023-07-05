@@ -182,7 +182,7 @@ const Logo = styled.img`
 `;
 
 const Text = styled.h3`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 500;
   color: #121212;
   font-size: 18px;
@@ -207,7 +207,7 @@ const BlackButtonNoData = styled(BlackButton)`
 `;
 
 const BlackButtonText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   color: #ffffff;
   font-weight: 410;
   font-size: 16px;
@@ -236,7 +236,7 @@ const RowWrap = styled.div<{ last?: boolean }>`
 `;
 
 const ListItemTitle = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 700;
   color: #121212;
   font-size: 17px;
@@ -252,14 +252,14 @@ const DeleteButton = styled.div`
 `;
 
 const DeleteButtonText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 410;
   color: #fff;
   font-size: 12px;
 `;
 
 const Nickname = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 410;
   color: #121212;
   font-size: 15px;
@@ -286,7 +286,7 @@ const AnswerBox = styled(QuestionBox)`
 `;
 
 const IconText = styled.span`
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   display: inline-block;
   min-width: 45px;
   text-align: left;
@@ -301,7 +301,7 @@ const ContentText = styled.pre`
   display: flex;
   flex: 1;
 
-  font-family: 'NotoSans';
+  font-family:'Pretendard Variable';;
   font-weight: 410;
   color: #121212;
   font-size: 16px;

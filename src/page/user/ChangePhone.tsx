@@ -51,7 +51,6 @@ function ChangePhone() {
     | 'deleted'
   >();
 
-  const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
   const [originalPhone, setOriginalPhone] = useState<string>('');
   const [timer, setTimer] = useState(0);
   const [phone, setPhone] = useState<string>('');
@@ -71,7 +70,7 @@ function ChangePhone() {
         phone_number: phone,
       };
       const res = await APISendAuthNumber(data);
-      
+      console.log(res)
       setAlertType('send');
       setTimer(180);
       setIsSend(true);
@@ -80,6 +79,7 @@ function ChangePhone() {
       setAlertType('member');
     }
   };
+
   const onCheckAuth = async () => {
     if (!authNumber) return setAlertType('authFaild');
     try {
@@ -90,12 +90,12 @@ function ChangePhone() {
       const res = await APIVerifyAuthNumber(data);
       
       setIsAuth(true);
-      setAlertType('auth');
-      setTimer(0);
+      // setAlertType('auth');
+      // setTimer(0);
     } catch (error) {
       console.log(error);
       setIsAuth(false);
-      setAlertType('authFaild');
+      // setAlertType('authFaild');
     }
   };
   useEffect(() => {
@@ -111,11 +111,13 @@ function ChangePhone() {
     }
   }, [timer]);
 
+
+  
   useEffect(() => {
-    if (alertType) {
-      setAlertModal(true);
+    if (authNumber.length > 0) {
+      onCheckAuth()
     }
-  }, [alertType]);
+  }, [authNumber]);
   
   return (
     <Container style={{ overflow: 'hidden' }}>
@@ -141,43 +143,44 @@ function ChangePhone() {
             onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
             placeholder="01012345678"
           />
-          <UnderlineTextButton onClick={
+          <UnderlineTextButton disabled={isSend} onClick={
             ()=>{
-              // onSendAuthNumber
-              setIsSend(true)
-              setIsAuth(true)
-              setTimer(1)
+              onSendAuthNumber()
             }
             }>
-            Send Verification number</UnderlineTextButton>
+            Send Verification number
+          </UnderlineTextButton>
         </RowWap>
         <RowWap>
           <EmptyRowTextInput last maxLength={6} value={authNumber} onChange={(e) => setAuthNumber(e.target.value)} placeholder="[인증번호 입력]" />
+          <TimerWrap>
+            {timer > 0 && Math.floor(timer / 60) + ':' + (timer % 60 > 10 ? timer % 60 : '0' + (timer % 60))}
+          </TimerWrap>
         </RowWap>
+        {isSend && authNumber.length > 0  ?
         <TimerBox>
-          {isSend &&
-          (timer > 0
-            ? Math.floor(timer / 60) + ':' + (timer % 60 > 10 ? timer % 60 : '0' + (timer % 60))
-            : isAuth
-            ? 
-            <AuthText color='blue'>
+           {
+             isAuth ?
+             <AuthText color='blue'>
             인증되었습니다.
             </AuthText>
             : 
-            isAuth?
+            // timer > 0 ?
             <AuthText>
             인증번호를 잘못 입력하셨습니다.
             </AuthText>
-            :
-            <AuthText>
-            인증유효기간이 만료되었습니다. 재전송하여 다시 인증번호를 입력해주세요
-            </AuthText>
-            )}
+            // :
+            // <AuthText>
+            // 인증유효기간이 만료되었습니다. 재전송하여 다시 인증번호를 입력해주세요
+            // </AuthText>
+            }
         </TimerBox>
+          :
+        <Emptybox/>
+        }
               
               
-
-        <BlackButton onClick={()=>{
+        <BlackButton disabled={true} onClick={()=>{
           alert('수정되었습니다.')
           navigate(-1)
         }}>
@@ -186,7 +189,7 @@ function ChangePhone() {
       </ContainerWrap>
 
       
-      <AlertModal
+      {/* <AlertModal
         visible={alertModal}
         setVisible={setAlertModal}
         onClick={() => {
@@ -240,7 +243,7 @@ function ChangePhone() {
             ? '새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.'
             : ''
         }
-      />
+      /> */}
 
       {/* <PostModal visible={showModal} setVisible={setShowModal} setAddress={onAddress} /> */}
     </Container>
@@ -298,14 +301,26 @@ const ContainerWrap = styled.div`
     /* border-top:1px solid #d4d4d4; */
   }
 `;
-const UnderlineTextButton = styled.span`
+const UnderlineTextButton = styled.button`
 font-family:'Pretendard Variable';
   font-weight: 310;
   color: #000000;
+  background-color:#ffff;
   border:1px solid #000000;
   border-radius:5px;
   padding: 8px 10px;
   margin-top:17px;
+  cursor: pointer;
+  font-size: 14px;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
+`;
+const TimerWrap = styled.span`
+font-family:'Pretendard Variable';
+  font-weight: 310;
+  color: #000000;
+  padding-right:5px;
   cursor: pointer;
   font-size: 14px;
   @media only screen and (max-width: 768px) {
@@ -364,6 +379,9 @@ const TimerBox = styled.div`
   text-align:start;
   margin-left:15px;
 `
+const Emptybox = styled.div`
+  height:30px;
+`
 const AuthText = styled.span<{color?:string}>`
 color:${props => props.color? '#006eff' : '#e00d0d'} ;
    font-size:10px;
@@ -383,10 +401,11 @@ font-family:'Pretendard Variable';
   }
 `;
 
-const BlackButton = styled.div`
+const BlackButton = styled.button<{disabled:boolean}>`
 font-family:'Pretendard Variable';
-  background-color:#000000;
-  color:white;
+background-color:${props => props.disabled? '#494949' : '#000000'};
+color:white;
+border:0;
   margin-top:20px;
   font-weight:200;
   border-radius:10px;

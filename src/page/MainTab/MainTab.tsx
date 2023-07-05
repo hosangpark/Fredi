@@ -324,10 +324,9 @@ const TitleWrap = styled.div`
   display:none;
   justify-content:space-between;
   align-items:center;
-  margin: 0 30px;
   @media only screen and (max-width: 768px) {
     display:flex;
-    margin: 0 10px;
+    margin: 0 20px;
   }
 `;
 const TitleText = styled.span`

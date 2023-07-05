@@ -219,7 +219,7 @@ const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
   color:#000000;
   font-family:'Pretendard Variable';
   padding:10px 0;
-  margin-top:5px;
+  /* margin-top:5px; */
   font-size:18px;
   @media only screen and (max-width: 768px) {
     font-size:14px;
@@ -233,7 +233,7 @@ const SearchBoxWrap =styled.div`
 `
 
 const TitleWrap = styled.div`
-  margin:40px 40px 80px 40px;
+  margin:42px 50px 80px 54.29px;
   text-align:start;
   display:flex;
   justify-content:space-between;
@@ -244,9 +244,8 @@ const TitleWrap = styled.div`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   display:block;
-  font-weight: 410;
+  font-weight: 360;
   text-transform: capitalize;
-  margin: 2px 0;
   font-size:26px;
   @media only screen and (max-width: 1440px) {
     font-size:20px;
@@ -260,7 +259,7 @@ const SubText = styled.span`
   display:block;
   font-weight: 360;
   text-transform: capitalize;
-  margin: 2px 0;
+  margin-top:12px;
   font-size:22px;
   @media only screen and (max-width: 1440px) {
     font-size:17px;
