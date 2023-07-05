@@ -9,6 +9,7 @@ import RightArrowImage from '../../asset/image/right.svg'
 import CategoryItem from '../../components/Shop/CategoryItem';
 import linkImage from '../../asset/image/rink.svg';
 import profileImage from '../../asset/image/Profile.svg';
+import SaveButton from '../../components/Layout/SaveButton';
 
 export type TUserDetails = {
   idx: number;
@@ -167,6 +168,7 @@ function EditProfile() {
 
   return (
     <Container>
+      <SaveButton onClick={()=>{}}/>
       <ProfileContainer>
         <ImageWrap>
           <ProfileImage src={profileImage}/>

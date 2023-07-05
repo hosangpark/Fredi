@@ -77,8 +77,9 @@ const Wrap = styled.div<{none?:boolean}>`
   max-width:610px;
   width:35%;
   @media only screen and (max-width: 768px) {
-    top: 50px;
     width:100%;
+    max-width:100%;
+    top: 50px;
     display:${props => props.none? 'none':'block'};
   }
 `;

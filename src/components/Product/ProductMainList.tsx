@@ -2,8 +2,8 @@ import React,{useState,useEffect,useRef} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import { TProductListItem } from '../../page/admin/ProductList';
-import likeOnImage from '../../asset/image/heart_on.png';
-import likeOffImage from '../../asset/image/heart_off.png';
+import likeOnImage from '../../asset/image/heart.svg';
+import likeOffImage from '../../asset/image/heart.svg';
 import newIconImage from '../../asset/image/ico_new.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 // Import Swiper styles
@@ -30,20 +30,20 @@ function ProductMainList({
   ProductViews,
   naviArrow,
   scrollbar,
-  ProductTitle,
   ProducList,
   productLink,
   arrowView,
   titlesize,
   aspect,
   paddingnum,
-  marginRight
+  marginRight,
+  marginT,
+  marginB
 }:{
   title:string
   ProductViews:number
   naviArrow:boolean
   scrollbar:boolean
-  ProductTitle?:number
   ProducList:TImage[]
   productLink?:string
   arrowView?:boolean
@@ -51,6 +51,8 @@ function ProductMainList({
   aspect?:number
   paddingnum?:number
   marginRight?:number
+  marginT?:number
+  marginB?:number
 }) {
   const navigationPrevRef = React.useRef(null)
   const navigationNextRef = React.useRef(null)
@@ -88,11 +90,13 @@ function ProductMainList({
   return (
     <ContainerWrap>
       
-      <TitleBox 
+      <TitleBox marginT={marginT} marginB={marginB}
       // onClick={()=>{navigate(`/${link}`);}}
       >
         {/* <a href={item?.link}> */}
-        <TitleText titlesize={titlesize}>{title}</TitleText>
+        <TitleText titlesize={titlesize}>
+          {title}
+        </TitleText>
         {arrowView&&
           <ArrowRightIcon src={rightarrowIcon}/>
         }
@@ -229,12 +233,13 @@ const ProductWrap = styled.div<{marginRight:number}>`
   }
 `;
 const LikeButton = styled.img`
-  width: 20px;
-  height: 20px;
-  @media only screen and (max-width: 768px) {
-    width: 20px;
-    height: 20px;
-  }
+  width: 18px;
+  height: 17px;
+  object-fit:contain;
+  /* @media only screen and (max-width: 768px) {
+    width: 18px;
+    height: 15px;
+  } */
 `;
 const ProductImageWrap = styled.div<{aspect:number,height?:number}>`
   /* max-width:350px; */
@@ -250,15 +255,12 @@ const ProductImageWrap = styled.div<{aspect:number,height?:number}>`
 const ContainerWrap = styled.div`
   width:100%;
 `;
-export const TitleBox = styled.div`
+export const TitleBox = styled.div<{marginT?:number;marginB?:number;}>`
   display: flex;
   align-items:center;
-  margin:170px 0 55px 0;
-  @media only screen and (max-width: 1440px) {
-    margin:135px 0 45px 0;
-  }
+  margin-top:${props=> props.marginT}px;
+  margin-bottom:${props=> props.marginB}px;
   @media only screen and (max-width: 768px) {
-    margin:100px 0 35px 0;
     justify-content:space-between;
     padding: 5px 15px;
   }

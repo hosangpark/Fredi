@@ -8,6 +8,7 @@ import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import CategoryItem from '../../components/Shop/CategoryItem';
 import linkImage from '../../asset/image/links.png';
 import { CategoryListCheck } from '../../components/List/List';
+import SaveButton from '../../components/Layout/SaveButton';
 
 export type TUserDetails = {
   idx: number;
@@ -88,10 +89,8 @@ function AddPhoto2() {
 
   return (
     <Container>
+      <SaveButton onClick={()=>{}}/>
       <ProfileContainer>
-        <ProductListWrap>
-          
-        </ProductListWrap>
         <BoxWrap>
           <BoxTitle>
             LINK
@@ -161,6 +160,7 @@ function AddPhoto2() {
   );
 }
 
+
 const Container = styled.div`
   /* display: flex; */
   /* flex: 1; */
@@ -174,7 +174,7 @@ const Container = styled.div`
   }
 `;
 const ProfileContainer = styled.div`
-  margin:20px;
+  margin:20px 15px;
 `;
 const ProductListWrap = styled.div`
   width:100%;
@@ -293,7 +293,7 @@ const BoxWrap = styled.div`
   width:100%;
   display: flex;
   flex-direction: column;
-  margin-bottom:50px;
+  margin:0 5px 50px;
 `;
 
 const LayoutWrap = styled.div`
@@ -343,7 +343,7 @@ font-family:'Pretendard Variable';
   font-weight:500;
   text-align:start;
   color:#2b2b2b;
-  margin:20px 0 10px 0;
+  margin:20px 5px 10px;
   @media only screen and (max-width: 768px) {
   }
 `

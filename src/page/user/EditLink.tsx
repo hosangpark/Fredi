@@ -6,6 +6,7 @@ import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
 import { TImage } from '../admin/ProducerList';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
+import SaveButton from '../../components/Layout/SaveButton';
 
 export type TUserDetails = {
   idx: number;
@@ -91,6 +92,7 @@ function EditLink() {
 
   return (
     <Container>
+      <SaveButton onClick={()=>{}}/>
       <ProfileContainer>
         <InputWrap>
           <InputTitle>Title</InputTitle>
@@ -120,6 +122,7 @@ function EditLink() {
     </Container>
   );
 }
+
 
 const Container = styled.div`
   /* display: flex; */
@@ -153,7 +156,12 @@ const InputBox = styled.div`
 const DeleteText = styled.p`
 font-family:'Pretendard Variable';
 font-weight : 310;
-  color:#9C343F;
+color:#9C343F;
+font-size:14px;
+  @media only screen and (max-width: 768px) {
+    font-size:12px;
+    margin-top:15px;
+  }
 `;
 const LinkBox = styled.div`
   width:100%;

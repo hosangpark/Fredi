@@ -345,7 +345,7 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-top:30px;
+  margin-top:34.76px;
 `;
 
 const FollowTitle = styled.div`
@@ -433,7 +433,7 @@ const ProfileImage = styled.img`
   width:80px;
   height:100%;
   box-sizing:border-box;
-  border:1px solid #929292;
+  border:1px solid #e0e0e0;
   border-radius:50%;
   @media only screen and (max-width: 768px) {
     width:70px;

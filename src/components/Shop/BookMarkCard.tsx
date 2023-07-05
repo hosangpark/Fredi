@@ -6,7 +6,7 @@ import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
 import { FairListItem } from '../../types/Types';
 
-function FollowCard({
+function BookMarkCard({
   item,
   onClick,
   index
@@ -122,4 +122,4 @@ const ProductNameWrap = styled.div`
   flex-direction: column;
 `;
 
-export default FollowCard;
+export default BookMarkCard;

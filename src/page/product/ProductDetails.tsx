@@ -63,10 +63,10 @@ function ProductDetails() {
   const [height, setHeight] = useState(0);
   const [imageIdx, setImageIdx] = useState(0);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [option, setOption] = useState<any>(); // 기존 옵션 리스트
   const [value, setValue] = useState(); // 현재 선택값
+  const [option, setOption] = useState<any>(); // 기존 옵션 리스트
   const [addOption, setAddOption] = useState<any>([]); // 선택 누적 리스트
-  const [total, setTotal] = useState<number>(0);
+  const [readmore, setReadMore] = useState<boolean>(false)
   const [showOption, setShowOption] = useState<boolean>(false);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
@@ -103,7 +103,7 @@ function ProductDetails() {
       size: 'W71 x D65 x H60',
       weight: '스테인레스스틸, 아크릴',
       country: '지역',
-      description: '종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 ',
+      description: '종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 볼륨감을 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은  물성은  물성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만,',
       designer: 'Lee Ji Hong',
       sns: 'SNS',
       email: '이메일',
@@ -317,12 +317,16 @@ function ProductDetails() {
                   <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
                 </NameBox>
                 }
-                <BottomBoxContent disabled value={shopDetails?.description}></BottomBoxContent>
-                <CategoryBox>
+                <BottomBoxContent readmore={readmore} >value={shopDetails?.description}
+                </BottomBoxContent>
+                {!readmore &&
+                <ReadMore onClick={()=>{setReadMore(true)}}>Read More</ReadMore>
+                }
+                {/* <CategoryBox>
                   <CategoryItem>Furniture</CategoryItem>
                   <CategoryItem>Side Table</CategoryItem>
                   <CategoryItem>Furniture</CategoryItem>
-                </CategoryBox>
+                </CategoryBox> */}
               </TitleBox>
               <ContentBox>
                 {/* <ContentRowWrap>
@@ -370,7 +374,7 @@ function ProductDetails() {
                 </NameDesigner>
                 <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
               </NameBox>
-              <BottomBoxContent disabled value={shopDetails?.description}></BottomBoxContent>
+              <BottomBoxContent readmore={readmore}>{shopDetails?.description}</BottomBoxContent>
               <CategoryBox>
                 <CategoryItem>Furniture</CategoryItem>
                 <CategoryItem>Side Table</CategoryItem>
@@ -661,7 +665,7 @@ const NameBox = styled.div`
   }
   @media only screen and (max-width: 768px) {
     margin-top:10px;
-    margin-bottom:10px;
+    margin-bottom:46px;
     font-size:14px;
   }
 `;
@@ -670,7 +674,7 @@ const CategoryBox = styled.div`
   flex-wrap:wrap;
   margin-top:49px;
   @media only screen and (max-width: 1440px) {
-    margin-top:20px;
+    margin-top:65px;
   }
 
 `
@@ -713,7 +717,7 @@ const ProductImage = styled.img`
 const TitleBox = styled.div`
   margin-bottom: 35px;
   @media only screen and (max-width: 768px) {
-    margin-bottom: 18px;
+    /* margin-bottom: 18px; */
   }
 `;
 const NameDesigner = styled.div`
@@ -726,7 +730,10 @@ font-weight: 360;
   font-size: 22px;
   margin: 0px;
   flex-wrap: wrap;
+  line-height:1;
+  margin-bottom:13.22px;
   @media only screen and (max-width: 768px) {
+    margin-bottom:13.22px;
     font-size: 14px;
   }
 `;
@@ -736,6 +743,7 @@ font-family:'Pretendard Variable';
   font-weight: 360;
   color: #121212;
   font-size: 22px;
+  line-height:1;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -764,14 +772,14 @@ const CartButton = styled.img`
 const ContentBox = styled.div`
   margin:65px 3.48px 90.85px 6.63px;
   @media only screen and (max-width: 768px) {
-
+    margin:65px 0 0 0;
   }
 `;
 
 const Title = styled.span`
 font-family:'Pretendard Variable';
 text-align:start;
-  font-weight: 360;
+  font-weight: 310;
   color: #121212;
   display: inline-block;
   width: 80px;
@@ -829,34 +837,43 @@ const BottomBoxTitle = styled.h3`
     font-size: 14px;
   }
 `;
-
-const BottomBoxContent = styled.textarea`
+const ReadMore = styled.div`
 font-family:'Pretendard Variable';
+font-weight : 360;
+font-size:12px;
+
+  text-align:start;
+  text-decoration:underline;
+
+`
+const BottomBoxContent = styled.div<{readmore:boolean}>`
+font-family:'Pretendard Variable';
+text-align:start;
   width: 100%;
-  min-height: 230px;
-  overflow: scroll;
-  outline: 0;
+  height:100%;
+  /* overflow: scroll; */
   line-height: 30px;
   border: 0;
   font-size: 17px;
   font-weight:310;
   color: #121212;
-  resize: none;
+  /* resize: none; */
   background-color: #fff;
-  -webkit-text-fill-color: #121212;
-  /* overflow:hidden; */
+  display: -webkit-box;
+  -webkit-line-clamp: 5; // 원하는 라인수
+  -webkit-box-orient: vertical;
+    overflow:hidden; 
+  /* white-space:nowrap; */
   text-overflow:ellipsis;
-  opacity: 1;
   @media only screen and (max-width: 768px) {
     background-color: transparent;
-    margin-top: 20px;
-    height: 30vh;
+    max-height: 214px;
     font-size: 12px;
     line-height: 20px;
   }
-  &::-webkit-scrollbar {
+  /* &::-webkit-scrollbar {
     width: 0;
-  }
+  } */
 `;
 
 const ModalminusButton = styled.div<{isopen:boolean,position:string}>`

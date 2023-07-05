@@ -360,6 +360,7 @@ function Header() {
     if (
       pathName === 'AddPhoto2' ||
       pathName === 'EditProfile' ||
+      pathName === 'EditLink' ||
       pathName === 'modifyuserinfo' ||
       pathName === 'AddLink'
     ) {
@@ -760,10 +761,10 @@ const HeartButton = styled.img<{stylewidth?:boolean}>`
   object-fit:contain;
   transition: all 0.5s ease;
   margin-left: 30px;
-  @media only screen and (max-width: 1440px) {
+  /* @media only screen and (max-width: 1440px) {
     width: ${(props)=>props.stylewidth? 20 : 23}px;
     margin-left: 20px;
-  }
+  } */
   @media only screen and (max-width: 768px) {
     margin-left: 10px;
     width:18px;

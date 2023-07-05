@@ -317,9 +317,8 @@ function ModifyUserInfo() {
 
   return (
     <Container style={{ overflow: 'hidden' }}>
-      <SaveButton>
-        Save
-      </SaveButton>
+      
+      
       {/* <LeftBox>
         <LeftTopBox>
           <Title>개인정보수정</Title>
@@ -650,7 +649,9 @@ const SaveButton = styled.div`
   font-weight: 310;
   color: #121212;
   cursor: pointer;
-    @media only screen and (max-width: 768px) {
+  display:none;
+  @media only screen and (max-width: 768px) {
+      display:block;
       font-size:14px;
   }
 `;

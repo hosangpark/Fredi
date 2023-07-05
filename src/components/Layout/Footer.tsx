@@ -76,7 +76,7 @@ const FooterWrap = styled.div`
   background-color: #ffffff;
   /* background-color: #2e2e2e; */
   /* border-top: 1px solid #121212; */
-  padding: 90px 50px 95px;
+  padding: 100px 50px 95px;
   @media only screen and (max-width: 1440px) {
     padding: 25px 20px;
   }

@@ -298,7 +298,9 @@ function Home() {
         arrowView={false}
         productLink={innerWidth <= 768? "FairsM" : "FairsW"}
         aspect={495/332}
-        paddingnum={50}
+        paddingnum={innerWidth <= 768? 0:50}
+        marginT={innerWidth <= 768? 100:170}
+        marginB={innerWidth <= 768? 21:55}
         />
         <ProductMainList
         title={'Latest'}
@@ -310,8 +312,10 @@ function Home() {
         productLink={'Latest'}
         aspect={300/370}
         titlesize={21}
-        paddingnum={50}
+        paddingnum={innerWidth <= 768? 0:50}
         marginRight={18}
+        marginT={innerWidth <= 768? 143:172}
+        marginB={innerWidth <= 768? 21:56}
         />
         <WeeklyEditionList
         title={'Weekly Edition'}
@@ -320,7 +324,9 @@ function Home() {
         scrollbar = {innerWidth <= 768? false : true}
         ProducList = {bannerListMobile}
         arrowView={false}
-        paddingnum={50}
+        paddingnum={innerWidth <= 768? 0:50}
+        marginT={innerWidth <= 768? 120:175}
+        marginB={innerWidth <= 768? 21:51}
         />
         <ProductMainList
         title={'Home & Styling'}
@@ -331,8 +337,10 @@ function Home() {
         ProducList={bannerListMobile}
         productLink={'Home'}
         arrowView={false}
-        paddingnum={90}
+        paddingnum={innerWidth <= 768? 0:90}
         marginRight={18}
+        marginT={innerWidth <= 768? 100:170}
+        marginB={innerWidth <= 768? 21:55}
         // aspect={285/240}
         />
         <MainArtistList
@@ -344,7 +352,9 @@ function Home() {
         ProducList={bannerListMobile}
         productLink={'Trending'}
         arrowView={false}
-        paddingnum={50}
+        paddingnum={innerWidth <= 768? 5:50}
+        marginT={innerWidth <= 768? 100:170}
+        marginB={innerWidth <= 768? 21:54}
         />
         <ProductMainList
         title={'Featured Works'}
@@ -355,7 +365,9 @@ function Home() {
         ProducList={bannerListMobile}
         arrowView={false}
         aspect={190/230}
-        paddingnum={90}
+        paddingnum={innerWidth <= 768? 0:90}
+        marginT={innerWidth <= 768? 100:170}
+        marginB={innerWidth <= 768? 21:64}
         marginRight={15}
         />
       </ProductListWrap>
@@ -402,7 +414,6 @@ const ProductListWrap = styled.div`
     margin-left:20px;
   }
   @media only screen and (max-width:769px) {
-    padding-top:30px;
     margin-left:0px;
   }
 `;

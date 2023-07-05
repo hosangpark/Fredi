@@ -25,10 +25,10 @@ const ProductItem = styled.div<{checked:boolean}>`
   font-weight: 310;
   overflow: hidden;
   box-sizing:border-box;
-  border:1px solid #B4B4B4;
+  border:0.5px solid #B4B4B4;
   border-radius:4.31px;
-  padding:5px 1px;
-  margin:3px;
+  padding:10px 1px;
+  margin:5px;
   font-size:14px;
   @media only screen and (max-width: 768px) {
   }

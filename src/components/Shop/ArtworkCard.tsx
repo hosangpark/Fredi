@@ -58,7 +58,7 @@ const ProductBox = styled.div<{ showType: 1 | 2, index:number }>`
   margin-right: ${(props) => ((props.index) % 5 === 0 ? 0:20)}px;
   @media only screen and (max-width: 768px) {
     ${(props) => (props.showType === 1? `margin-right: ${(props.index) % 2 === 0 ? 0:5}px;` : `margin-right:0;`  )}
-    ${(props) => (props.showType === 1? `width:calc(50% - 5px);` : `width:100%;`  )}
+    ${(props) => (props.showType === 1? `width:calc(50% - 2.5px);` : `width:100%;`  )}
   }
 `;
 const ProductImageWrap = styled.div<{showType: 1 | 2, height:number }>`
@@ -151,18 +151,18 @@ const ProductNameWrap = styled.div`
   display: flex;
   flex-direction: column;
   margin-right:5px;
-  height:54px;
-  margin-bottom:81px;
+  height:55px;
+  margin-bottom:80px;
 
   &:hover{
-    height:145px;
+    height:135px;
     margin-bottom:0px;
   }
   @media only screen and (max-width: 768px) {
 
-    margin-bottom:41px;
+    margin-bottom:40px;
     &:hover{
-      height:105px;
+      height:95px;
       margin-bottom:0px;
     }
   }

@@ -5,6 +5,7 @@ import { Modal } from '@mantine/core';
 import { UserContext } from '../../context/user';
 import { TImage } from '../admin/ProducerList';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
+import SaveButton from '../../components/Layout/SaveButton';
 
 export type TUserDetails = {
   idx: number;
@@ -41,6 +42,7 @@ function AddLink() {
 
   return (
     <Container>
+      <SaveButton onClick={()=>{}}/>
       <ProfileContainer>
         <InputWrap>
           <InputTitle>Title</InputTitle>

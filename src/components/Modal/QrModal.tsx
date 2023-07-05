@@ -42,7 +42,7 @@ function QrModal({
             <Image src={linkImage}/>
           </ImageWrap>
           <ButtonTextWrap onClick={()=>{}}>
-            Copy Image
+            Copy Link
           </ButtonTextWrap>
         </ButtonWrap>
       </PositionBox>

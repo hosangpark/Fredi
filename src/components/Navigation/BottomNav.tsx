@@ -61,7 +61,7 @@ function BottomNav() {
         }}
       >
         <MenuButtonImage src={home01} width={29}/>
-        <MenuButtonText>HOME</MenuButtonText>
+        <MenuButtonText>Home</MenuButtonText>
       </MenuButton>
       <MenuButton
         onClick={() => {
@@ -70,7 +70,7 @@ function BottomNav() {
         }}
       >
         <MenuButtonImage src={home03} width={29}/>
-        <MenuButtonText>FAIR</MenuButtonText>
+        <MenuButtonText>Fair</MenuButtonText>
       </MenuButton>
       <MenuButton
         onClick={() => {

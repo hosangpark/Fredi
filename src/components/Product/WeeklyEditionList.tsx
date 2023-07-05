@@ -33,7 +33,9 @@ function WeeklyEditionList({
   ProducList,
   arrowView,
   productLink,
-  paddingnum
+  paddingnum,
+  marginT,
+  marginB
 }:{
   title:string
   ProductViews:number
@@ -44,11 +46,13 @@ function WeeklyEditionList({
   arrowView?:boolean
   productLink?:boolean
   paddingnum?:number
+  marginT?:number
+  marginB?:number
 }) { 
   const navigate = useNavigate();
   return (
     <ContainerWrap>
-      <TitleBox onClick={()=>{navigate(`/`);}}>
+      <TitleBox marginT={marginT} marginB={marginB} onClick={()=>{navigate(`/`);}}>
         <TitleText>{title}</TitleText>
         {arrowView&&
         <ArrowRightIcon src={rightarrowIcon}/>
@@ -201,15 +205,13 @@ const ProductWrap = styled.div`
 const ContainerWrap = styled.div`
   width:100%;
 `;
-const TitleBox = styled.div`
+
+const TitleBox = styled.div<{marginT?:number;marginB?:number;}>`
+  margin-top:${props=> props.marginT}px;
+  margin-bottom:${props=> props.marginB}px;
   display: flex;
   align-items:center;
-  margin:170px 0 55px 0;
-  @media only screen and (max-width: 1440px) {
-    margin:135px 0 45px 0;
-  }
   @media only screen and (max-width: 768px) {
-    margin:100px 0 35px 0;
     justify-content:space-between;
     padding: 5px 15px;
   }

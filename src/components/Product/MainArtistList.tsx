@@ -34,7 +34,9 @@ function MainArtistList({
   arrowView,
   titlesize,
   aspect,
-  paddingnum
+  paddingnum,
+  marginT,
+  marginB
 }:{
   title:string
   ProductViews:number
@@ -47,6 +49,8 @@ function MainArtistList({
   titlesize?:number
   aspect?:number
   paddingnum?:number
+  marginT?:number
+  marginB?:number
 }) {
 
   const navigate = useNavigate();
@@ -57,8 +61,7 @@ function MainArtistList({
  
   return (
     <ContainerWrap>
-      <TitleBox 
-      // onClick={()=>{navigate(`/${link}`);}}
+      <TitleBox marginT={marginT} marginB={marginB}
       >
         {/* <a href={item?.link}> */}
         <TitleText>{title}</TitleText>
@@ -138,6 +141,7 @@ const FollowButtonBox = styled.span`
 font-family:'Pretendard Variable';
   padding:5px 25px;
   border:0.5px solid #000000;
+  box-sizing:border-box;
   border-radius:12.5px;
   font-weight: 310;
   font-size:15px;
@@ -186,15 +190,12 @@ const ProductImageWrap = styled.div<{aspect:number}>`
 const ContainerWrap = styled.div`
   width:100%;
 `;
-const TitleBox = styled.div`
-   display: flex;
+const TitleBox = styled.div<{marginT?:number;marginB?:number;}>`
+  margin-top:${props=> props.marginT}px;
+  margin-bottom:${props=> props.marginB}px;
+  display: flex;
   align-items:center;
-  margin:170px 0 55px 0;
-  @media only screen and (max-width: 1440px) {
-    margin:135px 0 45px 0;
-  }
   @media only screen and (max-width: 768px) {
-    margin:100px 0 35px 0;
     justify-content:space-between;
     padding: 5px 15px;
   }

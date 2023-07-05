@@ -285,7 +285,7 @@ const TabButtonWrap = styled.div`
   display:flex;
   border-bottom:1px solid #cccccc;
   margin:50px;
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 990.99px) {
     margin:0;
     width:100%;
   }
@@ -317,7 +317,7 @@ const TitleWrap = styled.div`
   margin: 0 30px;
   @media only screen and (max-width: 768px) {
     display:flex;
-    margin: 0 10px;
+    margin: 0 20px;
   }
 `;
 
