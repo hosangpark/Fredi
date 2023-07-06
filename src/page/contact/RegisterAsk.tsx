@@ -5,13 +5,16 @@ import { APIAskDetails, APIModifyAsk, APIRegisterAsk } from '../../api/AskAPI';
 import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import axios from 'axios';
+import { AskTitleList } from '../../components/List/List';
+
+
 
 
 function RegisterAsk() {
   const { idx } = useParams();
-  console.log(idx);
+  console.log('idxxxxxxxxxxxxxxxxxxxxxxxxxxx',idx);
   const navigate = useNavigate();
-  const [checked, setChecked] = useState(0);
+  const [titlechecked, setTitleChecked] = useState(0);
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
@@ -35,10 +38,12 @@ function RegisterAsk() {
   };
 
   const onRegisterAsk = async () => {
-    // if (!title) return setShowTitleModal(true);
+    console.log(title)
+    console.log(content)
+    if (!title) return setShowTitleModal(true);
     if (!content) return setShowContentModal(true);
     const data = {
-      // title: title,
+      title: title,
       question: content,
     };
     try {
@@ -52,10 +57,11 @@ function RegisterAsk() {
   };
 
   const onModifyAsk = async () => {
-    // if (!title) return setShowTitleModal(true);
+    if (!title) return setShowTitleModal(true);
     if (!content) return setShowContentModal(true);
     const data = {
       idx: idx,
+      title: title,
       question: content,
     };
     try {
@@ -92,54 +98,19 @@ function RegisterAsk() {
           What information are you looking for?
         </MessageInform>
         <CheckBoxContainer>
-            <CheckboxItems onClick={()=>setChecked(1)}>
+          {AskTitleList.map((item,index)=>{
+            return(
+            <CheckboxItems onClick={()=>{setTitleChecked(index);setTitle(item.value)}}>
               <Check>
-                {checked == 1 &&
+                {titlechecked == index &&
                 <CheckImage src={require('../../asset/image/check_on2.png')}/>
                 }
               </Check>
-              <CheckBoxText>About Product</CheckBoxText>
+              <CheckBoxText>{item.value}</CheckBoxText>
             </CheckboxItems>
-            <CheckboxItems onClick={()=>setChecked(2)}>
-              <Check>
-                {checked == 2 &&
-                <CheckImage src={require('../../asset/image/check_on2.png')}/>
-                }
-              </Check>
-              <CheckBoxText>Availability</CheckBoxText>
-            </CheckboxItems>
-            <CheckboxItems onClick={()=>setChecked(3)}>
-              <Check>
-                {checked == 3 &&
-                <CheckImage src={require('../../asset/image/check_on2.png')}/>
-                }
-              </Check>
-              <CheckBoxText>Shipping</CheckBoxText>
-            </CheckboxItems>
-            <CheckboxItems onClick={()=>setChecked(4)}>
-              <Check>
-                {checked == 4 &&
-                <CheckImage src={require('../../asset/image/check_on2.png')}/>
-                }
-              </Check>
-              <CheckBoxText>Payment</CheckBoxText>
-            </CheckboxItems>
-            <CheckboxItems onClick={()=>setChecked(5)}>
-              <Check>
-                {checked == 5 &&
-                <CheckImage src={require('../../asset/image/check_on2.png')}/>
-                }
-              </Check>
-              <CheckBoxText>Condition & Provenance</CheckBoxText>
-            </CheckboxItems>
-            <CheckboxItems onClick={()=>setChecked(6)}>
-              <Check>
-                {checked == 6 &&
-                <CheckImage src={require('../../asset/image/check_on2.png')}/>
-                }
-              </Check>
-              <CheckBoxText>Others</CheckBoxText>
-            </CheckboxItems>
+            )
+          })
+          }
         </CheckBoxContainer>
       </CheckMessagebox>
       <CheckMessagebox>
@@ -182,7 +153,7 @@ function RegisterAsk() {
         setShowModal(false);
         navigate(-1);
       }}
-      text={idx ? '1:1 문의가 수정되었습니다.' : '1:1 문의가 등록되었습니다.'}
+      text={'1:1 문의가 등록되었습니다.'}
     />
     <AlertModal
       visible={showTitleModal}

@@ -9,7 +9,7 @@ import bookMarkImage from '../../asset/image/Bookoff.svg';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';

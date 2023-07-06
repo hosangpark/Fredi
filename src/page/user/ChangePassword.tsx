@@ -84,7 +84,10 @@ function ChangePassword() {
   };
 
   const onModifyPassword = async () => {
-    if (!isVerifiedPassword) return setAlertType('needPasswordAuth');
+    // console.log(isVerifiedPassword)
+    console.log(newPassword)
+    console.log(testPasswordReg)
+    // if (!isVerifiedPassword) return setAlertType('needPasswordAuth');
     if (!newPassword) return setAlertType('passwordReg');
     if (!testPasswordReg) return setAlertType('passwordReg');
     if (newPassword !== newPassword2) return setAlertType('passwordDiffrent');
@@ -93,18 +96,19 @@ function ChangePassword() {
         password: newPassword,
       };
       const res = await APIModifyPassword(data);
-      
       setAlertType('password');
+      // alert('수정되었습니다.')
+      navigate(-1)
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    if (newPassword2.length > 0) {
-      onCheckPassword()
+    if (alertType) {
+      setAlertModal(true);
     }
-  }, [newPassword2]);
+  }, [alertType]);
 
   return (
     <Container style={{ overflow: 'hidden' }}>
@@ -152,15 +156,15 @@ function ChangePassword() {
         <Emptybox/>
         } */}
 
-        <BlackButton onClick={()=>{
-          alert('수정되었습니다.')
-          navigate(-1)
+        <BlackButton disabled={newPassword.length == 0 || newPassword2.length == 0} onClick={()=>{
+          onModifyPassword()
+          
         }}>
           Save
         </BlackButton>
       </ContainerWrap>
 
-      {/* <AlertModal
+      <AlertModal
         visible={alertModal}
         setVisible={setAlertModal}
         onClick={() => {
@@ -192,7 +196,7 @@ function ChangePassword() {
             ? '새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.'
             : ''
         }
-      /> */}
+      />
     </Container>
   );
 }
@@ -242,15 +246,17 @@ font-family:'Pretendard Variable';
     font-size: 14px;
   }
 `;
-const BlackButton = styled.div`
+const BlackButton = styled.button<{disabled:boolean}>`
 font-family:'Pretendard Variable';
-  background-color:#000000;
-  color:white;
+background-color:${props => props.disabled? '#494949' : '#000000'};
+color:white;
+border:0;
   margin-top:50px;
   font-weight:200;
   border-radius:10px;
   height:50px;
   display:flex;
+  cursor: pointer;
   align-items:center;
   justify-content:center;
   @media only screen and (max-width: 768px) {

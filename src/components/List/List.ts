@@ -83,3 +83,24 @@ export const CategoryListCheck = [
       checked:false
     },
 ]
+
+export const AskTitleList = [
+  {
+    value:'About Product'
+  },
+  {
+    value:'Availability'
+  },
+  {
+    value:'Shipping'
+  },
+  {
+    value:'Payment'
+  },
+  {
+    value:'Condition & Provenance'
+  },
+  {
+    value:'Others'
+  },
+]

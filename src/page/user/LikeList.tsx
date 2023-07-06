@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { TProductListItem } from '../admin/ProductList';
-import { TProducerListItem } from '../admin/ProducerList';
 import { APILikeProduct, APILikeProductList } from '../../api/ProductAPI';
 import { APILikeProducer, APILikeProducerList } from '../../api/ProducerAPI';
 import logoImage from '../../asset/image/logo.png';
@@ -15,6 +13,7 @@ import { APILikeShop, APILikeShopList } from '../../api/ShopAPI';
 import { TShopListItem } from '../shop/Shop';
 import TopButton from '../../components/Product/TopButton';
 import { UserContext } from '../../context/user';
+import { TProducerListItem, TProductListItem } from '../../types/Types';
 
 type LikeProductListItem = {
   idx: number;

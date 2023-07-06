@@ -21,6 +21,7 @@ import { passwordReg, phoneReg } from '../../util/Reg';
 import { useRef } from 'react';
 import { APISaveAddress } from '../../api/ShopAPI';
 import PostModal from '../../components/Modal/PostModal';
+import SaveButton from '../../components/Layout/SaveButton';
 
 const REASONLIST = [
   { value: '', label: '탈퇴 사유 선택' },
@@ -318,7 +319,7 @@ function ModifyUserInfo() {
   return (
     <Container style={{ overflow: 'hidden' }}>
       
-      
+      <SaveButton onClick={()=>{}}/>
       {/* <LeftBox>
         <LeftTopBox>
           <Title>개인정보수정</Title>
@@ -327,15 +328,18 @@ function ModifyUserInfo() {
       <RightBox>
         <RowWap>
           <LeftText>ID</LeftText>
-          <RightText marginR={35}>{userDetails?.user_id? userDetails?.user_id : 'Id'}</RightText>
+          <RightText>{userDetails?.user_id? userDetails?.user_id : 'Id'}
+          <EmptyBox></EmptyBox></RightText>
         </RowWap>
         <RowWap>
           <LeftText>Full name</LeftText>
-          <RightText marginR={35}>{userDetails?.name ? userDetails?.name : 'Name'  }</RightText>
+          <RightText>{userDetails?.name ? userDetails?.name : 'Name'  }
+          <EmptyBox></EmptyBox></RightText>
         </RowWap>
         <RowWap>
           <LeftText>User name</LeftText>
-          <RightText marginR={35}>{userDetails?.nickname ? userDetails?.nickname : 'NickName'  }</RightText>
+          <RightText>{userDetails?.nickname ? userDetails?.nickname : 'NickName'  }
+          <EmptyBox></EmptyBox></RightText>
           {/* <TextInput maxLength={10} value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="닉네임 입력" /> */}
           {/* <UnderlineTextButton onClick={onCheckNickname}>중복확인</UnderlineTextButton> */}
         </RowWap>
@@ -344,99 +348,45 @@ function ModifyUserInfo() {
           {/* <RightText marginR={35}>{userDetails?.phone? userDetails?.phone : 'Number'}</RightText> */}
           <RightText onClick={()=> navigate('/changePhone')}>
             {originalPhone}
+            <EmptyBox>
             <RightArrow src={rightArrowImage}/>
+            </EmptyBox>
           </RightText>
         </RowWap>
         <RowWap>
           <LeftText>Password</LeftText>
           <RightText onClick={()=> navigate('/changePassword')}>
             Edit
+            <EmptyBox>
             <RightArrow src={rightArrowImage}/>
+            </EmptyBox>
           </RightText>
         </RowWap>
         <RowWap style={{paddingTop:100}}>
           <LeftText>Address</LeftText>
           <RightText onClick={()=> navigate('/changeAddress')}>
             Edit
+            <EmptyBox>
             <RightArrow src={rightArrowImage}/>
+            </EmptyBox>
           </RightText>
         </RowWap>
         <RowWap style={{paddingTop:100}}>
           <LeftText style={{color:'#9C343F'}}>Delete Account</LeftText>
           <RightText onClick={()=>setShowAccountModal(true)}>
             Delete
+            <EmptyBox>
             <RightArrow src={rightArrowImage}/>
+            </EmptyBox>
           </RightText>
         </RowWap>
-        
-        {/* {userDetails?.type === 1 && (
-          <>
-            <RowWap>
-              <LeftText>Password</LeftText>
-              <TextInput
-                maxLength={16}
-                disabled={isVerifiedPassword}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="기존 비밀번호"
-                type="password"
-              />
-              {!isVerifiedPassword && <UnderlineTextButton onClick={onCheckPassword}>인증하기</UnderlineTextButton>}
-            </RowWap>
-          </>
-        )} */}
-        {/* <EmptyRowWrap last style={{ height: '100%', alignItems: 'flex-start' }}>
-          <EmptyRowLeftBox />
-          <EmptyRowRightWrap>
-            {userDetails?.type === 1 && (
-              <>
-                <EmptyRowInputWrap>
-                  <EmptyRowTextInput
-                    maxLength={16}
-                    disabled={!isVerifiedPassword}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="새 비밀번호"
-                    type="password"
-                  />
-                </EmptyRowInputWrap>
-                <EmptyRowInputWrap>
-                  <EmptyRowTextInput
-                    maxLength={16}
-                    disabled={!isVerifiedPassword}
-                    value={newPassword2}
-                    onChange={(e) => setNewPassword2(e.target.value)}
-                    placeholder="새 비밀번호 확인"
-                    type="password"
-                  />
-                  <UnderlineTextButton onClick={onModifyPassword}>변경하기</UnderlineTextButton>
-                </EmptyRowInputWrap>
-              </>
-            )}
-
-            <ButtonRowWrap>
-              <Button onClick={onModifyUserInfo} type="black">
-                <ButtonText type="black">수정</ButtonText>
-              </Button>
-              <BackButton type="white" onClick={() => navigate(-1)}>
-                <ButtonText type="white">이전</ButtonText>
-              </BackButton>
-              <AddressModalButton type="white" onClick={() => setShowAddressModal(true)}>
-                <ButtonText type="white">배송지 설정</ButtonText>
-              </AddressModalButton>
-              <Button onClick={() => setShowAccountModal(true)} type="green">
-                <ButtonText type="green">회원탈퇴</ButtonText>
-              </Button>
-            </ButtonRowWrap>
-          </EmptyRowRightWrap>
-        </EmptyRowWrap> */}
       </RightBox>
 
       <Modal opened={showAccountModal} onClose={() => setShowAccountModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
         <ModalBox>
           <ModalTitle>회원탈퇴를 진행하시겠습니까?</ModalTitle>
           <ModalTitle>해당 사이트의 회원서비스의 이용이 종료됩니다.</ModalTitle>
-          <ModalContentBox disabled>{terms}</ModalContentBox>
+          <ModalContentBox>{terms}</ModalContentBox>
           <UnderLineBox>
             <Select
               rightSection={<DownIcon src={arrDownImage} />}
@@ -640,21 +590,7 @@ const Container = styled.div`
     border-top: 0;
   }
 `;
-const SaveButton = styled.div`
-  position:absolute;
-  right:30px;
-  top:20px;
-  z-index:101;
-  font-family:'Pretendard Variable';
-  font-weight: 310;
-  color: #121212;
-  cursor: pointer;
-  display:none;
-  @media only screen and (max-width: 768px) {
-      display:block;
-      font-size:14px;
-  }
-`;
+
 const LeftBox = styled.div`
   display: flex;
   min-width: 290px;
@@ -760,7 +696,6 @@ font-family:'Pretendard Variable';
 const RightArrow = styled.img`
   width:15px;
   height:15px;
-  margin:0 10px;
 `
 
 const BlackButtonText = styled.span`
@@ -774,9 +709,10 @@ const BlackButtonText = styled.span`
 `;
 
 const EmptyBox = styled.div`
-  width: 280px;
+  width: 42px;
   display: flex;
-
+  align-items:center;
+  justify-content:center;
 `;
 
 const WhiteButtonText = styled(BlackButtonText)`

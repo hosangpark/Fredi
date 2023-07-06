@@ -12,33 +12,8 @@ import AlertModal from '../../components/Modal/AlertModal';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import { CATEGORY_PRODUCER } from './DashBoard';
 import { CategoryList } from '../../components/List/List';
+import { TProducerListItem } from '../../types/Types';
 
-export type TImage = {
-  idx: number;
-  file_name: string;
-};
-
-export type TProducerListItem = {
-  idx: number;
-  name: string;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  address_text: string;
-  zipcode: string;
-  address1: string;
-  address2: string;
-  phone: string;
-  business_hour: string;
-  sns: string;
-  email: string;
-  website: string;
-  description: string;
-  created_time: Date;
-  updated_time: Date;
-  deleted_time: Date;
-  image: TImage[];
-  isLike: boolean;
-  like_count: number;
-};
 
 
 function ProducerList() {

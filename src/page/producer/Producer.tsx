@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import arrDownImage from '../../asset/image/arr_down.png';
 import { Select } from '@mantine/core';
-import { TProducerListItem } from '../admin/ProducerList';
 import { APILikeProducer, APIProducerList } from '../../api/ProducerAPI';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -11,6 +10,7 @@ import axios from 'axios';
 import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import ProducerCard from '../../components/Producer/ProducerCard';
 import TopButton from '../../components/Product/TopButton';
+import { TProducerListItem } from '../../types/Types';
 
 const CATEGORYLIST = [
   { value: '0', label: '전체' },

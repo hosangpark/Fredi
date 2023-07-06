@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { TImage } from '../../page/admin/ProducerList';
 import { replaceString } from '../../util/Price';
 import CheckBox from '../../components/Shop/CheckBox';
 import CheckBoxs from '../../components/Shop/CheckBoxs';
 import AlertModal from '../../components/Modal/AlertModal';
+import { TImage } from '../../types/Types';
 
 export type TOrderDetailsCard = {
   idx: number;

@@ -5,7 +5,7 @@ import { Modal } from '@mantine/core';
 import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
 import ImageCard from '../../components/Shop/ImageCard';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 import RightArrowImage from '../../asset/image/right.svg'
 import LinksIcon from '../../asset/image/m10_home.svg';
@@ -351,11 +351,11 @@ const HeaderButtom = styled.div`
   top:15px;
   left:50%;
   transform:translate(-50%,0);
-  width:45px;
+  width:41.94px;
   border-bottom:1px solid #000000;
 
   @media only screen and (max-width: 768px) {
-    width:41px;
+    width:41.94px;
   }
 `;
 const SheetWrap = styled.div`

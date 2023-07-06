@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import RightArrowImage from '../../asset/image/right.svg'
 import CategoryItem from '../../components/Shop/CategoryItem';
 import linkImage from '../../asset/image/rink.svg';

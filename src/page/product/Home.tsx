@@ -7,9 +7,7 @@ import rightButtonImage from '../../asset/image/ico_next.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
-import ProductList, { TProductListItem } from '../admin/ProductList';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage } from '../admin/ProducerList';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -23,6 +21,8 @@ import ProductMainList from '../../components/Product/ProductMainList';
 import WeeklyEditionList from '../../components/Product/WeeklyEditionList';
 import Footer from '../../components/Layout/Footer';
 import MainArtistList from '../../components/Product/MainArtistList';
+import { TImage, TProductListItem } from '../../types/Types';
+import LastestList from '../../components/Product/LastestList';
 
 
 
@@ -79,6 +79,7 @@ function Home() {
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
   const [productList, setProductList] = useState<TProductListItem[]>([]);
+  const [latestList, setLatestList] = useState<TProductListItem[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
@@ -117,6 +118,26 @@ function Home() {
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
   // console.log("innerWidth", innerWidth);
+
+  const getLatestList = async () => {
+    const data = {
+      page: 1,
+      category: '1',
+      keyword: '',
+    };
+    try {
+      if (history) {
+        return setHistory(false);
+      }
+      const { list, total } = await APIProductList(data);
+      setTotal(total);
+      setLatestList(list.slice(0,10));
+
+      console.log('product', list,);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getBannerList = async () => {
     var array1 = new Array(); //pc
@@ -199,6 +220,7 @@ function Home() {
 
   useEffect(() => {
     getBannerList();
+    getLatestList()
   }, []);
 
   useLayoutEffect(() => {
@@ -302,12 +324,12 @@ function Home() {
         marginT={innerWidth <= 768? 100:170}
         marginB={innerWidth <= 768? 21:55}
         />
-        <ProductMainList
+        <LastestList
         title={'Latest'}
         ProductViews={innerWidth <= 768? 2.1  : innerWidth <= 1440? 4.4: 5.9}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList={bannerListMobile}
+        ProducList={latestList}
         arrowView={false}
         productLink={'Latest'}
         aspect={300/370}

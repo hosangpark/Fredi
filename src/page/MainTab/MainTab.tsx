@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -43,47 +43,6 @@ export type FairListItem = {
   isLike: boolean;
 };
 
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
 
 const CATEGORYLIST = [
   { value: '1', label: 'all' },
@@ -94,27 +53,7 @@ const CATEGORYLIST = [
   { value: '6', label: 'art&objet' },
 ];
 
-const content = [
-    { 
-      tab: "Fair",
-      content:<Fair/>
-    },
-    {
-      tab: "Artwork",
-      content:<Artwork/>
-    },
-    {
-      tab: "Artist",
-      content:<Artist/>
-    }
-  ];
-  const useTabs = (initialTabs:any, allTabs:any) => {
-    const [contentIndex, setContentIndex] = useState(initialTabs);
-    return {
-      contentItem: allTabs[contentIndex],
-      contentChange: setContentIndex
-    };
-  };
+
 
 
 function MainTab() {
@@ -134,6 +73,42 @@ function MainTab() {
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
+  
+
+  const saveHistory = (e: React.MouseEvent, idx: number) => {
+    const div = document.getElementById('root');
+    if (div) {
+      const y = globalThis.scrollY;
+      sessionStorage.setItem('tab', contentItem.tab);
+      sessionStorage.setItem('shop', JSON.stringify(shopList));
+      // sessionStorage.setItem('page', String(page));
+      sessionStorage.setItem('type', String(showType));
+      sessionStorage.setItem('y', String(y ?? 0));
+      navigate(`/productdetails/${idx}`);
+    }
+  };
+
+  const content = [
+    { 
+      tab: "Fair",
+      content:<Fair/>
+    },
+    {
+      tab: "Artwork",
+      content:<Artwork saveHistory={saveHistory}/>
+    },
+    {
+      tab: "Artist",
+      content:<Artist/>
+    }
+  ];
+  const useTabs = (initialTabs:any, allTabs:any) => {
+    const [contentIndex, setContentIndex] = useState(initialTabs);
+    return {
+      contentItem: allTabs[contentIndex],
+      contentChange: setContentIndex
+    };
+  };
   const { contentItem, contentChange } = useTabs(0, content);
 
 
@@ -180,63 +155,24 @@ function MainTab() {
 
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
+    // const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
+    // const page = Number(sessionStorage.getItem('page'));
+    // const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    setShopList(list);
+    // setShopList(list);
     setHistory(true);
-    setPage(page);
-    setShowType(type);
+    // setPage(page);
+    // setShowType(type);
 
     sessionStorage.removeItem('shop');
     sessionStorage.removeItem('page');
     sessionStorage.removeItem('type');
-  };
-
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
-    const div = document.getElementById('root');
-    if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
-      const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
-      sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
-      sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/shopdetails/${idx}`);
-    }
+    sessionStorage.removeItem('tab');
   };
 
 
-  useLayoutEffect(() => {
-    const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
-      console.log('불러옴', scrollY);
-      setTimeout(() => {
-        window.scrollTo({
-          top: scrollY,
-          behavior: 'auto',
-        });
-      }, 50);
-      sessionStorage.removeItem('y');
-    }
-  }, [shopList]);
 
-  useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
-
-    if (page) {
-      findHistory();
-    } else {
-      setPage(1);
-      getShopList(1);
-    }
-  }, [searchParams, category]);
-
-  useEffect(() => {
-    if (page > 1) getShopList(page);
-  }, [page]);
-
+  
   const onSearch = () => {
     navigate(
       {
@@ -258,6 +194,39 @@ function MainTab() {
     });
   };
 
+  useLayoutEffect(() => {
+    const scrollY = Number(sessionStorage.getItem('y'));
+    if (shopList.length > 0 && scrollY) {
+      console.log('불러옴', scrollY);
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollY,
+          behavior: 'auto',
+        });
+      }, 50);
+      sessionStorage.removeItem('y');
+    }
+  }, [shopList]);
+
+  useLayoutEffect(() => {
+    // const page = Number(sessionStorage.getItem('page'));
+    const Tab = sessionStorage.getItem('tab')
+    if(Tab == 'Fair'){
+      contentChange(0)
+    } else if (Tab == 'Artwork'){
+      contentChange(1);
+      
+    } else if (Tab == 'Artist'){
+      contentChange(2)
+    }
+    findHistory();
+  }, [searchParams, category]);
+
+  useEffect(() => {
+    if (page > 1) getShopList(page);
+  }, [page]);
+  
+  
   return (
     <Container>
       <TitleWrap>

@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';

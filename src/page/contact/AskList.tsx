@@ -99,7 +99,7 @@ function AskList() {
   };
   const date = new Date()
   useEffect(() => {
-    // getAskList();
+    getAskList();
     setTotal(total);
     
   }, [page]);
@@ -118,10 +118,7 @@ function AskList() {
         <NoDataBox>
           <>
           {/* <Logo src={logoImage} /> */}
-          <Text onClick={handleAsk}>문의글이 없습니다.</Text>
-          {/* <BlackButtonNoData onClick={handleAsk}>
-            <BlackButtonText>문의하기</BlackButtonText>
-          </BlackButtonNoData> */}
+          <Text>문의글이 없습니다.</Text>
           </>
         </NoDataBox>
       ) : (
@@ -196,10 +193,6 @@ function AskList() {
               },
             })}
           />
-{/* 
-          <BlackButton onClick={handleAsk}>
-            <BlackButtonText>문의하기</BlackButtonText>
-          </BlackButton> */}
         </ListWrap>
       )}
       <ConfirmModal visible={confirmModal} setVisible={setConfirmModal} text="1:1 문의를 삭제하시겠습니까?" onOk={onDeleteAsk} />

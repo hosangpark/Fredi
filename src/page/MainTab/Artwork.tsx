@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -50,49 +50,6 @@ export type FairListItem = {
   isLike: boolean;
 };
 
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
-
-
 
 interface ICategorySelectButton {
   item: { value: string; label: string };
@@ -109,7 +66,7 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function Artwork({productList,showType}:{productList?:ArtworkListItem[],showType?:number}) {
+function Artwork({saveHistory,productList,showType}:{saveHistory:(e:React.MouseEvent, idx: number)=>void,productList?:ArtworkListItem[],showType?:number}) {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
   const location = useLocation();
@@ -225,18 +182,18 @@ function Artwork({productList,showType}:{productList?:ArtworkListItem[],showType
     sessionStorage.removeItem('type');
   };
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
-    const div = document.getElementById('root');
-    if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
-      const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
-      sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
-      sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/productdetails/${idx}`);
-    }
-  };
+  // const saveHistory = (e: React.MouseEvent, idx: number) => {
+  //   const div = document.getElementById('root');
+  //   if (div) {
+  //     console.log(div.scrollHeight, globalThis.scrollY);
+  //     const y = globalThis.scrollY;
+  //     sessionStorage.setItem('shop', JSON.stringify(shopList));
+  //     sessionStorage.setItem('page', String(page));
+  //     sessionStorage.setItem('type', String(showType));
+  //     sessionStorage.setItem('y', String(y ?? 0));
+  //     navigate(`/productdetails/${idx}`);
+  //   }
+  // };
 
   
   useEffect(() => {

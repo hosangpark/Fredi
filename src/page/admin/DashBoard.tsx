@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import likeOffImage from '../../asset/image/heart_off.png';
 import { APIDashboard, APIDashboardProducerList, APIDashboardProductList } from '../../api/SettingAPI';
-import { TProducerListItem } from './ProducerList';
-import { TProductListItem } from './ProductList';
 import { Pagination } from '@mantine/core';
 import AlertModal from '../../components/Modal/AlertModal';
 import axios from 'axios';
+import { TProductListItem,TProducerListItem } from '../../types/Types';
 
 export const CATEGORY_PRODUCER = {
   1: '아크릴',

@@ -40,6 +40,6 @@
 .swiper-scrollbar {
   top:0 !important;
   left: var(--swiper-scrollbar-left, auto) !important;
-  right: 12% !important;
+  right: 11% !important;
   width: var(--swiper-scrollbar-size, 1.5px) !important;
 }

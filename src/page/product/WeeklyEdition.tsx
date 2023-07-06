@@ -9,9 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
-import ProductList, { TProductListItem } from '../admin/ProductList';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage } from '../admin/ProducerList';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -23,6 +21,7 @@ import { removeHistory } from '../../components/Layout/Header';
 import AppdownModal from '../../components/Modal/AppdownModal';
 import ProductMainList from '../../components/Product/ProductMainList';
 import WeeklyEditionList from '../../components/Product/WeeklyEditionList';
+import { TImage, TProductListItem } from '../../types/Types';
 
 
 const useStyles = createStyles((theme, _params, getRef) => ({

@@ -15,10 +15,10 @@ import 'swiper/css/scrollbar';
 import leftarrowIcon from '../../asset/image/ico_prev_mobile.png'
 import rotateLeft from '../../asset/image/right.svg'
 import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
-import { TImage } from '../../types/Types';
+import { TImage, TProductListItem } from '../../types/Types';
 import './ProductMainList.css'
 
-function ProductMainList({
+function LastestList({
   // item,
   // showType,
   // index,
@@ -43,7 +43,7 @@ function ProductMainList({
   ProductViews:number
   naviArrow:boolean
   scrollbar:boolean
-  ProducList:TImage[]
+  ProducList:TProductListItem[]
   productLink?:string
   arrowView?:boolean
   titlesize?:number
@@ -58,21 +58,13 @@ function ProductMainList({
 
   const navigate = useNavigate();
 
-  const LinkHandler = (e:React.MouseEvent,productLink:string,idx?:number)=>{
-    if(productLink === 'FairsM'){
-      navigate(`/FairContent/${idx}`)
-    } else if (productLink === 'FairsW'){
-      navigate(`/MainTab`)
-    } else if (productLink.includes('Home')) {
-      navigate(`/personalpage/${idx}`)
-    } else if (productLink.includes('Trending')) {
-      navigate(`/MobileProfile/${idx}`)
-    } else if (productLink.includes('Featured')) {
-      navigate(`/MobileProfile/${idx}`)
-    } else {
-      console.log(productLink,idx)
-    }
-  }
+
+
+  const saveHistory = (e: React.MouseEvent, idx?: number) => {
+    const y = globalThis.scrollY;
+    sessionStorage.setItem('y', String(y ?? 0));
+    navigate(`/productdetails/${idx}`);
+  };
 
   const [like, setLike] = useState(false)
 
@@ -137,29 +129,19 @@ function ProductMainList({
           return(
             <SwiperSlide>
               <ProductWrap marginRight={marginRight? marginRight:20}>
-                {title?.includes('Featured') &&
-                <ToptextWrap>
-                  <FeaturedTitleText>
-                    MoreTitleM{item.idx}
-                  </FeaturedTitleText>
-                  <LikeButton onClick={()=>{setLike(!like)}} src={like ? likeOnImage : likeOffImage} />
-                </ToptextWrap>
-                }
                 <ProductImageWrap aspect={aspect? aspect:1} height={innerWidth} 
-                onClick={(e)=>LinkHandler(e,productLink?productLink:title,item.idx)}
+                onClick={(e)=>saveHistory(e,item.idx)}
                 >
-                  <ProductImage src={item.file_name}/>
+                  <ProductImage src={item.image[0].file_name}/>
                 </ProductImageWrap>
-                {!title?.includes('Featured') &&
                 <TextWrap title={title}>
                   <ProductTitleText>
-                    MoreTitleMor{item.idx}
+                    {item.name}
                   </ProductTitleText>
                   <ProductSubText>
-                    MoreTextMoreTextMoreTeoreTextMoreText{item.idx}
+                    {item.designer}
                   </ProductSubText>
                 </TextWrap>
-                }
               </ProductWrap>
             </SwiperSlide>
           )
@@ -347,4 +329,4 @@ const StyledButton = styled.div`
   height:20px;
 `;
 
-export default ProductMainList;
+export default LastestList;

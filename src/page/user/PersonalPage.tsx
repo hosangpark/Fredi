@@ -9,7 +9,7 @@ import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { createStyles, Modal } from '@mantine/core';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import AlertModal from '../../components/Modal/AlertModal';
 import reporticon from '../../asset/image/threecircle.png';
 import { UserContext } from '../../context/user';
@@ -391,17 +391,19 @@ function PersonalPage() {
       </LinkUrlBox>
       <LikeButtonWrap>
         <LikeBox>
-          <LikeButton style={{marginRight:10}} onClick={()=>{setIsLikeList(!isLikeList)}
+          <LikeButton onClick={()=>{setIsLikeList(!isLikeList)}
             // e.stopPropagation();
             // onCancelLikeProduct(item.product.idx);
           } src={isLikeList ? likeOnImage : likeOffImage} />
-          <LikeButton onClick={()=>{setIsBookMark(!isBookMark)}
+          <BookMarkButton onClick={()=>{setIsBookMark(!isBookMark)}
             // e.stopPropagation();
             // onCancelLikeProduct(item.product.idx);
           } src={isBookMark ? bookmarkOnImage : bookmarkOffImage} />
         </LikeBox>
       </LikeButtonWrap>
       <DescriptionWrap>
+        종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 
+        종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 
         종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 
       </DescriptionWrap>
         <AlertModal
@@ -462,25 +464,38 @@ const LikeButtonWrap = styled.div`
 const LikeBox = styled.div`
   display: flex;
   align-items: center;
-  margin:10px;
+  margin:20px 20px 0;
+  @media only screen and (max-width: 768px) {
+    margin:20px 20px 0;
+  }
 `;
 const DescriptionWrap = styled.div`
 font-family:'Pretendard Variable';
 font-weight:310;
-  margin:25px 22px 45px;
-  padding-right:10px;
+font-size:16px;
+  margin:25.14px 38px 51.36px 22px;
   text-align:start;
   @media only screen and (max-width: 768px) {
     font-size:12px;
   }
 `;
 const LikeButton = styled.img`
-  width: 22px;
-  height: 22px;
+  width: 23px;
+    height: 19px;
   object-fit:contain;
   @media only screen and (max-width: 768px) {
-    width: 20px;
-    height: 20px;
+    width: 23.28px;
+    height: 19.49px;
+  }
+`;
+const BookMarkButton = styled.img`
+  width: 15px;
+    height: 19px;
+  margin-left:24px;
+  object-fit:contain;
+  @media only screen and (max-width: 768px) {
+    width: 15.54px;
+    height: 19.49px;
   }
 `;
 
@@ -611,10 +626,12 @@ font-family:'Pretendard Variable';
   border:1px solid #c7c7c7;;
   border-radius:4.93px;
   font-size:12px;
-  padding:2px 10px;
+
   font-weight: 310;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
+    width:60px;
+    height:25px;
     font-size:10px;
   }
 `;

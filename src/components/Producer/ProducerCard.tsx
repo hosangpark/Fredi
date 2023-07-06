@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import likeOnImage from '../../asset/image/heart_on.png';
 import likeOffImage from '../../asset/image/heart_off.png';
 import newIconImage from '../../asset/image/ico_new.png';
-import { TProducerListItem } from '../../page/admin/ProducerList';
+
 import { CATEGORY_PRODUCER } from '../../page/admin/DashBoard';
+import { TProducerListItem } from '../../types/Types';
 
 function ProducerCard({
   item,

@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import logoImage from '../../asset/image/logo.png';
 import AlertModal from '../Modal/AlertModal';
-import menuheart from '../../asset/image/heart.png';
-import menucart from '../../asset/image/menucart.png';
+import menuheart from '../../asset/image/heart.svg';
+import menuselling from '../../asset/image/Selling.svg';
 import menuorderlist from '../../asset/image/orderlist.png';
 import menutextballoon from '../../asset/image/textballoon.png';
-import menucontact from '../../asset/image/contact.png';
-import menusetting from '../../asset/image/setting.png';
+import menucontact from '../../asset/image/contact.svg';
+import menusetting from '../../asset/image/Settings.svg';
 
 import profileImage from '../../asset/image/my.svg';
 import likeOffImage from '../../asset/image/heart.svg';
@@ -446,13 +446,16 @@ function Header() {
               <SheetWrap> 
                 {/* goMyPage */}
                 <SheetMenu onClick={goLikeList}>
-                  <IconImage src={menuheart}/>
+                  <IconWrap>
+                  <HeartIconImage src={menuheart}/>
+                  </IconWrap>
                   {/* 찜한작품 */}
                   Like
                 </SheetMenu>
                 <SheetMenu onClick={goCart}>
-                  <IconImage src={menucart}/>
-                  
+                  <IconWrap>
+                  <SellingIconImage src={menuselling}/>
+                  </IconWrap>
                   Selling
                 </SheetMenu>
                 {/* <SheetMenu onClick={go_orderList}>
@@ -462,11 +465,13 @@ function Header() {
                 </SheetMenu>
                 <SheetMenu onClick={()=>{}}>
                   <IconImage src={menutextballoon}/>
-                  
+                  83.58 -56  27.58 
                   Product Q & A
                 </SheetMenu> */}
                 <SheetMenu onClick={goContact}>
-                  <IconImage src={menucontact}/>
+                  <IconWrap>
+                  <ContactIconImage src={menucontact}/>
+                  </IconWrap>
                   {/* 문의내역 */}
                   Contact
                 </SheetMenu>
@@ -483,7 +488,9 @@ function Header() {
                     }
                   } 
                 }}>
-                  <IconImage src={menusetting}/>
+                  <IconWrap>
+                  <SettingsIconImage src={menusetting}/>
+                  </IconWrap>
                   {/* 개인정보수정 */}
                   Settings
                 </SheetMenu>
@@ -681,18 +688,32 @@ const SheetWrap = styled.div`
   width:100%;
   padding:20px 50px;
   @media only screen and (max-width: 768px) {
-  padding:00px 20px;
+  padding:27.58px 0 0 21.69px;
 }
 `;
+const IconWrap = styled.div`
+display:flex;
+align-items:center;
+justify-content:center;
+  width:25px;
+  height:25px;
+  margin-right:14px;
+  object-fit:contain;
+@media only screen and (max-width: 768px) {
+
+}
+`
 const SheetMenu = styled.div`
 // tranform: translateY(-1px);
 font-family:'Pretendard Variable';
+display:flex;
+align-items:center;
   width:100%;
   font-weight: 410;
   margin:30px 0;
 @media only screen and (max-width: 768px) {
   font-size:14px;
-  margin:20px 0;
+  margin:21px 0;
 }
 `;
 const SheetLogoutMenu = styled.div`
@@ -700,12 +721,10 @@ const SheetLogoutMenu = styled.div`
 display:flex;
 font-family:'Pretendard Variable';
   justify-content:flex-end;
-  padding: 20px 0px 20px 0;
+  padding: 21.69px 20px 70px 0;
   font-weight: 360;
   text-align:right;
 @media only screen and (max-width: 768px) {
-}
-@media only screen and (max-width: 450px) {
   font-size:14px;
 }
 `;
@@ -751,7 +770,7 @@ const LikeButton = styled.img`
   } */
   @media only screen and (max-width: 768px) {
     margin-left: 17.63px;
-    width: 17px;
+    width: 17.93px;
   }
 `;
 
@@ -767,8 +786,8 @@ const HeartButton = styled.img<{stylewidth?:boolean}>`
   } */
   @media only screen and (max-width: 768px) {
     margin-left: 10px;
-    width:18px;
-    height:15px;
+    width:18.89px;
+    height:15.82px;
   }
 `;
 
@@ -798,6 +817,7 @@ font-family:'Pretendard Variable';
   font-weight: 310;
   color: #121212;
   cursor: pointer;
+  object-fit:contain;
     @media only screen and (max-width: 768px) {
       font-size:14px;
   }
@@ -841,15 +861,42 @@ font-family:'Pretendard Variable';
 `;
 
 const IconImage = styled.img`
+
+  object-fit:contain;
+
+`;
+const HeartIconImage = styled(IconImage)`
   width: 22px;
   height: 22px;
-  margin-right:35px;
-@media only screen and (max-width: 450px) {
-  margin-right:25px;
-  width: 18px;
-  height: 18px;
+@media only screen and (max-width: 768px) {
+  width: 18.91px;
+  height: 15.82px;
 }
-`;
+`
+const SellingIconImage = styled(IconImage)`
+  width: 22px;
+  height: 22px;
+@media only screen and (max-width: 768px) {
+  width: 22.74px;
+  height: 19.63px;
+}
+`
+const ContactIconImage = styled(IconImage)`
+  width: 22px;
+  height: 22px;
+@media only screen and (max-width: 768px) {
+  width: 22.27px;
+  height: 19.95px;
+}
+`
+const SettingsIconImage = styled(IconImage)`
+  width: 22px;
+  height: 22px;
+@media only screen and (max-width: 768px) {
+  width: 22.27px;
+  height: 23.62px;
+}
+`
 const NewIcon = styled.img`
   width: 12px;
   height: 12px;
@@ -987,19 +1034,20 @@ const WhiteButtonText = styled(BlackButtonText)`
 `;
 const EmptyHeightBox = styled.div`
   width:100%;
-  height:50px;
+  height:35px;
 `;
 const HeaderButtom = styled.div`
 // tranform: translateY(-1px);
   position:absolute;
-  top:20px;
+  top:15px;
   left:50%;
   transform:translate(-50%,0);
   width:45px;
-  border:1px solid #d3d3d3;
+  border-top:4.5px solid #B0B0B0;
   border-radius:20px;
   @media only screen and (max-width: 768px) {
-    width:35px;
+    border-top:4.5px solid #B0B0B0;
+    width:36.49px;
   }
 `;
 

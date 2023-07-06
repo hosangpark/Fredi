@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -39,10 +39,25 @@ function FairContent() {
   const { type, idx } = useParams();
   const [productList,setproductList] = useState<FairListItem[]>([])
   const [mainbanner,setMainbanner] = useState()
+
+  const saveHistory = (e: React.MouseEvent, idx: number) => {
+    const div = document.getElementById('root');
+    if (div) {
+      console.log(div.scrollHeight, globalThis.scrollY);
+      const y = globalThis.scrollY;
+      sessionStorage.setItem('tab', String(contentItem.tab));
+      // sessionStorage.setItem('shop', JSON.stringify(shopList));
+      // sessionStorage.setItem('page', String(page));
+      // sessionStorage.setItem('type', String(showType));
+      sessionStorage.setItem('y', String(y ?? 0));
+      navigate(`/shopdetails/${idx}`);
+    }
+  };
+
   const content = [
     {
       tab: "Artworks",
-      content:<Artwork productList={productList}/>
+      content:<Artwork saveHistory={saveHistory} productList={productList}/>
     },
     {
       tab: "Exhibitors",

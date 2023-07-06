@@ -16,6 +16,7 @@ export type FairListItem = {
   image: TImage[];
   isLike: boolean;
 };
+
 export type ArtworkListItem = {
   idx: number;
   category: 1 | 2 | 3 | 4 | 5 | 6;
@@ -68,3 +69,28 @@ export type ArtistItem = {
   name: string;
   designer: string;
 };
+
+
+export type TProductListItem = {
+  idx: number;
+  category: 1 | 2 | 3 | 4 | 5 | 6;
+  name: string;
+  size: string;
+  weight: string;
+  country: string;
+  designer: string;
+  sns: string;
+  email: string;
+  website: string;
+  description: string;
+  created_time: Date;
+  updated_time: Date;
+  deleted_time: Date;
+  image: TImage[];
+  isLike: boolean;
+  like_count: number;
+};
+
+export type LatestList = [
+  
+]

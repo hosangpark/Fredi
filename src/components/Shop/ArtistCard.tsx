@@ -28,7 +28,6 @@ function ArtistCard({
     <ProductBox onClick={onClick}>
       <ProductNameWrap>
         <Designer>{item.designer}</Designer>
-
         {/* {innerWidth <= 768?
         <ArrowImage src={arrowImage} />
         :
@@ -86,7 +85,7 @@ const NewIcon = styled.img`
 
 const Designer = styled.span`
   color: #121212;
-  font-weight: 500;
+  font-weight: 310;
   font-size: 18px;
   @media only screen and (max-width: 768px) {
     font-weight: 310;

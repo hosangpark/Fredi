@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -20,50 +20,7 @@ import Fair from '../MainTab/Fair';
 import LikeSns from './LikeSns';
 import Artwork from '../MainTab/Artwork';
 import { ArtworkListItem } from '../../types/Types';
-import { APIProductList } from '../../api/ProductAPI';
-
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
+import { APILikeProductList, APIProductList } from '../../api/ProductAPI';
 
 
 const TabImage = styled.img`
@@ -74,8 +31,6 @@ const TabImage = styled.img`
     height:20px;
   }
 `
-
-
 
 
 function LikeTab() {
@@ -95,10 +50,22 @@ function LikeTab() {
   const [showType, setShowType] = useState<1 | 2>(1);
   const [productList,setproductList] = useState<ArtworkListItem[]>([])
 
+  const saveHistory = (e: React.MouseEvent, idx: number) => {
+    const div = document.getElementById('root');
+    if (div) {
+      console.log(div.scrollHeight, globalThis.scrollY);
+      const y = globalThis.scrollY;
+      // sessionStorage.setItem('shop', JSON.stringify(shopList));
+      sessionStorage.setItem('page', String(page));
+      sessionStorage.setItem('type', String(showType));
+      sessionStorage.setItem('y', String(y ?? 0));
+      navigate(`/productdetails/${idx}`);
+    }
+  };
   const content = [
     {
       tab: "Artwork",
-      content:<Artwork productList={productList} showType={2}/>
+      content:<Artwork saveHistory={saveHistory} productList={productList} showType={2}/>
     },
     { 
       tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
@@ -117,39 +84,21 @@ function LikeTab() {
   const { contentItem, contentChange } = useTabs(0, content);
 
 
-  const getBannerList = async () => {
-    try {
-      const res = await APIGetBanner();
-      console.log('banner', res);
-      setBannerList(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getShopList = async (page: number) => {
+  const getLikeProductList = async () => {
     const data = {
-      page: page,
-      category: category,
-      keyword: keywordParams,
+      page,
     };
     try {
-      if (history) {
-        return setHistory(false);
-      }
-      const { list, total } = await APIProductList(data);
+      const { list, total } = await APILikeProductList(data);
+
+
+      setproductList(() => [...list]);
+      
       setTotal(total);
-      if (page === 1) {
-        setproductList((prev) => [...list]);
-      } else {
-        // setShopList((prev) => [...prev, ...list]);
-      }
-      console.log('shop', list, page);
     } catch (error) {
       console.log(error);
     }
   };
-
 
   const handleObserver = useCallback((entries: any) => {
     const target = entries[0];
@@ -165,39 +114,21 @@ function LikeTab() {
   };
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
+    // const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
     const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
+    // const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
     // setShopList(list);
     setHistory(true);
     setPage(page);
-    setShowType(type);
+    // setShowType(type);
 
     sessionStorage.removeItem('shop');
     sessionStorage.removeItem('page');
     sessionStorage.removeItem('type');
   };
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
-    const div = document.getElementById('root');
-    if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
-      const y = globalThis.scrollY;
-      // sessionStorage.setItem('shop', JSON.stringify(shopList));
-      sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
-      sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/shopdetails/${idx}`);
-    }
-  };
-
-  useEffect(() => {
-    console.log(browserHistory.location);
-    console.log(location);
-    getBannerList();
-  }, []);
-
+  
   // useLayoutEffect(() => {
   //   const scrollY = Number(sessionStorage.getItem('y'));
   //   if (shopList.length > 0 && scrollY) {
@@ -213,19 +144,27 @@ function LikeTab() {
   // }, [shopList]);
 
   useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
-
-    if (page) {
-      findHistory();
+    // const page = Number(sessionStorage.getItem('page'));
+    const Tab = sessionStorage.getItem('tab')
+    if(Tab == 'Artwork'){
+      contentChange(0)
     } else {
-      setPage(1);
-      getShopList(1);
-    }
+      contentChange(1);
+    } 
+    getLikeProductList()
+    findHistory();
+
+    // if (page) {
+    //   findHistory();
+    // } else {
+    //   setPage(1);
+    //   getShopList(1);
+    // }
   }, [searchParams, category]);
 
-  useEffect(() => {
-    if (page > 1) getShopList(page);
-  }, [page]);
+  // useEffect(() => {
+  //   if (page > 1) getShopList(page);
+  // }, [page]);
   
   const onSearch = () => {
     navigate(

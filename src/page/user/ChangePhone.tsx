@@ -52,6 +52,7 @@ function ChangePhone() {
   >();
 
   const [originalPhone, setOriginalPhone] = useState<string>('');
+  const [originalNickname, setOriginalNickname] = useState<string>('');
   const [timer, setTimer] = useState(0);
   const [phone, setPhone] = useState<string>('');
   const [isSend, setIsSend] = useState(false);
@@ -61,10 +62,24 @@ function ChangePhone() {
   const testPhoneReg = phoneReg.test(phone);
   const countRef = useRef<any>(null);
 
+  const getUserDetails = async () => {
+    try {
+      const res = await APIUserDetails();
+      
+      setOriginalNickname(res.nickname);
+      setOriginalPhone(res.phone);
+      console.log('ddddd',res.nickname)
+      console.log('ddddd',res.phone)
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+
   const onSendAuthNumber = async () => {
-    if (isOriginalPhone) return setAlertType('originalPhone');
-    if (!phone) return setAlertType('sendFaild');
-    if (!testPhoneReg) return setAlertType('sendFaild');
+    // if (isOriginalPhone) return setAlertType('originalPhone');
+    // if (!phone) return setAlertType('sendFaild');
+    // if (!testPhoneReg) return setAlertType('sendFaild');
     try {
       const data = {
         phone_number: phone,
@@ -77,6 +92,22 @@ function ChangePhone() {
     } catch (error) {
       console.log(error);
       setAlertType('member');
+    }
+  };
+
+  const onModifyUserInfo = async () => {
+    if (!isAuth) return setAlertType('faild');
+    const data = {
+      nickname: originalNickname,
+      phone: phone,
+    };
+    try {
+      const res = await APIModifyUserDetails(data);
+      setAlertType('modified');
+      navigate(-1)
+    } catch (error) {
+      console.log(error);
+      alert(error);
     }
   };
 
@@ -111,13 +142,15 @@ function ChangePhone() {
     }
   }, [timer]);
 
-
-  
   useEffect(() => {
     if (authNumber.length > 0) {
       onCheckAuth()
     }
   }, [authNumber]);
+
+  useEffect(() => {
+    getUserDetails()
+  }, []);
   
   return (
     <Container style={{ overflow: 'hidden' }}>
@@ -180,9 +213,9 @@ function ChangePhone() {
         }
               
               
-        <BlackButton disabled={true} onClick={()=>{
-          alert('수정되었습니다.')
-          navigate(-1)
+        <BlackButton disabled={!isSend} onClick={()=>{
+          onModifyUserInfo()
+          
         }}>
           Save
         </BlackButton>

@@ -7,7 +7,7 @@ import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import { createStyles, Modal } from '@mantine/core';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import { APILikeProducer, APIProducerDetails } from '../../api/ProducerAPI';
 import { CATEGORY_PRODUCER } from '../admin/DashBoard';
 export type TProducerDetails = {

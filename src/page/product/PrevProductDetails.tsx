@@ -8,7 +8,7 @@ import rightButtonImage from '../../asset/image/ico_next.png';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { createStyles, Modal } from '@mantine/core';
 import { APILikeProduct, APIProductDetails } from '../../api/ProductAPI';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import { useRef } from 'react';

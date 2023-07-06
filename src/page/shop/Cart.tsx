@@ -6,7 +6,7 @@ import CheckBox from '../../components/Shop/CheckBox';
 import PostModal from '../../components/Modal/PostModal';
 import { replaceString } from '../../util/Price';
 import { APIChangeCartItemAmount, APIDeleteCartItem, APIGetCartList, APISaveAddress } from '../../api/ShopAPI';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import { checkArea2, checkArea3 } from '../../util/ExtraFeeArea';
 import AlertModal from '../../components/Modal/AlertModal';
 

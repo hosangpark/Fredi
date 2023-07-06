@@ -3,33 +3,15 @@ import styled from 'styled-components';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import searchButtonImage from '../../asset/image/ico_search.png';
 import { Pagination, Select } from '@mantine/core';
-import { TImage } from './ProducerList';
 import { APIDeleteProduct, APIProductListAdmin } from '../../api/ProductAPI';
 import arrDownImage from '../../asset/image/arr_down.png';
 import dayjs from 'dayjs';
 import AlertModal from '../../components/Modal/AlertModal';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import { CategoryList } from '../../components/List/List';
+import { TProductListItem } from '../../types/Types';
 
-export type TProductListItem = {
-  idx: number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  name: string;
-  size: string;
-  weight: string;
-  country: string;
-  designer: string;
-  sns: string;
-  email: string;
-  website: string;
-  description: string;
-  created_time: Date;
-  updated_time: Date;
-  deleted_time: Date;
-  image: TImage[];
-  isLike: boolean;
-  like_count: number;
-};
+
 
 export const CATEGORY_PRODUCT = {
   1: 'all',

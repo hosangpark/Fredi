@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import likeOnImage from '../../asset/image/heart.svg';
 import likeOffImage from '../../asset/image/heart.svg';
+import ximage from '../../asset/image/close.svg';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { createStyles, Modal } from '@mantine/core';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import { useRef } from 'react';
@@ -15,13 +16,14 @@ import { replaceString } from '../../util/Price';
 import { removeHistory } from '../../components/Layout/Header';
 import { Select } from '@mantine/core';
 import arrDownImage from '../../asset/image/arr_down.png';
-import { Virtual,Pagination,Navigation, Scrollbar } from 'swiper';
+import { Virtual,Pagination,Navigation, Scrollbar ,FreeMode, Thumbs } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 import './ProductDetails.css'
 import { APIGetBanner } from '../../api/SettingAPI';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
+import { APIProductDetails } from '../../api/ProductAPI';
 
 export type TShopDetails = {
   idx: number;
@@ -70,6 +72,7 @@ function ProductDetails() {
   const [showOption, setShowOption] = useState<boolean>(false);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
+  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const ref = useRef<SheetRef>();
 
 
@@ -150,6 +153,22 @@ function ProductDetails() {
     // }
   };
 
+  const getProductDetails = async () => {
+    const data = {
+      idx: idx,
+    };
+    try {
+      const resData = await APIProductDetails(data);
+      console.log(resData);
+      setShopDetails({ ...resData, imageList: resData.imageList.slice(1) });
+      setIsLike(resData.isLike);
+    } catch (error) {
+      console.log(error);
+      alert('존재하지 않는 상품입니다.');
+      navigate(-1);
+    }
+  };
+
   const onLikeShop = async () => {
     if (user.idx) {
       const data = {
@@ -187,7 +206,8 @@ function ProductDetails() {
   };
 
   useEffect(() => {
-    getShopDetails();
+    getProductDetails();
+    // getShopDetails();
     console.log('shopDetails', window.innerHeight);
   }, []);
 
@@ -285,30 +305,18 @@ function ProductDetails() {
       <Container>
         {bottomSheetModal && 
         <Draggable 
-        bounds={{left: 0, top: 1, right: 0, bottom: defaultoverlay? window.innerHeight-230 : window.innerHeight-170 }}
+        bounds={{left: 0, top: 1, right: 0, bottom: !defaultoverlay? window.innerHeight-240 : window.innerHeight-170 }}
         axis="y"
         // handle={scrollable}
-        defaultPosition={{x: 0, y: defaultoverlay? window.innerHeight-230 : window.innerHeight-170}}
+        defaultPosition={{x: 0, y: !defaultoverlay? window.innerHeight-240 : window.innerHeight-170}}
         >
           <ModalInfromBox>
-            <EmptyHeightBox height={defaultoverlay? 110 : 50}>
-              {defaultoverlay == true ?
-              <OverlayBox>
-                <NameBox>
-                  <NameDesigner>
-                    <ProductName>{shopDetails?.name}</ProductName>
-                    <Designer>{shopDetails?.designer}</Designer>
-                  </NameDesigner>
-                  <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
-                </NameBox>
-              </OverlayBox>
-                :
+            <EmptyHeightBox height={35}>
               <HeaderButtom/>
-              }
+              <Ximage src={ximage}/>
             </EmptyHeightBox>
             <LeftTopBox>
               <TitleBox>
-                {defaultoverlay == false &&
                 <NameBox>
                   <NameDesigner>
                     <ProductName>{shopDetails?.name}</ProductName>
@@ -316,7 +324,6 @@ function ProductDetails() {
                   </NameDesigner>
                   <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
                 </NameBox>
-                }
                 <BottomBoxContent readmore={readmore} >value={shopDetails?.description}
                 </BottomBoxContent>
                 {!readmore &&
@@ -435,8 +442,10 @@ function ProductDetails() {
             <Swiper 
               // modules={[Navigation,Pagination]}
               // mousewheel={true}
-              modules={[Pagination,Scrollbar]}
+              modules={[Pagination,Scrollbar,FreeMode,Thumbs]}
+              thumbs={{ swiper: thumbsSwiper }}
               scrollbar={innerWidth <= 768? false : true}
+              loop={true}
               // onSlideChange={() => {/*...*/}}
               // allowTouchMove={false}
               // noSwiping={false}
@@ -447,9 +456,9 @@ function ProductDetails() {
               // simulateTouch={false}
               // shortSwipes={false}
               // setWrapperSize={true}
-              pagination={innerWidth <= 768? false :pagination}
+              // pagination={innerWidth <= 768? false :pagination}
               style={{
-                maxHeight:window.innerHeight*1.5,backgroundColor:'white'
+                maxHeight:innerWidth <= 1000? window.innerHeight : window.innerHeight*1.3,backgroundColor:'white'
               }}
               // slidesPerView={innerWidth <= 768? 990/innerWidth : innerWidth <= 1440? 1700/innerWidth :1800/innerWidth}
               slidesPerView={'auto'}
@@ -463,16 +472,38 @@ function ProductDetails() {
               {shopDetails?.imageList.map((item, index) => (
                 <SwiperSlide key={item.idx} virtualIndex={index}>
                   {/* {slideContent} */}
+                  <ImageBox1>
+                    <ProductImage src={item.file_name}/>
+                    {/* {item.file_name} */}
+                  </ImageBox1>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            <Swiper
+              onSwiper={setThumbsSwiper}
+              style={{
+                position:'absolute',top:0,right:0,width:'8%',minWidth:'30px'
+              }}
+              freeMode={true}
+              scrollbar={false}
+              direction={'vertical'}
+              slidesPerView={'auto'}
+              watchSlidesProgress={true}
+              modules={[FreeMode, Navigation, Thumbs]}
+              className="mySwiper"
+            >
+              {shopDetails?.imageList.map((item, index) => (
+                <SwiperSlide key={item.idx} virtualIndex={index}>
+                  {/* {slideContent} */}
                   <ImageBox2>
                     <ProductImage src={item.file_name}/>
                     {/* {item.file_name} */}
                   </ImageBox2>
                 </SwiperSlide>
               ))}
-                <SwiperSlide>
-                  <EmptyHeightBox2 height={300}/>
-                </SwiperSlide>
             </Swiper>
+
           </SwiperWrap>
         </RightBox>
         <AlertModal
@@ -553,7 +584,12 @@ const LeftBox = styled.div`
     display:none
   }
 `;
-
+const PaginationMap = styled.div`
+  position:absolute;
+  top:0;
+  right:0;
+  width:10%;
+`
 const RightBox = styled.div`
   display: flex;
   width:100%;
@@ -591,14 +627,14 @@ const EmptyHeightBox2 = styled.div<{height:number}>`
 const HeaderButtom = styled.div`
 // tranform: translateY(-1px);
   position:absolute;
-  top:20px;
+  top:15px;
   left:50%;
   transform:translate(-50%,0);
-  width:55px;
+  width:41.94px;
   border:1px solid #a5a5a5;
   border-radius:20px;
   @media only screen and (max-width: 768px) {
-    width:45px;
+    width:41.94px;
   }
 `;
 const LeftTopBox = styled.div`
@@ -651,7 +687,7 @@ const DeliveryInfoWrap = styled(LeftBottomBox)`
   }
 `;
 const OverlayBox = styled.div`
-  padding:30px 20px 10px;
+  padding:35px 20px 10px;
 `
 const NameBox = styled.div`
   width:100%;
@@ -664,7 +700,7 @@ const NameBox = styled.div`
     margin-bottom:50px;
   }
   @media only screen and (max-width: 768px) {
-    margin-top:10px;
+    margin-top:0px;
     margin-bottom:46px;
     font-size:14px;
   }
@@ -693,14 +729,12 @@ const CategoryItem = styled.span`
     font-size:14px;
   }
 `
-const Xbox = styled.div`
-  width:20px;
-  height:20px;
+const Ximage = styled.img`
   position:absolute;
-  top:10px;
-  right:20px;
-  background-color:blue;
-  z-index:9999;
+  width:12px;
+  height:12px;
+  top:11px;
+  right:14.19px;
 `
 
 const ProductImage = styled.img`
@@ -725,15 +759,17 @@ const NameDesigner = styled.div`
 `
 const ProductName = styled.h3`
 font-family:'Pretendard Variable';
-font-weight: 360;
+font-weight: 310;
   color: #121212;
   font-size: 22px;
   margin: 0px;
   flex-wrap: wrap;
   line-height:1;
-  margin-bottom:13.22px;
+  margin-bottom:13px;
+  margin-top:12px;
   @media only screen and (max-width: 768px) {
-    margin-bottom:13.22px;
+    margin-top:12px;
+    margin-bottom:13px;
     font-size: 14px;
   }
 `;
@@ -755,7 +791,12 @@ const LikeButton = styled.img`
   cursor: pointer;
   margin-top: 5px;
   @media only screen and (max-width: 768px) {
-    height: 25px;
+    margin-top: 0px;
+    position:absolute;
+    top:11.73px;
+    right:9px;
+    width:22.37px;
+    height:18.73px;
   }
 `;
 
@@ -906,15 +947,24 @@ const ModalImageBox = styled.div`
   height: 90vh;
 `;
 
-const ImageBox2 = styled.div`
+const ImageBox1 = styled.div`
   width: 85%;
   aspect-ratio:1;
   /* height:100%; */
   /* max-height:800px; */
   /* overflow: hidden; */
   /* aspect-ratio: 0.8; */
-  
-
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
+`;
+const ImageBox2 = styled.div`
+  width: 100%;
+  aspect-ratio:1;
+  /* height:100%; */
+  /* max-height:800px; */
+  /* overflow: hidden; */
+  /* aspect-ratio: 0.8; */
   @media only screen and (max-width: 768px) {
     width: 100%;
   }
@@ -1017,7 +1067,7 @@ const DownIcon = styled.img`
 const AskButton = styled.div`
     font-family: "Pretendard Variable";
     width: 100%;
-    height: 53px;
+    height: 53.06px;
     display: flex;
     -webkit-box-align: center;
     align-items: center;
@@ -1031,6 +1081,7 @@ const AskButton = styled.div`
     border: 0;
     color: rgb(236, 236, 236);
   @media only screen and (max-width: 768px) {
+    height: 46.91px;
     font-size: 15px;
   }
   &:hover {
@@ -1058,6 +1109,7 @@ const LeftOption = styled.div`
 const CartCardWrap = styled.div``;
 
 const SwiperWrap = styled.div`
+  position:relative;
   /* background-color:#cecece; */
   width:80%;
   max-width:1000px;

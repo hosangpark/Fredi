@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import { TImage } from '../admin/ProducerList';
+import { TImage, TProductListItem } from '../../types/Types';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Navigation, Thumbs } from "swiper";
