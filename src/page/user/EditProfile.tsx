@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
-import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
+import { APICheckPassword, APILink, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import { TImage, TProductListItem } from '../../types/Types';
+import { LinkListType, TImage, TProductListItem } from '../../types/Types';
 import RightArrowImage from '../../asset/image/right.svg'
-import CategoryItem from '../../components/Shop/CategoryItem';
 import linkImage from '../../asset/image/rink.svg';
+import CategoryItem from '../../components/Shop/CategoryItem';
 import profileImage from '../../asset/image/Profile.svg';
-import SaveButton from '../../components/Layout/SaveButton';
+import TopTextButton from '../../components/Layout/TopTextButton';
 
 export type TUserDetails = {
   idx: number;
@@ -43,53 +43,17 @@ function EditProfile() {
   const [passwordAlert, setPasswordAlert] = useState(false);
   const [isSnsUser, setIsSnsUser] = useState(false);
   const [imageList, setimageList] = useState<ImageItem[]>([]);
-  const [showType, setShowType] = useState<1 | 2>(1);
   const [userDetails, setUserDetails] = useState<TUserDetails>();
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [LinkList, setLinkList] = useState<LinkListType[]>([]);
   const [alertType, setAlertType] = useState<string[] | undefined>();
   const { user } = useContext(UserContext);
-
-  const [categoryitemList,setcategoriitemList] = useState([
-    {
-      item:'Home & styling',
-      checked:false
-    },
-    {
-      item:'Furniture',
-      checked:false
-    },
-    {
-      item:'Lighting',
-      checked:false
-    },
-    {
-      item:'Fabric',
-      checked:false
-    },
-    {
-      item:'Object',
-      checked:false
-    },
-    {
-      item:'Tableware',
-      checked:false
-    },
-    {
-      item:'Chair',
-      checked:false
-    },
-    {
-      item:'Table',
-      checked:false
-    },
-  ])
 
   const getUserDetails = async () => {
     try {
       const res = await APIUserDetails();
-      console.log(res);
+      // console.log(res);
       setUserDetails(res);
       setIsSnsUser(res.type !== 1 ? true : false);
     } catch (error) {
@@ -97,22 +61,23 @@ function EditProfile() {
       // navigate('/signin', { replace: true });
     }
   };
-
-  const onCheckPassword = async () => {
-    if (!password) return setPasswordAlert(true);
+  const getLinks = async () => {
     const data = {
-      password: password,
+      page: 1
     };
     try {
-      const res = await APICheckPassword(data);
-      console.log(res);
-      navigate('/modifyuserinfo');
+      const {list,total} = await APILink(data);
+      console.log('resresresres',list);
+      console.log('resresresres',total);
+      // console.log(list);
+      setLinkList(list);
+      // setIsSnsUser(res.type !== 1 ? true : false);
     } catch (error) {
-      console.log(error);
-      setPasswordAlert(true);
+      // console.log(error);
+      // navigate('/signin', { replace: true });
     }
   };
-  
+
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
@@ -120,7 +85,7 @@ function EditProfile() {
       const y = globalThis.scrollY;
       // sessionStorage.setItem('shop', JSON.stringify(shopList));
       // sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
+      // sessionStorage.setItem('type', String(showType));
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/shopdetails/${idx}`);
     }
@@ -128,47 +93,12 @@ function EditProfile() {
 
   useEffect(() => {
     getUserDetails();
-    setimageList([
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름1',
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-      },
-      {
-        idx: 2,
-        category: 1,
-        name: '일름이름이름2',
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-      },
-      {
-        idx: 3,
-        category: 1,
-        name: '일름이름이름3',
-        image: [
-          {
-            idx: 11,
-            file_name: ''
-          }
-        ],
-      },
-    ]);
+    getLinks()
   }, []);
   
-
   return (
     <Container>
-      <SaveButton onClick={()=>{}}/>
+      <TopTextButton text='Save' onClick={()=>{}}/>
       <ProfileContainer>
         <ImageWrap>
           <ProfileImage src={profileImage}/>
@@ -221,24 +151,29 @@ function EditProfile() {
             </LinkTitleBox>
           </LinkItemBox>
         </LayoutWrap>
-        <LayoutWrap onClick={()=>{navigate('/EditLink', { state: 'Edit' });}}>
-          <LinkImageWrap>
-            <LinksImage src={linkImage}/>
-          </LinkImageWrap>
-          <LinkItemBox>
-            <LinkTitleBox>
-              <LinkName>
-                Website (FREDI)
-              </LinkName>
-              <LinkUrl>
-                www.fredi.co.kr
-              </LinkUrl>
-            </LinkTitleBox>
-            <ArrowImageWrap>
-              <ArrowImage src={RightArrowImage}/>
-            </ArrowImageWrap>
-          </LinkItemBox>
-        </LayoutWrap>
+        {LinkList.map((item,index)=>{
+          return(
+          <LayoutWrap key={index} onClick={()=>{navigate('/EditLink', { state: 'Edit' });}}>
+            <LinkImageWrap>
+              <LinksImage src={linkImage}/>
+            </LinkImageWrap>
+            <LinkItemBox>
+              <LinkTitleBox>
+                <LinkName>
+                  {item.title}
+                </LinkName>
+                <LinkUrl>
+                  {item.url}
+                </LinkUrl>
+              </LinkTitleBox>
+              <ArrowImageWrap>
+                <ArrowImage src={RightArrowImage}/>
+              </ArrowImageWrap>
+            </LinkItemBox>
+          </LayoutWrap>
+          )
+        })}
+        
       </BoxWrap>
       </ProfileContainer>
     </Container>
@@ -247,10 +182,11 @@ function EditProfile() {
 
 const Container = styled.div`
   /* display: flex; */
+  max-width: 1000px;
+  margin:0 auto;
   flex: 1;
   min-height: calc(100vh - 80px);
   /* flex-direction: row; */
-  border-top: 1px solid #121212;
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -284,6 +220,7 @@ const BoxWrap = styled.div`
 const LayoutWrap = styled.div`
   display: flex;
   margin:10px 0;
+  cursor: pointer;
 `;
 
 const EditPhotoButton = styled.div`
@@ -294,7 +231,7 @@ const EditPhotoButton = styled.div`
   /* border-bottom:2px solid #c7c7c7; */
   margin:20px 0 44px;
   font-size:16px;
-  font-weight: 410;
+  font-weight: 360;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
   }
@@ -303,7 +240,7 @@ const EditPhotoButton = styled.div`
 const BoxTitle = styled.p`
 font-family:'Pretendard Variable';
   font-size:16px;
-  font-weight:500;
+  font-weight: 410;
   text-align:start;
   color:#2b2b2b;
   margin:20px 0 10px 0;
@@ -324,7 +261,7 @@ font-family:'Pretendard Variable';
 const LinkUrl = styled.p`
 font-family:'Pretendard Variable';
   font-size:14px;
-  font-weight:500;
+  font-weight: 410;
   text-align:start;
   color:#b8b8b8;
   margin:0;

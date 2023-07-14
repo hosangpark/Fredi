@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import searchButtonImage from '../../asset/image/ico_search.png';
+import searchButtonImage from '../../asset/image/search.svg';
 import arrDownImage from '../../asset/image/arr_down.png';
 import { TextInput, Select } from '@mantine/core';
 
@@ -29,7 +29,7 @@ function SearchBox({
   return (
     <Wrap none={none}>
       <SearchBoxWrap>
-        <Input value={keyword} onChange={onChangeInput} onKeyDown={onKeyDown} type="text" variant="unstyled" />
+        <Input value={keyword} onChange={onChangeInput} onKeyDown={onKeyDown} type="text" variant="unstyled" placeholder='Search'/>
         <SearchButton onClick={onClickSearch} src={searchButtonImage} />
         {/* <UnderLineBox>
           <Select
@@ -92,11 +92,7 @@ const SearchBoxWrap = styled.div`
   border-radius: 25px;
   margin: 10px 0;
   background-color: #ffffff;
-  @media only screen and (max-width: 1024px) {
-    margin: 20px 0px;
-  }
   @media only screen and (max-width: 460px) {
-    margin: 15px 0px;
     height: 40px;
   }
 `;

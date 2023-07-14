@@ -20,56 +20,7 @@ import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 import AppdownModal from '../../components/Modal/AppdownModal';
 import ProductMainList from '../../components/Product/ProductMainList';
-import WeeklyEditionList from '../../components/Product/WeeklyEditionList';
 import { TImage, TProductListItem } from '../../types/Types';
-
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {
-    width: '100%',
-    // height: '100%',
-    // aspectRatio: '1/1',
-},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
-
 
 function WeeklyEdition() {
   const navigate = useNavigate();
@@ -86,7 +37,6 @@ function WeeklyEdition() {
 
   const { user } = useContext(UserContext);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const { classes } = useStyles();
   const interSectRef = useRef(null);
 
   useEffect(() => {
@@ -151,7 +101,7 @@ function WeeklyEdition() {
 
   // const onLikeProduct = async (idx: number) => {
   //   const data = {
-  //     product_idx: idx,
+  //     artwork_idx: idx,
   //   };
   //   try {
   //     const res = await APILikeProduct(data);
@@ -162,6 +112,21 @@ function WeeklyEdition() {
   //     console.log(error);
   //   }
   // };
+  const LinkHandler = (e:React.MouseEvent,title:string,idx?:number)=>{
+    const y = globalThis.scrollY;
+    sessionStorage.setItem('y', String(y ?? 0));
+    if(title === 'Fairs'){
+      navigate(`/FairContent/${idx}`)
+    } else if (title.includes('Home')) {
+      navigate(`/personalpage/${idx}`)
+    } else if (title.includes('Trending')) {
+      navigate(`/MobileProfile/${idx}`)
+    } else if (title.includes('Featured')) {
+      navigate(`/MobileProfile/${idx}`)
+    } else {
+      console.log(title,idx)
+    }
+  }
 
   const handleObserver = useCallback((entries: any) => {
     const target = entries[0];
@@ -255,34 +220,12 @@ function WeeklyEdition() {
   // }, [page]);
 
 
-
-  const slides = bannerList.map((item:any) => {
-    console.log('item', item);
-    return(
-    <Carousel.Slide key={item.idx}>
-      <a href={item?.link}>
-        <SlideImage src={item.file_name} className={classes.carouselImages} />
-      </a>
-    </Carousel.Slide>
-    );
-  });
-
-  const slidesMobile = bannerListMobile.map((item:any) => {
-    // console.log('item', item);
-    return(
-      <Carousel.Slide key={item.idx}>
-      <a href={item?.link}>
-        <SlideImage src={item.file_name} className={classes.carouselImages} />
-      </a>
-    </Carousel.Slide>
-    );
-  });
-
   return (
     <Container id="productContainer">
       <ProductListWrap>
         <WeeklyTitle>Weekly Edition</WeeklyTitle>
         <ProductMainList
+        LinkHandler={LinkHandler}
         title={'May 1st'}
         titlesize={18}
         ProductViews={innerWidth <= 768? 2.3 : 5}
@@ -292,8 +235,12 @@ function WeeklyEdition() {
         scrollbar={false}
         aspect={348/432}
         ProducList={bannerListMobile}
+        paddingnum={innerWidth <= 768? 0:50}
+        marginT={innerWidth <= 768? 60:130}
+        marginB={innerWidth <= 768? 20:65}
         />
         <ProductMainList
+        LinkHandler={LinkHandler}
         title={'April 4th'}
         titlesize={18}
         ProductViews={innerWidth <= 768? 2.3 : 5}
@@ -303,8 +250,12 @@ function WeeklyEdition() {
         scrollbar={false}
         aspect={348/432}
         ProducList={bannerListMobile}
+        paddingnum={innerWidth <= 768? 0:50}
+        marginT={innerWidth <= 768? 60:130}
+        marginB={innerWidth <= 768? 20:65}
         />
         <ProductMainList
+        LinkHandler={LinkHandler}
         title={'April 3th'}
         titlesize={18}
         ProductViews={innerWidth <= 768? 2.3 : 5}
@@ -313,6 +264,9 @@ function WeeklyEdition() {
         naviArrow={false}
         scrollbar={false}
         aspect={348/432}
+        paddingnum={innerWidth <= 768? 0:50}
+        marginT={innerWidth <= 768? 60:130}
+        marginB={innerWidth <= 768? 21:65}
         ProducList={bannerListMobile}
         />
         
@@ -348,7 +302,10 @@ const Container = styled.div`
 `;
 
 const ProductListWrap = styled.div`
-  margin: 45px 50px;
+  margin: 40px 50px;
+  @media only screen and (max-width: 768px) {
+    margin: 20px 0px;
+  }
 `;
 const WeeklyTitle = styled.div`
   text-align:start;

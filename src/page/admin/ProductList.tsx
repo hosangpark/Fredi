@@ -281,7 +281,7 @@ const ListItemName = styled.span`
 
 const ListItemSubTitle = styled(ListItemName)`
   display: inline-block;
-  font-weight: 500;
+  font-weight: 410;
   width: 75px;
 `;
 

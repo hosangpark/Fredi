@@ -57,7 +57,7 @@ const LeftBox = styled.div`
 
 const SubTitle = styled.h4`
   margin: 0;
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   font-size: 18px;
 
@@ -94,6 +94,7 @@ font-family:'Pretendard Variable';
   font-weight: 360;
   height: 100%;
   font-size: 16px;
+  line-height:16px;
   @media only screen and (max-width: 1000px) {
     font-size: 14px;
   }
@@ -143,7 +144,7 @@ const BusinessHourText = styled.p`
 `;
 
 const Text = styled.p`
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   font-size: 18px;
   margin: 0;

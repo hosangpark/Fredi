@@ -10,7 +10,7 @@ import menutextballoon from '../../asset/image/textballoon.png';
 import menucontact from '../../asset/image/contact.svg';
 import menusetting from '../../asset/image/Settings.svg';
 
-import profileImage from '../../asset/image/my.svg';
+import profileImage from '../../asset/image/web_my.svg';
 import likeOffImage from '../../asset/image/heart.svg';
 import likeOnImage from '../../asset/image/heart_on.png';
 import menuicon from '../../asset/image/threecircle.png';
@@ -75,8 +75,6 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [isMouseOveredLikeButton, setIsMouseOveredLikeButton] = useState(false);
-  const [showNext, setShowNext] = useState(false);
-  const [showSave, setShowSave] = useState(false);
   const [showBackButton, setShowBackButton] = useState(false);
   const [showsendMessage, showSendMessage] = useState(false);
   const [pageName, setPageName] = useState(false);
@@ -94,19 +92,6 @@ function Header() {
     navigate(0);
   }, []);
 
-  const goProduct = useCallback(() => {
-    removeHistory();
-    navigate('/');
-  }, []);
-
-  const goProducing = useCallback(() => {
-    removeHistory();
-    if (user.level > 1) {
-      setShowModal(true);
-    } else {
-      navigate('/producer');
-    }
-  }, [user]);
 
   // useEffect(() => {
   //   getUserDetails();
@@ -139,73 +124,62 @@ function Header() {
     }
   };
 
-  const goShop = useCallback(() => {
-    removeHistory();
-    navigate('/admin/registerfaq');
-  }, []);
 
   const goLikeList = useCallback(() => {
     setBottomSheetModal(false)
-    removeHistory();
-    // if (!token) {
-    //   return setShowLogin(true);
-    // }
-    navigate('/LikeTab');
+    if(!token){
+      setShowLogin(true);
+    } else{
+      removeHistory();
+      navigate('/LikeArtwork');
+    }
   }, [token]);
 
-  const go_orderList = useCallback(() => {
-    setBottomSheetModal(false)
-    removeHistory();
-    if (!token) {
-      return setShowLogin(true);
-    }
-    navigate('/orderlist');
-  }, [token]);
-
-  const go_requestList = useCallback(() => {
-    setBottomSheetModal(false)
-    removeHistory();
-    if (!token) {
-      return setShowLogin(true);
-    }
-    navigate('/asklist-shop');
-  }, [token]);
 
   const goContact = useCallback(() => {
-    setBottomSheetModal(false)
     removeHistory();
-    navigate('/contact');
-  }, []);
+    setBottomSheetModal(false)
+    if (!token) {
+      setShowLogin(true);
+    } else {
+      navigate('/contact');
+    }
+    
+  }, [token]);
 
   const goFair = useCallback(() => {
     setBottomSheetModal(false)
     removeHistory();
-    navigate('/Fair');
+    navigate('/MainTab/FairTab');
   }, []);
   const goArtwork = useCallback(() => {
     setBottomSheetModal(false)
     removeHistory();
-    navigate('/Artwork');
+    navigate('/MainTab/ArtworkTab');
   }, []);
   
   const goArtist = useCallback(() => {
     setBottomSheetModal(false)
     removeHistory();
-    navigate('/Artist');
+    navigate('/MainTab/ArtistTab');
   }, []);
 
   const goCommunity = useCallback(() => {
-    setBottomSheetModal(false)
     removeHistory();
-    navigate('/Community');
-  }, []);
+    if (!token) {
+      setShowLogin(true);
+    }else {
+      navigate('/Community/FeedTab');
+    }
+    
+  }, [token]);
 
   const goMyPage = useCallback(() => {
     removeHistory();
     if (!token) {
       setShowLogin(true);
     } else {
-      navigate('/profile');
+      navigate(`/MobileProfile/${user.idx}`)
     }
   }, [token]);
 
@@ -214,7 +188,7 @@ function Header() {
     navigate('/admin');
   }, []);
 
-  const goCart = useCallback(() => {
+  const goSelling = useCallback(() => {
     setBottomSheetModal(false)
     removeHistory();
     if (!token) {
@@ -306,16 +280,6 @@ function Header() {
   //     setShowBackButton(false);
   //   }
   // }, [pathName]);
-
-  useEffect(() => {
-    if (
-      pathName === 'asklist'
-    ) {
-      showSendMessage(true)
-    }else{
-      showSendMessage(false)
-    }
-  }, [pathName]);
   
   useEffect(() => {
     if (
@@ -344,33 +308,28 @@ function Header() {
     }
   }, [pathName]);
   
-  useEffect(() => {
-    if (
-      pathName === 'AddPhoto' ||
-      pathName === 'AddLink'
-    ) {
-      setShowNext(true)
-      setShowSave(false)
-    }else{
-      setShowNext(false)
-    }
-  }, [pathName]);
 
   useEffect(() => {
     if (
+      pathName === 'SignUp1' ||
+      pathName === 'SignUp2' ||
+      pathName === 'SignUp3' ||
+      pathName === 'AddPhoto' ||
       pathName === 'AddPhoto2' ||
       pathName === 'EditProfile' ||
       pathName === 'EditLink' ||
+      pathName === 'asklist' ||
       pathName === 'modifyuserinfo' ||
       pathName === 'AddLink'
     ) {
-      setNoButton(true)
-      // setShowSave(true)
-      setShowNext(false)
-    }else{
-      setShowSave(false)
+      if(innerWidth < 768){
+        setNoButton(true)
+        // setShowSave(true)
+      } else {
+        setNoButton(false)
+      }
     }
-  }, [pathName]);
+  }, [innerWidth,pathName]);
 
   useEffect(() => {
     const resizeListener = () => {
@@ -379,11 +338,12 @@ function Header() {
     if(innerWidth > 768){
       setShowBackButton(false);
       setPageName(false)
-      setShowSave(false)
-      setShowNext(false)
       showSendMessage(false)
     } else {
       if (
+        pathName === 'SignUp1' ||
+        pathName === 'SignUp2' ||
+        pathName === 'SignUp3' ||
         pathName === 'productdetails' ||
         pathName === 'shopdetails' ||
         // pathName === 'cart' ||
@@ -402,7 +362,6 @@ function Header() {
         pathName === 'asklist-shop' ||
         pathName === 'ArtistProducts' ||
         pathName === 'personalpage' ||
-        pathName === 'MainTab' ||
         pathName === 'FairContent' ||
         pathName === 'EditProfile' ||
         pathName === 'AddPhoto' ||
@@ -444,7 +403,6 @@ function Header() {
             </Sheet.Header>
             <Sheet.Content>
               <SheetWrap> 
-                {/* goMyPage */}
                 <SheetMenu onClick={goLikeList}>
                   <IconWrap>
                   <HeartIconImage src={menuheart}/>
@@ -452,7 +410,7 @@ function Header() {
                   {/* 찜한작품 */}
                   Like
                 </SheetMenu>
-                <SheetMenu onClick={goCart}>
+                <SheetMenu onClick={goSelling}>
                   <IconWrap>
                   <SellingIconImage src={menuselling}/>
                   </IconWrap>
@@ -496,19 +454,19 @@ function Header() {
                 </SheetMenu>
                 <SheetLogoutMenu>
                   {token ?
-                  <div onClick={()=>{
+                  <LogBox onClick={()=>{
                     setBottomSheetModal(false)
                     setConfirmModal(true)
                     }}>
                     Logout
-                  </div>
+                  </LogBox>
                   :
-                  <div onClick={()=>{
+                  <LogBox onClick={()=>{
                     setBottomSheetModal(false)
                     navigate('/signin');
                     }}>
                     Login
-                  </div>
+                  </LogBox>
                   }
                   {/* <IconImage src={LogoutImage}/> */}
                 </SheetLogoutMenu>
@@ -521,20 +479,20 @@ function Header() {
       <SheetBackground onClick={() => setBottomSheetModal(false)}></SheetBackground>
       }
       <HeaderBox>
-        {showBackButton && <BackButton onClick={BackbuttonHandle} src={backButtonImage} />}
+        {showBackButton && <BackButtonWrap><BackButton onClick={BackbuttonHandle} src={backButtonImage} /></BackButtonWrap>}
         {pathName === ''&& <Logo onClick={goHome} src={logoImage} /> || innerWidth > 768 && <Logo onClick={goHome} src={logoImage} />}
 
         <WebMenuWrap>
-          <MenuButton onClick={goFair}>
+          <MenuButton On={pathName === 'FairTab'} onClick={goFair}>
             <MenuButtonText>Fair</MenuButtonText>
           </MenuButton>
-          <MenuButton onClick={goArtwork}>
+          <MenuButton On={pathName === 'ArtworkTab'} onClick={goArtwork}>
             <MenuButtonText>Artwork</MenuButtonText>
           </MenuButton>
-          <MenuButton onClick={goArtist}>
+          <MenuButton On={pathName === 'ArtistTab'} onClick={goArtist}>
             <MenuButtonText>Artist</MenuButtonText>
           </MenuButton>
-          <MenuButton onClick={goCommunity}>
+          <MenuButton On={pathName === 'Community'} onClick={goCommunity}>
             <MenuButtonText>Discover</MenuButtonText>
           </MenuButton>
           {token && user.level === 0 && (
@@ -563,18 +521,9 @@ function Header() {
           <>
           </>
           :
-          showNext?
-            <MyPageButton onClick={nextHandle}>next</MyPageButton>
-          :
-          showSave?
-            <MyPageButton onClick={saveHandle}>Save</MyPageButton>
-          :
-          showsendMessage?
-            <MyPageButton onClick={()=>navigate('/registerask')}>send message</MyPageButton>
-          :
           <>
           {innerWidth > 768 &&
-          <ProfileButton onClick={()=>navigate(`/MobileProfile/${user}`)}>
+          <ProfileButton onClick={goMyPage}>
             <ProfileImage src={profileImage}/>
           </ProfileButton>
           }
@@ -648,9 +597,9 @@ const Logo = styled.img`
   cursor: pointer;
   object-fit: contain;
   /* 1440px */
-  @media only screen and (max-width: 1440px) {
+  /* @media only screen and (max-width: 1440px) {
     left:20px;
-  }
+  } */
   @media only screen and (max-width: 768px) {
     left:18.42px;
     width: 73.61px;
@@ -691,6 +640,10 @@ const SheetWrap = styled.div`
   padding:27.58px 0 0 21.69px;
 }
 `;
+const LogBox = styled.div`
+  cursor: pointer;
+  padding:5px;
+`
 const IconWrap = styled.div`
 display:flex;
 align-items:center;
@@ -711,6 +664,7 @@ align-items:center;
   width:100%;
   font-weight: 410;
   margin:30px 0;
+  cursor: pointer;
 @media only screen and (max-width: 768px) {
   font-size:14px;
   margin:21px 0;
@@ -722,7 +676,7 @@ display:flex;
 font-family:'Pretendard Variable';
   justify-content:flex-end;
   padding: 21.69px 20px 70px 0;
-  font-weight: 360;
+  font-weight: 410;
   text-align:right;
 @media only screen and (max-width: 768px) {
   font-size:14px;
@@ -754,9 +708,12 @@ margin-left: 20px;
 `;
 
 const ProfileImage = styled.img`
-  width:31px;
-  height:36px;
-   
+  width:20.47px;
+  height:23.88px;
+  margin:5px 15px;
+  @media only screen and (max-width: 768px) {
+  margin:5px 5px;
+}
 `
 
 const LikeButton = styled.img`
@@ -764,28 +721,30 @@ const LikeButton = styled.img`
   cursor: pointer;
   object-fit:cover;
   transition: all 0.5s ease;
-  margin-left: 30px;
+  /* margin-left: 30px; */
+  margin: 5px 15px;
   /* @media only screen and (max-width: 1440px) {
     margin-left: 30px;
   } */
   @media only screen and (max-width: 768px) {
-    margin-left: 17.63px;
+    margin:5px 5px 5px 12.63px;
     width: 17.93px;
   }
 `;
 
 const HeartButton = styled.img<{stylewidth?:boolean}>`
-  width: ${(props)=>props.stylewidth? 20 : 23}px;
+  width: 24.78px;
+  height: 21.75px;
   cursor: pointer;
-  object-fit:contain;
+
   transition: all 0.5s ease;
-  margin-left: 30px;
   /* @media only screen and (max-width: 1440px) {
     width: ${(props)=>props.stylewidth? 20 : 23}px;
     margin-left: 20px;
   } */
+  margin:5px 15px;
   @media only screen and (max-width: 768px) {
-    margin-left: 10px;
+    margin:5px 5px;
     width:18.89px;
     height:15.82px;
   }
@@ -807,8 +766,10 @@ const CartButton = styled.img`
   }
 `;
 const ProfileButton = styled.div`
-  width:31px;
-  height:36px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor: pointer;
  
 `
 
@@ -830,8 +791,9 @@ const SigninButton = styled(CartButton)`
   }
 `;
 
-const MenuButton = styled.div`
+const MenuButton = styled.div<{On?:boolean}>`
   display: flex;
+  font-weight:${props => props.On ? 510 : 360};
   align-items: center;
   margin: 0 70px;
   position: relative;
@@ -853,7 +815,7 @@ font-family:'Pretendard Variable';
     color: #398049;
   }
   transition: all 0.3s ease;
-
+  line-height:1px;
   @media only screen and (max-width: 1024px) {
     font-size: 14px;
   }
@@ -911,10 +873,14 @@ const MenuButtonImage = styled.img`
   margin-bottom: 3px;
 `;
 
-const BackButton = styled.img`
+const BackButtonWrap = styled.div`
   position:absolute;
+  left:15px;
+  cursor:pointer;
+  padding:5px;
+`;
+const BackButton = styled.img`
   left:20px;
-  
   width: 10px;
   height: 15px;
 `;

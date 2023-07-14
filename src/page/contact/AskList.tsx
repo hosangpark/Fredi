@@ -9,6 +9,7 @@ import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import { removeHistory } from '../../components/Layout/Header';
+import TopTextButton from '../../components/Layout/TopTextButton';
 
 type TAskListItem = {
   idx: number;
@@ -114,6 +115,7 @@ function AskList() {
   return (
     <Container>
     <Title>1:1 Message</Title>
+    <TopTextButton text='send Message' onClick={()=>navigate('/registerask')}/>
       {total === 0 ? (
         <NoDataBox>
           <>
@@ -225,7 +227,7 @@ const Container = styled.div`
   flex-direction: column;
   text-align: left;
   padding:30px;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     width: 100%;
     padding:20px;
     border-right: 0;
@@ -233,11 +235,11 @@ const Container = styled.div`
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 360;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   border-bottom: 1px solid  #ECECEC;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
   padding-bottom:40px;
     font-size: 14px;
   }
@@ -247,7 +249,7 @@ const Logo = styled.img`
   width: 150px;
   height: 38px;
   margin-bottom: 20px;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     width: 120px;
     height: 30px;
   }
@@ -255,10 +257,10 @@ const Logo = styled.img`
 
 const Text = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   margin: 30px 0 50px;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     font-size: 14px;
     margin: 10px 0 30px;
   }
@@ -274,7 +276,7 @@ const BlackButton = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     width: 100px;
     height: 40px;
     margin: 20px;
@@ -283,9 +285,13 @@ const BlackButton = styled.div`
 
 
 const ListWrap = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+
+  width:768px;
+  margin:0 auto;
+  padding:0 20px 50px;
+  @media only screen and (max-width: 768px) {
+    width:100%;
+  }
 `;
 
 const TitleBox = styled.div`
@@ -311,7 +317,7 @@ const ListItemTitle = styled.span`
   font-weight: 700;
   color: #121212;
   font-size: 17px;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     font-size: 14px;
   }
 `;
@@ -323,7 +329,7 @@ const StatusBox = styled.div<{ answerd: boolean }>`
   justify-content: center;
   align-items: center;
   background-color: ${(props) => (props.answerd ? '#121212' : '#398049')};
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     width: 65px;
     height: 25px;
   }
@@ -334,7 +340,7 @@ const StatusBoxText = styled.span`
   font-weight: 410;
   color: #fff;
   font-size: 12px;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     font-size: 10px;
   }
 `;
@@ -344,13 +350,13 @@ const Nickname = styled.span`
   font-weight: 410;
   color: #121212;
   font-size: 16px;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
 `;
 const OnDate = styled(Nickname)`
   font-size: 15px;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
 `;
@@ -375,7 +381,7 @@ const IconText = styled.span`
   font-size: 30px;
   color: #121212;
   margin-right: 16px;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     font-size: 20px;
   }
 `;
@@ -387,7 +393,7 @@ const ContentText = styled.pre`
   font-size: 16px;
   text-align: left;
   margin:5px 0;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     font-size: 13px;
   }
 `;
@@ -411,7 +417,7 @@ const WhiteButton = styled.div`
   border: 1px solid #121212;
   margin-left: 17px;
   cursor: pointer;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     width: 80px;
     height: 35px;
     margin-left: 10px;
@@ -424,7 +430,7 @@ const WhiteButtonText = styled.span`
   font-size: 14px;
   line-height: 40px;
   font-weight: 410;
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 768px) {
     font-size: 12px;
     line-height: 35px;
   }

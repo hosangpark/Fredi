@@ -1,27 +1,17 @@
 import React, { useCallback, useContext, useEffect, useRef, useState ,memo } from 'react';
 import styled from 'styled-components';
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import Autoplay from 'embla-carousel-autoplay';
-import leftButtonImage from '../../asset/image/ico_prev.png';
-import rightButtonImage from '../../asset/image/ico_next.png';
-import leftButtonMobileImage from '../../asset/image/ico_prev_mobile.png';
-import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
-import { createStyles, Image } from '@mantine/core';
-import { Carousel } from '@mantine/carousel';
+import snsImage from '../../asset/image/snsicon.png';
 import { APIGetBanner } from '../../api/SettingAPI';
 import { TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
-import ShowTypeButton from '../../components/Shop/ShowTypeButton';
-import SearchBox from '../../components/Product/SearchBox';
 import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 // swiper
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -134,11 +124,6 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
     const resizeListener = () => {
       setInnerWidth(window.innerWidth);
     };
-    if(innerWidth < 768){
-      if(pathName === 'Artwork'){
-        navigate('/MainTab')
-      }
-    }
     // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
@@ -240,7 +225,15 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
 
 
   return (
-    <Container>      
+    <Container>
+      <TabBox>
+        <TabContents onClick={()=>navigate('/LikeArtwork')}>
+          Artwork
+        </TabContents>
+        <TabContents On={true}>
+          <TabImage src={snsImage}/>
+        </TabContents>
+      </TabBox>
       <ProductListWrap>
         {
         productList? productList.map((item:any,index:number)=>{
@@ -299,34 +292,6 @@ const ProductListWrap = styled.div`
   }
 `;
 
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4697/1737;
-  max-height: 700px;
-`;
-const MobileCarouselWrap = styled.div`
-  display: none;
-  max-height: 700px;
-  position: relative;
-  @media only screen and (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
-`;
-
-const InterView = styled.div`
-  height: 200px;
-`;
-
-
 
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
@@ -356,23 +321,36 @@ const CategorySelectButtonText = styled.span<{ selected: boolean }>`
     font-size: 12px;
   }
 `;
-const TitleWrap = styled.div<{showsearch:boolean}>`
-  display:${props => props.showsearch? 'flex':'none'};
-  justify-content:space-between;
-  align-items:center;
-  padding:50px 50px 90px 50px;
-  @media only screen and (max-width: 768px) {
-    display:none;
-  }
-`;
-const TitleText = styled.span`
-font-family:'Pretendard Variable';
-  font-size: 22px;
-  font-weight: 310;
-  text-transform: capitalize;
-  @media only screen and (max-width: 768px) {
-    display:none
-  }
-`;
 
+const TabBox = styled.div`
+width:400px;
+display:flex;
+margin:50px;
+  @media only screen and (max-width: 768px) {
+  margin:50px 0 0;
+  width:100%;
+  border-bottom:1.7px solid rgb(204,204,204);
+  }
+`
+const TabContents = styled.div<{On?:boolean}>`
+  font-family:'Pretendard Variable';
+  border-bottom:${props => props.On? 1.7:0}px solid black;
+  font-weight:${props => props.On? 460 : 360};
+  color:rgb(0,0,0);
+  padding:10px 0;
+  margin-top:5px;
+  font-size:18px;
+  flex: 1 1 0%;
+  @media only screen and (max-width: 768px) {
+    font-size:14px;
+  }
+`
+const TabImage = styled.img`
+  width:25px;
+  height:25px;
+  @media only screen and (max-width:768px){
+    width:20px;
+    height:20px;
+  }
+`
 export default LikeSns;

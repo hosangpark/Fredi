@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { FollowArtistList, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -30,66 +30,8 @@ import 'swiper/css/scrollbar';
 import { FairListItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
 import FollowCard from '../../components/Shop/FollowCard';
-import { APIProductList } from '../../api/ProductAPI';
+import { APIArtistFollowingList, APIProductList } from '../../api/ProductAPI';
 
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
-
-
-
-interface ICategorySelectButton {
-  item: { value: string; label: string };
-  isSelect: boolean;
-  onClickFilter: (e: { value: string; label: string }) => void;
-}
-
-const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategorySelectButton) => {
-  return (
-    <CategorySelectButton selected={isSelect} onClick={() => onClickFilter(item)} key={item.label}>
-      <CategorySelectButtonText selected={isSelect}>{item.label}</CategorySelectButtonText>
-    </CategorySelectButton>
-  );
-});
 
 
 function Follow() {
@@ -100,7 +42,7 @@ function Follow() {
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
 
-  const [shopList, setShopList] = useState<FairListItem[]>([]);
+  const [FollowArtistList, setFollowArtistList] = useState<FollowArtistList[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
@@ -112,8 +54,6 @@ function Follow() {
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
 
   const { user } = useContext(UserContext);
-  const { classes } = useStyles();
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
   const interSectRef = useRef(null);
 
   const getBannerList = async () => {
@@ -126,24 +66,19 @@ function Follow() {
     }
   };
 
-  const getShopList = async (page: number) => {
+  const getArtistLikeList = async () => {
     const data = {
-      page: page,
-      category: category,
-      keyword: keywordParams,
+      page: 1,
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIProductList(data);
-      setTotal(total);
-      if (page === 1) {
-        setShopList((prev) => [...list]);
-      } else {
-        // setShopList((prev) => [...prev, ...list]);
-      }
-      console.log('shop', list, page);
+      const { list } = await APIArtistFollowingList(data);
+
+      setFollowArtistList(list);
+
+
     } catch (error) {
       console.log(error);
     }
@@ -156,19 +91,6 @@ function Follow() {
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
 
-  const onLikeShop = async (idx: number) => {
-    const data = {
-      idx: idx,
-    };
-    try {
-      const res = await APILikeShop(data);
-      console.log(res);
-      const newList = shopList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-      setShopList(newList);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleObserver = useCallback((entries: any) => {
     const target = entries[0];
@@ -185,13 +107,10 @@ function Follow() {
 
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    setShopList(list);
+    setFollowArtistList(list);
     setHistory(true);
     setPage(page);
-    setShowType(type);
 
     sessionStorage.removeItem('shop');
     sessionStorage.removeItem('page');
@@ -203,9 +122,7 @@ function Follow() {
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
-      sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
+      sessionStorage.setItem('shop', JSON.stringify(FollowArtistList));
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/personalpage/${name}`);
     }
@@ -225,7 +142,7 @@ function Follow() {
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
+    if (FollowArtistList.length > 0 && scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -235,22 +152,19 @@ function Follow() {
       }, 50);
       sessionStorage.removeItem('y');
     }
-  }, [shopList]);
+  }, [FollowArtistList]);
 
   useLayoutEffect(() => {
     const page = Number(sessionStorage.getItem('page'));
 
     if (page) {
       findHistory();
-    } else {
-      setPage(1);
-      getShopList(1);
-    }
+    } 
   }, [searchParams, category]);
 
   useEffect(() => {
-    if (page > 1) getShopList(page);
-  }, [page]);
+    getArtistLikeList();
+  }, []);
  
   const onSearch = () => {
     navigate(
@@ -265,18 +179,50 @@ function Follow() {
     );
   };
 
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
+   /** drageEvent */
+  const scrollRef = useRef<any>(null);
+  const [isDrag, setIsDrag] = useState(false);
+  const [startX, setStartX] = useState<any>();
+
+  const onDragStart = (e:any) => {
+    e.preventDefault();
+    setIsDrag(true);
+    setStartX(e.pageX + scrollRef.current.scrollLeft);
   };
+
+  const onDragEnd = () => {
+    setIsDrag(false);
+  };
+
+  const onDragMove = (e:any) => {
+    if (isDrag) {
+      scrollRef.current.scrollLeft = startX - e.pageX;
+    }
+  };
+  const throttle = (func:any, ms:any) => {
+    let throttled = false;
+    return (...args:any) => {
+      if (!throttled) {
+        throttled = true;
+        setTimeout(() => {
+          func(...args);
+          throttled = false;
+        }, ms);
+      }
+    };
+  };
+  const delay = 10;
+  const onThrottleDragMove = throttle(onDragMove, delay);
 
   return (
     <Container>
       <FollowTitle>Following Artist</FollowTitle>
-        <CategorySelectButtonWrap>
+        <CategorySelectButtonWrap
+        onMouseDown={onDragStart}
+        onMouseMove={onThrottleDragMove}
+        onMouseUp={onDragEnd}
+        onMouseLeave={onDragEnd}
+        ref={scrollRef}>
           <Swiper
             // install Swiper modules
             modules={[Navigation, Pagination, Scrollbar]}
@@ -286,15 +232,15 @@ function Follow() {
             // onSwiper={(swiper) => console.log(swiper)}
             // onSlideChange={() => console.log('slide change')}
           >
-            {shopList.map((item) => {
+            {FollowArtistList.map((item,index) => {
               return (
-              <SwiperSlide>
+              <SwiperSlide key={index}>
                 <FollowingListWrap onClick={()=>{navigate(`/MobileProfile/${item.idx}`);}}>
                   <ImageWrap>
-                    <ProfileImage src={item.image[0].file_name}/>
+                    <ProfileImage src={item.designer.image[0]?.file_name}/>
                   </ImageWrap>
                   <FollowingName>
-                    {item.designer}
+                    {item?.designer.name}
                   </FollowingName>
                 </FollowingListWrap>
               </SwiperSlide>
@@ -303,15 +249,16 @@ function Follow() {
           </Swiper>
         </CategorySelectButtonWrap>
       <ProductListWrap>
-        {shopList.length > 0 &&
-        shopList.map((item,index)=>{
+        {FollowArtistList.length > 0 &&
+        FollowArtistList.map((item,index)=>{
           return(
-            <FollowCard
-              item={item}
-              key={item.idx}
-              onClick={(e) => saveHistory(e, item.name)}
-              index={index}
-            />
+            <></>
+            // <FollowCard
+            //   item={item.designer}
+            //   key={item.idx}
+            //   onClick={(e) => saveHistory(e, item.designer.name)}
+            //   index={index}
+            // />
           )
           })
         }
@@ -387,7 +334,7 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 410;
   text-transform: capitalize;
 `;
 const FollowingListWrap = styled.div`
@@ -409,7 +356,7 @@ const FollowingName = styled.span`
 font-family:'Pretendard Variable';
   width:90%;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 410;
   margin-top:5px;
   white-space:nowrap;
   overflow:hidden;
@@ -423,6 +370,7 @@ const ImageWrap = styled.div`
   height:80px;
   aspect-ratio:1;
   border-radius:50%;
+  cursor: pointer;
 
   @media only screen and (max-width: 768px) {
     width:70px;

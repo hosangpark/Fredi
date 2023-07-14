@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from '@mantine/core';
 import styled from 'styled-components';
-import downImage from './../../asset/image/sign_in.png'
+import downImage from './../../asset/image/save_img.svg'
 import linkImage from './../../asset/image/rink.svg'
 import QrImage from './../../asset/image/qr.svg'
 
@@ -89,7 +89,6 @@ const ImageRotate = styled.img`
   width:30px;
   height:30px;
   aspect-ratio:1.0;
-  transform:rotate(90deg);
   @media only screen and (max-width: 768px) {
     width:22px;
     height:20px;

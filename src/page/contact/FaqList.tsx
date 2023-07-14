@@ -144,7 +144,7 @@ const Logo = styled.img`
 const Text = styled.h3`
   font-family:'Pretendard Variable'; !important;
 
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   font-size: 18px;
   margin: 30px 0 50px;

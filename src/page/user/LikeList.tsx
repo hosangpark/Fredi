@@ -13,25 +13,8 @@ import { APILikeShop, APILikeShopList } from '../../api/ShopAPI';
 import { TShopListItem } from '../shop/Shop';
 import TopButton from '../../components/Product/TopButton';
 import { UserContext } from '../../context/user';
-import { TProducerListItem, TProductListItem } from '../../types/Types';
+import { TProducerListItem, TProductListItem, LikeProductListItem, LikeProducerListItem, LikeShopListItem } from '../../types/Types';
 
-type LikeProductListItem = {
-  idx: number;
-  created_time: Date;
-  product: TProductListItem;
-};
-
-type LikeProducerListItem = {
-  idx: number;
-  created_time: Date;
-  producer: TProducerListItem;
-};
-
-type LikeShopListItem = {
-  idx: number;
-  created_time: Date;
-  sale_product: TShopListItem;
-};
 
 function LikeList() {
   const navigate = useNavigate();
@@ -115,7 +98,7 @@ function LikeList() {
 
   const onCancelLikeProduct = async (idx: number) => {
     const data = {
-      product_idx: idx,
+      artwork_idx: idx,
     };
     try {
       const res = await APILikeProduct(data);
@@ -374,18 +357,19 @@ function LikeList() {
         <ProducerListWrap>
           {total > 0 ? (
             shopItemList.map((item, index) => (
-              <ShopCard
-                item={item.sale_product}
-                key={item.idx}
-                onClick={(e) => saveShopHistory(e, item.sale_product.idx)}
-                isLikeList
-                onClickLike={(e) => {
-                  e.stopPropagation();
-                  onCancelLikeShop(item.sale_product.idx);
-                }}
-                index={index}
-                showType={showType}
-              />
+              <></>
+              // <ShopCard
+              //   item={item.sale_product}
+              //   key={item.idx}
+              //   onClick={(e) => saveShopHistory(e, item.sale_product.idx)}
+              //   isLikeList
+              //   onClickLike={(e) => {
+              //     e.stopPropagation();
+              //     onCancelLikeShop(item.sale_product.idx);
+              //   }}
+              //   index={index}
+              //   showType={showType}
+              // />
             ))
           ) : (
             <NoDataBox>
@@ -470,7 +454,7 @@ const Logo = styled.img`
 `;
 
 const Text = styled.h3`
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   margin: 30px 0 50px;

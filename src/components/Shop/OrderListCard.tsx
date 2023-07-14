@@ -178,7 +178,7 @@ const CartItemTitle = styled.span`
   font-family:'Pretendard Variable';
   font-size: 15px;
   margin-left: 8px;
-  font-weight: 500;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     margin-left: 0;
     font-size: 12px;
@@ -189,7 +189,7 @@ const CartItemAuthor = styled.span`
   font-family:'Pretendard Variable';
   font-size: 15px;
   color: #121212;
-  font-weight: 500;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }
@@ -314,7 +314,7 @@ const CartItemOption = styled.span`
   font-family:'Pretendard Variable';
   font-size: 15px;
   margin-left: 8px;
-  font-weight: 500;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     margin-left: 0;
     font-size: 12px;

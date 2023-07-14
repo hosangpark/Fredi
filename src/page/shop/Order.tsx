@@ -502,7 +502,7 @@ const CheckBoxText = styled.span`
   font-family:'Pretendard Variable';;
   font-size: 15px;
   margin-left: 7px;
-  font-weight: 500;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -551,7 +551,7 @@ const OrderButton = styled.div<{ disabled: boolean }>`
 const OrderButtonText = styled.span`
   font-family:'Pretendard Variable';;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 410;
   color: #fff;
   @media only screen and (max-width: 1100px) {
   }
@@ -617,7 +617,7 @@ const LeftText = styled.span`
   font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 410;
   width: 200px;
   @media only screen and (max-width: 1100px) {
   }
@@ -628,7 +628,7 @@ const LeftText = styled.span`
 
 const RightText = styled.span`
   font-family:'Pretendard Variable';;
-  font-weight: 600;
+  font-weight: 510;
   font-size: 16px;
   @media only screen and (max-width: 1100px) {
   }
@@ -643,7 +643,7 @@ const NoticeBox = styled.div`
 
 const NoticeText = styled.p`
   font-family:'Pretendard Variable';;
-  font-weight: 500;
+  font-weight: 410;
   font-size: 13px;
   color: #666;
   margin: 0;
@@ -686,7 +686,7 @@ const SubTitleBox = styled.div`
 
 const SubTitleText = styled.span`
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 510;
   color: #121212;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
@@ -717,7 +717,7 @@ const ContentLeftText = styled.span`
   font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 410;
   width: 100px;
   @media only screen and (max-width: 768px) {
     width: 80px;

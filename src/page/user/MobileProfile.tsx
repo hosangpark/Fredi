@@ -184,9 +184,9 @@ function MobileProfile() {
               </Sheet.Header>
               <SheetWrap>
                 {/* 링크 최대갯수 알아야함 */}
-                {linkList.map((item)=>{
+                {linkList.map((item,index)=>{
                   return(
-                <LayoutWrap onClick={()=>gotoLink('aaa')}>
+                <LayoutWrap key={index} onClick={()=>gotoLink('aaa')}>
                   <LinkImageWrap>
                     <LinksImage src={linkImage}/>
                   </LinkImageWrap>
@@ -258,22 +258,9 @@ function MobileProfile() {
           </ButtonBox>
           }
         </ProfileHeaderWrap>
-        <DescriptionText>{
-        // userDetails?.birth,
-        // userDetails?.gender,
-        // userDetails?.idx,
-        // userDetails?.level,
-        // userDetails?.login_time,
-        // userDetails?.name,
-        // userDetails?.nickname,
-        // userDetails?.password,
-        // userDetails?.phone,
-        // userDetails?.reason,
-        // userDetails?.status,
-        // userDetails?.type,
-        // userDetails?.user_id,
-        // userDetails?.visit_count
-        }</DescriptionText>
+        <DescriptionText>
+          임시 설명글 입니다.
+        </DescriptionText>
       </ProfileContainer>
       <WorksLengthBox>
         {imageList.length}works
@@ -311,6 +298,8 @@ function MobileProfile() {
 
 const Container = styled.div`
   /* display: flex; */
+  max-width: 1000px;
+  margin: 0 auto;
   flex: 1;
   min-height: calc(100vh - 80px);
   /* flex-direction: row; */
@@ -406,7 +395,7 @@ const LinkTitleBox = styled.div`
 
 const LinkName = styled.p`
   font-family:'Pretendard Variable';
-  font-weight:450;
+  font-weight: 410;
   text-align:start;
   color:#2b2b2b;
   margin:0;
@@ -467,7 +456,7 @@ const NameBox = styled.div`
   `;
 const NameText = styled.p`
   font-family:'Pretendard Variable';
-  font-weight:600;
+  font-weight: 500;
   text-align:center;
   line-height:31px;
   margin:0;
@@ -480,6 +469,7 @@ font-family:'Pretendard Variable';
   font-weight: 310;
   display: flex;
   justify-content: center;
+  cursor: pointer;
   align-items: center;
   border:0.5px solid #B4B4B4;;
   border-radius:7px;
@@ -581,6 +571,7 @@ const ButtonImageWrap = styled.div`
   display:flex;
   align-items:center;
   justify-content:center;
+  cursor: pointer;
   border:0.5px solid #B4B4B4;
   box-sizing:border-box;
   border-radius:5px;

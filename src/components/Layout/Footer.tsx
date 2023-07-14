@@ -76,9 +76,9 @@ const FooterWrap = styled.div`
   background-color: #ffffff;
   /* background-color: #2e2e2e; */
   /* border-top: 1px solid #121212; */
-  padding: 100px 50px 95px;
+  padding: 70px 50px 77px;
   @media only screen and (max-width: 1440px) {
-    padding: 25px 20px;
+    padding: 50px 20px;
   }
   @media only screen and (max-width: 768px) {
     display:none;
@@ -93,7 +93,6 @@ const FooterBox = styled.div`
   width: 100%;
   color:white;
   /* min-width: 768px; */
-  padding-bottom:37px;
   @media only screen and (max-width: 768px) {
      padding-bottom:0px;
   }
@@ -113,7 +112,6 @@ const FooterTopBox = styled.div`
   width: 100%;
   flex-direction: column;
   border-bottom: 0;
-  padding-bottom: 20px;
   @media only screen and (max-width: 768px) {
     border-bottom: 1px solid #8b8b8b;
   }
@@ -154,7 +152,7 @@ const InstaBox = styled.div`
 const TextButton = styled.a`
   font-size: 12px;
   color: #121212;
-  font-weight: 500;
+  font-weight: 410;
   cursor: pointer;
   color:white;
   @media only screen and (max-width: 768px) {

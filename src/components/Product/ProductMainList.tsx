@@ -25,6 +25,7 @@ function ProductMainList({
   // onClick,
   // onClickLike,
   // isLikeList,
+  LinkHandler,
   title,
   ProductViews,
   naviArrow,
@@ -39,6 +40,7 @@ function ProductMainList({
   marginT,
   marginB
 }:{
+  LinkHandler:(e:React.MouseEvent, title:string, idx?:number)=>void
   title:string
   ProductViews:number
   naviArrow:boolean
@@ -56,23 +58,7 @@ function ProductMainList({
   const navigationPrevRef = React.useRef(null)
   const navigationNextRef = React.useRef(null)
 
-  const navigate = useNavigate();
 
-  const LinkHandler = (e:React.MouseEvent,productLink:string,idx?:number)=>{
-    if(productLink === 'FairsM'){
-      navigate(`/FairContent/${idx}`)
-    } else if (productLink === 'FairsW'){
-      navigate(`/MainTab`)
-    } else if (productLink.includes('Home')) {
-      navigate(`/personalpage/${idx}`)
-    } else if (productLink.includes('Trending')) {
-      navigate(`/MobileProfile/${idx}`)
-    } else if (productLink.includes('Featured')) {
-      navigate(`/MobileProfile/${idx}`)
-    } else {
-      console.log(productLink,idx)
-    }
-  }
 
   const [like, setLike] = useState(false)
 
@@ -133,9 +119,9 @@ function ProductMainList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList.map(item=>{
+        {ProducList.map((item,index)=>{
           return(
-            <SwiperSlide>
+            <SwiperSlide key={index}>
               <ProductWrap marginRight={marginRight? marginRight:20}>
                 {title?.includes('Featured') &&
                 <ToptextWrap>
@@ -146,17 +132,17 @@ function ProductMainList({
                 </ToptextWrap>
                 }
                 <ProductImageWrap aspect={aspect? aspect:1} height={innerWidth} 
-                onClick={(e)=>LinkHandler(e,productLink?productLink:title,item.idx)}
+                onClick={(e)=>LinkHandler(e,title,item.idx)}
                 >
                   <ProductImage src={item.file_name}/>
                 </ProductImageWrap>
                 {!title?.includes('Featured') &&
                 <TextWrap title={title}>
                   <ProductTitleText>
-                    MoreTitleMor{item.idx}
+                    Title{item.idx}
                   </ProductTitleText>
                   <ProductSubText>
-                    MoreTextMoreTextMoreTeoreTextMoreText{item.idx}
+                    ArtistName{item.idx}
                   </ProductSubText>
                 </TextWrap>
                 }
@@ -186,8 +172,9 @@ const LeftArrow = styled.div`
 display:flex;
 align-items:center;
 justify-content:center;
+border:0.5px solid #dfdfdf;
   position:absolute;
-  top:35%;
+  top:30%;
   left:20px;
   width:47px;
   height:47px;
@@ -199,8 +186,9 @@ const RightArrow = styled.div`
 display:flex;
 align-items:center;
 justify-content:center;
+border:0.5px solid #dfdfdf;
   position:absolute;
-  top:35%;
+  top:30%;
   right:20px;
   width:47px;
   height:47px;
@@ -217,9 +205,9 @@ const ProductImage = styled.img`
 
 const TextWrap = styled.div<{title?:string}>`
   display:${props => props.title?.includes('Home')? 'none':'block'};
-  padding:30px 10px;
+  padding:40px 5px 7px;
   @media only screen and (max-width: 768px) {
-    padding:0 10px;
+    padding:10px 10px 0;
   }
 `
 const ToptextWrap = styled.div`
@@ -243,6 +231,7 @@ const LikeButton = styled.img`
   width: 18px;
   height: 17px;
   object-fit:contain;
+  cursor: pointer;
   /* @media only screen and (max-width: 768px) {
     width: 18px;
     height: 15px;
@@ -252,6 +241,7 @@ const ProductImageWrap = styled.div<{aspect:number,height?:number}>`
   /* max-width:350px; */
   width:100%;
   text-align:start;
+  cursor: pointer;
   aspect-ratio:${props => props.aspect? props.aspect : 1};
   @media only screen and (max-width: 768px) {
 
@@ -267,21 +257,23 @@ export const TitleBox = styled.div<{marginT?:number;marginB?:number;}>`
   align-items:center;
   margin-top:${props=> props.marginT}px;
   margin-bottom:${props=> props.marginB}px;
+  padding: 0 3px;
   @media only screen and (max-width: 768px) {
     justify-content:space-between;
-    padding: 5px 15px;
+    padding: 0px 20px;
   }
 `;
 
 const TitleText = styled.span<{titlesize?:number}>`
 font-family:'Pretendard Variable';
   font-size:${props=>props.titlesize? props.titlesize : 22}px;
-  font-weight:360;
+  font-weight: 360;
+  line-height:1;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
   @media only screen and (max-width: 768px) {
-    font-weight: 450;
+    font-weight: 410;
     font-size:15px;
   }
 `;
@@ -299,7 +291,7 @@ font-family:'Pretendard Variable';
 color:#000000;
   font-size:17px;
   font-weight: 310;
-  margin-top:5px;
+  line-height:1;
   /* white-space:nowrap; */
   overflow:hidden;
   text-overflow:ellipsis;
@@ -313,7 +305,7 @@ font-family:'Pretendard Variable';
 width:70%;
   font-size:17px;
   font-weight: 310;
-  margin-top:5px;
+  line-height:17px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -327,11 +319,16 @@ font-family:'Pretendard Variable';
 color:#000000;
   font-size:16px;
   font-weight: 310;
+  line-height:1;
+  margin-top:10.12px;
+  margin-bottom:7px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
   @media only screen and (max-width: 768px) {
     font-size:12px;
+    margin-top:5px;
+    margin-bottom:0px;
   }
 `;
 

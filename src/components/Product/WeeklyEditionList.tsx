@@ -24,6 +24,7 @@ function WeeklyEditionList({
   // onClick,
   // onClickLike,
   // isLikeList,
+  LinkHandler,
   title,
   ProductViews,
   naviArrow,
@@ -36,6 +37,7 @@ function WeeklyEditionList({
   marginT,
   marginB
 }:{
+  LinkHandler:(e:React.MouseEvent, title:string, idx?:number)=>void
   title:string
   ProductViews:number
   naviArrow:boolean
@@ -82,10 +84,10 @@ function WeeklyEditionList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList.map(item=>{
+        {ProducList.map((item,index)=>{
           return(
-          <SwiperSlide>
-          <ProductWrap onClick={()=>{navigate(`/WeeklyEdition`)}}>
+          <SwiperSlide key={index}>
+          <ProductWrap onClick={(e)=>LinkHandler(e,title,item.idx)}>
             <ProductTopbox>
               <ProductTopboxLeft>
                 <ProductImage src={item.file_name}/>
@@ -109,10 +111,10 @@ function WeeklyEditionList({
             </ProductBottombox>
             <TextWrap>
               <ProductTitleText>
-                MoreTitleMoreTitleMoreTitleMoreTitle{item.idx}
+                Title {item.idx}
               </ProductTitleText>
               <ProductSubText>
-                MoreTextMoreTextMoreTextMoreTextMoreText{item.idx}
+                Text Name{item.idx}
               </ProductSubText>
             </TextWrap>
           </ProductWrap>
@@ -180,6 +182,7 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
 const ProductImage = styled.img`
   width:100%;
   height: 100%;
+  cursor: pointer;
 `;
 const ProductBottomImage = styled.img`
   width:100%;
@@ -210,21 +213,22 @@ const TitleBox = styled.div<{marginT?:number;marginB?:number;}>`
   margin-bottom:${props=> props.marginB}px;
   display: flex;
   align-items:center;
+  padding: 0px 3px;
   @media only screen and (max-width: 768px) {
     justify-content:space-between;
-    padding: 5px 15px;
+    padding: 0px 15px;
   }
 `;
 
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size:20px;
-  font-weight:360;
+  font-weight: 360;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
   @media only screen and (max-width: 768px) {
-    font-weight: 450;
+    font-weight: 410;
     font-size:15px;
   }
 `
@@ -237,14 +241,14 @@ height:20px;
   }
 `;
 const TextWrap = styled.div`
-  padding:0 10px;
+  padding:30px 5px;
 `
 
 const ProductTitleText = styled.div`
 font-family:'Pretendard Variable';
 color:#000000;
   font-size:17px;
-  font-weight: 360;
+  font-weight: 310;
   margin-top:5px;
   /* white-space:nowrap; */
   overflow:hidden;
@@ -257,7 +261,7 @@ const ProductSubText = styled.div`
 font-family:'Pretendard Variable';
 color:#000000;
   font-size:16px;
-  font-weight: 360;
+  font-weight: 310;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;

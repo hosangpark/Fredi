@@ -6,6 +6,7 @@ import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import axios from 'axios';
 import { AskTitleList } from '../../components/List/List';
+import ButtonContainer from '../../components/Layout/ButtonBox';
 
 
 
@@ -137,14 +138,17 @@ function RegisterAsk() {
           placeholder="비방글, 욕설 등 부적절한 내용이 포함된 글은 임의로 삭제될 수 있습니다."
         />
       </ContentInputRowWrap> */}
-    <ButtonWrap>
-      <BlackButton onClick={idx ? onModifyAsk : onRegisterAsk}>
-        <BlackButtonText>Send</BlackButtonText>
-      </BlackButton>
-      <WhiteButton onClick={() => navigate(-1)}>
-        <WhiteButtonText>Cancel</WhiteButtonText>
-      </WhiteButton>
-    </ButtonWrap>
+    
+    <ButtonContainer
+      idx={idx}
+      text1={'Send'}
+      text2={'Cancel'}
+      onClick1={onModifyAsk}
+      onClick2={onRegisterAsk}
+      cancle={()=>navigate(-1)}
+      marginT={50}
+      marginB={100}
+    />
       
     <AlertModal
       visible={showModal}
@@ -192,7 +196,7 @@ const Container = styled.div`
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 360;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   @media only screen and (max-width: 1000px) {
@@ -271,7 +275,7 @@ const BlackButtonText = styled.span`
 font-family:'Pretendard Variable';
   color: #ffffff;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 410;
   cursor: pointer;
   @media only screen and (max-width: 1000px) {
     font-size: 12px;
@@ -292,7 +296,7 @@ const CheckMessagebox = styled.div`
 `
 const MessageInform = styled.div`
   font-family:'Pretendard Variable';
-  font-weight: 360;
+  font-weight: 410;
   margin:20px 0 10px 0;
   @media only screen and (max-width:768){
     font-size:14px;

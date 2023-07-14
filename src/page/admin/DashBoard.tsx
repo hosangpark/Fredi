@@ -290,7 +290,7 @@ const TodayStatusBox = styled.div<{ isLast?: boolean }>`
 `;
 
 const TodayStatusBoxSubTitle = styled.span`
-  font-weight: 500;
+  font-weight: 410;
   font-size: 12px;
   color: #121212;
 `;
@@ -384,13 +384,13 @@ const ItemTitle = styled.span`
 `;
 
 const ItemSubTitle = styled(ItemTitle)`
-  font-weight: 500;
+  font-weight: 410;
   align-self: flex-start;
 `;
 
 const LikeCount = styled.span`
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
 `;
 

@@ -17,6 +17,7 @@ import { removeHistory } from '../../components/Layout/Header';
 import { Select } from '@mantine/core';
 import arrDownImage from '../../asset/image/arr_down.png';
 import { Virtual,Pagination,Navigation, Scrollbar ,FreeMode, Thumbs } from 'swiper';
+import SwiperCore, { Keyboard, Mousewheel } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 import './ProductDetails.css'
@@ -24,6 +25,9 @@ import { APIGetBanner } from '../../api/SettingAPI';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 import { APIProductDetails } from '../../api/ProductAPI';
+import ContactModal from '../../components/Modal/ContactModal';
+
+SwiperCore.use([Keyboard, Mousewheel]);
 
 export type TShopDetails = {
   idx: number;
@@ -69,7 +73,7 @@ function ProductDetails() {
   const [option, setOption] = useState<any>(); // 기존 옵션 리스트
   const [addOption, setAddOption] = useState<any>([]); // 선택 누적 리스트
   const [readmore, setReadMore] = useState<boolean>(false)
-  const [showOption, setShowOption] = useState<boolean>(false);
+  const [ShowContact, setShowContact] = useState<boolean>(false);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
@@ -85,73 +89,7 @@ function ProductDetails() {
   
 
 
-  const getShopDetails = async () => {
-    var array1 = new Array(); //pc
-    var array2 = new Array(); //mobile
 
-    const res = await APIGetBanner();
-    res.forEach((list:any) => {
-        if(list.type === 'P'){
-          array1.push(list);
-        } else {
-          array2.push(list);
-        }
-      });
-
-    setShopDetails({
-      idx: 1,
-      category: 1,
-      name: 'Folding chair',
-      price: 8000,
-      size: 'W71 x D65 x H60',
-      weight: '스테인레스스틸, 아크릴',
-      country: '지역',
-      description: '종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 볼륨감을 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은  물성은  물성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만,',
-      designer: 'Lee Ji Hong',
-      sns: 'SNS',
-      email: '이메일',
-      website: '웹사이트',
-      delivery_info: '배송정보',
-      like_count: 11,
-      imageList:array2,
-      optionList: [
-        {
-          idx: 1,
-          name: '옵션1번',
-        },
-        {
-          idx: 2,
-          name: '옵션2번',
-        },
-      ],
-      isLike: true,
-      }
-      )
-      
-    // const data = {
-    //   idx: idx,
-    // };
-    // try {
-    //   const resData = await APIShopDetails(data);
-    //   console.log('resData', resData);
-    //   setShopDetails({ ...resData, imageList: resData.imageList.slice(1) });
-    //   const array = new Array();
-    //   resData.optionList.map((data: any) => {
-    //     console.log('data ===>', data);
-    //     array.push({
-    //       value: data.idx,
-    //       label: data.name,
-    //     });
-    //   });
-    //   setOption(array);
-    //   console.log('array', array);
-    //   setIsLike(resData.isLike);
-    // } catch (error) {
-    //   console.log(error);
-    //   // alert('존재하지 않는 상품입니다.');
-    //   // navigate(-1);
-    // }
-  };
 
   const getProductDetails = async () => {
     const data = {
@@ -159,8 +97,8 @@ function ProductDetails() {
     };
     try {
       const resData = await APIProductDetails(data);
-      console.log(resData);
-      setShopDetails({ ...resData, imageList: resData.imageList.slice(1) });
+      console.log('resDataresData',resData);
+      setShopDetails({ ...resData, imageList: resData.imageList.slice(0,10)});
       setIsLike(resData.isLike);
     } catch (error) {
       console.log(error);
@@ -208,7 +146,6 @@ function ProductDetails() {
   useEffect(() => {
     getProductDetails();
     // getShopDetails();
-    console.log('shopDetails', window.innerHeight);
   }, []);
 
   useEffect(() => {
@@ -329,11 +266,6 @@ function ProductDetails() {
                 {!readmore &&
                 <ReadMore onClick={()=>{setReadMore(true)}}>Read More</ReadMore>
                 }
-                {/* <CategoryBox>
-                  <CategoryItem>Furniture</CategoryItem>
-                  <CategoryItem>Side Table</CategoryItem>
-                  <CategoryItem>Furniture</CategoryItem>
-                </CategoryBox> */}
               </TitleBox>
               <ContentBox>
                 {/* <ContentRowWrap>
@@ -355,9 +287,10 @@ function ProductDetails() {
                 <AskButton
                   onClick={() => {
                     if (user.idx) {
-                      navigate('/contact/registerask-shop', {
-                        state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
-                      });
+                      setShowContact(true);
+                      // navigate('/contact/registerask-shop', {
+                      //   state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
+                      // });
                     } else {
                       setShowLogin(true);
                     }
@@ -382,6 +315,9 @@ function ProductDetails() {
                 <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
               </NameBox>
               <BottomBoxContent readmore={readmore}>{shopDetails?.description}</BottomBoxContent>
+              {!readmore &&
+                <ReadMore onClick={()=>{setReadMore(true)}}>Read More</ReadMore>
+              }
               <CategoryBox>
                 <CategoryItem>Furniture</CategoryItem>
                 <CategoryItem>Side Table</CategoryItem>
@@ -422,9 +358,7 @@ function ProductDetails() {
                 <AskButton
                   onClick={() => {
                     if (user.idx) {
-                      navigate('/contact/registerask-shop', {
-                        state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
-                      });
+                      setShowContact(true);
                     } else {
                       setShowLogin(true);
                     }
@@ -446,6 +380,7 @@ function ProductDetails() {
               thumbs={{ swiper: thumbsSwiper }}
               scrollbar={innerWidth <= 768? false : true}
               loop={true}
+              mousewheel
               // onSlideChange={() => {/*...*/}}
               // allowTouchMove={false}
               // noSwiping={false}
@@ -458,7 +393,7 @@ function ProductDetails() {
               // setWrapperSize={true}
               // pagination={innerWidth <= 768? false :pagination}
               style={{
-                maxHeight:innerWidth <= 1000? window.innerHeight : window.innerHeight*1.3,backgroundColor:'white'
+                maxHeight:innerWidth <= 1000? window.innerHeight : window.innerHeight*1,backgroundColor:'white'
               }}
               // slidesPerView={innerWidth <= 768? 990/innerWidth : innerWidth <= 1440? 1700/innerWidth :1800/innerWidth}
               slidesPerView={'auto'}
@@ -470,7 +405,7 @@ function ProductDetails() {
               spaceBetween={0}
             >
               {shopDetails?.imageList.map((item, index) => (
-                <SwiperSlide key={item.idx} virtualIndex={index}>
+                <SwiperSlide key={index} virtualIndex={index}>
                   {/* {slideContent} */}
                   <ImageBox1>
                     <ProductImage src={item.file_name}/>
@@ -479,7 +414,7 @@ function ProductDetails() {
                 </SwiperSlide>
               ))}
             </Swiper>
-
+            <PaginationBox>
             <Swiper
               onSwiper={setThumbsSwiper}
               style={{
@@ -494,7 +429,7 @@ function ProductDetails() {
               className="mySwiper"
             >
               {shopDetails?.imageList.map((item, index) => (
-                <SwiperSlide key={item.idx} virtualIndex={index}>
+                <SwiperSlide key={index} virtualIndex={index}>
                   {/* {slideContent} */}
                   <ImageBox2>
                     <ProductImage src={item.file_name}/>
@@ -503,6 +438,7 @@ function ProductDetails() {
                 </SwiperSlide>
               ))}
             </Swiper>
+            </PaginationBox>
 
           </SwiperWrap>
         </RightBox>
@@ -516,23 +452,32 @@ function ProductDetails() {
           }}
           text="회원가입 후 이용 가능합니다."
         />
-        <AlertModal
-          visible={showOption}
-          setVisible={setShowOption}
+        <ContactModal
+          visible={ShowContact}
+          setVisible={setShowContact}
           onClick={() => {
-            setShowOption(false);
+            setShowContact(false);
           }}
-          text="옵션을 선택해주세요"
+          contactUrl={[
+            {
+            title:'Fredi',
+            url:'www.fredi.co.kr'
+            },
+            {
+            title:'Naver',
+            url:'www.naver.com'
+            },
+          ]}
         />
       </Container>
-      <AlertModal
+      {/* <AlertModal
         visible={showModal}
         setVisible={setShowModal}
         onClick={() => {
           setShowModal(false);
         }}
         text="장바구니에 상품이 추가되었습니다."
-      />
+      /> */}
     </ContainerWrap>
   );
 }
@@ -558,10 +503,6 @@ const Container = styled.div`
     flex-direction: column;
     border-top: 0;
   }
-`;
-
-const BottomContainer = styled(Container)`
-  min-height: 400px;
 `;
 
 const LeftBox = styled.div`
@@ -597,12 +538,11 @@ const RightBox = styled.div`
   overflow: hidden;
   @media only screen and (max-width: 768px) {
     width:100%;
-
   }
 `;
 const PaginationBox = styled.div`
    @media only screen and (max-width: 768px) {
-    /* display:none; */
+    display:none;
   }
 `;
 
@@ -620,10 +560,7 @@ const EmptyHeightBox = styled.div<{height:number}>`
   height:${props => props.height}px;
   border-bottom:1px solid #D9D9D9;
 `;
-const EmptyHeightBox2 = styled.div<{height:number}>`
-  width:100%;
-  height:${props => props.height}px;
-`;
+
 const HeaderButtom = styled.div`
 // tranform: translateY(-1px);
   position:absolute;
@@ -649,25 +586,6 @@ const LeftTopBox = styled.div`
   }
 `;
 
-const LeftMiddleBox = styled.div`
-  width: 100%;
-  position: relative;
-  padding: 10px 50px 60px 50px;
-  @media only screen and (max-width: 768px) {
-    padding: 10px 18px 70px;
-  }
-`;
-
-const LeftConBox = styled.div`
-  width: 100%;
-  height: 100%;
-  padding-bottom: 5rem;
-  // border-bottom: 1px solid #121212;
-  // padding: 0 50px 50px 50px;
-  // @media only screen and (max-width: 768px) {
-  //   padding: 0 18px 30px;
-  // }
-`;
 
 const LeftBottomBox = styled.div`
   width: 100%;
@@ -716,7 +634,7 @@ const CategoryBox = styled.div`
 `
 const CategoryItem = styled.span`
   font-size:17px;
-  font-weight:460;
+  font-weight: 410;
   padding:10px 17px;
   border-radius:5px;
   margin:0 11px 11px 0;
@@ -776,7 +694,7 @@ font-weight: 310;
 
 const Designer = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 360;
+  font-weight: 410;
   color: #121212;
   font-size: 22px;
   line-height:1;
@@ -799,16 +717,6 @@ const LikeButton = styled.img`
     height:18.73px;
   }
 `;
-
-const CartButton = styled.img`
-  height: 33px;
-  cursor: pointer;
-  margin-top: 5px;
-  margin-right: 10px;
-  @media only screen and (max-width: 768px) {
-    height: 25px;
-  }
-  `;
 
 const ContentBox = styled.div`
   margin:65px 3.48px 90.85px 6.63px;
@@ -848,43 +756,16 @@ font-family:'Pretendard Variable';
   }
 `;
 
-const ContactTitle = styled(Title)`
-  font-size: 14px;
-  @media only screen and (max-width: 768px) {
-    font-size: 12px;
-  }
-`;
-
-const ContactContent = styled.a`
-  flex: 1;
-  font-size: 14px;
-  font-weight: 410;
-  color: #121212;
-  font-size: 15px;
-  text-decoration: none;
-  @media only screen and (max-width: 768px) {
-    font-size: 12px;
-  }
-`;
-
-const BottomBoxTitle = styled.h3`
-  font-weight: 500;
-  color: #121212;
-  font-size: 16px;
-  margin-bottom: 15px;
-  margin-top: 50px;
-  @media only screen and (max-width: 768px) {
-    margin-top: 30px;
-    font-size: 14px;
-  }
-`;
 const ReadMore = styled.div`
 font-family:'Pretendard Variable';
 font-weight : 360;
-font-size:12px;
+font-size:14px;
 
   text-align:start;
   text-decoration:underline;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 
 `
 const BottomBoxContent = styled.div<{readmore:boolean}>`
@@ -896,7 +777,7 @@ text-align:start;
   line-height: 30px;
   border: 0;
   font-size: 17px;
-  font-weight:310;
+  font-weight: 310;
   color: #121212;
   /* resize: none; */
   background-color: #fff;
@@ -917,15 +798,6 @@ text-align:start;
   } */
 `;
 
-const ModalminusButton = styled.div<{isopen:boolean,position:string}>`
-  display:${(props)=> props.isopen? 'none':'block'};
-  position:${(props)=> props.position == 'bottom' && 'fixed'};
-  bottom:${(props)=> props.position == 'bottom' && '60px'};
-  text-align:center;
-  font-size:23px;
-  font-weight:bold;
-  width:100%;
-`;
 const ContentRowWrap = styled.div`
   display:flex;
   width:100%;
@@ -949,7 +821,8 @@ const ModalImageBox = styled.div`
 
 const ImageBox1 = styled.div`
   width: 85%;
-  aspect-ratio:1;
+  /* aspect-ratio:1; */
+  cursor: pointer;
   /* height:100%; */
   /* max-height:800px; */
   /* overflow: hidden; */
@@ -961,6 +834,7 @@ const ImageBox1 = styled.div`
 const ImageBox2 = styled.div`
   width: 100%;
   aspect-ratio:1;
+  cursor: pointer;
   /* height:100%; */
   /* max-height:800px; */
   /* overflow: hidden; */
@@ -1037,7 +911,7 @@ const OrderButton = styled.div`
   border-radius: 30px;
   cursor: pointer;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 510;
   color: #fff;
   @media only screen and (max-width: 768px) {
     right: 19px;

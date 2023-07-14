@@ -17,6 +17,8 @@ import { DndList, dndData } from '../../components/DnD/DnD';
 import img01 from '../../asset/image/img01.png';
 import img03 from '../../asset/image/img03.png';
 import img04 from '../../asset/image/img05.png';
+import TopButton from '../../components/Product/TopButton';
+import TopTextButton from '../../components/Layout/TopTextButton';
 
 export type TUserDetails = {
   idx: number;
@@ -147,6 +149,7 @@ function AddPhoto() {
 
   return (
     <Container>
+      <TopTextButton text='Next' onClick={()=>navigate('/AddPhoto2')}/>
       <ProfileContainer>
         <SwiperWrap>
           {imageList.map((item,index)=>{

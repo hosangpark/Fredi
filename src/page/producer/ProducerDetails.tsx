@@ -353,7 +353,7 @@ const ProductName = styled.h3`
 `;
 
 const Designer = styled.span`
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   font-size: 18px;
   @media only screen and (max-width: 768px) {
@@ -423,7 +423,7 @@ const ContactContent = styled.a`
 `;
 
 const BottomBoxTitle = styled.h3`
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   margin-bottom: 15px;

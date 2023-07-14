@@ -205,7 +205,8 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: row;
-  border-top: 1px solid #121212;
+  max-width: 768px;
+  margin:0 auto;
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -238,7 +239,7 @@ const RowWap = styled.div<{ last?: boolean }>`
 
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 360;
+  font-weight: 410;
   font-size: 16px;
   text-align: left;
   margin:50px 0;

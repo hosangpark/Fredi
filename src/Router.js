@@ -56,31 +56,37 @@ import Privacy from './page/user/Privacy';
 import RegisterShopAsk from './page/contact/RegisterShopAsk';
 import ShopAskList from './page/user/ShopAskList';
 
-import MainTab from './page/MainTab/MainTab';
 import FairContent from './page/MainTab/FairContent';
 import PersonalPage from './page/user/PersonalPage';
-import Community from './page/community/Community';
-import LikeTab from './page/LikeFeed/LikeTab';
 import ArtistProducts from './page/MainTab/ArtistProducts';
 import WeeklyEdition from './page/product/WeeklyEdition';
-import Fair from './page/MainTab/Fair';
-import Artwork from './page/MainTab/Artwork';
-import Artist from './page/MainTab/Artist';
+import FairTab from './page/MainTab/FairTab';
+import ArtworkTab from './page/MainTab/ArtworkTab';
+import ArtistTab from './page/MainTab/ArtistTab';
 import ProducerDetails from './page/producer/ProducerDetails';
 import ProductDetails from './page/product/ProductDetails';
 import ChangePassword from './page/user/ChangePassword';
 import ChangePhone from './page/user/ChangePhone';
-import ChangeAddress from './page/user/ChangeAddress';
+import LikeSns from './page/LikeFeed/LikeSns';
+import LikeArtwork from './page/LikeFeed/LikeArtwork';
+import FeedTab from './page/community/FeedTab';
+import FollowTab from './page/community/FollowTab';
+import BookMarkTab from './page/community/BookMarkTab';
+import SignUp1 from './page/user/SignUp1';
+import SignUp2 from './page/user/SignUp2';
+import SignUp3 from './page/user/SignUp3';
 
 
 function Router() {
   const { patchUser } = useContext(UserContext);
-
+  const token = sessionStorage.getItem('token');
   const getUserInfo = async () => {
-    const result = await APIUserDetails();
-    patchUser(result.idx, result.level);
+    if(token){
+      const result = await APIUserDetails();
+      patchUser(result.idx, result.level);
+    }
   };
-
+  
   useLayoutEffect(() => {
     getUserInfo();
   }, []);
@@ -95,6 +101,9 @@ function Router() {
           <Route path="/signin" element={<SignIn />} />
           {/* 회원가입 페이지 */}
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/signup1" element={<SignUp1 />} />
+          <Route path="/signup2" element={<SignUp2 />} />
+          <Route path="/signup3" element={<SignUp3 />} />
           {/* 아이디 찾기 페이지 */}
           <Route path="/finduserid" element={<FindUserId />} />
           {/* 비밀번호 찾기 페이지 */}
@@ -132,11 +141,11 @@ function Router() {
           {/* 주문내역 페이지 */}
           <Route path="/orderlist" element={<OrderList />} />
           {/* 주문상세 페이지 */}
-
-          <Route path="/MainTab" element={<MainTab />}/>
-          <Route path="/Fair" element={<Fair />}/>
-          <Route path="/Artwork" element={<Artwork />}/>
-          <Route path="/Artist" element={<Artist />}/>
+          <Route path="/MainTab/*">
+            <Route path="FairTab" element={<FairTab />}/>
+            <Route path="ArtworkTab" element={<ArtworkTab />}/>
+            <Route path="ArtistTab" element={<ArtistTab />}/>
+          </Route>
 
           <Route path="/ArtistProducts/:name" element={<ArtistProducts />}/>
 
@@ -154,8 +163,6 @@ function Router() {
           <Route path="/changePassword" element={<ChangePassword />} />
           {/* 개인정보 수정 페이지 */}
           <Route path="/changePhone" element={<ChangePhone />} />
-          {/* 개인정보 수정 페이지 */}
-          <Route path="/changeAddress" element={<ChangeAddress />} />
           {/* 찜한상품 페이지 */}
           <Route path="/likelist" element={<LikeList />} />
           {/* 카카오 회원가입 페이지 */}
@@ -180,8 +187,11 @@ function Router() {
 
           {/* '고객센터' - shop 1:1문의 등록 페이지 */}
           <Route path="registerask-shop" element={<RegisterShopAsk />} />
-          <Route path="/community/*" element={<Community />}/>
-          <Route path="/LikeTab" element={<LikeTab />}/>
+          <Route path="/community/FeedTab" element={<FeedTab />}/>
+          <Route path="/community/FollowTab" element={<FollowTab />}/>
+          <Route path="/community/BookMarkTab" element={<BookMarkTab />}/>
+          <Route path="/LikeSns" element={<LikeSns />}/>
+          <Route path="/LikeArtwork" element={<LikeArtwork />}/>
           {/* 'manager' 라우터 */}
           <Route path="/admin/*" element={<Admin />}>
             {/* 'manager' - 메인 페이지 */}

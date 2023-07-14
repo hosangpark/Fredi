@@ -165,7 +165,7 @@ const GreenBox = styled.div`
 
 const GreenBoxText = styled.span`
   color: #fff;
-  font-weight: 500;
+  font-weight: 410;
   font-size: 11px;
 `;
 

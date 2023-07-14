@@ -103,3 +103,15 @@ export const APIVerifyAuthNumber = async (data) => {
   const res = await API.post('/user/auth', data);
   return res.data;
 };
+
+export const APILink = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/user/link-list', {params:data, headers: config});
+  return res.data;
+};
+
+export const APILinkAdd = async (data) => {
+  const config = Authorization();
+  const res = await API.post('/user/link', data, {headers: config});
+  return res.data;
+};

@@ -6,28 +6,20 @@ import likeOffImage from '../../asset/image/heart_off.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import arrowImage from '../../asset/image/arr_down.png';
 import { replaceString } from '../../util/Price';
-import { ArtistItem, FairListItem } from '../../types/Types';
+import { ArtistItem, FairDetailsArtistItem, FairListItem } from '../../types/Types';
 
 function ArtistCard({
   item,
   onClick,
 }: {
-  item: ArtistItem;
+  item: FairDetailsArtistItem;
   onClick: (e: any) => void;
 }) {
-  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
   
   return (
     <ProductBox onClick={onClick}>
       <ProductNameWrap>
-        <Designer>{item.designer}</Designer>
+        <Designer>{item.name}</Designer>
         {/* {innerWidth <= 768?
         <ArrowImage src={arrowImage} />
         :

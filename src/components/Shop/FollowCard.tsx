@@ -4,14 +4,14 @@ import styled from 'styled-components';
 import viewImage from '../../asset/image/eyeview.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
-import { FairListItem } from '../../types/Types';
+import { FairListItem, designerType } from '../../types/Types';
 
 function FollowCard({
   item,
   onClick,
   index
 }: {
-  item: FairListItem;
+  item: designerType;
   onClick: (e: any) => void;
   index:number;
 }) {
@@ -25,13 +25,13 @@ function FollowCard({
 
   return (
     <ProductBox onClick={onClick} index={index+1} height={innerWidth}>
-      <ProductImage src={item.image[0].file_name} />
+      {/* <ProductImage src={item.image[0]?.file_name} />
       <ViewCount>
         <ViewImg src={viewImage} />
         <SpanCount>
-          {item.image[0].count? item.image[0].count : 41}
+          {item.count? item.count : 999}
         </SpanCount>
-      </ViewCount>
+      </ViewCount> */}
     </ProductBox>
   );
 }
@@ -73,7 +73,7 @@ const ViewCount = styled.div`
 const Designer = styled.span`
   color: #121212;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 410;
   text-align: left;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
@@ -84,7 +84,7 @@ font-family:'Pretendard Variable';
 mix-blend-mode: difference;
   color: #ffffff;
   font-size: 12px;
-  font-weight: 200;
+  font-weight: 310;
   margin-left:5px;
   @media only screen and (max-width: 768px) {
     font-size: 10px;

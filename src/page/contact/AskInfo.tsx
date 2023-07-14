@@ -135,11 +135,12 @@ const Container = styled.div`
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 360;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
   border-bottom: 1px solid  #ECECEC;
-  @media only screen and (max-width: 1000px) {
+  
+  @media only screen and (max-width: 768px) {
   padding-bottom:40px;
     font-size: 14px;
   }
@@ -149,11 +150,11 @@ const CheckMessagebox = styled.div`
 max-width:768px;
 margin:0 auto;
 padding:0 20px 50px;
-
 `
+
 const MessageInform = styled.div`
   font-family:'Pretendard Variable';
-  font-weight:500;
+  font-weight: 410;
   font-size:14px;
   margin:20px 0 10px 5px;
   @media only screen and (max-width:768){

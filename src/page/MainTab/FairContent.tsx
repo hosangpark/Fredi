@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { ArtistItem, FairDetailsArtworkItem, FairDetailsType, FairListItem, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -21,47 +21,46 @@ import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 import FairCard from '../../components/Shop/FairCard';
-import Artwork, { FairListItem } from './Artwork';
+import Artwork from './Artwork';
 import Artist from './Artist';
 import { CategoryList } from '../../components/List/List';
-import { APIProductList } from '../../api/ProductAPI';
-
-
-
-
-
-
-
+import { APIFairDetails, APIProductList, UPDATEURL } from '../../api/ProductAPI';
+import dayjs from 'dayjs';
+import FairArtwork from './Fair_Artwork';
+import { initialFairDetails } from '../../components/List/initailData';
+import FairArtist from './Fair_Artist';
 
 
 function FairContent() {
   const navigate = useNavigate();
-  const { type, idx } = useParams();
-  const [productList,setproductList] = useState<FairListItem[]>([])
-  const [mainbanner,setMainbanner] = useState()
+  const { idx } = useParams();
+  const [FairDetail,setFairDetail] = useState<FairDetailsType>(initialFairDetails)
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
+  const saveHistory = (e: React.MouseEvent, item:number | string) => {
+    // console.log('itemitemitemitemitem',typeof item)
+    // console.log('itemitemitemitemitem',typeof item == 'number')
     const div = document.getElementById('root');
     if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
       sessionStorage.setItem('tab', String(contentItem.tab));
-      // sessionStorage.setItem('shop', JSON.stringify(shopList));
-      // sessionStorage.setItem('page', String(page));
-      // sessionStorage.setItem('type', String(showType));
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/shopdetails/${idx}`);
+      if(typeof item == 'number'){
+        navigate(`/productdetails/${item}`, {});
+      } else {
+        navigate(`/ArtistProducts/${item}`,{ state:{name:item} });
+      }
     }
   };
+
 
   const content = [
     {
       tab: "Artworks",
-      content:<Artwork saveHistory={saveHistory} productList={productList}/>
+      content:<FairArtwork saveHistory={saveHistory} productList={FairDetail?.artwork_data}/>
     },
     {
       tab: "Exhibitors",
-      content:<Artist/>
+      content:<FairArtist saveHistory={saveHistory} productList={FairDetail?.designer_data}/>
     }
   ];
   const useTabs = (initialTabs:any, allTabs:any) => {
@@ -99,64 +98,48 @@ function FairContent() {
     });
   };
 
-  const getShopList = async (page: number) => {
-    const data = {
-      page: page,
-      category: category,
-      keyword: keywordParams,
-    };
-    try {
-      const { list, total } = await APIProductList(data);
-      if (page === 1) {
-        setproductList((prev) => [...list]);
-      } else {
-        // setShopList((prev) => [...prev, ...list]);
-      }
-      console.log('shop', list, page);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   
-  const getBannerList = async () => {
-    var array1 = new Array(); //pc
-    var array2 = new Array(); //mobile
+  const getFairDetail = async () => {
     try {
-      const res = await APIGetBanner();
+      const res = await APIFairDetails({idx:idx});
       console.log('banner@@@@@@@@', res);
-      res.forEach((list:any) => {
-        if(list.type === 'P'){
-          array1.push(list);
-        } else {
-          array2.push(list);
-        }
-      });
-      // console.log(array1, array2);
-      setMainbanner(array1[0].file_name);
-      console.log('array2',array2)
+      if(res) {
+        setFairDetail(res)
+      }
+      
     } catch (error) {
       console.log('Banner', error);
     }
   };
 
   useEffect(()=>{
-    getBannerList()
-    getShopList(1)
+    getFairDetail()
   },[])
   
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
 
   return (
     <Container>
-      <MainImage>
-        <BannerImage src={mainbanner}/>
+      <MainImage height={innerWidth}>
+        <BannerImage src={innerWidth > 768 ?  UPDATEURL+FairDetail?.image[0].file_name : UPDATEURL+FairDetail?.image_m[0].file_name}/>
       </MainImage>
       <TitleWrap>
         <div>
           <TitleText>
-            Salon del Mobile 2023
+            {FairDetail?.name}
           </TitleText>
           <SubText>
-            April 17-23
+            {dayjs(FairDetail?.start_dt).format('MMMM DD')}-{
+            dayjs(FairDetail?.end_dt).format('MM') > dayjs(FairDetail?.start_dt).format('MM') ?
+            dayjs(FairDetail?.end_dt).format('MMMM DD') :
+            dayjs(FairDetail?.end_dt).format('DD')
+            }  {FairDetail?.location}
           </SubText>
         </div>
         <SearchBox
@@ -179,10 +162,11 @@ function FairContent() {
       <div className="App">
         <TabButtonWrap>
         {content.map((section, index:number) => (
-          <UnderLineTab onClick={() => {contentChange(index)}} color={section.tab == contentItem.tab? 'black':'none'}>{section.tab}</UnderLineTab>
+          <UnderLineTab key={index} onClick={() => {contentChange(index)}} color={section.tab == contentItem.tab? 'black':'none'}>{section.tab}</UnderLineTab>
         ))}
         </TabButtonWrap>
         {contentItem.content}
+        <EmptySpace/>
       </div>
       {/* <ShowTypeButton onClickType1={() => setShowType(1)} onClickType2={() => setShowType(2)} /> */}
       <TopButton />
@@ -197,14 +181,15 @@ const Container = styled.div`
   margin:0px;
 `;
 
-const MainImage = styled.div`
+const MainImage = styled.div<{height:number}>`
   width: 100%;
-  /* aspect-ratio: 4697/1737; */
-  aspect-ratio: 2.7042;
+  /* height:${props => (props.height/(1.4642))}px; */
+  height:${props => (props.height/(2.7118))}px;
   background-color:black;
   margin-bottom:0px;
   @media only screen and (max-width: 768px) {
-    aspect-ratio: 412/280;
+    height:${props => (props.height/(1.4642))}px;
+    /* height:${props => (props.height/(2.7118))}px; */
   }
 `;
 const BannerImage = styled.img`
@@ -224,7 +209,7 @@ const TabButtonWrap = styled.div`
 const TabButton = styled.div`
   flex:1;
   font-size:17px;
-  font-weight:500;
+  font-weight: 410;
   padding:5px 0;
 `;
 
@@ -259,7 +244,7 @@ const TitleWrap = styled.div`
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   display:block;
-  font-weight: 360;
+  font-weight: 410;
   text-transform: capitalize;
   font-size:26px;
   @media only screen and (max-width: 1440px) {
@@ -272,7 +257,7 @@ font-family:'Pretendard Variable';
 const SubText = styled.span`
   font-family:'Pretendard Variable';
   display:block;
-  font-weight: 360;
+  font-weight: 410;
   text-transform: capitalize;
   margin-top:12px;
   font-size:22px;
@@ -283,5 +268,7 @@ const SubText = styled.span`
     font-size:12px;
   }
 `;
-
+const EmptySpace = styled.div`
+  height:130px;
+`
 export default FairContent;

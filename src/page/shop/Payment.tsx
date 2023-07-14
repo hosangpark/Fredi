@@ -189,7 +189,7 @@ const Title = styled.h3`
 
 const Text = styled.p`
   font-family:'Pretendard Variable';;
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   font-size: 15px;
   margin-top: 50px;

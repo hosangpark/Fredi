@@ -66,7 +66,7 @@ function BottomNav() {
       <MenuButton
         onClick={() => {
           removeHistory();
-          navigate('/MainTab');
+          navigate('/MainTab/FairTab');
         }}
       >
         <MenuButtonImage src={home03} width={29}/>
@@ -75,7 +75,11 @@ function BottomNav() {
       <MenuButton
         onClick={() => {
           removeHistory();
-          navigate('/community');
+          if (!token) {
+            setShowLogin(true);
+          } else {
+            navigate('/community/FeedTab');
+          }
         }}
       >
         <MenuButtonImage src={home04} width={29}/>
@@ -84,11 +88,9 @@ function BottomNav() {
       <MenuButton
         onClick={() => {
           removeHistory();
-          // console.log(user)
           if (!token) {
             setShowLogin(true);
           } else {
-            // navigate('/profile');
             navigate(`/MobileProfile/${user}`);
           }
         }}
@@ -170,7 +172,7 @@ const MenuButtonImage = styled.img<{ width?: number }>`
 
 const MenuButtonText = styled.span`
 font-family:'Pretendard Variable';
-  font-weight: 360;
+  font-weight: 410;
   color: #121212;
   font-size: 10px;
 `;

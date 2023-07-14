@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart.svg';
+import likeOnImage from '../../asset/image/heart_on.png';
 import likeOffImage from '../../asset/image/heart.svg';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
@@ -32,17 +32,18 @@ function ArtworkCard({
   }, [innerWidth]);
 
   return (
-    <ProductBox showType={showType} onClick={onClick} index={(index+1)}>
-      <ProductImageWrap showType={showType} height={innerWidth}>
+    <ProductBox showType={showType} index={(index+1)}>
+      <ProductImageWrap onClick={onClick} showType={showType} height={innerWidth}>
         <ProductImage src={item.image[0].file_name} />
       </ProductImageWrap>
       {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
       <TextWrap>
         <ProductNameWrap>
-          <ProductName>{item.name}{item.name}</ProductName>
+          <ProductName>{item.name} {item.name} {item.name} {item.name}</ProductName>
           <Designer>{item.designer}</Designer>
         </ProductNameWrap>
-        <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOffImage : likeOffImage} />
+        <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} />
+        {/* <LikeButton onClick={()=>console.log(item.isLike)} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
         {/* <LikeCount>{replaceString(item.price)} ₩</LikeCount> */}
       </TextWrap>
     </ProductBox>
@@ -53,7 +54,7 @@ const ProductBox = styled.div<{ showType: 1 | 2, index:number }>`
   position: relative;
   display: column;
   width: calc(20% - 16px);
-  cursor: pointer;
+
   overflow: hidden;
   margin-right: ${(props) => ((props.index) % 5 === 0 ? 0:20)}px;
   @media only screen and (max-width: 768px) {
@@ -64,12 +65,11 @@ const ProductBox = styled.div<{ showType: 1 | 2, index:number }>`
 const ProductImageWrap = styled.div<{showType: 1 | 2, height:number }>`
   width: 100%;
   aspect-ratio: 0.851;
+  cursor: pointer;
   overflow: hidden;
   position: relative;
   background:#000000;
-  margin-bottom: 30px;
   @media only screen and (max-width: 768px) {
-    margin-bottom: 10px;
     height:${props =>  props.showType === 1 && (props.height/2-5)/0.851}px;
   }
 `;
@@ -91,36 +91,44 @@ const NewIcon = styled.img`
   top: 10px;
 `;
 
-const Designer = styled.span`
+const Designer = styled.div`
 font-family:'Pretendard Variable';
   color: #121212;
   font-size: 17px;
   font-weight: 310;
-  line-height:1;
+  line-height:17px;
   text-align: left;
+  margin-top:6px;
   @media only screen and (max-width: 1440px) {
     font-size: 14px;
+    line-height:14px;
   }
   @media only screen and (max-width: 768px) {
     margin-top:5px;
     font-size: 11px;
+    line-height:11px;
   }
 `;
 
 const ProductName = styled.span`
 font-family:'Pretendard Variable';
-  -webkit-line-clamp:2;
-  word-break: break-word;
-  text-overflow:ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; // 원하는 라인수
+  -webkit-box-orient: vertical;
+  overflow:hidden;
+  text-overflow:hidden;
   color: #121212;
   font-weight: 310;
   text-align: left;
   font-size: 17px;
+  line-height:18px;
   @media only screen and (max-width: 1440px) {
     font-size: 14px;
+    line-height:14px;
   }
   @media only screen and (max-width: 768px) {
     font-size: 11px;
+    line-height:11px;
   }
 `;
 
@@ -128,7 +136,10 @@ const LikeButton = styled.img`
   width: 20px;
   height: 26px;
   object-fit:contain;
+  margin-top:30px;
+  cursor: pointer;
   @media only screen and (max-width: 768px) {
+    margin-top:10px;
   }
 `;
 
@@ -139,32 +150,18 @@ const LikeCount = styled(Designer)``;
 const TextWrap = styled.div`
   display: flex;
   justify-content: space-between;
-
-  padding: 5px;
-  
-  @media only screen and (max-width: 768px) {
-    padding: 10px;
-  }
+  padding:0 10px;
 `;
 
 const ProductNameWrap = styled.div`
   display: flex;
   flex-direction: column;
   margin-right:5px;
-  height:55px;
-  margin-bottom:80px;
-
-  &:hover{
-    height:135px;
-    margin-bottom:0px;
-  }
+  height:166px;
+  margin: 30px 10px 0;
   @media only screen and (max-width: 768px) {
-
-    margin-bottom:40px;
-    &:hover{
-      height:95px;
-      margin-bottom:0px;
-    }
+    margin: 10px 10px 0;
+    height:93px;
   }
 `;
 

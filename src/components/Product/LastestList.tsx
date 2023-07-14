@@ -25,6 +25,7 @@ function LastestList({
   // onClick,
   // onClickLike,
   // isLikeList,
+  LinkHandler,
   title,
   ProductViews,
   naviArrow,
@@ -39,6 +40,7 @@ function LastestList({
   marginT,
   marginB
 }:{
+  LinkHandler:(e:React.MouseEvent, title:string, idx?:number)=>void
   title:string
   ProductViews:number
   naviArrow:boolean
@@ -58,26 +60,6 @@ function LastestList({
 
   const navigate = useNavigate();
 
-
-
-  const saveHistory = (e: React.MouseEvent, idx?: number) => {
-    const y = globalThis.scrollY;
-    sessionStorage.setItem('y', String(y ?? 0));
-    navigate(`/productdetails/${idx}`);
-  };
-
-  const [like, setLike] = useState(false)
-
-  useLayoutEffect(() => {
-    const scrollY = Number(sessionStorage.getItem('y'));
-      setTimeout(() => {
-        window.scrollTo({
-          top: scrollY,
-          behavior: 'auto',
-        });
-      }, 50);
-  }, []);
-
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
     const resizeListener = () => {
@@ -88,7 +70,6 @@ function LastestList({
 
   return (
     <ContainerWrap>
-      
       <TitleBox marginT={marginT} marginB={marginB}
       // onClick={()=>{navigate(`/${link}`);}}
       >
@@ -125,12 +106,12 @@ function LastestList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList.map(item=>{
+        {ProducList.map((item,index)=>{
           return(
-            <SwiperSlide>
+            <SwiperSlide key={index}>
               <ProductWrap marginRight={marginRight? marginRight:20}>
                 <ProductImageWrap aspect={aspect? aspect:1} height={innerWidth} 
-                onClick={(e)=>saveHistory(e,item.idx)}
+                onClick={(e)=>LinkHandler(e,title,item.idx)}
                 >
                   <ProductImage src={item.image[0].file_name}/>
                 </ProductImageWrap>
@@ -168,8 +149,9 @@ const LeftArrow = styled.div`
 display:flex;
 align-items:center;
 justify-content:center;
+border:1px solid #dfdfdf;
   position:absolute;
-  top:35%;
+  top:30%;
   left:20px;
   width:47px;
   height:47px;
@@ -181,8 +163,9 @@ const RightArrow = styled.div`
 display:flex;
 align-items:center;
 justify-content:center;
+border:1px solid #dfdfdf;
   position:absolute;
-  top:35%;
+  top:30%;
   right:20px;
   width:47px;
   height:47px;
@@ -199,9 +182,9 @@ const ProductImage = styled.img`
 
 const TextWrap = styled.div<{title?:string}>`
   display:${props => props.title?.includes('Home')? 'none':'block'};
-  padding:30px 10px;
+  padding:40px 5px 0;
   @media only screen and (max-width: 768px) {
-    padding:0 10px;
+    padding:10px 10px 0;
   }
 `
 const ToptextWrap = styled.div`
@@ -234,6 +217,7 @@ const ProductImageWrap = styled.div<{aspect:number,height?:number}>`
   /* max-width:350px; */
   width:100%;
   text-align:start;
+  cursor: pointer;
   aspect-ratio:${props => props.aspect? props.aspect : 1};
   @media only screen and (max-width: 768px) {
 
@@ -249,21 +233,22 @@ export const TitleBox = styled.div<{marginT?:number;marginB?:number;}>`
   align-items:center;
   margin-top:${props=> props.marginT}px;
   margin-bottom:${props=> props.marginB}px;
+  padding: 0px 3px;
   @media only screen and (max-width: 768px) {
     justify-content:space-between;
-    padding: 5px 15px;
+    padding: 0px 15px;
   }
 `;
 
 const TitleText = styled.span<{titlesize?:number}>`
 font-family:'Pretendard Variable';
   font-size:${props=>props.titlesize? props.titlesize : 22}px;
-  font-weight:360;
+  font-weight: 360;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
   @media only screen and (max-width: 768px) {
-    font-weight: 450;
+    font-weight: 410;
     font-size:15px;
   }
 `;
@@ -281,7 +266,7 @@ font-family:'Pretendard Variable';
 color:#000000;
   font-size:17px;
   font-weight: 310;
-  margin-top:5px;
+  line-height:1;
   /* white-space:nowrap; */
   overflow:hidden;
   text-overflow:ellipsis;
@@ -308,12 +293,17 @@ const ProductSubText = styled.div`
 font-family:'Pretendard Variable';
 color:#000000;
   font-size:16px;
+  line-height:1;
   font-weight: 310;
   white-space:nowrap;
   overflow:hidden;
+  margin-top:10px;
+  margin-bottom:7px;
   text-overflow:ellipsis;
   @media only screen and (max-width: 768px) {
     font-size:12px;
+    margin-top:5px;
+    margin-bottom:0px;
   }
 `;
 

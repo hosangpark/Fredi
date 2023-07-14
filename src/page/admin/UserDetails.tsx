@@ -413,7 +413,7 @@ const RowWap = styled.div`
 const LeftText = styled.span`
   color: #121212;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 510;
   width: 200px;
   border-right: 1px solid #121212;
   display: inline-block;
@@ -480,7 +480,7 @@ const ModalBox = styled.div`
 const ModalTitle = styled.span`
   font-size: 18px;
   color: #121212;
-  font-weight: 600;
+  font-weight: 510;
   margin-bottom: 30px;
   @media only screen and (max-width: 768px) {
     font-size: 18px;

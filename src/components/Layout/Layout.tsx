@@ -20,9 +20,7 @@ function Layout({ children }: Props) {
       <ScrollToTop>
         <Header />
         <Content>{children}</Content>
-        {pathName !== ''&&
-          <EmptyBox />
-        }
+
         <BottomNav/>
       </ScrollToTop>
     </Container>

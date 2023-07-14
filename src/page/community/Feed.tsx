@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { FairListItem, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -32,72 +32,6 @@ import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
 import { APIProducerList } from '../../api/ProducerAPI';
 import { APIProductList } from '../../api/ProductAPI';
-
-
-export type FairListItem = {
-  idx: number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  name: string;
-  price: number;
-  size: string;
-  weight: string;
-  country: string;
-  description: string;
-  designer: string;
-  sns: string;
-  email: string;
-  website: string;
-  created_time: string;
-  like_count: number;
-  image: {
-  idx: number;
-  file_name: string;
-  count: number;
-}[];
-  isLike: boolean;
-};
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
 
 
 interface ICategorySelectButton {
@@ -136,8 +70,6 @@ function Feed({productList}:{productList?:any[]}) {
 
 
   const { user } = useContext(UserContext);
-  const { classes } = useStyles();
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
   const interSectRef = useRef(null);
 
   const getBannerList = async () => {
@@ -261,16 +193,6 @@ function Feed({productList}:{productList?:any[]}) {
     }
   }, [shopList]);
 
-  useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
-
-    if (page) {
-      findHistory();
-    } else {
-      setPage(1);
-      getShopList(1);
-    }
-  }, [searchParams, category]);
 
   useEffect(() => {
     if (page > 1) getShopList(page);
@@ -298,10 +220,50 @@ function Feed({productList}:{productList?:any[]}) {
     });
   };
 
+  /** drageEvent */
+  const scrollRef = useRef<any>(null);
+  const [isDrag, setIsDrag] = useState(false);
+  const [startX, setStartX] = useState<any>();
+
+  const onDragStart = (e:any) => {
+    e.preventDefault();
+    setIsDrag(true);
+    setStartX(e.pageX + scrollRef.current.scrollLeft);
+  };
+
+  const onDragEnd = () => {
+    setIsDrag(false);
+  };
+
+  const onDragMove = (e:any) => {
+    if (isDrag) {
+      scrollRef.current.scrollLeft = startX - e.pageX;
+    }
+  };
+  const throttle = (func:any, ms:any) => {
+    let throttled = false;
+    return (...args:any) => {
+      if (!throttled) {
+        throttled = true;
+        setTimeout(() => {
+          func(...args);
+          throttled = false;
+        }, ms);
+      }
+    };
+  };
+  const delay = 10;
+  const onThrottleDragMove = throttle(onDragMove, delay);
+
   return (
     <Container>
-      <CategorySelectButtonWrap>
-        {CategoryList.map((item) => {
+      <CategorySelectButtonWrap
+      onMouseDown={onDragStart}
+      onMouseMove={onThrottleDragMove}
+      onMouseUp={onDragEnd}
+      onMouseLeave={onDragEnd}
+      ref={scrollRef}>
+        {CategoryList.map((item) => { 
           return (
           <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
           );
@@ -393,62 +355,53 @@ const CategorySelectButtonWrap = styled.div`
   /* display:flex; */
   display:flex;
   align-items: center;
-  margin: 20px 0px;
+  margin: 20px 0px 40px;
   overflow-x: scroll;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  cursor: pointer;
+  -webkit-overflow-scrolling: touch;
+
   ::-webkit-scrollbar{
     display:none;
   }
-
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin: 20px 0px 20px 20px;;
+  } */
   @media only screen and (max-width: 768px) {
-    margin: 15px 10px;
+    margin: 20px 0 20px 18px;
   }
 `;
 
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
   border : 1px solid ${(props) => (props.selected ? '#121212' : '#c0c0c0')};
-  padding: 0 18px;
-  margin-right: 10px;
+  padding: 13px 24px 14px 22px;
+  margin-right: 10.88px;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
+  height: 47.25px;
   /* box-shadow:2px 3px 3px 0px #aaaaaa; */
   cursor: pointer;
-  @media only screen and (max-width: 1440px) {
+  @media only screen and (max-width: 768px) {
+    margin-right: 5px;
+    padding: 7px 20px;
     height: 27px;
   }
 `;
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
+  font-family:'Pretendard Variable';
+  font-size:17px;
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
   font-weight: 410;
   text-transform: capitalize;
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1440px) {
     font-size: 14px;
   }
   @media only screen and (max-width: 768px) {
     font-size: 12px;
-  }
-`;
-const TitleWrap = styled.div`
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:20px 0%;
-  @media only screen and (max-width: 768px) {
-    display:none
-  }
-`;
-const TitleText = styled.span`
-  font-size: 20px;
-  font-weight: 500;
-  text-transform: capitalize;
-  @media only screen and (max-width: 768px) {
-    display:none
   }
 `;
 

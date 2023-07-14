@@ -5,22 +5,16 @@ import likeOnImage from '../../asset/image/heart_on.png';
 import likeOffImage from '../../asset/image/heart_off.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
-import { FairListItem } from '../../types/Types';
+import { FairList} from '../../types/Types';
 
 function FairCard({
   item,
-  showType,
   index,
   onClick,
-  onClickLike,
-  isLikeList,
 }: {
-  item: FairListItem;
-  showType: 1 | 2;
+  item: FairList;
   index: number;
   onClick: (e: any) => void;
-  onClickLike: (e: any) => void;
-  isLikeList?: boolean; 
 }) {
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
@@ -32,16 +26,16 @@ function FairCard({
   }, [innerWidth]);
 
   return (
-    <ProductBox onClick={onClick}>
-      <ProductImageWrap height={innerWidth}>
-        <ProductImage src={item.image[0]?.file_name ? item.image[0].file_name : 'd'} />
+    <ProductBox>
+      <ProductImageWrap onClick={onClick} height={innerWidth}>
+        <ProductImage src={item? innerWidth > 768 ?  item.image[0].file_name : item.image_m[0].file_name : 'null'} />
         {/* <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
       </ProductImageWrap>
       {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
       <TextWrap>
         <ProductNameWrap>
-          <ProductName>{item.name}</ProductName>
-          <Designer>{item.designer}</Designer>
+          <Location>{item.location}</Location>
+          <Designer>{item.name}</Designer>
         </ProductNameWrap>
         {/* <LikeCount>{replaceString(item.price)} ₩</LikeCount> */}
       </TextWrap>
@@ -53,7 +47,6 @@ const ProductBox = styled.div`
   position: relative;
   display: column;
   width: 100%;
-  cursor: pointer;
   overflow: hidden;
   /* @media only screen and (max-width: 768px) {
     margin-right: 0;
@@ -62,17 +55,21 @@ const ProductBox = styled.div`
 `;
 const ProductImageWrap = styled.div<{height:number}>`
   width: 100%;
-  aspect-ratio:2.7118;
+  /* aspect-ratio:2.7118; */
+  /* height:${props => (props.height/(1.4642))}px; */
+  height:${props => (props.height/(2.7118))}px;
   background-color:black;
-  
+  cursor: pointer;
   @media only screen and (max-width: 768px) {
     /* aspect-ratio:410/280; */
-    height:${props => (props.height/(410/280))}px;
+    height:${props => (props.height/(1.4642))}px;
+    /* height:${props => (props.height/(2.7118))}px; */
   }
 `;
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
+  object-fit:cover;
 `;
 
 
@@ -82,18 +79,18 @@ font-family:'Pretendard Variable';
   font-size: 22px;
   margin-bottom:10px;
   line-height:1;
-  font-weight: 450;
+  font-weight: 410;
   text-align: left;
   @media only screen and (max-width: 1440px) {
     font-size: 16px;
   }
   @media only screen and (max-width: 768px) {
-    font-weight: 360;
+    font-weight: 410;
     font-size: 11px;
   }
 `;
 
-const ProductName = styled(Designer)`
+const Location = styled(Designer)`
 font-family:'Pretendard Variable';
 `;
 

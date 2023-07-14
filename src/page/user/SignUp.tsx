@@ -498,7 +498,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 80px);
-  border-top: 1px solid #121212;
   text-align: left;
   @media only screen and (max-width: 768px) {
     border-top: 0;
@@ -559,10 +558,10 @@ const TextInput = styled.input`
   font-weight: 410;
   outline: 0;
   height: 36px;
-  padding-left: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding-left: 10px;
   @media only screen and (max-width: 768px) {
     font-size: 13px;
   }
@@ -638,7 +637,7 @@ const ModalBox = styled.div`
 `;
 
 const ModalTitle = styled.span`
-  font-family:'Pretendard Variable'; !important;
+  font-family:'Pretendard Variable';
   font-size: 24px;
   color: #121212;
   font-weight: 700;
@@ -672,7 +671,7 @@ const TabButton = styled.div`
 `;
 
 const TabButtonText = styled.span<{ selected: boolean }>`
-  font-family:'Pretendard Variable'; !important;
+  font-family:'Pretendard Variable';
   font-weight: ${(props) => (props.selected ? 700 : 400)};
   color: ${(props) => (props.selected ? '#121212' : '#888888')};
   font-size: 16px;
@@ -682,7 +681,7 @@ const TabButtonText = styled.span<{ selected: boolean }>`
 `;
 
 const ModalContentBox = styled.textarea`
-  font-family:'Pretendard Variable'; !important;
+  font-family:'Pretendard Variable';
   width: 400px;
   height: 300px;
   border: 1px solid #121212;

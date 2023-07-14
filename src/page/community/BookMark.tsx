@@ -74,22 +74,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-
-interface ICategorySelectButton {
-  item: { value: string; label: string };
-  isSelect: boolean;
-  onClickFilter: (e: { value: string; label: string }) => void;
-}
-
-const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategorySelectButton) => {
-  return (
-    <CategorySelectButton selected={isSelect} onClick={() => onClickFilter(item)} key={item.label}>
-      <CategorySelectButtonText selected={isSelect}>{item.label}</CategorySelectButtonText>
-    </CategorySelectButton>
-  );
-});
-
-
 function BookMark() {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
@@ -277,12 +261,13 @@ function BookMark() {
         {shopList.length > 0 &&
         shopList.map((item,index)=>{
           return(
-            <FollowCard
-              item={item}
-              key={item.idx}
-              onClick={(e) => saveHistory(e, item.name)}
-              index={index}
-            />
+            <></>
+            // <FollowCard
+            //   item={item}
+            //   key={item.idx}
+            //   onClick={(e) => saveHistory(e, item.name)}
+            //   index={index}
+            // />
           )
           })
         }
@@ -319,69 +304,5 @@ const ProductListWrap = styled.div`
 
 `;
 
-const FollowTitle = styled.p`
-  font-size:17px;
-  font-weight:500;
-  text-align:start;
-  padding:0 10px;
-`
-
-const CategorySelectButton = styled.div<{ selected: boolean }>`
-  background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
-  border : 1px solid ${(props) => (props.selected ? '#121212' : '#7a7a7a')};
-  padding: 0 18px;
-  margin-right: 10px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 32px;
-  cursor: pointer;
-  @media only screen and (max-width: 1440px) {
-    height: 27px;
-  }
-`;
-
-const CategorySelectButtonText = styled.span<{ selected: boolean }>`
-  color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: capitalize;
-`;
-const FollowingListWrap = styled.div`
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-`;
-const TitleWrap = styled.div`
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:20px 0%;
-  @media only screen and (max-width: 768px) {
-    display:none
-  }
-`;
-const FollowingName = styled.span`
-  width:80%;
-  font-size: 16px;
-  font-weight: 500;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-  }
-`;
-const ImageWrap = styled.div`
-  width:110px;
-  height:110px;
-  border:1px solid #c9c9c9;
-  @media only screen and (max-width: 768px) {
-    width:80px;
-    height:80px;
-  }
-`
 
 export default BookMark;

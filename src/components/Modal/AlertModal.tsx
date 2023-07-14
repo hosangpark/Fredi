@@ -42,10 +42,10 @@ const ModalBox = styled.div`
 `;
 
 const ModalTitle = styled.span`
-  font-family:'Pretendard Variable'; !important;
+  font-family:'Pretendard Variable' !important;
   font-size: 17px;
   color: #121212;
-  font-weight: 600;
+  font-weight: 510;
   margin-bottom: 10px;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
@@ -70,7 +70,7 @@ const ModalBlackButton = styled.div`
 `;
 
 const BlackButtonText = styled.span`
-  font-family:'Pretendard Variable'; !important;
+  font-family:'Pretendard Variable' !important;
   font-weight: 410;
   color: #ffffff;
   font-size: 14px;

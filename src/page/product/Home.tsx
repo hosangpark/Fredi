@@ -6,12 +6,11 @@ import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
+import { APIFairList, APILikeProduct, APIProductList } from '../../api/ProductAPI';
 import { APIGetBanner } from '../../api/SettingAPI';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
-import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import ProductCard from '../../components/Product/ProductCard';
 import SearchBox from '../../components/Product/SearchBox';
 import TopButton from '../../components/Product/TopButton';
@@ -21,8 +20,9 @@ import ProductMainList from '../../components/Product/ProductMainList';
 import WeeklyEditionList from '../../components/Product/WeeklyEditionList';
 import Footer from '../../components/Layout/Footer';
 import MainArtistList from '../../components/Product/MainArtistList';
-import { TImage, TProductListItem } from '../../types/Types';
+import { FairList, TImage, TProductListItem } from '../../types/Types';
 import LastestList from '../../components/Product/LastestList';
+import FairMainList from '../../components/Product/FairMainList';
 
 
 
@@ -75,20 +75,16 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 function Home() {
   const navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
-  const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-  const [productList, setProductList] = useState<TProductListItem[]>([]);
-  const [latestList, setLatestList] = useState<TProductListItem[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
+  // let [searchParams, setSearchParams] = useSearchParams();
+  // const keywordParams = searchParams.get('keyword') ?? '';
+  // const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
+  const [FairList, setFairList] = useState<FairList[]>([]);
+  const [LatestList, setLatestList] = useState<TProductListItem[]>([]);
   const [showLogin, setShowLogin] = useState(false);
   const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [bannerListMobile, setBannerListMobile] = useState<TImage[]>([]);
   const [history, setHistory] = useState(false);
-  const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
+
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [appdownModal, setAppdownModal] = useState(false);
 
@@ -103,10 +99,9 @@ function Home() {
       setInnerWidth(window.innerWidth);
     };
     if(innerWidth > 768){
-      console.log('big');
       setAppdownModal(false)
     } else {
-      console.log('userAgent',userAgent);
+      // console.log('userAgent',userAgent);
       // const code = searchParams.get("code");
       if (userAgent === "APP-android" || userAgent === "APP-ios") {
         setAppdownModal(false)
@@ -114,10 +109,8 @@ function Home() {
         setAppdownModal(true)
       }
     }
-    // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
-  // console.log("innerWidth", innerWidth);
 
   const getLatestList = async () => {
     const data = {
@@ -130,10 +123,23 @@ function Home() {
         return setHistory(false);
       }
       const { list, total } = await APIProductList(data);
-      setTotal(total);
       setLatestList(list.slice(0,10));
+      // console.log('product', list,);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      console.log('product', list,);
+  const getFairsList = async () => {
+    const data = {
+      page: 1,
+      category: '',
+      keyword: '',
+    };
+    try {
+      const { list, total } = await APIFairList(data);
+      setFairList(list.slice(0,10));
+      console.log('productproductproduct', list);
     } catch (error) {
       console.log(error);
     }
@@ -144,7 +150,7 @@ function Home() {
     var array2 = new Array(); //mobile
     try {
       const res = await APIGetBanner();
-      console.log('banner@@@@@@@@', res);
+      // console.log('banner@@@@@@@@', res);
       res.forEach((list:any) => {
         if(list.type === 'P'){
           array1.push(list);
@@ -160,12 +166,6 @@ function Home() {
     }
   };
 
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      setPage((prev) => prev + 1);
-    }
-  }, []);
 
   const options = {
     root: null, //기본 null, 관찰대상의 부모요소를 지정
@@ -173,59 +173,39 @@ function Home() {
     threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
   };
 
-  const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('products') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
-    setProductList(list);
-    setHistory(true);
-    setPage(page);
-    setShowType(type);
 
-    sessionStorage.removeItem('products');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
-  };
-
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
+  const LinkHandler = (e:React.MouseEvent,title:string,idx?:number)=>{
     const y = globalThis.scrollY;
-    sessionStorage.setItem('products', JSON.stringify(productList));
-    sessionStorage.setItem('page', String(page));
-    sessionStorage.setItem('type', String(showType));
-    sessionStorage.setItem('y', String(y ?? 0));
-    navigate(`/productdetails/${idx}`);
-  };
-
-  const onDeleteAsk = async () => {
-    // setAppdownModal(false);
-    // const data = {
-    //   idx: itemIdx,
-    // };
-    // try {
-    //   const res = await APIDeleteAsk(data);
-    //   console.log(res);
-    //   setShowModal(true);
-    //   getAskList();
-    // } catch (error) {
-    //   console.log(error);
-    //   alert(error);
-    // }
-  };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
+    sessionStorage.setItem('Home_y', String(y ?? 0));
+    if(title === 'Fairs'){
+      // sessionStorage.setItem('FairTabList', JSON.stringify(FairList));
+      navigate(`/FairContent/${idx}`)
+    } else if (title.includes('Latest')) {
+      // sessionStorage.setItem('LatestList', JSON.stringify(LatestList));
+      navigate(`/productdetails/${idx}`);
+    } else if (title.includes('Home')) {
+      navigate(`/personalpage/${idx}`)
+    } else if (title.includes('Weekly')) {
+      navigate(`/WeeklyEdition`)
+    } else if (title.includes('Trending')) {
+      navigate(`/MobileProfile/${idx}`)
+    } else if (title.includes('Featured')) {
+      navigate(`/MobileProfile/${idx}`)
+    } else {
+      console.log(title,idx)
+    }
+  }
 
   useEffect(() => {
     getBannerList();
     getLatestList()
+    getFairsList()
   }, []);
 
   useLayoutEffect(() => {
-    const scrollY = Number(sessionStorage.getItem('y'));
-    if (productList.length > 0 && scrollY) {
+    const scrollY = Number(sessionStorage.getItem('Home_y'));
+    console.log('scrollYscrollYscrollY',scrollY)
+    if (scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -233,14 +213,12 @@ function Home() {
           behavior: 'auto',
         });
       }, 50);
-      sessionStorage.removeItem('y');
+      sessionStorage.removeItem('Home_y');
     }
-  }, [productList]);
+  }, [FairList,LatestList]);
 
-  
 
   const slides = bannerList.map((item:any) => {
-    console.log('item', item);
     return(
     <Carousel.Slide key={item.idx}>
       <a href={item?.link}>
@@ -290,10 +268,10 @@ function Home() {
           <Carousel
             plugins={[autoplay.current]}
             withIndicators
+            nextControlIcon={<ControlImage left={true} src={rightButtonImage} />}
+            previousControlIcon={<ControlImage src={leftButtonImage} />}
             loop
             withKeyboardEvents={false}
-            // nextControlIcon={<ControlImage src={rightButtonImage} />}
-            // previousControlIcon={<ControlImage src={leftButtonImage} />}
             styles={{
               root: { maxHeight: 700, aspectRatio: '1/1' },
               control: { background: 'transparent', width: 45, border: 0, aspectRatio: '1/1'},
@@ -311,35 +289,36 @@ function Home() {
         )}
       </CarouselWrap>
       <ProductListWrap>
-        <ProductMainList
+        <FairMainList
+        LinkHandler={LinkHandler}
         title={'Fairs'}
         ProductViews={innerWidth <= 768? 1.35  : innerWidth <= 1440? 2.7: 3.7}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList={bannerListMobile}
+        ProducList={FairList}
         arrowView={false}
-        productLink={innerWidth <= 768? "FairsM" : "FairsW"}
         aspect={495/332}
-        paddingnum={innerWidth <= 768? 0:50}
-        marginT={innerWidth <= 768? 100:170}
+        paddingnum={innerWidth <= 768? 0:60}
+        marginT={innerWidth <= 768? 100:169.97}
         marginB={innerWidth <= 768? 21:55}
         />
         <LastestList
+        LinkHandler={LinkHandler}
         title={'Latest'}
         ProductViews={innerWidth <= 768? 2.1  : innerWidth <= 1440? 4.4: 5.9}
         naviArrow = {innerWidth <= 768? false : true}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList={latestList}
+        ProducList={LatestList}
         arrowView={false}
-        productLink={'Latest'}
         aspect={300/370}
         titlesize={21}
-        paddingnum={innerWidth <= 768? 0:50}
+        paddingnum={innerWidth <= 768? 0:60}
         marginRight={18}
-        marginT={innerWidth <= 768? 143:172}
-        marginB={innerWidth <= 768? 21:56}
+        marginT={innerWidth <= 768? 143:172.22}
+        marginB={innerWidth <= 768? 21:56.36}
         />
         <WeeklyEditionList
+        LinkHandler={LinkHandler}
         title={'Weekly Edition'}
         ProductViews={innerWidth <= 768? 1.1 : innerWidth <= 1440? 2.7 :3.4}
         naviArrow = {false}
@@ -347,10 +326,11 @@ function Home() {
         ProducList = {bannerListMobile}
         arrowView={false}
         paddingnum={innerWidth <= 768? 0:50}
-        marginT={innerWidth <= 768? 120:175}
-        marginB={innerWidth <= 768? 21:51}
+        marginT={innerWidth <= 768? 120:175.22}
+        marginB={innerWidth <= 768? 21:51.32}
         />
         <ProductMainList
+        LinkHandler={LinkHandler}
         title={'Home & Styling'}
         ProductViews={innerWidth <= 768? 1.5  : innerWidth <= 1440? 4.4: 5.9}
         // naviArrow = {innerWidth <= 768? false : true}
@@ -362,10 +342,10 @@ function Home() {
         paddingnum={innerWidth <= 768? 0:90}
         marginRight={18}
         marginT={innerWidth <= 768? 100:170}
-        marginB={innerWidth <= 768? 21:55}
-        // aspect={285/240}
+        marginB={innerWidth <= 768? 21:55.12}
         />
         <MainArtistList
+        LinkHandler={LinkHandler}
         title={'Trending Artist'}
         ProductViews={innerWidth <= 768? 2.05 : innerWidth <= 1440? 4.4 : 5.7}
         // naviArrow = {innerWidth <= 768? false : true}
@@ -376,9 +356,10 @@ function Home() {
         arrowView={false}
         paddingnum={innerWidth <= 768? 5:50}
         marginT={innerWidth <= 768? 100:170}
-        marginB={innerWidth <= 768? 21:54}
+        marginB={innerWidth <= 768? 21:54.38}
         />
         <ProductMainList
+        LinkHandler={LinkHandler}
         title={'Featured Works'}
         ProductViews={innerWidth <= 768? 2.05 : innerWidth <= 1440? 4.4 : 5.9}
         // naviArrow = {innerWidth <= 768? false : true}
@@ -387,9 +368,9 @@ function Home() {
         ProducList={bannerListMobile}
         arrowView={false}
         aspect={190/230}
-        paddingnum={innerWidth <= 768? 0:90}
+        paddingnum={innerWidth <= 768? 50:90}
         marginT={innerWidth <= 768? 100:170}
-        marginB={innerWidth <= 768? 21:64}
+        marginB={innerWidth <= 768? 21:64.91}
         marginRight={15}
         />
       </ProductListWrap>
@@ -431,6 +412,7 @@ const ProductListWrap = styled.div`
   /* margin: 15px 20px; */
   /* padding-top:100px; */
   margin-left:50px;
+  margin-bottom:50px;
   @media only screen and (max-width:1440px) {
     /* padding-top:50px; */
     margin-left:20px;
@@ -458,7 +440,9 @@ const ControlImage = styled.img<{left?:boolean}>`
   width: 37.94px;
   height: 36.89px;
   @media only screen and (max-width: 768px) {
-    width: 15px;
+    margin:${props => props.left? '0 20px 0 0' : '0 0 0 20px'};
+    width: 15.53px;
+    height: 15.16px;
   }
 `;
 

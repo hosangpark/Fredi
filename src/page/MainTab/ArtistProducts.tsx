@@ -300,7 +300,7 @@ const Container = styled.div`
 `;
 const NameBox = styled.div`
 font-family:'Pretendard Variable';
-font-weight:500;
+font-weight: 410;
   display: flex;
   align-items:center;
   justify-content:start;
@@ -320,7 +320,7 @@ const ProductListWrap = styled.div`
 
 const FollowTitle = styled.p`
   font-size:17px;
-  font-weight:500;
+  font-weight: 410;
   text-align:start;
   padding:0 10px;
 `
@@ -344,7 +344,7 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 410;
   text-transform: capitalize;
 `;
 const FollowingListWrap = styled.div`
@@ -365,7 +365,7 @@ const TitleWrap = styled.div`
 const FollowingName = styled.span`
   width:80%;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 410;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;

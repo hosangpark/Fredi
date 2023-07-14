@@ -89,7 +89,7 @@ const NewIcon = styled.img`
 const Designer = styled.span`
   color: #121212;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 11px;
   }

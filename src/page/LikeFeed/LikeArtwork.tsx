@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { ArtworkLikeListItem, LikeProductListItem, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -26,10 +26,13 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import ArtworkCard from '../../components/Shop/ArtworkCard';
 import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
-import { APIProducerList } from '../../api/ProducerAPI';
+import { APILikeProduct, APILikeProductList, APIProductList } from '../../api/ProductAPI';
+import dayjs from 'dayjs';
+import snsImage from '../../asset/image/snsicon.png';
+import LikeCard from '../../components/Shop/LikeCard';
+
 
 
 interface ICategorySelectButton {
@@ -47,7 +50,9 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function LikeArtwork({productList}:{productList?:ArtworkListItem[]}) {
+function LikeArtwork({showType}
+  :
+  {showType?:number}) {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
   const location = useLocation();
@@ -55,142 +60,82 @@ function LikeArtwork({productList}:{productList?:ArtworkListItem[]}) {
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
   const pathName = location.pathname.split('/')[1];
-  const [shopList, setShopList] = useState<ArtworkListItem[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
   const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
+  const [likeList,setLikeList] = useState<ArtworkLikeListItem[]>([])
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
   const [showsearch,setShowsearch] = useState(false)
+  const [showcategory,setShowCategory] = useState(false)
 
 
   const { user } = useContext(UserContext);
 
-
-  const getBannerList = async () => {
+  const getLikeProductList = async () => {
+    const data = {
+      page,
+    };
     try {
-      const res = await APIGetBanner();
-      console.log('banner', res);
-      setBannerList(res);
+      const { list, total } = await APILikeProductList(data);
+      setLikeList(list);
+      // if(list){
+      // }
+      console.log('listlistlistlist',list[0])
+      // console.log('listlistlistlist',list)
+      // setTotal(total);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getShopList = async (page: number) => {
-    const data = {
-      page: page,
-      category: category,
-      keyword: keywordParams,
-    };
-    try {
-      if (history) {
-        return setHistory(false);
-      }
-      const { list, total } = await APIProducerList(data);
-      setTotal(total);
-      if (page === 1) {
-        setShopList((prev) => [...list]);
-      } else {
-        // setShopList((prev) => [...prev, ...list]);
-      }
-      console.log('shop', list, page);
-    } catch (error) {
-      console.log(error);
-    }
+  const saveProductHistory = (e: React.MouseEvent, idx: number) => {
+    const y = window.scrollY;
+
+    sessionStorage.setItem('products', JSON.stringify(likeList));
+    sessionStorage.setItem('y', String(y ?? 0));
+    navigate(`/productdetails/${idx}`);
   };
 
-  const onLikeShop = async (idx: number) => {
+  const onCancelLikeProduct = async (idx: number) => {
     const data = {
-      idx: idx,
+      artwork_idx: idx,
     };
     try {
-      const res = await APILikeShop(data);
+      const res = await APILikeProduct(data);
       console.log(res);
-      const newList = shopList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-      setShopList(newList);
+      const newList = likeList.filter((item) => item.artwork.idx !== idx);
+      setLikeList(newList);
     } catch (error) {
       console.log(error);
     }
   };
-
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      setPage((prev) => prev + 1);
-    }
-  }, []);
-
-  const options = {
-    root: null, //기본 null, 관찰대상의 부모요소를 지정
-    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
-    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
-  };
-
-  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
-    };
-    if(innerWidth < 768){
-      if(pathName === 'Artwork'){
-        navigate('/MainTab')
-      }
-    }
-    // console.log("innerWidth", innerWidth);
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
 
   useEffect(()=>{
-    if(pathName !== 'Artwork'){
-      setShowsearch(false)
+    if(pathName == 'LikeTab'){
+      setShowCategory(false)
     }else{
-      setShowsearch(true)
+      setShowCategory(true)
     }
     // console.log(pathName)
   },[pathName])
+  
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
+    // const list = JSON.parse(sessionStorage.getItem('products') ?? '');
 
-    setShopList(list);
+    // setLikeList(list)
     setHistory(true);
     setPage(page);
-    setShowType(type);
 
-    sessionStorage.removeItem('shop');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
+    sessionStorage.removeItem('products');
   };
-
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
-    const div = document.getElementById('root');
-    if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
-      const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
-      sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
-      sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/productdetails/${idx}`);
-    }
-  };
-
   
-  useEffect(() => {
-    console.log(browserHistory.location);
-    console.log(location);
-    getBannerList();
-  }, []);
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
+    if (likeList.length > 0 && scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -200,35 +145,12 @@ function LikeArtwork({productList}:{productList?:ArtworkListItem[]}) {
       }, 50);
       sessionStorage.removeItem('y');
     }
-  }, [shopList]);
+  }, [likeList]);
 
   useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
-    if (page) {
-      findHistory();
-    } else {
-      setPage(1);
-      getShopList(1);
-    }
+    getLikeProductList()
+    findHistory();
   }, [searchParams, category]);
-  
-
-  useEffect(() => {
-    if (page > 1) getShopList(page);
-  }, [page]);
-
-  const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
-  };
 
   const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
     setCategory(value);
@@ -239,79 +161,90 @@ function LikeArtwork({productList}:{productList?:ArtworkListItem[]}) {
   };
 
 
+  /** drageEvent */
+  const scrollRef = useRef<any>(null);
+  const [isDrag, setIsDrag] = useState(false);
+  const [startX, setStartX] = useState<any>();
+
+  const onDragStart = (e:any) => {
+    e.preventDefault();
+    setIsDrag(true);
+    setStartX(e.pageX + scrollRef.current.scrollLeft);
+  };
+
+  const onDragEnd = () => {
+    setIsDrag(false);
+  };
+
+  const onDragMove = (e:any) => {
+    if (isDrag) {
+      scrollRef.current.scrollLeft = startX - e.pageX;
+    }
+  };
+  const throttle = (func:any, ms:any) => {
+    let throttled = false;
+    return (...args:any) => {
+      if (!throttled) {
+        throttled = true;
+        setTimeout(() => {
+          func(...args);
+          throttled = false;
+        }, ms);
+      }
+    };
+  };
+  const delay = 10;
+  const onThrottleDragMove = throttle(onDragMove, delay);
   return (
     <Container>      
-      <TitleWrap showsearch={showsearch}>
-        <TitleText>
-          Artworks
-        </TitleText>
-        <SearchBox
-          onClickSearch={() => onSearch()}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              onSearch();
-            }
-          }}
-          categoryList={CategoryList}
-          category={category}
-          keyword={keyword}
-          onChangeInput={(e) => setKeyword(e.target.value)}
-          onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
-            chageCategory(value);
-          }}
-        />
-      </TitleWrap>
+      <TabBox>
+        <TabContents On={true}>
+          Artwork
+        </TabContents>
+        <TabContents onClick={()=>navigate('/LikeSns')}>
+          <TabImage src={snsImage}/>
+        </TabContents>
+      </TabBox>
+      <CategorySelectButtonWrap 
+      onMouseDown={onDragStart}
+      onMouseMove={onThrottleDragMove}
+      onMouseUp={onDragEnd}
+      onMouseLeave={onDragEnd}
+      ref={scrollRef}
+      showcategory={showcategory}>
+        {CategoryList.map((item) => {
+          return (
+            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
 
+          );
+        })}
+      </CategorySelectButtonWrap>
       
-      
-      {/* <ShowTypeButton onClickType1={() => setShowType(1)} onClickType2={() => setShowType(2)} /> */}
       <ProductListWrap>
-        {/* <div onClick={()=>console.log(shopList)}> ddddddddddddddd</div> */}
-        {shopList.length > 0 &&
-        productList? productList.map((item:any,index:number)=>{
+        {likeList &&
+        likeList.map((item:ArtworkLikeListItem,index:number)=>{
           return(
-            <ArtworkCard
-              item={item}
+            <LikeCard
+              item={item.artwork}
               key={item.idx}
-              onClick={(e) => saveHistory(e, item.idx)}
+              onClick={(e) => saveProductHistory(e, item.artwork.idx)}
+              isLikeList
               onClickLike={(e) => {
                 if (user.idx) {
                   e.stopPropagation();
-                  onLikeShop(item.idx);
+                  onCancelLikeProduct(item.artwork.idx);
                 } else {
                   e.stopPropagation();
                   setShowLogin(true);
                 }
               }}
-              showType={showType}
-              index={index}
-            />
-          )
-          })
-        : 
-        shopList.map((item,index)=>{
-          return(
-            <ArtworkCard
-              item={item}
-              key={item.idx}
-              onClick={(e) => saveHistory(e, item.idx)}
-              onClickLike={(e) => {
-                if (user.idx) {
-                  e.stopPropagation();
-                  onLikeShop(item.idx);
-                } else {
-                  e.stopPropagation();
-                  setShowLogin(true);
-                }
-              }}
-              showType={showType}
+              showType={showType? 2:1}
               index={index}
             />
           )
           })
         }
       </ProductListWrap>
-      {/* <InterView ref={interSectRef} /> */}
       <AlertModal
         visible={showLogin}
         setVisible={setShowLogin}
@@ -339,57 +272,128 @@ const ProductListWrap = styled.div`
   flex-wrap: wrap;
   align-items: center;
   margin:0 50px;
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin:0 20px;
+  } */
   @media only screen and (max-width: 768px) {
     margin:0;
   }
 `;
 
+const CarouselWrap = styled.div`
+  display: block;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4697/1737;
+  max-height: 700px;
+`;
+const MobileCarouselWrap = styled.div`
+  display: none;
+  max-height: 700px;
+  position: relative;
+  @media only screen and (max-width: 768px) {
+    display: block;
+  }
+`;
+
+const ControlImage = styled.img`
+  width: 40px;
+  @media only screen and (max-width: 768px) {
+    width: 15px;
+  }
+`;
+
+const InterView = styled.div`
+  height: 200px;
+`;
+
+const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
+  /* display:flex; */
+  display:${props => props.showcategory? 'flex' : 'none'};
+  align-items: center;
+  margin: 20px 50px 40px;
+
+  overflow-x: scroll;
+  cursor: pointer;
+  -webkit-overflow-scrolling: touch;
+
+  ::-webkit-scrollbar{
+    display:none;
+  }
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin: 20px 0px 20px 20px;;
+  } */
+  @media only screen and (max-width: 768px) {
+    margin: 20px 0 20px 18px;
+  }
+`;
 
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
   border : 1px solid ${(props) => (props.selected ? '#121212' : '#c0c0c0')};
-  padding: 0 18px;
-  margin-right: 10px;
+  padding: 13px 24px 14px 22px;
+  margin-right: 10.88px;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
+  height: 47.25px;
   /* box-shadow:2px 3px 3px 0px #aaaaaa; */
   cursor: pointer;
-  @media only screen and (max-width: 1440px) {
+  @media only screen and (max-width: 768px) {
+    margin-right: 5px;
+    padding: 7px 20px;
     height: 27px;
   }
 `;
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
+  font-family:'Pretendard Variable';
+  font-size:17px;
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
   font-weight: 410;
   text-transform: capitalize;
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1440px) {
     font-size: 14px;
   }
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
 `;
-const TitleWrap = styled.div<{showsearch:boolean}>`
-  display:${props => props.showsearch? 'flex':'none'};
-  justify-content:space-between;
-  align-items:center;
-  padding:50px 50px 90px 50px;
+
+const TabBox = styled.div`
+width:400px;
+display:flex;
+margin:50px;
+border-bottom:1.7px solid rgb(204,204,204);
   @media only screen and (max-width: 768px) {
-    display:none;
+  margin:50px 0 0;
+  width:100%;
   }
-`;
-const TitleText = styled.span`
-font-family:'Pretendard Variable';
-  font-size: 22px;
-  font-weight: 310;
-  text-transform: capitalize;
+`
+const TabContents = styled.div<{On?:boolean}>`
+  font-family:'Pretendard Variable';
+  border-bottom:${props => props.On? 1.7:0}px solid black;
+  font-weight:${props => props.On? 410 : 360};
+  
+  color:rgb(0,0,0);
+  padding:10px 0;
+  margin-top:5px;
+  font-size:18px;
+  flex: 1 1 0%;
   @media only screen and (max-width: 768px) {
-    display:none
+    font-size:14px;
   }
-`;
+`
+const TabImage = styled.img`
+  width:25px;
+  height:25px;
+  @media only screen and (max-width:768px){
+    width:20px;
+    height:20px;
+  }
+`
 
 export default LikeArtwork;

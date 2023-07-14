@@ -43,3 +43,9 @@
   right: 11% !important;
   width: var(--swiper-scrollbar-size, 1.5px) !important;
 }
+
+.swiper-scrollbar-drag {
+  height: 3.57px;
+  border-radius: 0;
+  top: -3.57px;
+}

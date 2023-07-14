@@ -23,6 +23,7 @@ function MainArtistList({
   // onClick,
   // onClickLike,
   // isLikeList,
+  LinkHandler,
   title,
   ProductViews,
   naviArrow,
@@ -37,6 +38,7 @@ function MainArtistList({
   marginT,
   marginB
 }:{
+  LinkHandler:(e:React.MouseEvent, title:string, idx?:number)=>void
   title:string
   ProductViews:number
   naviArrow:boolean
@@ -53,10 +55,7 @@ function MainArtistList({
 }) {
 
   const navigate = useNavigate();
-
-  const LinkHandler = (productLink:string,idx?:number)=>{
-      navigate(`/MobileProfile/${idx}`)
-  }
+  const [follow,followed] = useState(false)
  
   return (
     <ContainerWrap>
@@ -93,11 +92,11 @@ function MainArtistList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList.map(item=>{
+        {ProducList.map((item,index)=>{
           return(
-            <SwiperSlide>
-              <ProductWrap onClick={()=>LinkHandler(productLink?productLink:title,item.idx)}>
-                <ProductImageWrap aspect={aspect? aspect:1} >
+            <SwiperSlide key={index}>
+              <ProductWrap>
+                <ProductImageWrap aspect={aspect? aspect:1} onClick={(e)=>LinkHandler(e,title,item.idx)}>
                   <ProductImage src={item.file_name}/>
                 </ProductImageWrap>
                 <TextWrap>
@@ -105,7 +104,7 @@ function MainArtistList({
                     {/* {item.idx} */}
                     More Artis Name More Artis Name More Artis Name
                   </ProductTitleText>
-                  <FollowButtonBox style={{marginRight:0}}>
+                  <FollowButtonBox follow={follow} style={{marginRight:0}} onClick={()=>followed(!follow)}>
                     Follow
                   </FollowButtonBox>
                   {/* <ProductSubText>
@@ -136,17 +135,21 @@ const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
     margin-bottom: 50px;
   }
 `;
-const FollowButtonBox = styled.span`
+const FollowButtonBox = styled.span<{follow:boolean}>`
 font-family:'Pretendard Variable';
   padding:5px 25px;
   border:0.5px solid #000000;
+  background-color:${props=>props.follow? '#505050':'#ffffff'};
+  color:${props=>props.follow? '#ffffff': '#505050'};
   box-sizing:border-box;
-  border-radius:12.5px;
+  border-radius:40px;
   font-weight: 310;
+  cursor: pointer;
   font-size:15px;
   white-space:nowrap;
-
+  
   @media only screen and (max-width: 768px) {
+    border-radius:40px;
     font-size:12px;
 
   }
@@ -180,6 +183,7 @@ const ProductWrap = styled.div`
 const ProductImageWrap = styled.div<{aspect:number}>`
   /* max-width:350px; */
   width:100%;
+  cursor: pointer;
   border-radius:50%;
   text-align:start;
   aspect-ratio:${props => props.aspect? props.aspect : 1};
@@ -194,21 +198,22 @@ const TitleBox = styled.div<{marginT?:number;marginB?:number;}>`
   margin-bottom:${props=> props.marginB}px;
   display: flex;
   align-items:center;
+  padding: 0px 3px;
   @media only screen and (max-width: 768px) {
     justify-content:space-between;
-    padding: 5px 15px;
+    padding: 0px 15px;
   }
 `;
 
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
   font-size:22px;
-  font-weight:360;
+  font-weight: 360;
   @media only screen and (max-width: 1440px) {
     font-size:18px;
   }
   @media only screen and (max-width: 768px) {
-    font-weight: 450;
+    font-weight: 410;
     font-size:15px;
   }
 `;

@@ -8,7 +8,8 @@ import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import CategoryItem from '../../components/Shop/CategoryItem';
 import linkImage from '../../asset/image/links.png';
 import { CategoryListCheck } from '../../components/List/List';
-import SaveButton from '../../components/Layout/SaveButton';
+import TopButton from '../../components/Product/TopButton';
+import TopTextButton from '../../components/Layout/TopTextButton';
 
 export type TUserDetails = {
   idx: number;
@@ -89,7 +90,7 @@ function AddPhoto2() {
 
   return (
     <Container>
-      <SaveButton onClick={()=>{}}/>
+      <TopTextButton text='Save' onClick={()=>{}}/>
       <ProfileContainer>
         <BoxWrap>
           <BoxTitle>
@@ -340,7 +341,7 @@ const DescriptionText = styled.p`
 const BoxTitle = styled.p`
 font-family:'Pretendard Variable';
   font-size:16px;
-  font-weight:500;
+  font-weight: 410;
   text-align:start;
   color:#2b2b2b;
   margin:20px 5px 10px;
@@ -349,7 +350,7 @@ font-family:'Pretendard Variable';
 `
 const CategoryCount = styled.span`
   font-size:13px;
-  font-weight:500;
+  font-weight: 410;
   text-align:start;
   color:#adadad;
   margin-left:20px;
@@ -357,7 +358,7 @@ const CategoryCount = styled.span`
 
 const LinkName = styled.p`
 font-family:'Pretendard Variable';
-  font-weight:500;
+  font-weight: 410;
   text-align:start;
   color:#2b2b2b;
   margin:0;
@@ -368,7 +369,7 @@ font-family:'Pretendard Variable';
 const LinkUrl = styled.p`
 font-family:'Pretendard Variable';
   font-size:14px;
-  font-weight:500;
+  font-weight: 410;
   text-align:start;
   color:#b8b8b8;
   margin:0;

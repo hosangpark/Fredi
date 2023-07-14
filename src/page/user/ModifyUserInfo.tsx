@@ -21,7 +21,7 @@ import { passwordReg, phoneReg } from '../../util/Reg';
 import { useRef } from 'react';
 import { APISaveAddress } from '../../api/ShopAPI';
 import PostModal from '../../components/Modal/PostModal';
-import SaveButton from '../../components/Layout/SaveButton';
+import TopTextButton from '../../components/Layout/TopTextButton';
 
 const REASONLIST = [
   { value: '', label: '탈퇴 사유 선택' },
@@ -317,14 +317,9 @@ function ModifyUserInfo() {
   }, [timer]);
 
   return (
-    <Container style={{ overflow: 'hidden' }}>
-      
-      <SaveButton onClick={()=>{}}/>
-      {/* <LeftBox>
-        <LeftTopBox>
-          <Title>개인정보수정</Title>
-        </LeftTopBox>
-      </LeftBox> */}
+    <Container>
+    <Title>Settings</Title>
+      <TopTextButton text='Save' onClick={()=>{}}/>
       <RightBox>
         <RowWap>
           <LeftText>ID</LeftText>
@@ -346,7 +341,7 @@ function ModifyUserInfo() {
         <RowWap>
           <LeftText>Phone</LeftText>
           {/* <RightText marginR={35}>{userDetails?.phone? userDetails?.phone : 'Number'}</RightText> */}
-          <RightText onClick={()=> navigate('/changePhone')}>
+          <RightText cursor onClick={()=> navigate('/changePhone')}>
             {originalPhone}
             <EmptyBox>
             <RightArrow src={rightArrowImage}/>
@@ -355,7 +350,7 @@ function ModifyUserInfo() {
         </RowWap>
         <RowWap>
           <LeftText>Password</LeftText>
-          <RightText onClick={()=> navigate('/changePassword')}>
+          <RightText cursor onClick={()=> navigate('/changePassword')}>
             Edit
             <EmptyBox>
             <RightArrow src={rightArrowImage}/>
@@ -364,7 +359,7 @@ function ModifyUserInfo() {
         </RowWap>
         <RowWap style={{paddingTop:100}}>
           <LeftText>Address</LeftText>
-          <RightText onClick={()=> navigate('/changeAddress')}>
+          <RightText cursor onClick={()=> setShowAddressModal(true)}>
             Edit
             <EmptyBox>
             <RightArrow src={rightArrowImage}/>
@@ -373,7 +368,7 @@ function ModifyUserInfo() {
         </RowWap>
         <RowWap style={{paddingTop:100}}>
           <LeftText style={{color:'#9C343F'}}>Delete Account</LeftText>
-          <RightText onClick={()=>setShowAccountModal(true)}>
+          <RightText cursor onClick={()=>setShowAccountModal(true)}>
             Delete
             <EmptyBox>
             <RightArrow src={rightArrowImage}/>
@@ -581,13 +576,15 @@ function ModifyUserInfo() {
 
 const Container = styled.div`
   display: flex;
-  flex: 1;
-  flex-direction: row;
-  border-top: 1px solid #121212;
-  background-color: #ffffff;
-  @media only screen and (max-width: 768px) {
-    flex-direction: column;
-    border-top: 0;
+  min-width: 290px;
+  width: 100%;
+  flex-direction: column;
+  text-align: left;
+  padding:30px;
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
+    padding:20px;
+    border-right: 0;
   }
 `;
 
@@ -605,17 +602,12 @@ const LeftBox = styled.div`
 `;
 
 const RightBox = styled.div`
-  display: flex;
-  flex: 1;
-  max-width: 768px;
-  flex-direction: column;
-  padding:0 20px;
-margin:30px auto;
+  width:768px;
+  margin:0 auto;
+  padding:0 20px 50px;
   @media only screen and (max-width: 768px) {
-    /* min-width: 300px; */
-    margin: 30px 0;
-
-    /* border-top:1px solid #d4d4d4; */
+    width:100%;
+    padding:0 20px 50px;
   }
 `;
 
@@ -628,11 +620,15 @@ const LeftTopBox = styled.div`
 `;
 
 const Title = styled.h3`
-  font-weight: 700;
+font-family:'Pretendard Variable';
+  font-weight: 410;
   color: #121212;
-  font-size: 30px;
+  font-size: 16px;
+  border-bottom: 1px solid  #ECECEC;
+  
   @media only screen and (max-width: 768px) {
-    font-size: 22px;
+  padding-bottom:40px;
+    font-size: 14px;
   }
 `;
 
@@ -642,6 +638,7 @@ const RowWap = styled.div<{ last?: boolean }>`
   position: relative;
   justify-content:space-between;
   border-bottom:1px solid #ECECEC;
+  padding:20px 0;
   @media only screen and (max-width: 768px) {
     padding:20px 0;
   }
@@ -669,8 +666,8 @@ align-items:center;
   font-family:'Pretendard Variable';
     font-weight:normal;
     color: #000000;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 360;
     flex:4;
     height: 100%;
     text-align: left;
@@ -678,10 +675,11 @@ align-items:center;
       font-size: 12px;
   }
 `;
-const RightText = styled(LeftText)<{marginR?:number}>`
+const RightText = styled(LeftText)<{marginR?:number,cursor?:boolean}>`
 justify-content:flex-end;
 font-family:'Pretendard Variable';
   font-weight: 310;
+  cursor:${props => props.cursor && 'pointer'};
   color:#000000;
   width:100%;
   border: 0;
@@ -699,10 +697,10 @@ const RightArrow = styled.img`
 `
 
 const BlackButtonText = styled.span`
+font-family:'Pretendard Variable';
   color: #ffffff;
   font-size: 16px;
   font-weight: 410;
-  line-height: 60px;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
   }
@@ -745,7 +743,7 @@ const ModalTitle = styled.span`
 font-family:'Pretendard Variable';
   font-size: 16px;
   color: #000000;
-  font-weight: 450;
+  font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
   }
@@ -779,6 +777,7 @@ const ModalBlackButton = styled.div`
 `;
 
 const ModalWhiteButton = styled(ModalBlackButton)`
+flex: none;
   background-color: #ffffff;
   margin-left: 10px;
   @media only screen and (max-width: 768px) {
@@ -1025,10 +1024,11 @@ const RecipientInputRowWrap = styled(ContentTextRowWrap)<{ last?: boolean }>`
 `;
 
 const ContentLeftText = styled.span`
+font-family:'Pretendard Variable';
   font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 410;
   width: 100px;
   @media only screen and (max-width: 768px) {
     width: 80px;
@@ -1037,12 +1037,15 @@ const ContentLeftText = styled.span`
 `;
 
 const RecipientInputLeftText = styled(ContentLeftText)`
+font-family:'Pretendard Variable';
+margin-bottom:10px;
   @media only screen and (max-width: 768px) {
     width: 100px;
   }
 `;
 
 const AddressModalTextInput = styled.input`
+font-family:'Pretendard Variable';
   width: 100%;
   height: 35px;
   padding: 10px;
@@ -1075,6 +1078,8 @@ const AddressModalButtonWrap = styled.div`
 `;
 
 const AddresModalBlackButton = styled(ModalBlackButton)`
+width:100%;
+flex: none;
   @media only screen and (max-width: 768px) {
     margin-right: 10px;
   }

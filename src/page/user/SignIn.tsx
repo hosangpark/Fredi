@@ -146,7 +146,7 @@ function SignIn() {
           <SnsButton src={kakaoImage} onClick={onKakaoLogin} />
           <NaverLoginButton />
         </SnsRowWrap>
-        <BottomText onClick={() => navigate('/signup')}>
+        <BottomText onClick={() => navigate('/SignUp1')}>
           아직 회원이 아니신가요?&nbsp;<UnderLinedText>회원가입</UnderLinedText>
         </BottomText>
       </SignInBox>
@@ -160,7 +160,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 80px);
-  border-top: 1px solid #121212;
   text-align: left;
   @media only screen and (max-width: 768px) {
     align-items: flex-start;
@@ -211,7 +210,8 @@ const TextInput = styled.input`
   border-bottom: 1px solid #121212;
   border-radius: 0;
   padding-left: 10px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
+  height:20px;
   font-size: 16px;
   color: #121212;
   font-weight: 410;

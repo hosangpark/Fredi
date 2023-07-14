@@ -446,8 +446,13 @@ const ContainerWrap = styled.div`
 `;
 
 const Container = styled.div`
+  max-width: 768px;
   width:100%;
+  margin: 0 auto;
   flex: 1;
+  @media only screen and (max-width: 768px) {
+    
+  }
 `;
 
 const ProfileImage = styled.img`
@@ -471,7 +476,7 @@ const LikeBox = styled.div`
 `;
 const DescriptionWrap = styled.div`
 font-family:'Pretendard Variable';
-font-weight:310;
+font-weight: 300;
 font-size:16px;
   margin:25.14px 38px 51.36px 22px;
   text-align:start;
@@ -609,7 +614,7 @@ const NameBox = styled.div`
 const NameText = styled.p`
 font-family:'Pretendard Variable';
   font-size:16px;
-  font-weight:500;
+  font-weight: 410;
   text-align:start;
   line-height:31px;
   margin:0 10px 0 0;
@@ -623,11 +628,13 @@ font-family:'Pretendard Variable';
   justify-content: center;
   align-items: center;
   width:100%;
+  cursor: pointer;
   border:1px solid #c7c7c7;;
   border-radius:4.93px;
   font-size:12px;
-
-  font-weight: 310;
+    width:90px;
+    height:38px;
+  font-weight: 300;
   white-space:nowrap;
   @media only screen and (max-width: 768px) {
     width:60px;
@@ -640,8 +647,8 @@ const FlexBox = styled.div`
   align-items:center;
 `
 const ImageWrap = styled.div`
-  /* width:65px;
-  height:65px; */
+  width:65px;
+  height:65px;
   margin-right:10px;
   display:flex;
   justify-content:center;
@@ -658,6 +665,7 @@ const ReportImageWrap = styled.div`
   margin-left:10px;
   display:flex;
   align-items:center;
+  cursor: pointer;
 `
 const ImageRotate = styled.img`
   width:24px;

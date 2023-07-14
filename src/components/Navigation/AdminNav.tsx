@@ -153,7 +153,7 @@ const LeftBox = styled.div`
 
 const SubTitle = styled.h4`
   margin: 0;
-  font-weight: 500;
+  font-weight: 410;
   color: #121212;
   font-size: 16px;
 `;

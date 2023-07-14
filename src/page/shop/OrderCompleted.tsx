@@ -241,7 +241,7 @@ const LeftText = styled.span`
   font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 410;
   width: 200px;
   @media only screen and (max-width: 1100px) {
   }
@@ -252,7 +252,7 @@ const LeftText = styled.span`
 
 const RightText = styled.span`
   font-family:'Pretendard Variable';;
-  font-weight: 600;
+  font-weight: 510;
   font-size: 15px;
   @media only screen and (max-width: 1100px) {
   }
@@ -276,7 +276,7 @@ const SubTitleBox = styled.div`
 
 const SubTitleText = styled.span`
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 510;
   color: #121212;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
@@ -303,7 +303,7 @@ const ContentLeftText = styled.span`
   font-family:'Pretendard Variable';;
   color: #121212;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 410;
   width: 100px;
   @media only screen and (max-width: 768px) {
     width: 80px;
