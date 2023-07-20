@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { SnsList, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -29,119 +29,44 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import FeedCard from '../../components/Shop/FeedCard';
 import { FairListItem } from '../../types/Types';
-import { APIProductList } from '../../api/ProductAPI';
+import { APIProductList, APISnsList } from '../../api/ProductAPI';
 
 
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
-
-
-interface ICategorySelectButton {
-  item: { value: string; label: string };
-  isSelect: boolean;
-  onClickFilter: (e: { value: string; label: string }) => void;
-}
-
-const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategorySelectButton) => {
-  return (
-    <CategorySelectButton selected={isSelect} onClick={() => onClickFilter(item)} key={item.label}>
-      <CategorySelectButtonText selected={isSelect}>{item.label}</CategorySelectButtonText>
-    </CategorySelectButton>
-  );
-});
 
 
 function ArtistProducts() {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
   const location = useLocation();
-  const { name } = location.state;
+  const { name, idx } = location.state;
   console.log(name)
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
 
-  const [shopList, setShopList] = useState<FairListItem[]>([]);
+
+  const [SnsList, setSnsList] = useState<SnsList[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
   const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showType, setShowType] = useState<1 | 2>(1);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
 
   const { user } = useContext(UserContext);
-  const interSectRef = useRef(null);
 
-  const getBannerList = async () => {
-    try {
-      const res = await APIGetBanner();
-      console.log('banner', res);
-      setBannerList(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getShopList = async (page: number) => {
+  const getSnsList = async (page: number) => {
     const data = {
-      page: page,
-      category: category,
-      keyword: keywordParams,
+      page: 1,
+      user_idx: location.state === null ? user.idx : idx
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIProductList(data);
-      setTotal(total);
-      if (page === 1) {
-        setShopList((prev) => [...list]);
-      } else {
-        // setShopList((prev) => [...prev, ...list]);
-      }
-      console.log('shop', list, page);
+      const { list } = await APISnsList(data);
+      setSnsList(list);
+      // console.log('shop', list, page);
     } catch (error) {
       console.log(error);
     }
@@ -161,8 +86,8 @@ function ArtistProducts() {
     try {
       const res = await APILikeShop(data);
       console.log(res);
-      const newList = shopList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-      setShopList(newList);
+      const newList = SnsList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
+      setSnsList(newList);
     } catch (error) {
       console.log(error);
     }
@@ -186,7 +111,7 @@ function ArtistProducts() {
     const page = Number(sessionStorage.getItem('page'));
     const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    setShopList(list);
+    setSnsList(list);
     setHistory(true);
     setPage(page);
     setShowType(type);
@@ -201,30 +126,17 @@ function ArtistProducts() {
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
+      sessionStorage.setItem('shop', JSON.stringify(SnsList));
       sessionStorage.setItem('page', String(page));
       sessionStorage.setItem('type', String(showType));
       sessionStorage.setItem('y', String(y ?? 0));
-      // navigate(`/personalpage/${name}`);
-      navigate(`/productdetails/${idx}`);
+      navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
-
-  useEffect(() => {
-    console.log(browserHistory.location);
-    console.log(location);
-    getBannerList();
-  }, []);
-
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
+    if (SnsList.length > 0 && scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -234,7 +146,7 @@ function ArtistProducts() {
       }, 50);
       sessionStorage.removeItem('y');
     }
-  }, [shopList]);
+  }, [SnsList]);
 
   useLayoutEffect(() => {
     const page = Number(sessionStorage.getItem('page'));
@@ -243,12 +155,12 @@ function ArtistProducts() {
       findHistory();
     } else {
       setPage(1);
-      getShopList(1);
+      getSnsList(1);
     }
-  }, [searchParams, category]);
+  }, [searchParams]);
 
   useEffect(() => {
-    if (page > 1) getShopList(page);
+    if (page > 1) getSnsList(page);
   }, [page]);
 
 
@@ -256,8 +168,8 @@ function ArtistProducts() {
     <Container>
       <NameBox>{name}</NameBox>
       <ProductListWrap>
-        {shopList.length > 0 &&
-        shopList.map((item,index)=>{
+        {SnsList.length > 0 &&
+        SnsList.map((item,index)=>{
           return(
             <FeedCard
               item={item}

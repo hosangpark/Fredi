@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Checkbox, Modal, PasswordInput } from '@mantine/core';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Modal } from '@mantine/core';
 import { APIGetTerms } from '../../api/SettingAPI';
-import { APICheckNickname, APICheckUserId, APISendAuthNumber, APISignUp, APIVerifyAuthNumber } from '../../api/UserAPI';
-import { passwordReg, phoneReg } from '../../util/Reg';
-import { DatePicker } from '@mantine/dates';
-import dayjs from 'dayjs';
+import { APISendAuthNumber, APISignUp, APIVerifyAuthNumber } from '../../api/UserAPI';
 import 'dayjs/locale/ko';
 import CheckBox from '../../components/Shop/CheckBox';
 import AlertModal from '../../components/Modal/AlertModal';
@@ -22,8 +19,13 @@ function SignUp3() {
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [Checked, setChecked] = useState<boolean>(false);
   const [alertType, setAlertType] = useState<string[] | undefined>();
+  const [showModal, setShowModal] = useState(false);
+  const [termsOfUse, setTermsOfUse] = useState<string>('');
+  const [privacyPolicy, setPrivacyPolicy] = useState<string>('');
   const countRef = useRef<any>(null);
+  const [tab, setTab] = useState<1 | 2>(1);
   const [confirm, setConfirm] = useState(false);
+  const [Signed, setSigned] = useState(false);
 
   const onSendAuthNumber = async () => {
     // if (isOriginalPhone) return setAlertType('originalPhone');
@@ -39,6 +41,7 @@ function SignUp3() {
       setTimer(180);
       setIsSend(true);
     } catch (error) {
+      setSigned(true)
       console.log(error);
       setAlertType(['member']);
     }
@@ -59,18 +62,18 @@ function SignUp3() {
           type: location.state.type,
           user_id: location.state.user_id,
           password: location.state.password,
-          nickname: Name,
+          name: Name,
           phone: Phone,
-        };
-        console.log(data);
-        try {
-          const res = await APISignUp(data);
-          console.log(res);
-          setConfirm(true);
-        } catch (error) {
-          console.log(error);
-          alert(error);
-        }
+          level: location.state.type
+      };
+      try {
+        const res = await APISignUp(data);
+        console.log(res);
+        setConfirm(true);
+      } catch (error) {
+        console.log(error);
+        alert(error);
+      }
     }
   }
 
@@ -94,6 +97,26 @@ function SignUp3() {
   const clearAlert = (alert: any) => {
     setAlertType((prev) => prev?.filter((item) => item !== alert));
   };
+  const getTerms = async () => {
+    const data = {
+      type: tab,
+    };
+    try {
+      const resData = await APIGetTerms(data);
+      if (tab === 1) {
+        setTermsOfUse(resData);
+      } else {
+        setPrivacyPolicy(resData);
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+
+  useEffect(() => {
+    getTerms();
+  }, [tab]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -143,12 +166,12 @@ function SignUp3() {
             <CustomOption>
                 +82
             </CustomOption>
-            <CustomOption>
+            {/* <CustomOption>
                 +02
             </CustomOption>
             <CustomOption>
                 +01
-            </CustomOption>
+            </CustomOption> */}
           </CustomSelect>
         </SelectBox>
         </InputWrap>
@@ -158,7 +181,6 @@ function SignUp3() {
             value={Phone}
             onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
             placeholder="01012345678"
-            
             />
           <UnderlineTextButton disabled={isSend} onClick={
             ()=>{
@@ -187,12 +209,11 @@ function SignUp3() {
         </AuthText>
         }
         </TimerBox>
-        <CheckSign onClick={()=>setChecked(!Checked)}>
-        <CheckBox checked={Checked} size={23}/>
-        <TextBox>
-          By Checking this box, you consent to our &nbsp;<UnderLineText>Terms of Use</UnderLineText>&nbsp; and &nbsp;<UnderLineText>&nbsp;Privacy Policy</UnderLineText>
-        </TextBox>
-
+        <CheckSign>
+        <CheckBox  onClick={()=>setChecked(!Checked)} checked={Checked} size={23}/>
+          <TextBox>
+            <span  onClick={()=>setChecked(!Checked)}>By Checking this box, you consent to our </span>&nbsp;<UnderLineText onClick={()=>{setShowModal(true);setTab(1)}}>Terms of Use</UnderLineText>&nbsp; and &nbsp;<UnderLineText onClick={()=>{setShowModal(true);setTab(2)}}>&nbsp;Privacy Policy</UnderLineText>
+          </TextBox>
         </CheckSign>
         <TimerBox>
         {alertType?.includes('NoCheck') && 
@@ -207,6 +228,27 @@ function SignUp3() {
           </ButtonText>
         </NextButton>
       </TypeContainer>
+      <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
+      <ModalBox>
+      <ModalTitle>{tab === 1? '이용약관' : '개인정보 처리방침'}</ModalTitle>
+        <ModalContentBox value={tab === 1? termsOfUse : privacyPolicy} disabled />
+        <ModalBlackButton
+          onClick={() => {
+            setShowModal(false);
+          }}
+        >
+        <BlackButtonText>확인</BlackButtonText>
+      </ModalBlackButton>
+      </ModalBox>
+      </Modal>
+      <AlertModal
+        visible={Signed}
+        setVisible={setSigned}
+        text={'이미 가입된 번호입니다.'}
+        onClick={() => {
+          setSigned(false);
+        }}
+      />
       <AlertModal
         visible={confirm}
         setVisible={setConfirm}
@@ -379,5 +421,72 @@ font-family:'Pretendard Variable';
 font-weight: 310;
 border:0;
 `
+const ModalBox = styled.div`
+  background-color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  @media only screen and (max-width: 768px) {
+    padding: 10px 10px;
+  }
+`;
 
+const ModalTitle = styled.span`
+  font-family:'Pretendard Variable';
+  font-size: 24px;
+  color: #121212;
+  font-weight: 700;
+  margin-bottom: 30px;
+  @media only screen and (max-width: 768px) {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+`;
+
+const ModalBlackButton = styled.div`
+  width: 130px;
+  height: 50px;
+  background-color: #121212;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid #121212;
+  margin-top: 20px;
+`;
+const ModalContentBox = styled.textarea`
+  font-family:'Pretendard Variable';
+  width: 600px;
+  height: 700px;
+  border: 1px solid #121212;
+  padding: 15px;
+  overflow-y: scroll;
+  margin: 5px 0;
+  resize: none;
+  font-size: 14px;
+  font-weight: 410;
+  color: #121212;
+  outline: 0;
+  line-height: 25px;
+  background-color: #fff;
+  -webkit-text-fill-color: #121212;
+  opacity: 1;
+
+  @media only screen and (max-width: 768px) {
+    width: 400px;
+    height: 400px;
+    font-size: 12px;
+    line-height: 20px;
+  }
+`;
+const BlackButtonText = styled.span`
+  font-weight: 410;
+  color: #ffffff;
+  font-size: 16px;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
 export default SignUp3;

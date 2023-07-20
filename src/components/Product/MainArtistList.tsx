@@ -1,9 +1,5 @@
 import React,{useState,useRef} from 'react';
-import dayjs from 'dayjs';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart_on.png';
-import likeOffImage from '../../asset/image/heart_off.png';
-import newIconImage from '../../asset/image/ico_new.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 // Import Swiper styles
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -12,9 +8,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import leftarrowIcon from '../../asset/image/ico_prev_mobile.png'
+import profileImage from '../../asset/image/Profile.svg';
 import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
-import { TImage } from '../../types/Types';
+import { ArtistList } from '../../types/Types';
 
 function MainArtistList({
   // item,
@@ -44,7 +40,7 @@ function MainArtistList({
   naviArrow:boolean
   scrollbar:boolean
   ProductTitle?:number
-  ProducList:TImage[]
+  ProducList:ArtistList[]
   productLink?:string
   arrowView?:boolean
   titlesize?:number
@@ -97,7 +93,7 @@ function MainArtistList({
             <SwiperSlide key={index}>
               <ProductWrap>
                 <ProductImageWrap aspect={aspect? aspect:1} onClick={(e)=>LinkHandler(e,title,item.idx)}>
-                  <ProductImage src={item.file_name}/>
+                  <ProductImage src={item.image?.file_name ? item.image?.file_name : profileImage}/>
                 </ProductImageWrap>
                 <TextWrap>
                   <ProductTitleText>

@@ -8,15 +8,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 // Import Swiper styles
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import leftarrowIcon from '../../asset/image/ico_prev_mobile.png'
 import rotateLeft from '../../asset/image/right.svg'
 import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
-import { TImage, TProductListItem } from '../../types/Types';
-import './ProductMainList.css'
+import { ArtworkListItem, TImage, TProductListItem } from '../../types/Types';
 
 function LastestList({
   // item,
@@ -45,7 +39,7 @@ function LastestList({
   ProductViews:number
   naviArrow:boolean
   scrollbar:boolean
-  ProducList:TProductListItem[]
+  ProducList:ArtworkListItem[]
   productLink?:string
   arrowView?:boolean
   titlesize?:number
@@ -106,7 +100,8 @@ function LastestList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList.map((item,index)=>{
+        {ProducList &&
+        ProducList.map((item,index)=>{
           return(
             <SwiperSlide key={index}>
               <ProductWrap marginRight={marginRight? marginRight:20}>
@@ -120,7 +115,7 @@ function LastestList({
                     {item.name}
                   </ProductTitleText>
                   <ProductSubText>
-                    {item.designer}
+                    {item.designer_name}
                   </ProductSubText>
                 </TextWrap>
               </ProductWrap>

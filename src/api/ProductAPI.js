@@ -83,3 +83,59 @@ export const APIArtistFollowAdd = async (data) => {
   const res = await API.post('/user/like', { params: data, headers: config });
   return res.data;
 };
+
+/** SNS */
+export const APISnsAdd = async (data) => {
+  const config = Authorization();
+  // const res = await API.post('/sns', { params: data, headers: config,'Content-Type': 'multipart/form-data' });
+  const res = await FileAPI('/sns', data, config, true);
+  return res.data;
+};
+
+export const APISnsList = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/sns/list', { params: data, headers: config });
+  return res.data;
+};
+
+export const APISnsCount = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/sns/count', { params: data, headers: config });
+  return res.data;
+};
+
+export const APISnsDetails = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/sns/details', { params: data, headers: config });
+  return res.data;
+};
+
+export const APISnsLike = async (data) => {
+  const config = Authorization();
+  const res = await API.post('/sns/like', { params: data, headers: config });
+  return res.data;
+};
+
+export const APISnsLikeList = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/sns/like', { params: data, headers: config });
+  return res.data;
+};
+
+export const APIBookMarkLike = async (data) => {
+  const config = Authorization();
+  const res = await API.post('/sns/bookmark', { params: data, headers: config });
+  return res.data;
+};
+
+export const APIBookMarkLikeList = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/sns/bookmark', { params: data, headers: config });
+  return res.data;
+};
+
+export const APIFollowersProductList = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/user/like-designer-sns', { params: data, headers: config });
+  return res.data;
+};

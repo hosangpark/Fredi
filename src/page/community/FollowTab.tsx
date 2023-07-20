@@ -9,7 +9,7 @@ import bookMarkImage from '../../asset/image/Bookoff.svg';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { FollowArtistListType, FollowCardType, LikeSnsListType, SnsdetailsType, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -25,6 +25,7 @@ import Feed from './Feed';
 import BookMark from './BookMark';
 import { FairListItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
+import { APIArtistFollowingList, APIFollowersProductList, APISnsLikeList } from '../../api/ProductAPI';
 
 const TabImage = styled.img`
   width:25px;
@@ -40,20 +41,15 @@ const TabImage = styled.img`
 
 function FollowTab() {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
-  const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
 
-  const [shopList, setShopList] = useState<FairListItem[]>([]);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
-  const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
+  const [category, setCategory] = useState<string>(categoryParams);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
-
+  const [FollowArtistList, setFollowArtistList] = useState<FollowArtistListType[]>([]);
+  const [LikeSnsList, setLikeSnsList] = useState<FollowCardType[]>([]);
 
   const findHistory = () => {
     // const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
@@ -62,7 +58,6 @@ function FollowTab() {
 
     // setShopList(list);
     setHistory(true);
-    setShowType(type);
 
     sessionStorage.removeItem('shop');
     sessionStorage.removeItem('page');
@@ -74,15 +69,47 @@ function FollowTab() {
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
+      sessionStorage.setItem('shop', JSON.stringify(LikeSnsList));
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/shopdetails/${idx}`);
+      navigate(`/personalpage/${idx}`,{state:idx});
+    }
+  };
+  
+  const getArtistData = async () => {
+    const data = {
+      page: 1,
+    };
+    try {
+      if (history) {
+        return setHistory(false);
+      }
+      const { list } = await APIArtistFollowingList(data);
+      // console.log('dddddddddddddddddddd',list)
+      setFollowArtistList(list);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getLikeSnsData = async () => {
+    const data = {
+      page: 1,
+    };
+    try {
+      if (history) {
+        return setHistory(false);
+      }
+      const { list } = await APIFollowersProductList(data);
+      setLikeSnsList(list);
+      console.log(list)
+    } catch (error) {
+      console.log(error);
     }
   };
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
+    if (LikeSnsList.length > 0 && scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -92,7 +119,12 @@ function FollowTab() {
       }, 50);
       sessionStorage.removeItem('y');
     }
-  }, [shopList]);
+  }, [LikeSnsList]);
+
+  useEffect(() => {
+    getArtistData();
+    getLikeSnsData();
+  }, []);
 
   const onSearch = () => {
     navigate(
@@ -107,7 +139,7 @@ function FollowTab() {
     );
   };
 
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
+  const chageCategory = (value: string) => {
     setCategory(value);
     setSearchParams({
       keyword,
@@ -130,7 +162,7 @@ function FollowTab() {
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
-          onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
+          onChangeCategory={(value: string) => {
             chageCategory(value);
           }}
         />
@@ -149,7 +181,7 @@ function FollowTab() {
             <TabImage src={bookMarkImage}/></div>
           </UnderLineTab>
         </TabButtonWrap>
-        <Follow/>
+        <Follow saveHistory={saveHistory} LikeSnsList={LikeSnsList} FollowArtistList={FollowArtistList} />
       </div>
     </Container>
   );

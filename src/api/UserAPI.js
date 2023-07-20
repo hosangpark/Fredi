@@ -1,5 +1,5 @@
 import Authorization from '../util/Authorization';
-import API from './default';
+import API, { FileAPI } from './default';
 
 export const APISignUp = async (data) => {
   const res = await API.post('/user/account', data);
@@ -113,5 +113,33 @@ export const APILink = async (data) => {
 export const APILinkAdd = async (data) => {
   const config = Authorization();
   const res = await API.post('/user/link', data, {headers: config});
+  return res.data;
+};
+export const APILinkModify = async (data) => {
+  const config = Authorization();
+  const res = await API.put('/user/link', data, {headers: config});
+  return res.data;
+};
+export const APILinkDelete = async (data) => {
+  const config = Authorization();
+  const res = await API.post('/user/link-delete', data, {headers: config});
+  return res.data;
+};
+
+export const APIChangeProfile = async (data) => {
+  const config = Authorization();
+  // const res = await API.post('/user/profile-images', data, {headers: config,'Content-Type': 'multipart/form-data'});
+  const res = await FileAPI('/user/profile-images', data, config, true);
+  return res.data;
+};
+
+export const APIModifyName = async (data) => {
+  const config = Authorization();
+  const res = await API.put('/user/profile-v2', data, { headers: config });
+  return res.data;
+};
+export const APISnsProfile = async (data) => {
+  const config = Authorization();
+  const res = await API.put('/user/profile-sns', data, { headers: config });
   return res.data;
 };

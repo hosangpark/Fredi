@@ -1,10 +1,10 @@
 import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart_on.png';
+import likeOnImage from '../../asset/image/heart_on.svg';
 import likeOffImage from '../../asset/image/heart.svg';
 import newIconImage from '../../asset/image/ico_new.png';
-import { ArtworkItem } from '../../types/Types';
+import { ArtworkItem, ArtworkListItem } from '../../types/Types';
 
 
 function LikeCard({
@@ -15,7 +15,7 @@ function LikeCard({
   isLikeList,
   index
 }: {
-  item: ArtworkItem;
+  item: ArtworkListItem;
   showType: 1 | 2;
   onClick: (e: any) => void;
   onClickLike: (e: any) => void;
@@ -33,15 +33,15 @@ function LikeCard({
   return (
     <ProductBox showType={showType} index={(index+1)}>
       <ProductImageWrap onClick={onClick} showType={showType} height={innerWidth}>
-        <ProductImage src={item.image[0].file_name} />
+        <ProductImage src={item.image[0]? item.image[0].file_name: 'none'} />
       </ProductImageWrap>
       {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
       <TextWrap>
         <ProductNameWrap>
           <ProductName>{item.name}{item.name}</ProductName>
-          <Designer>{item.designer}</Designer>
+          <Designer>{item.designer_name}</Designer>
         </ProductNameWrap>
-        {/* <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
+        <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} />
         {/* <LikeButton onClick={()=>console.log(item.isLike)} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
         {/* <LikeCount>{replaceString(item.price)} ₩</LikeCount> */}
       </TextWrap>
@@ -81,14 +81,6 @@ const ProductImage = styled.img`
     transform: scale(1.1);
   }
   transition: all 0.5s ease; */
-`;
-
-const NewIcon = styled.img`
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  left: 10px;
-  top: 10px;
 `;
 
 const Designer = styled.span`

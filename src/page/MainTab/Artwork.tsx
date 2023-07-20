@@ -47,57 +47,28 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function Artwork({saveHistory,onLikeProduct,productList,showType}
+function Artwork({saveHistory,onLikeProduct,CategoryClick,productList,showType,selectCategory}
   :
   {saveHistory:(e:React.MouseEvent, idx: number)=>void,
   onLikeProduct?:(e:number)=>void,
+  CategoryClick?:(e:any)=>void,
   productList?:ArtworkListItem[],
-  showType?:number}) {
+  showType?:number,selectCategory?:string}) {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
   const location = useLocation();
-  let [searchParams, setSearchParams] = useSearchParams();
-  const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-  const pathName = location.pathname.split('/')[1];
-  const [shopList, setShopList] = useState<FairListItem[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
-  const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
-  const [history, setHistory] = useState(false);
-  const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showsearch,setShowsearch] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
   const [showcategory,setShowCategory] = useState(false)
 
 
   const { user } = useContext(UserContext);
 
-  const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
-  };
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
 
   /** drageEvent */
   const scrollRef = useRef<any>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState<any>();
+  const [isDragging, setIsDragging] = useState(false);
+  const [movingX, setmovingX] = useState<any>();
 
   const onDragStart = (e:any) => {
     e.preventDefault();
@@ -107,11 +78,13 @@ function Artwork({saveHistory,onLikeProduct,productList,showType}
 
   const onDragEnd = () => {
     setIsDrag(false);
+
   };
 
   const onDragMove = (e:any) => {
     if (isDrag) {
       scrollRef.current.scrollLeft = startX - e.pageX;
+      setmovingX(scrollRef.current.scrollLeft)
     }
   };
   const throttle = (func:any, ms:any) => {
@@ -126,6 +99,14 @@ function Artwork({saveHistory,onLikeProduct,productList,showType}
       }
     };
   };
+  
+  useEffect(()=>{
+    setIsDragging(true)
+    setTimeout(() => {
+      setIsDragging(false);
+    }, 500);
+  },[movingX])
+
   const delay = 10;
   const onThrottleDragMove = throttle(onDragMove, delay);
   return (
@@ -137,14 +118,13 @@ function Artwork({saveHistory,onLikeProduct,productList,showType}
       onMouseLeave={onDragEnd}
       ref={scrollRef}
       showcategory={showcategory}>
-        {CategoryList.map((item) => {
+        {CategoryList.map((item,index) => {
           return (
-            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
-
+            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={selectCategory === item.value} onClickFilter={()=>{
+              if(!isDragging){if(CategoryClick)CategoryClick(item.value)}}} />
           );
         })}
       </CategorySelectButtonWrap>
-      
       <ProductListWrap>
         {productList &&
         productList.map((item:any,index:number)=>{
@@ -234,8 +214,8 @@ const InterView = styled.div`
 `;
 
 const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
-  /* display:flex; */
-  display:${props => props.showcategory? 'flex' : 'none'};
+  display:flex;
+  /* display:${props => props.showcategory? 'flex' : 'none'}; */
   align-items: center;
   margin: 20px 50px 40px;
 

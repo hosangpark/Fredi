@@ -125,6 +125,14 @@ function AskList() {
         </NoDataBox>
       ) : (
         <ListWrap>
+          <UnderTitleBox>
+            <RowWrap>
+              <ListItemTitle> </ListItemTitle>
+              <SendMessageBox onClick={()=>navigate('/registerask')}>
+                send Message
+              </SendMessageBox>
+            </RowWrap>
+          </UnderTitleBox>
           <Accordion
             value={isOpen}
             onChange={setOpen}
@@ -297,6 +305,10 @@ const ListWrap = styled.div`
 const TitleBox = styled.div`
   padding: 10px 20px 20px;
 `;
+const UnderTitleBox = styled.div`
+  padding: 10px 10px 20px;
+  border-bottom:1px solid black;
+`;
 
 const ContentBox = styled.div`
   border-top: 1px solid #121212;
@@ -322,6 +334,18 @@ const ListItemTitle = styled.span`
   }
 `;
 
+const SendMessageBox = styled.div`
+  font-family:'Pretendard Variable';
+  display:block;
+  padding:5px 40px;
+  border-radius:5px;
+  font-size:15px;
+  font-weight:510;
+  border:1px solid #9c9c9c;
+  @media only screen and (max-width: 768px) {
+    display:none;
+  }
+`
 const StatusBox = styled.div<{ answerd: boolean }>`
   width: 78px;
   height: 27px;

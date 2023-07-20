@@ -6,7 +6,7 @@ import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import { APIFairList, APILikeProduct, APIProductList } from '../../api/ProductAPI';
+import { APIArtistList, APIFairList, APILikeProduct, APIProductList, APISnsList } from '../../api/ProductAPI';
 import { APIGetBanner } from '../../api/SettingAPI';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
@@ -20,9 +20,12 @@ import ProductMainList from '../../components/Product/ProductMainList';
 import WeeklyEditionList from '../../components/Product/WeeklyEditionList';
 import Footer from '../../components/Layout/Footer';
 import MainArtistList from '../../components/Product/MainArtistList';
-import { FairList, TImage, TProductListItem } from '../../types/Types';
+import { ArtistItem, ArtistList, ArtworkListItem, FairList, FeaturedListType, MainFairList, SnsList, TImage, TProductListItem, WeeklyListItem } from '../../types/Types';
 import LastestList from '../../components/Product/LastestList';
 import FairMainList from '../../components/Product/FairMainList';
+import { APIFeaturedWorksList, APITrendingArtist, APIWeeklyList } from '../../api/ListAPI';
+import FeaturedList from '../../components/Product/FeaturedList';
+import HomeStyleList from '../../components/Product/HomeStyleList';
 
 
 
@@ -79,7 +82,11 @@ function Home() {
   // const keywordParams = searchParams.get('keyword') ?? '';
   // const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
   const [FairList, setFairList] = useState<FairList[]>([]);
-  const [LatestList, setLatestList] = useState<TProductListItem[]>([]);
+  const [LatestList, setLatestList] = useState<ArtworkListItem[]>([]);
+  const [WeeklyList, setWeeklyList] = useState<WeeklyListItem[]>([]);
+  const [HomeList, setHomeList] = useState<SnsList[]>([]);
+  const [ArtistList, setArtistList] = useState<ArtistList[]>([]);
+  const [Featured, setFeaturedList] = useState<FeaturedListType[]>([]);
   const [showLogin, setShowLogin] = useState(false);
   const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [bannerListMobile, setBannerListMobile] = useState<TImage[]>([]);
@@ -112,6 +119,20 @@ function Home() {
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
 
+  const getFairsList = async () => {
+    const data = {
+      page: 1,
+      category: '',
+      keyword: '',
+    };
+    try {
+      const { list, total } = await APIFairList(data);
+      setFairList(list.slice(0,10));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getLatestList = async () => {
     const data = {
       page: 1,
@@ -130,20 +151,56 @@ function Home() {
     }
   };
 
-  const getFairsList = async () => {
-    const data = {
-      page: 1,
-      category: '',
-      keyword: '',
-    };
+  const getWeeklyList = async () => {
     try {
-      const { list, total } = await APIFairList(data);
-      setFairList(list.slice(0,10));
-      console.log('productproductproduct', list);
+      if (history) {
+        return setHistory(false);
+      }
+      const { list } = await APIWeeklyList({page:1});
+      setWeeklyList(list.slice(0,10));
+      // console.log('product', list,);
     } catch (error) {
       console.log(error);
     }
   };
+  const getHomeStyleList = async () => {
+    try {
+      if (history) {
+        return setHistory(false);
+      }
+      const { list } = await APISnsList({page:1});
+      setHomeList(list.slice(0,10));
+      // console.log('product', list,);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getArtistList = async () => {
+    try {
+      if (history) {
+        return setHistory(false);
+      }
+      const { list } = await APITrendingArtist({page:1});
+      setArtistList(list.slice(0,10));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getFeaturedList = async () => {
+    try {
+      if (history) {
+        return setHistory(false);
+      }
+      const { list } = await APIFeaturedWorksList({page:1});
+      setFeaturedList(list.slice(0,10));
+      // console.log('product', list,);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
 
   const getBannerList = async () => {
     var array1 = new Array(); //pc
@@ -167,30 +224,22 @@ function Home() {
   };
 
 
-  const options = {
-    root: null, //기본 null, 관찰대상의 부모요소를 지정
-    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
-    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
-  };
-
-
   const LinkHandler = (e:React.MouseEvent,title:string,idx?:number)=>{
     const y = globalThis.scrollY;
     sessionStorage.setItem('Home_y', String(y ?? 0));
     if(title === 'Fairs'){
-      // sessionStorage.setItem('FairTabList', JSON.stringify(FairList));
       navigate(`/FairContent/${idx}`)
     } else if (title.includes('Latest')) {
       // sessionStorage.setItem('LatestList', JSON.stringify(LatestList));
       navigate(`/productdetails/${idx}`);
     } else if (title.includes('Home')) {
-      navigate(`/personalpage/${idx}`)
+      navigate(`/personalpage/${idx}`,{state:idx});
     } else if (title.includes('Weekly')) {
       navigate(`/WeeklyEdition`)
     } else if (title.includes('Trending')) {
-      navigate(`/MobileProfile/${idx}`)
+      navigate(`/MobileProfile/${idx}`,{state:idx})
     } else if (title.includes('Featured')) {
-      navigate(`/MobileProfile/${idx}`)
+      navigate(`/MobileProfile/${idx}`,{state:idx})
     } else {
       console.log(title,idx)
     }
@@ -200,11 +249,15 @@ function Home() {
     getBannerList();
     getLatestList()
     getFairsList()
+    getWeeklyList()
+    getHomeStyleList()
+    getArtistList()
+    getFeaturedList()
   }, []);
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('Home_y'));
-    console.log('scrollYscrollYscrollY',scrollY)
+    // console.log('scrollYscrollYscrollY',scrollY)
     if (scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
@@ -212,10 +265,10 @@ function Home() {
           top: scrollY,
           behavior: 'auto',
         });
-      }, 50);
+      }, 200);
       sessionStorage.removeItem('Home_y');
     }
-  }, [FairList,LatestList]);
+  }, []);
 
 
   const slides = bannerList.map((item:any) => {
@@ -323,20 +376,20 @@ function Home() {
         ProductViews={innerWidth <= 768? 1.1 : innerWidth <= 1440? 2.7 :3.4}
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList = {bannerListMobile}
+        ProducList = {WeeklyList}
         arrowView={false}
         paddingnum={innerWidth <= 768? 0:50}
         marginT={innerWidth <= 768? 120:175.22}
         marginB={innerWidth <= 768? 21:51.32}
         />
-        <ProductMainList
+        <HomeStyleList
         LinkHandler={LinkHandler}
         title={'Home & Styling'}
         ProductViews={innerWidth <= 768? 1.5  : innerWidth <= 1440? 4.4: 5.9}
         // naviArrow = {innerWidth <= 768? false : true}
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList={bannerListMobile}
+        ProducList={HomeList}
         productLink={'Home'}
         arrowView={false}
         paddingnum={innerWidth <= 768? 0:90}
@@ -351,21 +404,22 @@ function Home() {
         // naviArrow = {innerWidth <= 768? false : true}
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList={bannerListMobile}
+        ProducList={ArtistList}
         productLink={'Trending'}
         arrowView={false}
         paddingnum={innerWidth <= 768? 5:50}
         marginT={innerWidth <= 768? 100:170}
         marginB={innerWidth <= 768? 21:54.38}
         />
-        <ProductMainList
+        <FeaturedList
+        getList={getFeaturedList}
         LinkHandler={LinkHandler}
         title={'Featured Works'}
         ProductViews={innerWidth <= 768? 2.05 : innerWidth <= 1440? 4.4 : 5.9}
         // naviArrow = {innerWidth <= 768? false : true}
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList={bannerListMobile}
+        ProducList={Featured}
         arrowView={false}
         aspect={190/230}
         paddingnum={innerWidth <= 768? 50:90}

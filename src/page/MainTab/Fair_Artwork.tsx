@@ -57,8 +57,8 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
+  const categoryParams = (searchParams.get('category') as string) ?? '1';
+  const [category, setCategory] = useState<string>(categoryParams);
   const [showLogin, setShowLogin] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [showcategory,setShowCategory] = useState(false)
@@ -70,7 +70,7 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
 
 
 
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
+  const chageCategory = (value: string) => {
     setCategory(value);
     setSearchParams({
       keyword,
@@ -83,6 +83,8 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
   const scrollRef = useRef<any>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState<any>();
+  const [isDragging, setIsDragging] = useState(false);
+  const [movingX, setmovingX] = useState<any>();
 
   const onDragStart = (e:any) => {
     e.preventDefault();
@@ -97,6 +99,7 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
   const onDragMove = (e:any) => {
     if (isDrag) {
       scrollRef.current.scrollLeft = startX - e.pageX;
+      setmovingX(scrollRef.current.scrollLeft)
     }
   };
   const throttle = (func:any, ms:any) => {
@@ -111,6 +114,14 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
       }
     };
   };
+
+  useEffect(()=>{
+    setIsDragging(true)
+    setTimeout(() => {
+      setIsDragging(false);
+    }, 500);
+  },[movingX])
+  
   const delay = 10;
   const onThrottleDragMove = throttle(onDragMove, delay);
   return (
@@ -124,7 +135,7 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
       showcategory={showcategory}>
         {CategoryList.map((item) => {
           return (
-            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
+            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{if(!isDragging)chageCategory(item.value as string)}} />
 
           );
         })}
@@ -219,8 +230,8 @@ const InterView = styled.div`
 `;
 
 const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
-  /* display:flex; */
-  display:${props => props.showcategory? 'flex' : 'none'};
+  display:flex;
+  /* display:${props => props.showcategory? 'flex' : 'none'}; */
   align-items: center;
   margin: 20px 50px 40px;
 

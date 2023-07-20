@@ -3,9 +3,6 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { APIGetTerms } from '../../api/SettingAPI';
 import {
-  APICheckPassword,
-  APIDeleteAccount,
-  APIModifyPassword,
   APIModifyUserDetails,
   APISendAuthNumber,
   APIUserDetails,
@@ -161,12 +158,12 @@ function ChangePhone() {
             <CustomOption>
                 +82
             </CustomOption>
-            <CustomOption>
+            {/* <CustomOption>
                 +02
             </CustomOption>
             <CustomOption>
                 +01
-            </CustomOption>
+            </CustomOption> */}
           </CustomSelect>
         </SelectBox>
         <RowWap>
@@ -221,64 +218,7 @@ function ChangePhone() {
         </BlackButton>
       </ContainerWrap>
 
-      
-      {/* <AlertModal
-        visible={alertModal}
-        setVisible={setAlertModal}
-        onClick={() => {
-          setAlertModal(false);
-          setAlertType(undefined);
-        }}
-        text={
-          alertType === 'nicknameDuplicated'
-            ? '중복된 닉네임입니다.'
-            : alertType === 'nicknameEmpty'
-            ? '닉네임을 입력해 주세요.'
-            : alertType === 'nicknameAvailable'
-            ? '사용 가능한 닉네임입니다.'
-            : alertType === 'sendFaild'
-            ? '휴대폰 번호를 올바르게 입력해 주세요.'
-            : alertType === 'send'
-            ? '인증번호가 발송되었습니다.'
-            : alertType === 'auth'
-            ? '인증되었습니다.'
-            : alertType === 'authFaild'
-            ? '인증번호를 확인해 주세요.'
-            : alertType === 'member'
-            ? '이미 가입된 번호입니다.'
-            : alertType === 'modified'
-            ? '프로필이 수정되었습니다.'
-            : alertType === 'faild'
-            ? '닉네임 중복 확인과 휴대폰 인증을 완료해 주세요.'
-            : alertType === 'originalPhone'
-            ? '기존 휴대폰 번호와 같습니다.'
-            : alertType === 'originalNickname'
-            ? '기존 닉네임과 같습니다.'
-            : alertType === 'passwordEmpty'
-            ? '비밀번호를 입력해 주세요.'
-            : alertType === 'passwordFaild'
-            ? '기존 비밀번호와 일치하지 않습니다.'
-            : alertType === 'passwordAuth'
-            ? '기존 비밀번호가 인증되었습니다. 새로운 비밀번호를 입력해 주세요.'
-            : alertType === 'passwordReg'
-            ? '비밀번호는 8-16자 영문, 숫자로 구성되어야 합니다.'
-            : alertType === 'password'
-            ? '비밀번호가 변경되었습니다.'
-            : alertType === 'needPasswordAuth'
-            ? '기존 비밀번호 인증을 먼저 완료해 주세요.'
-            : alertType === 'reason'
-            ? '탈퇴 사유를 입력해 주세요.'
-            : alertType === 'agree'
-            ? '탈퇴 약관에 동의해 주세요.'
-            : alertType === 'deleted'
-            ? '회원 탈퇴가 완료되었습니다.'
-            : alertType === 'passwordDiffrent'
-            ? '새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.'
-            : ''
-        }
-      /> */}
-
-      {/* <PostModal visible={showModal} setVisible={setShowModal} setAddress={onAddress} /> */}
+  
     </Container>
   );
 }

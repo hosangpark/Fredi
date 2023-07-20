@@ -63,3 +63,9 @@ export const APICheckNew = async () => {
   const res = await API.get('/setting/new');
   return res.data;
 };
+
+export const APISelling = async (data) => {
+  const config = Authorization();
+  const res = await API.post('/selling', { params: data, headers: config,'Content-Type': 'multipart/form-data' });
+  return res.data;
+};

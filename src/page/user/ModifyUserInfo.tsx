@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox, Modal, Select } from '@mantine/core';
@@ -8,6 +8,7 @@ import { APIGetTerms } from '../../api/SettingAPI';
 import {
   APICheckPassword,
   APIDeleteAccount,
+  APIModifyName,
   APIModifyPassword,
   APIModifyUserDetails,
   APISendAuthNumber,
@@ -22,6 +23,8 @@ import { useRef } from 'react';
 import { APISaveAddress } from '../../api/ShopAPI';
 import PostModal from '../../components/Modal/PostModal';
 import TopTextButton from '../../components/Layout/TopTextButton';
+import ButtonContainer from '../../components/Layout/ButtonBox';
+import { UserContext } from '../../context/user';
 
 const REASONLIST = [
   { value: '', label: '탈퇴 사유 선택' },
@@ -43,6 +46,7 @@ function ModifyUserInfo() {
   const [alertType, setAlertType] = useState<
     | 'nicknameEmpty'
     | 'nicknameDuplicated'
+    | 'nameEmpty'
     | 'nicknameAvailable'
     | 'authFaild'
     | 'send'
@@ -51,6 +55,7 @@ function ModifyUserInfo() {
     | 'auth'
     | 'modified'
     | 'faild'
+    | 'Modify'
     | 'originalPhone'
     | 'originalNickname'
     | 'passwordEmpty'
@@ -69,17 +74,10 @@ function ModifyUserInfo() {
 
   const [originalNickname, setOriginalNickname] = useState<string>('');
   const [originalPhone, setOriginalPhone] = useState<string>('');
+  const [name, setname] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [isDuplicatedNickname, setIsDuplicatedNickname] = useState<boolean>(false);
-  const [phone, setPhone] = useState<string>('');
-  const [authNumber, setAuthNumber] = useState<string>('');
-  const [isSend, setIsSend] = useState(false);
   const [timer, setTimer] = useState(0);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
-  const [isVerifiedPassword, setIsVerifiedPassword] = useState<boolean>(false);
-  const [password, setPassword] = useState<string>('');
-  const [newPassword, setNewPassword] = useState<string>('');
-  const [newPassword2, setNewPassword2] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showAddressModal, setShowAddressModal] = useState<boolean>(false);
   const [showSaveAddressModal, setShowSaveAddressModal] = useState<boolean>(false);
@@ -93,17 +91,19 @@ function ModifyUserInfo() {
 
   const countRef = useRef<any>(null);
   const isOriginalNickname = nickname === originalNickname;
-  const isOriginalPhone = phone === originalPhone;
-  const isVerified = !isDuplicatedNickname && isAuth;
 
-  const testPasswordReg = passwordReg.test(newPassword);
-  const testPhoneReg = phoneReg.test(phone);
+  const { user } = useContext(UserContext);
 
   const getUserDetails = async () => {
+    const data = {
+      idx: user.idx
+    }
+    console.log(user.idx)
     try {
-      const res = await APIUserDetails();
+      const res = await APIUserDetails(data);
       
       setUserDetails(res);
+      setname(res.name);
       setNickname(res.nickname);
       setOriginalNickname(res.nickname);
       setOriginalPhone(res.phone);
@@ -120,96 +120,42 @@ function ModifyUserInfo() {
     }
   };
 
-  const onCheckNickname = async () => {
-    if (isOriginalNickname) return setAlertType('originalNickname');
+  const SaveButton = async () => {
+
+    if (!name) return setAlertType('nameEmpty');
     if (!nickname) return setAlertType('nicknameEmpty');
     try {
       const data = {
         nickname: nickname,
+        user_idx: user.idx
       };
       const res = await checkNicknameExcludeUser(data);
-      setAlertType('nicknameAvailable');
+      console.log(res)
+      // setAlertType('nicknameAvailable');
       setIsDuplicatedNickname(false);
+      ModifyName()
     } catch (error) {
       console.log(error);
       setIsDuplicatedNickname(true);
-      setAlertType('nicknameDuplicated');
+      // setAlertType('nicknameDuplicated');
       setNickname('');
     }
   };
+// const res = await checkNicknameExcludeUser(data);
 
+  const ModifyName = async() => {
+    // if (isOriginalNickname) return setAlertType('originalNickname');
 
-
-  const onCheckAuth = async () => {
-    if (!authNumber) return setAlertType('authFaild');
     try {
       const data = {
-        phone_number: phone,
-        auth_number: authNumber,
+        nickname: nickname,
+        name: name
       };
-      const res = await APIVerifyAuthNumber(data);
-      
-      setIsAuth(true);
-      setAlertType('auth');
-      setTimer(0);
+      const res = await APIModifyName(data);
+      setAlertType('Modify')
     } catch (error) {
-      console.log(error);
-      setIsAuth(false);
-      setAlertType('authFaild');
     }
-  };
-
-  const onModifyUserInfo = async () => {
-    if (!isVerified) return setAlertType('faild');
-    const data = {
-      nickname: nickname,
-      phone: phone,
-    };
-    try {
-      const res = await APIModifyUserDetails(data);
-      
-      setAlertType('modified');
-      setNewPassword('');
-      setNewPassword2('');
-    } catch (error) {
-      console.log(error);
-      alert(error);
-    }
-  };
-
-  const onCheckPassword = async () => {
-    if (!password) return setAlertType('passwordEmpty');
-    const data = {
-      password: password,
-    };
-    try {
-      const res = await APICheckPassword(data);
-      
-      setAlertType('passwordAuth');
-      setIsVerifiedPassword(true);
-    } catch (error) {
-      console.log(error);
-      setAlertType('passwordFaild');
-      setIsVerifiedPassword(false);
-    }
-  };
-
-  const onModifyPassword = async () => {
-    if (!isVerifiedPassword) return setAlertType('needPasswordAuth');
-    if (!newPassword) return setAlertType('passwordReg');
-    if (!testPasswordReg) return setAlertType('passwordReg');
-    if (newPassword !== newPassword2) return setAlertType('passwordDiffrent');
-    try {
-      const data = {
-        password: newPassword,
-      };
-      const res = await APIModifyPassword(data);
-      
-      setAlertType('password');
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }
 
   const onDeleteAccount = async () => {
     if (!reason) return setAlertType('reason');
@@ -224,19 +170,6 @@ function ModifyUserInfo() {
       
       sessionStorage.clear();
       setDeleteAccountModal(true);
-    } catch (error) {
-      console.log(error);
-      alert(error);
-    }
-  };
-
-  const getTerms = async () => {
-    const data = {
-      type: 3,
-    };
-    try {
-      const res = await APIGetTerms(data);
-      setTerms(res);
     } catch (error) {
       console.log(error);
       alert(error);
@@ -290,18 +223,7 @@ function ModifyUserInfo() {
     }
   }, [nickname]);
 
-  useEffect(() => {
-    if (isOriginalPhone) {
-      setIsAuth(true);
-    } else {
-      setIsAuth(false);
-    }
-  }, [phone]);
 
-  useEffect(() => {
-    console.log('phone인증', isAuth);
-    console.log('nickname중복', isDuplicatedNickname);
-  }, [isDuplicatedNickname, isAuth]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -319,7 +241,7 @@ function ModifyUserInfo() {
   return (
     <Container>
     <Title>Settings</Title>
-      <TopTextButton text='Save' onClick={()=>{}}/>
+      <TopTextButton text='Save' onClick={SaveButton}/>
       <RightBox>
         <RowWap>
           <LeftText>ID</LeftText>
@@ -328,13 +250,13 @@ function ModifyUserInfo() {
         </RowWap>
         <RowWap>
           <LeftText>Full name</LeftText>
-          <RightText>{userDetails?.name ? userDetails?.name : 'Name'  }
-          <EmptyBox></EmptyBox></RightText>
+          <RightTextInput value={name} onChange={e=>setname(e.target.value)} maxLength={10}/>
+          <EmptyBox></EmptyBox>
         </RowWap>
         <RowWap>
           <LeftText>User name</LeftText>
-          <RightText>{userDetails?.nickname ? userDetails?.nickname : 'NickName'  }
-          <EmptyBox></EmptyBox></RightText>
+          <RightTextInput value={nickname} onChange={e=>setNickname(e.target.value)} maxLength={20}/>
+          <EmptyBox></EmptyBox>
           {/* <TextInput maxLength={10} value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="닉네임 입력" /> */}
           {/* <UnderlineTextButton onClick={onCheckNickname}>중복확인</UnderlineTextButton> */}
         </RowWap>
@@ -376,6 +298,16 @@ function ModifyUserInfo() {
           </RightText>
         </RowWap>
       </RightBox>
+      <ButtonContainer
+        text1={'Save'}
+        text2={'Cancle'}
+        onClick1={()=>{}}
+        onClick2={SaveButton}
+        cancle={()=>navigate(-1)}
+        marginT={50}
+        marginB={100}
+        visible={true}
+      />
 
       <Modal opened={showAccountModal} onClose={() => setShowAccountModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
         <ModalBox>
@@ -464,29 +396,6 @@ function ModifyUserInfo() {
           </AddressModalButtonWrap>
         </AddressModalBox>
       </Modal>
-      <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
-        <ModalBox>
-          <ModalTitle>개인정보 수정을 위해서</ModalTitle>
-          <ModalTitle>비밀번호를 입력해 주세요.</ModalTitle>
-          <InputWrap>
-            <TextInput maxLength={16} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="입력해 주세요" />
-            {alertType === 'passwordFaild' && <AlertText>*비밀번호를 확인해 주세요.</AlertText>}
-          </InputWrap>
-          <ButtonWrap>
-            <ModalBlackButton onClick={onCheckPassword}>
-              <BlackButtonText>확인</BlackButtonText>
-            </ModalBlackButton>
-            <ModalWhiteButton
-              onClick={() => {
-                setPassword('');
-                setShowModal(false);
-              }}
-            >
-              <WhiteButtonText>취소</WhiteButtonText>
-            </ModalWhiteButton>
-          </ButtonWrap>
-        </ModalBox>
-      </Modal>
       <AlertModal
         visible={alertModal}
         setVisible={setAlertModal}
@@ -499,8 +408,12 @@ function ModifyUserInfo() {
             ? '중복된 닉네임입니다.'
             : alertType === 'nicknameEmpty'
             ? '닉네임을 입력해 주세요.'
+            : alertType === 'nameEmpty'
+            ? '이름을 입력해 주세요.'
             : alertType === 'nicknameAvailable'
             ? '사용 가능한 닉네임입니다.'
+            : alertType === 'Modify'
+            ? '변경이 완료 되었습니다.'
             : alertType === 'sendFaild'
             ? '휴대폰 번호를 올바르게 입력해 주세요.'
             : alertType === 'send'
@@ -519,26 +432,12 @@ function ModifyUserInfo() {
             ? '기존 휴대폰 번호와 같습니다.'
             : alertType === 'originalNickname'
             ? '기존 닉네임과 같습니다.'
-            : alertType === 'passwordEmpty'
-            ? '비밀번호를 입력해 주세요.'
-            : alertType === 'passwordFaild'
-            ? '기존 비밀번호와 일치하지 않습니다.'
-            : alertType === 'passwordAuth'
-            ? '기존 비밀번호가 인증되었습니다. 새로운 비밀번호를 입력해 주세요.'
-            : alertType === 'passwordReg'
-            ? '비밀번호는 8-16자 영문, 숫자로 구성되어야 합니다.'
-            : alertType === 'password'
-            ? '비밀번호가 변경되었습니다.'
-            : alertType === 'needPasswordAuth'
-            ? '기존 비밀번호 인증을 먼저 완료해 주세요.'
             : alertType === 'reason'
             ? '탈퇴 사유를 입력해 주세요.'
             : alertType === 'agree'
             ? '탈퇴 약관에 동의해 주세요.'
             : alertType === 'deleted'
             ? '회원 탈퇴가 완료되었습니다.'
-            : alertType === 'passwordDiffrent'
-            ? '새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.'
             : ''
         }
       />
@@ -664,7 +563,7 @@ const LeftText = styled.span`
 display:flex;
 align-items:center;
   font-family:'Pretendard Variable';
-    font-weight:normal;
+    font-weight:310;
     color: #000000;
     font-size: 14px;
     font-weight: 360;
@@ -677,16 +576,30 @@ align-items:center;
 `;
 const RightText = styled(LeftText)<{marginR?:number,cursor?:boolean}>`
 justify-content:flex-end;
+  cursor:${props => props.cursor && 'pointer'};
+  color:#000000;
+  width:100%;
+  border: 0;
+  flex:6;
+  text-align: right;
+  margin-right:${(props)=> props.marginR ? props.marginR : 0}px;
+`;
+const RightTextInput = styled.input`
+display:flex;
+align-items:center;
+justify-content:flex-end;
 font-family:'Pretendard Variable';
   font-weight: 310;
-  cursor:${props => props.cursor && 'pointer'};
   color:#000000;
   width:100%;
   border: 0;
   flex:6;
   font-size: 14px;
   text-align: right;
-  margin-right:${(props)=> props.marginR ? props.marginR : 0}px;
+  margin-right:0px;
+  ::placeholder{
+    color:#000000;
+  }
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }

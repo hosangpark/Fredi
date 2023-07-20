@@ -4,14 +4,14 @@ import styled from 'styled-components';
 import viewImage from '../../asset/image/eyeview.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
-import { FairListItem, designerType } from '../../types/Types';
+import { FairListItem, FollowCardType, SnsdetailsType, designerType, snsType } from '../../types/Types';
 
 function FollowCard({
   item,
   onClick,
   index
 }: {
-  item: designerType;
+  item: FollowCardType;
   onClick: (e: any) => void;
   index:number;
 }) {
@@ -22,16 +22,15 @@ function FollowCard({
     };
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
-
   return (
     <ProductBox onClick={onClick} index={index+1} height={innerWidth}>
-      {/* <ProductImage src={item.image[0]?.file_name} />
+      <ProductImage src={item?.image[0].file_name?  item.image[0].file_name: 'dd' } />
       <ViewCount>
         <ViewImg src={viewImage} />
         <SpanCount>
-          {item.count? item.count : 999}
+          {item.read_count? item.read_count : 0}
         </SpanCount>
-      </ViewCount> */}
+      </ViewCount>
     </ProductBox>
   );
 }

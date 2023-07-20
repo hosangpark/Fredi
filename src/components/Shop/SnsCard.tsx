@@ -1,23 +1,20 @@
-import React,{useState, useEffect} from 'react';
+import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import viewImage from '../../asset/image/eyeview.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
-import { FairListItem, SnsList } from '../../types/Types';
+import { FairListItem, designerType, snsType } from '../../types/Types';
 
-function FeedCard({
+function SnsCard({
   item,
-  index,
   onClick,
-  onClickLike,
+  index
 }: {
-  item: SnsList;
-  index: number;
+  item: snsType;
   onClick: (e: any) => void;
-  onClickLike?: (e: any) => void;
+  index:number;
 }) {
-  
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
     const resizeListener = () => {
@@ -25,14 +22,13 @@ function FeedCard({
     };
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
-
   return (
-    <ProductBox onClick={onClick} index={(index+1)} height={innerWidth}>
-      <ProductImage src={item.image[0].file_name} />
+    <ProductBox onClick={onClick} index={index+1} height={innerWidth}>
+      <ProductImage src={item.image? item.image[0].file_name : 'dd' } />
       <ViewCount>
         <ViewImg src={viewImage} />
         <SpanCount>
-          {item.read_count}
+          {item.read_count? item.read_count : 0}
         </SpanCount>
       </ViewCount>
     </ProductBox>
@@ -47,25 +43,18 @@ const ProductBox = styled.div<{index:number,height:number}>`
   margin-bottom: 10px;
   cursor: pointer;
   overflow: hidden;
-  margin-right: ${(props) => ((props.index) % 4 === 0 ? 0:10)}px;
+  margin-right:${props=>props.index % 4 === 0 ? 0:10}px;
   @media only screen and (max-width: 768px) {
-    margin-right: ${(props) => ((props.index) % 2 === 0 ? 0:2)}px;
-    width: calc(50% - 2px);
-    height:${props => (props.height/2-2)}px;
-    margin-bottom: 2px;
+    width: calc(33.333% - 1.25px);
+    height:${props => (props.height/3-1.25)}px;
+    margin-right:${props=>props.index % 3 === 0 ? 0:1.25}px;
+    margin-bottom: 1.25px;
   }
 `;
-const ProductImageWrap = styled.div`
-  width: 100%;
 
-  overflow: hidden;
-  position: relative;
-`;
 const ProductImage = styled.img`
   width: 100%;
   height:100%;
-
-
   /* &:hover {
     transform: scale(1.1);
   }
@@ -91,10 +80,10 @@ const Designer = styled.span`
 `;
 const SpanCount = styled.span`
 font-family:'Pretendard Variable';
-/* mix-blend-mode: difference; */
-  color: #000000;
+mix-blend-mode: difference;
+  color: #ffffff;
   font-size: 12px;
-  font-weight: 410;
+  font-weight: 310;
   margin-left:5px;
   @media only screen and (max-width: 768px) {
     font-size: 10px;
@@ -132,4 +121,4 @@ const ProductNameWrap = styled.div`
   flex-direction: column;
 `;
 
-export default FeedCard;
+export default SnsCard;

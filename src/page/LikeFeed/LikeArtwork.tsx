@@ -50,24 +50,13 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function LikeArtwork({showType}
-  :
-  {showType?:number}) {
+function LikeArtwork() {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
   const location = useLocation();
-  let [searchParams, setSearchParams] = useSearchParams();
-  const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-  const pathName = location.pathname.split('/')[1];
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
+  const [category, setCategory] = useState<string>('1');
   const [showLogin, setShowLogin] = useState(false);
   const [likeList,setLikeList] = useState<ArtworkLikeListItem[]>([])
-  const [history, setHistory] = useState(false);
-  const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showsearch,setShowsearch] = useState(false)
+
   const [showcategory,setShowCategory] = useState(false)
 
 
@@ -75,14 +64,14 @@ function LikeArtwork({showType}
 
   const getLikeProductList = async () => {
     const data = {
-      page,
+      page:1,
+      category:1
     };
     try {
-      const { list, total } = await APILikeProductList(data);
+      const { list } = await APILikeProductList(data);
       setLikeList(list);
       // if(list){
       // }
-      console.log('listlistlistlist',list[0])
       // console.log('listlistlistlist',list)
       // setTotal(total);
     } catch (error) {
@@ -93,7 +82,8 @@ function LikeArtwork({showType}
   const saveProductHistory = (e: React.MouseEvent, idx: number) => {
     const y = window.scrollY;
 
-    sessionStorage.setItem('products', JSON.stringify(likeList));
+    sessionStorage.setItem('List', JSON.stringify(likeList));
+    sessionStorage.setItem('category', category);
     sessionStorage.setItem('y', String(y ?? 0));
     navigate(`/productdetails/${idx}`);
   };
@@ -110,26 +100,6 @@ function LikeArtwork({showType}
     } catch (error) {
       console.log(error);
     }
-  };
-
-  useEffect(()=>{
-    if(pathName == 'LikeTab'){
-      setShowCategory(false)
-    }else{
-      setShowCategory(true)
-    }
-    // console.log(pathName)
-  },[pathName])
-  
-
-  const findHistory = () => {
-    // const list = JSON.parse(sessionStorage.getItem('products') ?? '');
-
-    // setLikeList(list)
-    setHistory(true);
-    setPage(page);
-
-    sessionStorage.removeItem('products');
   };
   
 
@@ -148,23 +118,19 @@ function LikeArtwork({showType}
   }, [likeList]);
 
   useLayoutEffect(() => {
-    getLikeProductList()
-    findHistory();
-  }, [searchParams, category]);
 
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
+    getLikeProductList()
+
+  }, []);
+
 
 
   /** drageEvent */
   const scrollRef = useRef<any>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState<any>();
+  const [isDragging, setIsDragging] = useState(false);
+const [movingX, setmovingX] = useState<any>();
 
   const onDragStart = (e:any) => {
     e.preventDefault();
@@ -179,6 +145,7 @@ function LikeArtwork({showType}
   const onDragMove = (e:any) => {
     if (isDrag) {
       scrollRef.current.scrollLeft = startX - e.pageX;
+      setmovingX(scrollRef.current.scrollLeft)
     }
   };
   const throttle = (func:any, ms:any) => {
@@ -193,6 +160,14 @@ function LikeArtwork({showType}
       }
     };
   };
+    
+  useEffect(()=>{
+    setIsDragging(true)
+    setTimeout(() => {
+      setIsDragging(false);
+    }, 500);
+  },[movingX])
+
   const delay = 10;
   const onThrottleDragMove = throttle(onDragMove, delay);
   return (
@@ -214,8 +189,7 @@ function LikeArtwork({showType}
       showcategory={showcategory}>
         {CategoryList.map((item) => {
           return (
-            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
-
+            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{if(!isDragging)setCategory(item.value)}} />
           );
         })}
       </CategorySelectButtonWrap>
@@ -238,7 +212,7 @@ function LikeArtwork({showType}
                   setShowLogin(true);
                 }
               }}
-              showType={showType? 2:1}
+              showType={2}
               index={index}
             />
           )
@@ -377,7 +351,7 @@ const TabContents = styled.div<{On?:boolean}>`
   font-family:'Pretendard Variable';
   border-bottom:${props => props.On? 1.7:0}px solid black;
   font-weight:${props => props.On? 410 : 360};
-  
+  cursor: pointer;
   color:rgb(0,0,0);
   padding:10px 0;
   margin-top:5px;

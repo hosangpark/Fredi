@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
-import likeOnImage from '../../asset/image/heart_on.png';
+import likeOnImage from '../../asset/image/heart_on.svg';
 import likeOffImage from '../../asset/image/heart_off.png';
 import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';

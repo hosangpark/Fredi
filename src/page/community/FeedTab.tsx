@@ -6,10 +6,7 @@ import leftButtonImage from '../../asset/image/home02.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import snsImage from '../../asset/image/snsicon.png';
 import bookMarkImage from '../../asset/image/Bookoff.svg';
-import { createStyles, Image } from '@mantine/core';
-import { Carousel } from '@mantine/carousel';
-import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { SnsList } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -25,7 +22,7 @@ import Feed from './Feed';
 import BookMark from './BookMark';
 import { FairListItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
-import { APIProductList } from '../../api/ProductAPI';
+import { APIProductList, APISnsList } from '../../api/ProductAPI';
 
 const TabImage = styled.img`
   width:25px;
@@ -41,61 +38,82 @@ const TabImage = styled.img`
 
 function FeedTab() {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
-  const location = useLocation();
+  const token = sessionStorage.getItem('token');
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-
-  const [shopList, setShopList] = useState<FairListItem[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
+  const categoryParams = (searchParams.get('category')) ?? '1';
   const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
+  const [SnsList, setSnsList] = useState<SnsList[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [category, setCategory] = useState<string>(categoryParams);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
 
 
-  const getShopList = async (page: number) => {
+  const getproductList = async () => {
+    // console.log('ccccccccccc',category)
     const data = {
-      page: page,
+      page: 1,
       category: category,
-      keyword: keywordParams,
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIProductList(data);
+      const { list, total } = await APISnsList(data);
       setTotal(total);
-      if (page === 1) {
-        setShopList((prev) => [...list]);
-      } 
-      console.log('shop', list, page);
+      setSnsList(list);
+      // console.log('shop', list, page);
     } catch (error) {
       console.log(error);
     }
   };
+  
+
   const findHistory = () => {
-    // const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
-
-    // setShopList(list);
+    const list = JSON.parse(sessionStorage.getItem('List') ?? '');
+    const categ = sessionStorage.getItem('category');
+    console.log('cate불러옴',categ&& JSON.parse(categ))
+    console.log('list불러옴',list)
+    // setCategory(categ);
+    setSnsList(list);
     setHistory(true);
-    setPage(page);
-    setShowType(type);
+    if(categ){
+      setCategory(categ)
+    }
+    sessionStorage.removeItem('category');
+    sessionStorage.removeItem('List');
+  };
 
-    sessionStorage.removeItem('shop');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
+
+  const saveHistory = (e: React.MouseEvent, idx: number) => {
+    const div = document.getElementById('root');
+    if (div) {
+      console.log(div.scrollHeight, globalThis.scrollY);
+      const y = globalThis.scrollY;
+      sessionStorage.setItem('List', JSON.stringify(SnsList));
+      sessionStorage.setItem('category', category);
+      sessionStorage.setItem('y', String(y ?? 0));
+      navigate(`/personalpage/${idx}`,{state:idx});
+    }
   };
 
   useLayoutEffect(() => {
+    const categ = sessionStorage.getItem('category');
+
+    if (categ) {
+      console.log('find')
+      findHistory();
+    } else {
+      console.log('getlist')
+      getproductList();
+    }
+  }, [category]);
+
+
+  useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
+    if (SnsList.length > 0 && scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -105,7 +123,7 @@ function FeedTab() {
       }, 50);
       sessionStorage.removeItem('y');
     }
-  }, [shopList]);
+  }, [SnsList]);
  
 
   const onSearch = () => {
@@ -121,17 +139,13 @@ function FeedTab() {
     );
   };
 
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
+  const chageCategory = (value:string) => {
     setCategory(value);
     setSearchParams({
       keyword,
       category: value,
     });
   };
-
-  useEffect(()=>{
-    getShopList(1)
-  },[])
 
   return (
     <Container>
@@ -147,7 +161,7 @@ function FeedTab() {
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
-          onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
+          onChangeCategory={(value: string) => {
             chageCategory(value);
           }}
         />
@@ -158,16 +172,34 @@ function FeedTab() {
             <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
             <TabImage src={snsImage}/></div>
           </UnderLineTab>
-          <UnderLineTab onClick={() => {navigate('/Community/FollowTab')}}>
+          <UnderLineTab onClick={() =>{
+            if (!token) {
+            setShowLogin(true);
+          } else {navigate('/Community/FollowTab')
+          }}}>
             Follow
           </UnderLineTab>
-          <UnderLineTab onClick={() => {navigate('/Community/BookMarkTab')}}>
+          <UnderLineTab onClick={() => {
+            if (!token) {
+            setShowLogin(true);
+          } else {navigate('/Community/BookMarkTab')
+          }}}>
             <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
             <TabImage src={bookMarkImage}/></div>
           </UnderLineTab>
         </TabButtonWrap>
-        <Feed productList={shopList}/>
+        <Feed saveHistory={saveHistory} productList={SnsList} CategoryClick={e=>setCategory(e)} setShowLogin={()=>setShowLogin(true)} selectCategory={category}/>
       </div>
+      <AlertModal
+        visible={showLogin}
+        setVisible={setShowLogin}
+        onClick={() => {
+          removeHistory();
+          setShowLogin(false);
+          navigate('/signin');
+        }}
+        text="회원가입 후 이용 가능합니다."
+      />
 
     </Container>
   );

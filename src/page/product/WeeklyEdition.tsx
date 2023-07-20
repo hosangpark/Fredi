@@ -120,9 +120,9 @@ function WeeklyEdition() {
     } else if (title.includes('Home')) {
       navigate(`/personalpage/${idx}`)
     } else if (title.includes('Trending')) {
-      navigate(`/MobileProfile/${idx}`)
+      navigate(`/MobileProfile/${idx}`,{state:idx})
     } else if (title.includes('Featured')) {
-      navigate(`/MobileProfile/${idx}`)
+      navigate(`/MobileProfile/${idx}`,{state:idx})
     } else {
       console.log(title,idx)
     }
@@ -311,6 +311,10 @@ const WeeklyTitle = styled.div`
   text-align:start;
   font-size:18px;
   font-weight: 410;
+  margin: 0;
+  @media only screen and (max-width: 768px) {
+    margin: 0 20px;
+  }
 `
 
 const SlideImage = styled.img`

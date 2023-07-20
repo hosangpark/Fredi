@@ -292,6 +292,12 @@ const WhiteButtonText = styled(BlackButtonText)`
 `;
 
 const CheckMessagebox = styled.div`
+  width:768px;
+  margin:0 auto;
+  padding:0 20px 50px;
+  @media only screen and (max-width: 768px) {
+    width:100%;
+  }
 
 `
 const MessageInform = styled.div`

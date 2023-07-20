@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart_on.png';
+import likeOnImage from '../../asset/image/heart_on.svg';
 import likeOffImage from '../../asset/image/heart.svg';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';

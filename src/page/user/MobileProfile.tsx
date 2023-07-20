@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Modal } from '@mantine/core';
-import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
+import { APICheckPassword, APILink, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
 import ImageCard from '../../components/Shop/ImageCard';
-import { TImage, TProductListItem } from '../../types/Types';
+import { LinkListType, SnsList, TImage, TProductListItem, UserType } from '../../types/Types';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 import RightArrowImage from '../../asset/image/right.svg'
 import LinksIcon from '../../asset/image/m10_home.svg';
+import BrandIcon from '../../asset/image/Brand.png';
+import ArtistIcon from '../../asset/image/Artist.png';
 import qrImage from '../../asset/image/qr.svg';
 import linkImage from '../../asset/image/rink.svg';
 import xImage from '../../asset/image/close.svg';
@@ -17,40 +19,18 @@ import QrModal from '../../components/Modal/QrModal';
 import img01 from '../../asset/image/img01.png';
 import img03 from '../../asset/image/img03.png';
 import img04 from '../../asset/image/img05.png';
+import { APISnsList } from '../../api/ProductAPI';
 
-export type TUserDetails = {
-  idx: number;
-  type: 1 | 2 | 3; // 1: fredi / 2: kakao / 3: naver
-  user_id: string;
-  password: string;
-  name: string;
-  nickname: string;
-  phone: string;
-  gender: 1 | 2;
-  birth: string;
-  visit_count: number;
-  login_time: Date | null;
-  created_time: Date;
-  suspended_time: Date | null;
-  deleted_time: Date | null;
-  reason: string;
-  level: 0 | 1 | 2 | 3; // 0: 관리자 / 1: 입점업체회원 / 2: 일반회원2 / 3: 일반회원1
-  status: 'active' | 'suspended' | 'deleted';
-};
-export type ImageItem = {
-  idx:number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  name: string;
-  image: TImage[];
-};
+
 
 function MobileProfile() {
   const navigate = useNavigate();
-  const token = sessionStorage.getItem('token');
+  const { idx } = useParams();
+  const location = useLocation();
   const [isSnsUser, setIsSnsUser] = useState(false);
-  const [imageList, setimageList] = useState<ImageItem[]>([]);
-  const [linkList, setlinkList] = useState<{linktitle:string,linkurl:string}[]>([]);
-  const [userDetails, setUserDetails] = useState<TUserDetails>();
+  const [linkList, setLinkList] = useState<LinkListType[]>([]);
+  const [SnsList, setSnsList] = useState<SnsList[]>([]);
+  const [userDetails, setUserDetails] = useState<UserType>();
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
   const [qrmodal,setQrModal] = useState(false);
   const { user } = useContext(UserContext);
@@ -63,116 +43,73 @@ function MobileProfile() {
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
 
-  const getUserDetails = async () => {
+  const getproductList = async () => {
+    console.log('loccccccccccccccccc',location.state)
+    const data = {
+      page: 1,
+      user_idx: location.state === null ? user.idx : location.state
+    };
     try {
-      const res = await APIUserDetails();
+      const { list } = await APISnsList(data);
+      setSnsList(list);
+      // console.log('shop', list, page);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getUserDetails = async () => {
+    let data = {
+      idx:location.state
+    }
+    try {
+      const res = await APIUserDetails(data);
       console.log('APIUserDetails',res);
       setUserDetails(res);
       setIsSnsUser(res.type !== 1 ? true : false);
+    } catch (error) {
+    }
+  };
+
+  
+  const saveHistory = (e: React.MouseEvent, idx: number) => {
+    const div = document.getElementById('root');
+    if (div) {
+      // sessionStorage.setItem('y', String(y ?? 0));
+      navigate(`/personalpage/${idx}`,{state:idx});
+    }
+  };
+  
+  const getLinks = async () => {
+    const data = {
+      page: 1
+    };
+    try {
+      const {list,total} = await APILink(data);
+      setLinkList(list);
     } catch (error) {
       // console.log(error);
       // navigate('/signin', { replace: true });
     }
   };
-
-  // const onCheckPassword = async () => {
-  //   if (!password) return setPasswordAlert(true);
-  //   const data = {
-  //     password: password,
-  //   };
-  //   try {
-  //     const res = await APICheckPassword(data);
-  //     console.log(res);
-  //     navigate('/modifyuserinfo');
-  //   } catch (error) {
-  //     console.log(error);
-  //     setPasswordAlert(true);
-  //   }
-  // };
-  
-  const saveHistory = (e: React.MouseEvent, name: string) => {
-    const div = document.getElementById('root');
-    if (div) {
-      // console.log(div.scrollHeight, globalThis.scrollY);
-      // const y = globalThis.scrollY;
-      // // sessionStorage.setItem('shop', JSON.stringify(shopList));
-      // // sessionStorage.setItem('page', String(page));
-      // sessionStorage.setItem('type', String(showType));
-      // sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/personalpage/${name}`);
-    }
-  };
-  
-
   const gotoLink = (e:string)=>{
 
   }
 
   useEffect(() => {
+    console.log('idxidxidxidx',idx)
     getUserDetails();
-    setimageList([
-      {
-        idx: 1,
-        category: 1,
-        name: '일름이름이름1',
-        image: [
-          {
-            idx: 11,
-            file_name: img01
-          }
-        ],
-      },
-      {
-        idx: 2,
-        category: 1,
-        name: '일름이름이름2',
-        image: [
-          {
-            idx: 11,
-            file_name: img03
-          }
-        ],
-      },
-      {
-        idx: 3,
-        category: 1,
-        name: '일름이름이름3',
-        image: [
-          {
-            idx: 11,
-            file_name: img04
-          }
-        ],
-      },
-    ]);
-    setlinkList([
-      {
-        linktitle:'Website (FREDI)',
-        linkurl:'www.fredi.co.kr'
-      },
-      {
-        linktitle:'Website (FREDI)',
-        linkurl:'www.fredi.co.kr'
-      },
-      {
-        linktitle:'Website (FREDI)',
-        linkurl:'www.fredi.co.kr'
-      },
-      {
-        linktitle:'Website (FREDI)',
-        linkurl:'www.fredi.co.kr'
-      },
-    ])
-  }, []);
+    getproductList()
+    getLinks()
+    
+    
+  }, [location.state]);
   
 
   return (
     <Container>
       <Sheet isOpen={bottomSheetModal} onClose={() => setBottomSheetModal(false)}
         detent={'content-height'}
-        // snapPoints={[700, 400, 100, 50]}
-        // initialSnap={3}
-        // onClick={() => setBottomSheetModal(false)}
         >
           <Sheet.Container>
             <Sheet.Content>
@@ -190,13 +127,13 @@ function MobileProfile() {
                   <LinkImageWrap>
                     <LinksImage src={linkImage}/>
                   </LinkImageWrap>
-                  <LinkItemBox href={'https://www.naver.com'}>
+                  <LinkItemBox href={item.url}>
                     <LinkTitleBox>
                       <LinkName>
-                        {item.linktitle}
+                        {item.title}
                       </LinkName>
                       <LinkUrl>
-                        {item.linkurl}
+                        {item.url}
                       </LinkUrl>
                     </LinkTitleBox>
                     <ArrowImageWrap>
@@ -224,18 +161,25 @@ function MobileProfile() {
         <ProfileHeaderWrap>
           <HeaderLeft>
             <NameBox>
-              <NameText>{userDetails?.nickname}</NameText>
+              <IconNameBox userlevel={user.level}>
+              <UserTypeIcon userlevel={user.level} src={user.level == 1? BrandIcon : user.level == 2? ArtistIcon : 'none'}/>
+              <NameText>{userDetails? userDetails.nickname : 'no name'}</NameText>
+              </IconNameBox>
               <SubTextBox>
                 {/* <span>79 works · </span> */}
-                <span>951 followers · </span>
-                <span>12 following</span>
+                <span>{userDetails?.followers} followers · </span>
+                <span>{userDetails?.following} following</span>
               </SubTextBox>
             </NameBox>
-            <ImageWrap>
-              <Image src={profileImage}/>
+            <ImageWrap Image={userDetails?.image? true : false}>
+              {userDetails?.image?
+              <ProfileImage src={userDetails?.image.file_name}/>
+              :
+              <BasicImage src={profileImage}/>
+              }
             </ImageWrap>
           </HeaderLeft>
-          {!token?
+          {user.idx !== location.state?
           <ButtonBox>
             <ButtonImageWrap style={{marginRight:10}} onClick={() => setBottomSheetModal(true)}>
               <ButtonImage src={LinksIcon}/>
@@ -259,31 +203,31 @@ function MobileProfile() {
           }
         </ProfileHeaderWrap>
         <DescriptionText>
-          임시 설명글 입니다.
+          {userDetails?.about? userDetails.about : ''}
         </DescriptionText>
       </ProfileContainer>
       <WorksLengthBox>
-        {imageList.length}works
+        {SnsList.length}works
       </WorksLengthBox>
       <ProductListWrap>
-        {imageList.length > 0 &&
-          imageList.map((item,index)=>{
+        {SnsList.length > 0 &&
+          SnsList.map((item,index)=>{
             return(
               <ImageCard
                 item={item}
                 key={item.idx}
-                onClick={(e) => saveHistory(e, item.name)}
+                onClick={(e) => saveHistory(e, item.idx)}
                 index={index}
               />
             )
             })
           }
-          {imageList.length < 4 &&
+          
           <PlusImage onClick={()=>navigate('/AddPhoto')} height={innerWidth}>
             <PlusH></PlusH>
             <PlusV></PlusV>
           </PlusImage>
-          }
+          
       </ProductListWrap>
       <QrModal
         visible={qrmodal}
@@ -453,9 +397,21 @@ const NameBox = styled.div`
   flex-direction:column;
   @media only screen and (max-width: 768px) {
   }
-  `;
+`;
+const UserTypeIcon = styled.img<{userlevel:number}>`
+  display:${props => props.userlevel !== 3 ? 'block' : 'none'};
+  width:25px;
+  height:25px;
+`
+const IconNameBox = styled.div<{userlevel:number}>`
+  display:flex;
+  padding-right:${props => props.userlevel == 3 ? 0 : 25}px;
+  align-items:center;
+  justify-content:center;
+`
 const NameText = styled.p`
   font-family:'Pretendard Variable';
+  font-size:16px;
   font-weight: 500;
   text-align:center;
   line-height:31px;
@@ -485,6 +441,8 @@ font-family:'Pretendard Variable';
   }
 `;
 const SubTextBox = styled.p`
+display:flex;
+justify-content:center;
   font-family:'Pretendard Variable';
   font-weight: 310;
   font-size:14px;
@@ -501,6 +459,8 @@ const PlusIcon = styled.img`
 const DescriptionText = styled.p`
   font-family:'Pretendard Variable';
   font-weight: 310;
+  min-height:100px;
+  max-height:500px;
   text-align:start;
   color:#000000;
   margin:30px 0;
@@ -509,7 +469,7 @@ const DescriptionText = styled.p`
     font-size:12px;
   }
   `;
-const ImageWrap = styled.div`
+const ImageWrap = styled.div<{Image:boolean}>`
   display:flex;
   justify-content:center;
   align-items:center;
@@ -520,7 +480,7 @@ const ImageWrap = styled.div`
   margin:20px 0;
   /* width:15%; */
   /* margin-right:15px; */
-  background-color: #DBDBDB;
+  background-color:${props => props.Image?  'none': '#DBDBDB'} ;
 `;
 const PlusImage = styled.div<{height:number}>`
   /* border:1px solid #a1a1a1;; */
@@ -580,7 +540,14 @@ const ButtonImageWrap = styled.div`
     width:35px;
   }
 `;
-const Image = styled.img`
+const ProfileImage = styled.img`
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:1px solid #e0e0e0;
+  object-fit:cover;
+`;
+const BasicImage = styled.img`
   width:50%;
   height:50%;
   object-fit:contain;
@@ -657,42 +624,6 @@ font-family:'Pretendard Variable';
   }
 `;
 
-const LeftText = styled.span`
-  color: #121212;
-  font-size: 16px;
-  font-weight: 700;
-  width: 200px;
-  min-width: 200px;
-  border-right: 1px solid #121212;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0 18px;
-  @media only screen and (max-width: 768px) {
-    width: 100px;
-    min-width: 100px;
-    font-size: 13px;
-    text-align: left;
-  }
-`;
-
-const BlackButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 160px;
-  height: 60px;
-  background-color: #121212;
-  cursor: pointer;
-  margin-left: 15px;
-  @media only screen and (max-width: 768px) {
-    width: 90px;
-    height: 35px;
-    margin-left: 10px;
-  }
-`;
-
-
 const BlackButtonText = styled.span`
   color: #ffffff;
   font-size: 16px;
@@ -712,93 +643,5 @@ const EmptyHeightBox = styled.div`
   background-color:#ffff;
 `;
 
-const WhiteButtonText = styled(BlackButtonText)`
-  color: #121212;
-`;
-
-const ModalBox = styled.div`
-  background-color: #fff;
-  padding: 40px 90px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  @media only screen and (max-width: 768px) {
-    padding: 20px 40px;
-  }
-`;
-
-const ModalTitle = styled.span`
-  font-size: 18px;
-  color: #121212;
-  font-weight: 700;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-  }
-`;
-
-const InputWrap = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  margin: 30px 0 10px;
-  @media only screen and (max-width: 768px) {
-    margin: 20px 0 10px;
-  }
-`;
-
-const TextInput = styled.input`
-  border: 0;
-  border-bottom: 1px solid #121212;
-  padding-left: 10px;
-  padding-bottom: 3px;
-  font-size: 16px;
-  color: #121212;
-  font-weight: 410;
-  outline: 0;
-  border-radius: 0;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-  }
-`;
-
-const ButtonWrap = styled.div`
-  display: flex;
-  margin-top: 10px;
-  @media only screen and (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
-
-const ModalBlackButton = styled.div`
-  width: 160px;
-  height: 60px;
-  background-color: #121212;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 1px solid #121212;
-  @media only screen and (max-width: 768px) {
-    height: 40px;
-  }
-`;
-
-const ModalWhiteButton = styled(ModalBlackButton)`
-  background-color: #ffffff;
-  margin-left: 10px;
-  @media only screen and (max-width: 768px) {
-    margin-left: 0;
-    margin-top: 5px;
-  }
-`;
-
-const AlertText = styled.span`
-  font-weight: 410;
-  font-size: 12px;
-  color: #d82c19;
-  margin-top: 8px;
-  padding-left: 10px;
-`;
 
 export default MobileProfile;

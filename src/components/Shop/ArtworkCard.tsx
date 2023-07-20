@@ -1,11 +1,11 @@
 import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart_on.png';
+import likeOnImage from '../../asset/image/heart_on.svg';
 import likeOffImage from '../../asset/image/heart.svg';
 import newIconImage from '../../asset/image/ico_new.png';
 import { replaceString } from '../../util/Price';
-import { FairListItem } from '../../types/Types';
+import { ArtworkListItem, FairListItem } from '../../types/Types';
 
 
 function ArtworkCard({
@@ -16,7 +16,7 @@ function ArtworkCard({
   isLikeList,
   index
 }: {
-  item: FairListItem;
+  item: ArtworkListItem;
   showType: 1 | 2;
   onClick: (e: any) => void;
   onClickLike: (e: any) => void;
@@ -40,7 +40,7 @@ function ArtworkCard({
       <TextWrap>
         <ProductNameWrap>
           <ProductName>{item.name} {item.name} {item.name} {item.name}</ProductName>
-          <Designer>{item.designer}</Designer>
+          <Designer>{item.designer_name}</Designer>
         </ProductNameWrap>
         <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} />
         {/* <LikeButton onClick={()=>console.log(item.isLike)} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}

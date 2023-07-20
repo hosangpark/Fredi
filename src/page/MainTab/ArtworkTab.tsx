@@ -1,19 +1,14 @@
-import React, { useCallback, useContext, useEffect, useRef, useState ,memo } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { ArtworkListItem, FairListItem, TImage, TProductListItem } from '../../types/Types';
-import { UserContext } from '../../context/user';
-import { useLayoutEffect } from 'react';
-import { createBrowserHistory } from 'history';
-import SearchBox from '../../components/Product/SearchBox';
-import { APILikeShop } from '../../api/ShopAPI';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
 import { CategoryList } from '../../components/List/List';
 import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
 import Artwork from './Artwork';
+import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { ArtworkListItem } from '../../types/Types';
+import { UserContext } from '../../context/user';
+import { useLayoutEffect } from 'react';
+import { createBrowserHistory } from 'history';
+import SearchBox from '../../components/Product/SearchBox';;
 
 
 function ArtworkTab() {
@@ -23,26 +18,23 @@ function ArtworkTab() {
   const [productList, setProductList] = useState<ArtworkListItem[]>([]);
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
+  const categoryParams = (searchParams.get('category')) ?? '1';
   const pathName = location.pathname.split('/')[1];
   const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
-  const [showLogin, setShowLogin] = useState(false);
+  const [category, setCategory] = useState<string>(categoryParams);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showcategory,setShowCategory] = useState(false)
 
 
   const { user } = useContext(UserContext);
 
 
 
-  const getproductList = async (page: number) => {
+  const getproductList = async () => {
+    console.log('ccccccccccc',category)
     const data = {
-      page: page,
+      page: 1,
       category: category,
-      keyword: keywordParams,
     };
     try {
       if (history) {
@@ -83,74 +75,64 @@ function ArtworkTab() {
   }, [innerWidth]);
 
 
-  useEffect(()=>{
-    if(pathName == 'LikeTab'){
-      setShowCategory(false)
-    }else{
-      setShowCategory(true)
-    }
-    // console.log(pathName)
-  },[pathName])
-
-  const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
-
-    setProductList(list);
-    setHistory(true);
-    setPage(page);
-
-    sessionStorage.removeItem('shop');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
-  };
-
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(productList));
-      sessionStorage.setItem('page', String(page));
+      sessionStorage.setItem('List', JSON.stringify(productList));
+      sessionStorage.setItem('category', category);
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/productdetails/${idx}`);
     }
   };
 
+  const findHistory = () => {
+    const list = JSON.parse(sessionStorage.getItem('List') ?? '');
+    const categ = sessionStorage.getItem('category');
+console.log('list불러옴',list)
+    // setCategory(categ);
+    setProductList(list);
+    setHistory(true);
+    if(categ){
+      setCategory(JSON.parse(categ))
+    }
+
+    sessionStorage.removeItem('category');
+    sessionStorage.removeItem('List');
+  };
+
+
 
 
   useLayoutEffect(() => {
+    // const page = Number(sessionStorage.getItem('page'));
+    const categ = sessionStorage.getItem('category');
+    console.log(categ)
+// console.log(categ&& setCategory(JSON.parse(categ)))
+
+    if (categ) {
+      console.log('find')
+      findHistory();
+    } else {
+      console.log('getlist')
+      getproductList();
+    }
+  }, [category]);
+
+
+  useEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    
     if (productList.length > 0 && scrollY) {
-      // console.log('dddddddddddddddd',productList.length)
-      // console.log('불러옴', scrollY);
-      setTimeout(() => {
-        window.scrollTo({
-          top: scrollY,
-          behavior: 'auto',
-        });
-      }, 50);
+      console.log('불러옴', scrollY);
+      window.scrollTo({
+        top: scrollY,
+        behavior: 'auto',
+      });
       sessionStorage.removeItem('y');
     }
   }, [productList]);
-
-  useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
-
-    if (page) {
-      findHistory();
-    } else {
-      setPage(1);
-      getproductList(1);
-    }
-  }, [searchParams, category]);
   
-
-  useEffect(() => {
-    if (page > 1) getproductList(page);
-  }, [page]);
 
   const onSearch = () => {
     navigate(
@@ -163,14 +145,6 @@ function ArtworkTab() {
       },
       { replace: true }
     );
-  };
-
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
   };
 
 
@@ -191,8 +165,8 @@ function ArtworkTab() {
         category={category}
         keyword={keyword}
         onChangeInput={(e) => setKeyword(e.target.value)}
-        onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
-          chageCategory(value);
+        onChangeCategory={(value: string) => {
+          setCategory(value);
         }}
       />
     </TitleWrap>
@@ -207,7 +181,8 @@ function ArtworkTab() {
           Artist
         </TabContents>
       </TabBox>
-    <Artwork saveHistory={saveHistory} productList={productList} onLikeProduct={onLikeProduct}/>
+    <Artwork saveHistory={saveHistory} productList={productList} onLikeProduct={onLikeProduct} CategoryClick={e=>setCategory(e)}
+    selectCategory={category}/>
 </Container>   
   );
 }

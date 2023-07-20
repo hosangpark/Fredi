@@ -13,7 +13,7 @@ import { APILikeShop, APILikeShopList } from '../../api/ShopAPI';
 import { TShopListItem } from '../shop/Shop';
 import TopButton from '../../components/Product/TopButton';
 import { UserContext } from '../../context/user';
-import { TProducerListItem, TProductListItem, LikeProductListItem, LikeProducerListItem, LikeShopListItem } from '../../types/Types';
+import { LikeProductListItem, LikeProducerListItem, LikeShopListItem } from '../../types/Types';
 
 
 function LikeList() {

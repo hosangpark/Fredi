@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { FairListItem, TImage, TProductListItem } from '../../types/Types';
+import { FairListItem, SnsList, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -49,182 +49,25 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function Feed({productList}:{productList?:any[]}) {
+function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,selectCategory}
+  :
+  {saveHistory:(e:React.MouseEvent, idx: number)=>void,
+  onLikeProduct?:(e:number)=>void,
+  CategoryClick?:(e:any)=>void,
+  setShowLogin:(e:boolean)=>void,
+  productList?:SnsList[],
+  selectCategory?:string}) {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
-  const location = useLocation();
-  let [searchParams, setSearchParams] = useSearchParams();
-  const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-
-  const [shopList, setShopList] = useState<FairListItem[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
-  const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
-  const [history, setHistory] = useState(false);
-  const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
-  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-
-
-  const { user } = useContext(UserContext);
-  const interSectRef = useRef(null);
-
-  const getBannerList = async () => {
-    try {
-      const res = await APIGetBanner();
-      console.log('banner', res);
-      setBannerList(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getShopList = async (page: number) => {
-    const data = {
-      page: page,
-      category: category,
-      keyword: keywordParams,
-    };
-    try {
-      if (history) {
-        return setHistory(false);
-      }
-      const { list, total } = await APIProductList(data);
-      setTotal(total);
-      if (page === 1) {
-        // setShopList((prev) => [...list]);
-      } else {
-        // setShopList((prev) => [...prev, ...list]);
-      }
-      console.log('shop', list, page);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
-
-  const onLikeShop = async (idx: number) => {
-    const data = {
-      idx: idx,
-    };
-    try {
-      const res = await APILikeShop(data);
-      console.log(res);
-      const newList = shopList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-      setShopList(newList);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      setPage((prev) => prev + 1);
-    }
-  }, []);
-
-  const options = {
-    root: null, //기본 null, 관찰대상의 부모요소를 지정
-    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
-    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
-  };
-
-  const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
-
-    setShopList(list);
-    setHistory(true);
-    setPage(page);
-    setShowType(type);
-
-    sessionStorage.removeItem('shop');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
-  };
-
-  const saveHistory = (e: React.MouseEvent, name: string) => {
-    const div = document.getElementById('root');
-    if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
-      const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
-      sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
-      sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/personalpage/${name}`);
-    }
-  };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
-
-  useEffect(() => {
-    console.log(browserHistory.location);
-    console.log(location);
-    getBannerList();
-  }, []);
-
-  useLayoutEffect(() => {
-    const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
-      console.log('불러옴', scrollY);
-      setTimeout(() => {
-        window.scrollTo({
-          top: scrollY,
-          behavior: 'auto',
-        });
-      }, 50);
-      sessionStorage.removeItem('y');
-    }
-  }, [shopList]);
-
-
-  useEffect(() => {
-    if (page > 1) getShopList(page);
-  }, [page]);
   
-
-  const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
-  };
-
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
+  const { user } = useContext(UserContext);
 
   /** drageEvent */
   const scrollRef = useRef<any>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState<any>();
-
+  const [isDragging, setIsDragging] = useState(false);
+  const [movingX, setmovingX] = useState<any>();
+  
   const onDragStart = (e:any) => {
     e.preventDefault();
     setIsDrag(true);
@@ -238,6 +81,7 @@ function Feed({productList}:{productList?:any[]}) {
   const onDragMove = (e:any) => {
     if (isDrag) {
       scrollRef.current.scrollLeft = startX - e.pageX;
+      setmovingX(scrollRef.current.scrollLeft)
     }
   };
   const throttle = (func:any, ms:any) => {
@@ -252,6 +96,15 @@ function Feed({productList}:{productList?:any[]}) {
       }
     };
   };
+
+
+  useEffect(()=>{
+    setIsDragging(true)
+    setTimeout(() => {
+      setIsDragging(false);
+    }, 500);
+  },[movingX])
+
   const delay = 10;
   const onThrottleDragMove = throttle(onDragMove, delay);
 
@@ -265,7 +118,8 @@ function Feed({productList}:{productList?:any[]}) {
       ref={scrollRef}>
         {CategoryList.map((item) => { 
           return (
-          <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{chageCategory(item.value as '1' | '2' | '3' | '4' | '5' | '6')}} />
+            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={selectCategory === item.value} 
+            onClickFilter={()=>{if(!isDragging){if(CategoryClick)CategoryClick(item.value)}}} />
           );
         })}
       </CategorySelectButtonWrap>
@@ -276,11 +130,11 @@ function Feed({productList}:{productList?:any[]}) {
             <FeedCard
               item={item}
               key={item.idx}
-              onClick={(e) => saveHistory(e, item.name)}
+              onClick={(e) => saveHistory(e, item.idx)}
               onClickLike={(e) => {
-                if (user.idx) {
+                if (user.idx && onLikeProduct) {
                   e.stopPropagation();
-                  onLikeShop(item.idx);
+                  onLikeProduct(item.idx);
                 } else {
                   e.stopPropagation();
                   setShowLogin(true);
@@ -295,16 +149,6 @@ function Feed({productList}:{productList?:any[]}) {
         }
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}
-      <AlertModal
-        visible={showLogin}
-        setVisible={setShowLogin}
-        onClick={() => {
-          removeHistory();
-          setShowLogin(false);
-          navigate('/signin');
-        }}
-        text="회원가입 후 이용 가능합니다."
-      />
       <TopButton />
     </Container>
   );

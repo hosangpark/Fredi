@@ -1,21 +1,15 @@
-import React,{useState,useEffect,useRef,useLayoutEffect} from 'react';
-import dayjs from 'dayjs';
+import React,{useState,useEffect,useLayoutEffect} from 'react';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart.svg';
-import likeOffImage from '../../asset/image/heart.svg';
-import newIconImage from '../../asset/image/ico_new.png';
-import { useLocation, useNavigate } from 'react-router-dom';
 // Import Swiper styles
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+import { Navigation, Pagination, Scrollbar } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import leftarrowIcon from '../../asset/image/ico_prev_mobile.png'
 import rotateLeft from '../../asset/image/right.svg'
 import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
-import { FairList, TImage } from '../../types/Types';
+import { FairList, MainFairList, TImage } from '../../types/Types';
 import './FairMainList.css'
 
 function FairMainList({
@@ -94,14 +88,7 @@ function FairMainList({
           <ArrowRightIcon src={rightarrowIcon}/>
         }
       </TitleBox>
-      {/* <StyledButton ref={prevRef}>
-        <Image src={leftarrowIcon} alt="prev" />
-      </StyledButton>
-      <StyledButton ref={nextRef}>
-        <Image src={rightarrowIcon} alt="next" />
-      </StyledButton> */}
       <Swiper
-        // install Swiper modules
         modules={[Navigation, Pagination, Scrollbar]}
         slidesPerView={ProductViews}
         navigation= {naviArrow ?
@@ -119,14 +106,14 @@ function FairMainList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList.map((item,index)=>{
+        {ProducList&& ProducList.map((item,index)=>{
           return(
             <SwiperSlide key={index}>
               <ProductWrap marginRight={marginRight? marginRight:20}>
                 <ProductImageWrap aspect={aspect? aspect:1} height={innerWidth} 
                 onClick={(e)=>LinkHandler(e,title,item.idx)}
                 >
-                <ProductImage src={item.image_m[index].file_name}/>
+                <ProductImage src={item.image_m[0].file_name}/>
                 </ProductImageWrap>
                 <TextWrap title={title}>
                   <ProductTitleText>
@@ -190,7 +177,7 @@ border:0.5px solid #dfdfdf;
 const ProductImage = styled.img`
   width: 100%;
   height:100%;
-  object-fit:cover;
+  object-fit:fill;
 `;
 
 const TextWrap = styled.div<{title?:string}>`

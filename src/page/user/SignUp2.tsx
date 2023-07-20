@@ -1,12 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Checkbox, Modal, PasswordInput } from '@mantine/core';
-import { APIGetTerms } from '../../api/SettingAPI';
-import { APICheckNickname, APICheckUserId, APISendAuthNumber, APISignUp, APIVerifyAuthNumber } from '../../api/UserAPI';
-import { emailRegEx, passwordReg, phoneReg } from '../../util/Reg';
-import { DatePicker } from '@mantine/dates';
-import dayjs from 'dayjs';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { APICheckUserId } from '../../api/UserAPI';
+import { emailRegEx, passwordReg } from '../../util/Reg';
 import 'dayjs/locale/ko';
 
 function SignUp2() {
@@ -116,7 +112,7 @@ function SignUp2() {
             <TimerBox>
             {alertType?.includes('NoPassWord') ?
             <AuthText>
-              비밀번호를 확인해주세요.
+              비밀번호는 8-16자 영문, 숫자로 구성되어야 합니다.
             </AuthText>
             :
             alertType?.includes('NoEquale') &&

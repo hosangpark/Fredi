@@ -134,7 +134,7 @@ function ArtistTab() {
     threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
   };
 
-  const saveHistory = (e: React.MouseEvent, name: string) => {
+  const saveHistory = (e: React.MouseEvent, name: string , idx:number) => {
     const div = document.getElementById('root');
     if (div) {
       // console.log(div.scrollHeight, globalThis.scrollY);
@@ -144,7 +144,7 @@ function ArtistTab() {
       // sessionStorage.setItem('type', String(showType));
       // sessionStorage.setItem('y', String(y ?? 0));
     }
-    navigate(`/ArtistProducts/${name}`,{ state:{name:name} });
+    navigate(`/ArtistProducts/${name}`,{ state:{name:name,idx:idx} });
   };
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);

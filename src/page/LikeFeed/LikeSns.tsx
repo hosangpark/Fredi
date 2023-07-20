@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import snsImage from '../../asset/image/snsicon.png';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { LikeSnsListType, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -17,8 +17,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import { ArtworkListItem } from '../../types/Types';
-import FeedCard from '../../components/Shop/FeedCard';
-import { APIProductList } from '../../api/ProductAPI';
+import { APISnsLikeList } from '../../api/ProductAPI';
+import SNSCard from '../../components/Shop/SnsCard';
 
 
 interface ICategorySelectButton {
@@ -42,110 +42,39 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
   const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-  const pathName = location.pathname.split('/')[1];
-  const [shopList, setShopList] = useState<ArtworkListItem[]>([]);
+  const [LikeSnsList, setLikeSnsList] = useState<LikeSnsListType[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
   const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [history, setHistory] = useState(false);
-  const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
-  const [showsearch,setShowsearch] = useState(false)
 
 
   const { user } = useContext(UserContext);
 
 
-  const getBannerList = async () => {
-    try {
-      const res = await APIGetBanner();
-      console.log('banner', res);
-      setBannerList(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  const getShopList = async (page: number) => {
+  const getLikeSnsData = async () => {
     const data = {
-      page: page,
-      category: category,
-      keyword: keywordParams,
+      page: 1,
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIProductList(data);
-      setTotal(total);
-      if (page === 1) {
-        setShopList((prev) => [...list]);
-      } else {
-        // setShopList((prev) => [...prev, ...list]);
-      }
-      console.log('shop', list, page);
+      const { list } = await APISnsLikeList(data);
+      setLikeSnsList(list);
+      console.log('ddddddddddddddddddsada',list[0])
     } catch (error) {
       console.log(error);
     }
   };
-
-  const onLikeShop = async (idx: number) => {
-    const data = {
-      idx: idx,
-    };
-    try {
-      const res = await APILikeShop(data);
-      console.log(res);
-      const newList = shopList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-      setShopList(newList);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      setPage((prev) => prev + 1);
-    }
-  }, []);
-
-  const options = {
-    root: null, //기본 null, 관찰대상의 부모요소를 지정
-    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
-    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
-  };
-
-  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
-    };
-    // console.log("innerWidth", innerWidth);
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
-
-  useEffect(()=>{
-    if(pathName !== 'Artwork'){
-      setShowsearch(false)
-    }else{
-      setShowsearch(true)
-    }
-    // console.log(pathName)
-  },[pathName])
 
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    setShopList(list);
+    // setFollowArtistList(list);
     setHistory(true);
     setPage(page);
-    setShowType(type);
 
     sessionStorage.removeItem('shop');
     sessionStorage.removeItem('page');
@@ -157,24 +86,19 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
+      sessionStorage.setItem('shop', JSON.stringify(LikeSnsList));
       sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/productdetails/${idx}`);
+      navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
 
   
-  useEffect(() => {
-    console.log(browserHistory.location);
-    console.log(location);
-    getBannerList();
-  }, []);
+
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
+    if (LikeSnsList.length > 0 && scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -184,44 +108,22 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
       }, 50);
       sessionStorage.removeItem('y');
     }
-  }, [shopList]);
+  }, [LikeSnsList]);
 
-  useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
+  // useLayoutEffect(() => {
+  //   const page = Number(sessionStorage.getItem('page'));
 
-    if (page) {
-      findHistory();
-    } else {
-      setPage(1);
-      getShopList(1);
-    }
-  }, [searchParams, category]);
+  //   if (page) {
+  //     findHistory();
+  //   } else {
+  //     setPage(1);
+  //     getShopList(1);
+  //   }
+  // }, [searchParams, category]);
   
-
   useEffect(() => {
-    if (page > 1) getShopList(page);
-  }, [page]);
-
-  const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
-  };
-
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
+    getLikeSnsData();
+  }, []);
 
 
   return (
@@ -235,27 +137,19 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
         </TabContents>
       </TabBox>
       <ProductListWrap>
-        {
-        productList? productList.map((item:any,index:number)=>{
-          return(
-            <FeedCard
-              item={item}
-              key={item.idx}
-              onClick={(e) => saveHistory(e, item.name)}
-              onClickLike={(e) => {
-                if (user.idx) {
-                  e.stopPropagation();
-                  onLikeShop(item.idx);
-                } else {
-                  e.stopPropagation();
-                  setShowLogin(true);
-                }
-              }}
-              index={index}
-            />
-          )
-          })
-        : 
+        {LikeSnsList.length > 0 ?
+        LikeSnsList.map((item,index)=>{
+        return(
+          // <div onClick={()=>console.log(item)}>asdsadasd</div>
+          <SNSCard
+            item={item.sns}
+            key={item.idx}
+            onClick={(e) => saveHistory(e, item.sns.idx)}
+            index={index}
+          />
+        )
+        })
+        :
         <>NO ITEMS</>
         }
       </ProductListWrap>

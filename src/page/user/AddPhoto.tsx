@@ -1,24 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Image } from '@mantine/core';
+import { FileButton } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Modal } from '@mantine/core';
-import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import { TImage, TProductListItem } from '../../types/Types';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { FreeMode, Navigation, Thumbs } from "swiper";
+import linkImage from '../../asset/image/links.png';
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-import { DndList, dndData } from '../../components/DnD/DnD';
-import img01 from '../../asset/image/img01.png';
-import img03 from '../../asset/image/img03.png';
-import img04 from '../../asset/image/img05.png';
-import TopButton from '../../components/Product/TopButton';
+import {  dndData } from '../../components/DnD/DnD';
 import TopTextButton from '../../components/Layout/TopTextButton';
+import ButtonContainer from '../../components/Layout/ButtonBox';
+import AlertModal from '../../components/Modal/AlertModal';
+import { APISnsAdd } from '../../api/ProductAPI';
+import { CategoryListCheck } from '../../components/List/List';
+import CategoryItem from '../../components/Shop/CategoryItem';
 
 export type TUserDetails = {
   idx: number;
@@ -51,26 +48,64 @@ function AddPhoto() {
   const types = useLocation();
   const propsData = types.state;
   const { user } = useContext(UserContext);
-  const [imageList, setimageList] = useState<dndData[]>([
-    {
-          symbol: 'sdad',
-          name: '1사',
-          url:'ddd'
-        },
-  ]);
-  const [description, setdescription] = useState<string>('');
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [ShowModal,setShowModal] = useState<boolean>(false)
+  const [ShowImage, setShowImage] = useState<any[]>([]);
+  const [About, setAbout] = useState<string>('');
+  const [alertType, setAlertType] = useState<string>();
+  const [UploadImage, setUploadImages] = useState<dndData[]>([]);
+  const [categoryitemList,setcategoriitemList] = useState(CategoryListCheck)
+  
+  const UploadSns = async() =>{
+    if(UploadImage.length > 12){
+      setUploadImages(UploadImage.slice(0,12))
+    }
+    const formData = new FormData();
+    formData.append('category[]', '1')
+    formData.append('name', '안녕하세요')
+    formData.append('about', About)
+    formData.append('link_title', '꾸글')
+    formData.append('link_url', 'www.google.com')
+    for (var i = 0; i < UploadImage.length; i++){
+      formData.append('images', UploadImage[i].file);
+      // console.log(UploadImage[i].file)
+    }
+    console.log(formData)
+    try {
+      const res = APISnsAdd(formData);
+      // console.log('55')
+      console.log('APISnsAdd',res);
+      // setShowModal(true)
+      // setUserDetails(res);
+      // setIsSnsUser(res.type !== 1 ? true : false);
+      } catch (error) {
+        console.log(error);
+        // navigate('/signin', { replace: true });
+    }
+  }
 
-  const getBase64 = (file: File, cb: (value: string | ArrayBuffer | null) => void) => {
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function () {
-      cb(reader.result);
-    };
-    reader.onerror = function (error) {
-      console.log('Error: ', error);
-    };
+  
+  const handleImage = (value: File[]) => {
+    if(value.length > 12)return(setShowModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
+    if(UploadImage.length > 12)return(setShowModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
+    let fileURLs:dndData[] = [...UploadImage];
+    const ShowImages = value;
+    let imageUrlLists = [...ShowImage];
+    for (let i = 0; i < value.length; i++) {
+      let reader = new FileReader();
+      const currentImageUrl = URL.createObjectURL(ShowImages[i]);
+      imageUrlLists.push(currentImageUrl);
+      let file = value[i];
+      reader.onload = () => {
+        const file = { url: reader.result as string, name: value[i].name, symbol: String(Date.now()), file: value[i] };
+        fileURLs.push(file)
+      };
+      reader.readAsDataURL(file);
+    }
+    setShowImage(imageUrlLists.slice(0, 12))
+    setUploadImages(fileURLs)
   };
+  
+
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
     const resizeListener = () => {
@@ -78,109 +113,129 @@ function AddPhoto() {
     };
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
-  
-  const handleImage = (value: File) => {
-    getBase64(value, (url) => {
-      const file = { url: url as string, name: value.name, symbol: String(Date.now()), file: value };
-      // console.log(file)
-      // console.log(file.url)
-    });
-    console.log(value)
-    // setimageList([...imageList, file]);
-  };
-
-  const PhotoHandle = (type:string, idx?:number) =>{
-    let temp_img = [...imageList];
-    if(type == 'aa'){
-      setimageList(
-        imageList.filter((el, index) => index !== idx)
-      );
-    } else if (type =='bb'){
-      setimageList([
-        {
-          symbol: 'sdad',
-          name: '1사',
-          url:img01
-        },
-        {
-          symbol: 'sdad',
-          name: '2사',
-          url:img03
-        },
-        {
-          symbol: 'sdad',
-          name: '3사',
-          url:img04
-        },
-        {
-          symbol: 'sdad',
-          name: '4사',
-          url:'ddd'
-        },
-      ]);
-    }
-  }
-  
-  useEffect(() => {
-    setimageList([
-      {
-        symbol: 'sdad',
-        name: '1사',
-        url:img01
-      },
-      {
-        symbol: 'sdad',
-        name: '2사',
-        url:img03
-      },
-      {
-        symbol: 'sdad',
-        name: '3사',
-        url:img04
-      },
-      {
-        symbol: 'sdad',
-        name: '4사',
-        url:''
-      },
-    ]);
-  }, []);
-
 
   return (
     <Container>
       <TopTextButton text='Next' onClick={()=>navigate('/AddPhoto2')}/>
       <ProfileContainer>
+        {/* <DndList data={images} setData={setImages} initList={[]} /> */}
         <SwiperWrap>
-          {imageList.map((item,index)=>{
+          {
+          ShowImage.map((item,index)=>{
             return(
-            <PlusImage onClick={()=>{}} height={innerWidth} index={index}>
-            {item.url !== ''? 
-              <ImageItem src={item.url}/>
-              :
+            <PlusImage height={innerWidth} index={1} key={index}>
+              <UploadImageItem src={item}/>
+            </PlusImage>
+            )
+          })
+          }
+          <FileButton onChange={handleImage} multiple accept="image/png,image/jpeg">
+            {(props) => (
+            <PlusImage height={innerWidth} key={0} index={0} {...props}>
               <label>
               <UploadButton type={'file'} multiple name='addButton'/>
               <PlusH></PlusH>
               <PlusV></PlusV>
               </label>
-            }
             </PlusImage>
-            )
-          })}
+            )}
+          </FileButton>
         </SwiperWrap>
+        <>
         <AboutWrap>
           About
         </AboutWrap>
         <InputWrap>
           <TextInput
-            value={description}
+            value={About}
             onChange={(e) => {
-              setdescription(e.target.value);
+              setAbout(e.target.value);
             }}
             placeholder="Input here"
-          />
+            />
         </InputWrap>
+        <WebContainer>
+        <BoxWrap>
+          <BoxTitle>
+            LINK
+          </BoxTitle>
+          <LayoutWrap onClick={()=>{navigate('/AddLink', { state: 'Add' });}}>
+            <LinkImageWrap>
+              <LinkImage src={linkImage}/>
+            </LinkImageWrap>
+            <LinkItemBox>
+              <LinkTitleBox>
+                Add Links
+              </LinkTitleBox>
+            </LinkItemBox>
+          </LayoutWrap>
+          <LayoutWrap onClick={()=>{navigate('/EditLink', { state: 'Edit' });}}>
+            <LinkImageWrap>
+              <LinkImage src={linkImage}/>
+            </LinkImageWrap>
+            <LinkItemBox>
+              <LinkTitleBox>
+                <LinkName>
+                  Website (FREDI)
+                </LinkName>
+                <LinkUrl>
+                  www.fredi.co.kr
+                </LinkUrl>
+              </LinkTitleBox>
+              <ArrowImageWrap>
+                <ArrowImage src={RightArrowImage}/>
+              </ArrowImageWrap>
+            </LinkItemBox>
+          </LayoutWrap>
+        </BoxWrap>
+        <BoxWrap>
+          <BoxTitle>
+            Category<CategoryCount>{categoryitemList.filter(element => element.checked === true).length}</CategoryCount>
+          </BoxTitle>
+          <CategoryItemContainer>
+            {categoryitemList.map((item,index)=>{
+              return(
+                <CategoryItem item={item.item} checked={item.checked} 
+                setChecked={(e,type)=>{
+                  if(categoryitemList.filter(element => element.checked === true).length < 3){
+                    categoryitemList[index].checked = e
+                  }else{
+                    categoryitemList[index].checked = false
+                  }
+                  setcategoriitemList([
+                    ...categoryitemList,
+                  ])
+                }}/>
+              )
+            })}
+          </CategoryItemContainer>
+        </BoxWrap>
+      </WebContainer>
+        </>
       </ProfileContainer>
+      <ButtonContainer
+        text1={'Save'}
+        text2={'Cancel'}
+        onClick1={()=>{}}
+        onClick2={UploadSns}
+        cancle={()=>navigate(-1)}
+        marginT={50}
+        marginB={100}
+        visible={true}
+      />
+      <AlertModal
+      visible={ShowModal}
+      setVisible={setShowModal}
+      onClick={() => {
+        if(alertType == '12장 이상 등록할 수 없습니다.'){
+          setShowModal(false);
+        } else{
+          setShowModal(false);
+          navigate(-1)
+        }
+      }}
+      text={alertType? alertType : '저장되었습니다.'}
+      />
     </Container>
   );
 }
@@ -191,7 +246,7 @@ const Container = styled.div`
   flex: 1;
   min-height: calc(100vh - 80px);
   /* flex-direction: row; */
-  border-top: 1px solid #121212;
+  /* border-top: 1px solid #121212; */
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -213,8 +268,13 @@ const ProfileContainer = styled.div`
 const ProductListWrap = styled.div`
   width:100%;
   height:100%;
-
 `;
+const WebContainer = styled.div`
+  display:block;
+  @media only screen and (max-width: 768px) {
+    display:none
+  }
+`
 const PlusImage = styled.div<{height:number,index:number}>`
   /* border:1px solid #a1a1a1;; */
   position:relative;
@@ -241,27 +301,6 @@ const PlusImage = styled.div<{height:number,index:number}>`
     height:${props => (props.height/2-6)}px;
   }
 `;
-
-const PrevPlusImage = styled.div`
-  /* border:1px solid #a1a1a1;; */
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  margin:0 auto;
-  aspect-ratio: 1.2;
-  width: 24.25%;
-  cursor: pointer;
-  overflow: hidden;
-  @media only screen and (max-width: 1440px) {
-    width: 32.66%;
-  }
-  @media only screen and (max-width: 768px) {
-    width: 49.5%;
-    margin-bottom: 10px;
-  }
-`;
-
 const PlusH = styled.div`
   position:absolute;
   left:50%;
@@ -284,27 +323,7 @@ const PlusV = styled.div`
     height:20px;
   }
 `
-const PlusText = styled.p`
-  font-size:25px;
-  font-weight:bold;
-  margin:30px 0;
-  @media only screen and (max-width: 768px) {
-  }
-`;
-
-const ImageBox2 = styled.img<{width?:number}>`
-  height:100%;
-  /* max-height:800px; */
-  object-fit:contain;
-  /* overflow: hidden; */
-  background-color:aqua;
-  margin:0 auto;
-  /* aspect-ratio: 0.8; */
-  width:${(props)=>props.width? props.width: 100}%;
-  @media only screen and (max-width: 768px) {
-  }
-`;
-const ImageItem = styled.img`
+const UploadImageItem = styled.img`
   width:100%;
   height:100%;
 `
@@ -323,25 +342,6 @@ const ImagePlus = styled.div`
     width: 100%;
   }
 `;
-const PlusImageBtnWrap = styled.div`
-  position:absolute;
-  right:15%;
-  bottom:20px;
-  z-index:1000;
-  width: 50px;
-  height:50px;
-  border-radius:50%;
-  cursor: pointer;
-  /* aspect-ratio: 0.8; */
-`;
-const PlusImageBtn = styled.img`
-  width: 100%;
-  height:100%;
-  object-fit:contain;
-  /* border-radius:50%; */
-  background-color:#696969;
-  /* aspect-ratio: 0.8; */
-`;
 const InputWrap = styled.div`
   display: flex;
   width: 100%;
@@ -349,14 +349,6 @@ const InputWrap = styled.div`
   margin: 20px 0 10px;
   @media only screen and (max-width: 768px) {
     margin: 0;
-  }
-`;
-const InputTitle = styled.div`
-  white-space:nowrap;
-  width:25%;
-  max-width:250px;
-  text-align:start;
-  @media only screen and (max-width: 768px) {
   }
 `;
 
@@ -375,61 +367,6 @@ const TextInput = styled.textarea`
   }
 `;
 
-const Xtext = styled.p`
-  position:absolute;
-  top:5%;
-  right:5%;
-  color: #ffffff;
-  background:#000000;
-  padding:0 4px;
-  margin:0;
-  font-size: 14px;
-  border:1px solid black;
-  border-radius:50%;
-  cursor: pointer;
-  @media only screen and (max-width: 768px) {
-    font-size: 8px;
-  }
-`;
-const LabelBox = styled.div`
-  margin:100px 0;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-  }
-`;
-const BlackButtonText = styled.span`
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 400;
-  @media only screen and (max-width: 768px) {
-    font-size: 11px;
-  }
-`;
-
-
-const ModalBlackButton = styled.div`
-  width: 160px;
-  height: 60px;
-  background-color: #121212;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 1px solid #121212;
-  @media only screen and (max-width: 768px) {
-    height: 40px;
-  }
-`;
-
-const ModalWhiteButton = styled(ModalBlackButton)`
-  background-color: #ffffff;
-  margin-left: 10px;
-  @media only screen and (max-width: 768px) {
-    margin-left: 0;
-    margin-top: 5px;
-  }
-`;
-
 const AboutWrap = styled.div`
   text-align:start;
   padding:10px;
@@ -438,5 +375,112 @@ const AboutWrap = styled.div`
     font-size: 14px;
   }
 `;
+
+const BoxWrap = styled.div`
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  margin:0 5px 50px;
+`;
+
+const LayoutWrap = styled.div`
+  display: flex;
+  margin: 15px 0 ;
+`;
+const BoxTitle = styled.p`
+font-family:'Pretendard Variable';
+  font-size:16px;
+  font-weight: 410;
+  text-align:start;
+  color:#2b2b2b;
+  margin:20px 5px 10px;
+  @media only screen and (max-width: 768px) {
+  }
+`
+const CategoryCount = styled.span`
+  font-size:13px;
+  font-weight: 410;
+  text-align:start;
+  color:#adadad;
+  margin-left:20px;
+`
+
+const LinkName = styled.p`
+font-family:'Pretendard Variable';
+  font-weight: 410;
+  text-align:start;
+  color:#2b2b2b;
+  margin:0;
+  @media only screen and (max-width: 768px) {
+    font-size:14px;
+  }
+`
+const LinkUrl = styled.p`
+font-family:'Pretendard Variable';
+  font-size:14px;
+  font-weight: 410;
+  text-align:start;
+  color:#b8b8b8;
+  margin:0;
+  @media only screen and (max-width: 768px) {
+    font-size:12px;
+  }
+`;
+
+const LinkImageWrap = styled.div`
+display:flex;
+align-items:center;
+  width:70px;
+  height:70px;
+  margin-right:30px;
+
+  /* width:40%; */
+  @media only screen and (max-width: 768px) {
+    width:55px;
+    height:50px;
+  }
+`;
+const ArrowImageWrap = styled.div`
+display:flex;
+align-items:center;
+  width:20px;
+  height:20px;
+  @media only screen and (max-width: 768px) {
+    width:15px;
+    height:15px;
+  }
+`;
+const LinkImage = styled.img`
+  width:100%;
+  height:100%;
+  object-fit:contain;
+`;
+
+const ArrowImage = styled.img`
+  width:100%;
+  height:100%;
+`;
+const LinkItemBox = styled.div`
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  @media only screen and (max-width: 768px) {
+  }
+`;
+const LinkTitleBox = styled.div`
+font-family:'Pretendard Variable';
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  @media only screen and (max-width: 768px) {
+    font-size:14px;
+  }
+`;
+const CategoryItemContainer = styled.div`
+  display:flex;
+  flex-wrap:wrap;
+`;
+
 
 export default AddPhoto;

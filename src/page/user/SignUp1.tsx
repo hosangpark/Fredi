@@ -1,27 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { Checkbox, Modal, PasswordInput } from '@mantine/core';
-import { APIGetTerms } from '../../api/SettingAPI';
-import { APICheckNickname, APICheckUserId, APISendAuthNumber, APISignUp, APIVerifyAuthNumber } from '../../api/UserAPI';
-import { phoneReg } from '../../util/Reg';
-import { DatePicker } from '@mantine/dates';
-import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 
 function SignUp1() {
   const navigate = useNavigate();
-
-  const data = {
-    type: 1,
-    // user_id: userId,
-    // password: password,
-    // name: name,
-    // phone: phone,
-    // nickname: nickname,
-    // birth: birth ? dayjs(birth).format('YYYY-MM-DD') : undefined,
-    // gender: gender,
-  };
 
   return (
     <Container>

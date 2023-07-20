@@ -1,15 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { Button, FileButton, Image } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
-import { APICheckPassword, APILink, APIUserDetails } from '../../api/UserAPI';
+import { APIChangeProfile, APICheckPassword, APILink, APISnsProfile, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
-import { LinkListType, TImage, TProductListItem } from '../../types/Types';
+import { LinkListType, TImage, TProductListItem, UserType } from '../../types/Types';
 import RightArrowImage from '../../asset/image/right.svg'
 import linkImage from '../../asset/image/rink.svg';
-import CategoryItem from '../../components/Shop/CategoryItem';
 import profileImage from '../../asset/image/Profile.svg';
 import TopTextButton from '../../components/Layout/TopTextButton';
+import ButtonContainer from '../../components/Layout/ButtonBox';
+import { DndList, dndData } from '../../components/DnD/DnD';
+import AlertModal from '../../components/Modal/AlertModal';
 
 export type TUserDetails = {
   idx: number;
@@ -41,20 +44,62 @@ function EditProfile() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [passwordAlert, setPasswordAlert] = useState(false);
-  const [isSnsUser, setIsSnsUser] = useState(false);
-  const [imageList, setimageList] = useState<ImageItem[]>([]);
-  const [userDetails, setUserDetails] = useState<TUserDetails>();
-  const [name, setName] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [LinkList, setLinkList] = useState<LinkListType[]>([]);
-  const [alertType, setAlertType] = useState<string[] | undefined>();
-  const { user } = useContext(UserContext);
+  const [ChangeImage, setChangeImage] = useState<dndData>();
+  const [ChangeImageFormData, setChangeImageFormData] = useState<any>();
+  const [images, setImages] = useState<any>();
 
+  const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
+  const [alertType, setAlertType] = useState<string>();
+
+  const [isSnsUser, setIsSnsUser] = useState(false);
+  const [userDetails, setUserDetails] = useState<UserType>();
+  const [name, setName] = useState<string>('');
+  const [About, setAbout] = useState<string>('');
+  const [LinkList, setLinkList] = useState<LinkListType[]>([]);
+  const { user } = useContext(UserContext);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const SaveButton = ()=>{
+
+    const formData = new FormData();
+    if(ChangeImage?.file){
+      formData.append('images', ChangeImage.file);
+      try {
+      const res = APIChangeProfile(formData);
+      console.log('Profile_change_ress',res);
+      
+      // setUserDetails(res);
+      // setIsSnsUser(res.type !== 1 ? true : false);
+      } catch (error) {
+        console.log(error);
+        // navigate('/signin', { replace: true });
+      }
+    } 
+    if(name || About){
+      const data = {
+        brand_name:name,
+        about:About
+      }
+      try {
+      const res = APISnsProfile(data)
+      console.log(res)
+      } catch (error) {
+        console.log(error);
+      }
+    } 
+    setAlertType('저장되었습니다.')
+    setShowAlertModal(true)
+  }
   const getUserDetails = async () => {
+    let data = {
+      idx:user.idx
+    }
     try {
-      const res = await APIUserDetails();
+      const res = await APIUserDetails(data);
       // console.log(res);
       setUserDetails(res);
+      setName(res.brand_name)
+      setAbout(res.about)
       setIsSnsUser(res.type !== 1 ? true : false);
     } catch (error) {
       // console.log(error);
@@ -67,28 +112,29 @@ function EditProfile() {
     };
     try {
       const {list,total} = await APILink(data);
-      console.log('resresresres',list);
-      console.log('resresresres',total);
-      // console.log(list);
       setLinkList(list);
-      // setIsSnsUser(res.type !== 1 ? true : false);
     } catch (error) {
       // console.log(error);
       // navigate('/signin', { replace: true });
     }
   };
+  const getBase64 = (file: File, cb: (value: string | ArrayBuffer | null) => void) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      cb(reader.result);
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    };
+  };
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
-    const div = document.getElementById('root');
-    if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
-      const y = globalThis.scrollY;
-      // sessionStorage.setItem('shop', JSON.stringify(shopList));
-      // sessionStorage.setItem('page', String(page));
-      // sessionStorage.setItem('type', String(showType));
-      sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/shopdetails/${idx}`);
-    }
+  const onUpload = (value: File) => {
+    console.log(value)
+    getBase64(value, (url) => {
+      const file = { url: url as string, name: value.name, symbol: String(Date.now()), file: value };
+      setChangeImage(file);
+    });
   };
 
   useEffect(() => {
@@ -98,20 +144,34 @@ function EditProfile() {
   
   return (
     <Container>
-      <TopTextButton text='Save' onClick={()=>{}}/>
+      <TopTextButton text='Save' onClick={SaveButton}/>
       <ProfileContainer>
-        <ImageWrap>
-          <ProfileImage src={profileImage}/>
-        </ImageWrap>
-        <EditPhotoButton style={{paddingLeft:10,paddingRight:10}} onClick={()=>{console.log('adad')}}>
-          Edit Photo
-        </EditPhotoButton>
+        
+        <FileButton onChange={onUpload} accept="image/png,image/jpeg">
+          {(props) => (
+          <div {...props}>
+          <ImageWrap Image={ChangeImage? true : userDetails?.image? true : false}>
+            {ChangeImage ?
+            <ProfileImage src={ChangeImage.url}/>
+            :
+            userDetails?.image?.file_name?
+            <ProfileImage src={userDetails?.image.file_name}/>
+            :
+            <BasicProfileImage src={profileImage}/>
+            }
+          </ImageWrap>
+          <EditPhotoButton style={{paddingLeft:10,paddingRight:10}} htmlFor='Change'>
+            Edit Photo
+            {/* <HideInput type='file' accept='image/*' ref={inputRef} onChange={(e:any) => onUpload(e)} name='Change'/> */}
+          </EditPhotoButton>
+          </div>
+          )}
+        </FileButton>
         <InputBox>
           <InputWrap>
             <InputTitle>BRNAD NAME</InputTitle>
             <TextInput
-              // onResize={}
-              maxLength={10}
+              maxLength={20}
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -126,10 +186,10 @@ function EditProfile() {
             <TextInput
               style={{minHeight:200,wordWrap:'break-word',wordBreak:'break-all'}}
               // align="top"
-              
-              value={description}
+              maxLength={500}
+              value={About}
               onChange={(e) => {
-                setDescription(e.target.value);
+                setAbout(e.target.value);
               }}
               placeholder="Add a brief bio"
             />
@@ -139,7 +199,14 @@ function EditProfile() {
         <BoxTitle>
           LINK
         </BoxTitle>
-        <LayoutWrap onClick={()=>{navigate('/AddLink', { state: 'Add' });}}>
+        <LayoutWrap onClick={()=>{
+          if(LinkList.length < 3){
+            navigate('/AddLink')
+          } else {
+            setShowAlertModal(true);
+            setAlertType('링크는 3개 이상 추가 할 수 없습니다.')
+          }
+        }}>
           <LinkImageWrap>
             <PlusH></PlusH>
             <PlusV></PlusV>
@@ -153,7 +220,7 @@ function EditProfile() {
         </LayoutWrap>
         {LinkList.map((item,index)=>{
           return(
-          <LayoutWrap key={index} onClick={()=>{navigate('/EditLink', { state: 'Edit' });}}>
+          <LayoutWrap key={index} onClick={()=>{navigate('/EditLink', { state: item.idx });}}>
             <LinkImageWrap>
               <LinksImage src={linkImage}/>
             </LinkImageWrap>
@@ -173,8 +240,29 @@ function EditProfile() {
           </LayoutWrap>
           )
         })}
-        
       </BoxWrap>
+      <ButtonContainer
+        text1={'Save'}
+        text2={'Cancle'}
+        onClick1={()=>{}}
+        onClick2={SaveButton}
+        cancle={()=>navigate(-1)}
+        marginT={50}
+        marginB={100}
+        visible={true}
+      />
+      <AlertModal
+        visible={showAlertModal}
+        setVisible={setShowAlertModal}
+        onClick={() => {
+          if(alertType == '링크는 3개 이상 추가 할 수 없습니다.'){
+            setShowAlertModal(false)
+          }else{
+            navigate(-1);
+          }
+        }}
+        text={alertType? alertType : '확인되었습니다.'}
+      />
       </ProfileContainer>
     </Container>
   );
@@ -223,7 +311,7 @@ const LayoutWrap = styled.div`
   cursor: pointer;
 `;
 
-const EditPhotoButton = styled.div`
+const EditPhotoButton = styled.label`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -269,7 +357,7 @@ font-family:'Pretendard Variable';
     font-size:12px;
   }
   `;
-const ImageWrap = styled.div`
+const ImageWrap = styled.div<{Image:boolean}>`
   display:flex;
   justify-content:center;
   align-items:center;
@@ -277,7 +365,8 @@ const ImageWrap = styled.div`
   width:160px;
   height:160px;
   aspect-ratio: 1.0;
-  background-color: #DBDBDB;
+  border:1px solid #e0e0e0;
+  background-color:${props => props.Image?  'none': '#DBDBDB'} ;
   /* width:15%; */
   @media only screen and (max-width: 768px) {
     width:120px;
@@ -332,10 +421,20 @@ font-family:'Pretendard Variable';
     font-size:14px;
   }
 `;
-
+const HideInput = styled.input`
+  display:none;
+`
 const ProfileImage = styled.img`
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:1px solid #e0e0e0;
+  object-fit:cover;
+`;
+const BasicProfileImage = styled.img`
   width:50%;
   height:50%;
+  /* border-radius:50%; */
   object-fit:contain;
 `;
 const LinksImage = styled.img`

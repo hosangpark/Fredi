@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
-import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
+import { APICheckPassword, APILinkDelete, APILinkModify, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
 import { TImage, TProductListItem } from '../../types/Types';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
@@ -39,7 +39,7 @@ export type ImageItem = {
 
 function EditLink() {
   const navigate = useNavigate();
-  const types = useLocation();
+  const LinkIdx = useLocation();
   const [name, setName] = useState<string>('');
   const [url, setUrl] = useState<string>('');
   const [alertType, setAlertType] = useState('');
@@ -50,18 +50,34 @@ function EditLink() {
     if (!name) return setAlertType('Title을 입력해주세요.'),setShowContentModal(true);
     if (!url) return setAlertType('Url을 입력해주세요.'),setShowContentModal(true);
     const data = {
-      // page: 1
+      title:name,
+      url:url,
+      idx:LinkIdx.state
     };
     try {
-      // const res = await APILinkAdd(data);
-      
-      
-      // setIsSnsUser(res.type !== 1 ? true : false);
+      const res = await APILinkModify(data);
+      setAlertType('변경되었습니다.')
+      setShowContentModal(true)
+      // console.log(res)
     } catch (error) {
       // console.log(error);
       // navigate('/signin', { replace: true });
     }
   };
+  const Delete = async () =>{
+    console.log(LinkIdx.state)
+    const data = {
+      idx:LinkIdx.state
+    };
+    try {
+      const res = await APILinkDelete(data);
+      setAlertType('삭제되었습니다.')
+      setShowContentModal(true)
+    } catch (error) {
+      // console.log(error);
+      // navigate('/signin', { replace: true });
+    }
+  }
 
   return (
     <Container>
@@ -89,14 +105,14 @@ function EditLink() {
             placeholder="Website URL"
           />
         </InputWrap>
-        <TextBox>
+        <TextBox onClick={Delete}>
           <DeleteText>Delete</DeleteText>
         </TextBox>
         <ButtonContainer
           text1={'Save'}
-          text2={'Delete'}
+          text2={'Cancel'}
           onClick1={()=>{}}
-          onClick2={()=>{}}
+          onClick2={ModifyLink}
           cancle={()=>navigate(-1)}
           marginT={50}
           marginB={100}
@@ -108,6 +124,11 @@ function EditLink() {
       setVisible={setShowContentModal}
       onClick={() => {
         setShowContentModal(false);
+        if(alertType == '변경되었습니다.' ||
+          alertType =='삭제되었습니다.'
+        ){
+          navigate(-1)
+        }
       }}
       text={alertType}
       />
@@ -147,9 +168,8 @@ const InputBox = styled.div`
   border-bottom:1px solid #c7c7c7;
 `;
 const TextBox = styled.div`
-  display:none;
+  display:flex;
   @media only screen and (max-width: 768px) {
-    display:flex;
   }
 `
 const DeleteText = styled.p`

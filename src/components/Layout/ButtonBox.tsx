@@ -29,12 +29,12 @@ function ButtonContainer({
 
   return (
     <ButtonWrap visible={visible? visible : false} marginT={marginT? marginT :37} marginB={marginB? marginB :37}>
-      <BlackButton onClick={idx ? onClick1 : onClick2}>
-        <BlackButtonText>{text1}</BlackButtonText>
-      </BlackButton>
       <WhiteButton onClick={cancle}>
         <WhiteButtonText>{text2}</WhiteButtonText>
       </WhiteButton>
+      <BlackButton onClick={idx ? onClick1 : onClick2}>
+        <BlackButtonText>{text1}</BlackButtonText>
+      </BlackButton>
     </ButtonWrap>
     
   );
@@ -54,7 +54,7 @@ const ButtonWrap = styled.div<{marginT?:number,marginB?:number,visible?:boolean}
 `;
 
 const BlackButton = styled.div`
-  background-color: #131313;
+  background-color: rgb(73, 73, 73);
   border: 1px solid #131313;
   cursor: pointer;
   border-radius:5px;
@@ -70,15 +70,15 @@ const BlackButtonText = styled.span`
 font-family:'Pretendard Variable';
   color: #ffffff;
   font-size: 14px;
-  font-weight: 410;
+  font-weight: 360;
   cursor: pointer;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
-`;
+  `;
 
 const WhiteButton = styled(BlackButton)`
-margin-left:10px;
+margin-right:10px;
   background-color: #ffffff;
   flex:1;
 `;

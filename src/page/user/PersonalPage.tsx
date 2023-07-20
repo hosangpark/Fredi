@@ -1,131 +1,44 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
-import likeOnImage from '../../asset/image/heart_on.png';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import likeOnImage from '../../asset/image/heart_on.svg';
 import likeOffImage from '../../asset/image/heart.svg';
-import bookmarkOnImage from '../../asset/image/Bookoff.svg';
+import bookmarkOnImage from '../../asset/image/bookon.svg';
 import bookmarkOffImage from '../../asset/image/Bookoff.svg';
-import leftButtonImage from '../../asset/image/ico_prev.png';
-import rightButtonImage from '../../asset/image/ico_next.png';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { createStyles, Modal } from '@mantine/core';
-import { TImage, TProductListItem } from '../../types/Types';
+import { SnsList, SnsdetailsType, TImage, TProductListItem } from '../../types/Types';
 import AlertModal from '../../components/Modal/AlertModal';
 import reporticon from '../../asset/image/threecircle.png';
 import { UserContext } from '../../context/user';
 import { useRef } from 'react';
 import { createBrowserHistory } from 'history';
-import profileImage from '../../asset/image/profile.png';
+import profileImage from '../../asset/image/Profile.svg';
 import cart from '../../asset/image/cart.png';
 import ask from '../../asset/image/home05.png';
-import { APIAddCartItem, APILikeShop, APIShopDetails } from '../../api/ShopAPI';
-import { replaceString } from '../../util/Price';
+import { APIAddCartItem, APILikeShop, } from '../../api/ShopAPI';
 import { removeHistory } from '../../components/Layout/Header';
-import { TextInput, Select } from '@mantine/core';
-import arrDownImage from '../../asset/image/arr_down.png';
-import CartCard from '../../components/Shop/CartCard';
-import { read } from 'fs';
-import { getConstantValue } from 'typescript';
-import { count } from 'console';
+import axios from 'axios';
 import { Virtual,Pagination,Navigation, Scrollbar } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 import { APIGetBanner } from '../../api/SettingAPI';
-
-export type TShopDetails = {
-  idx: number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  name: string;
-  price: number;
-  size: string;
-  weight: string;
-  country: string;
-  description: string;
-  designer: string;
-  sns: string;
-  email: string;
-  website: string;
-  delivery_info: string;
-  like_count: number;
-  imageList: TImage[];
-  optionList: OptionDetailList[];
-  isLike: boolean;
-};
-
-export type OptionDetailList = {
-  idx: number;
-  name: string;
-};
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {
-    width: '100%',
-    // height: '100%',
-    // aspectRatio: '1/1',
-  },
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
+import { APIArtistFollowAdd, APIBookMarkLike, APISnsCount, APISnsDetails, APISnsLike } from '../../api/ProductAPI';
 
 function PersonalPage() {
   const { idx } = useParams();
   const navigate = useNavigate();
-  const { classes } = useStyles();
   const history = createBrowserHistory();
+  const location = useLocation();
   const { user } = useContext(UserContext);
-  const [shopDetails, setShopDetails] = useState<TShopDetails>();
-  const [isLike, setIsLike] = useState<boolean>(false);
-  const [showImageModal, setShowImageModal] = useState<boolean>(false);
-  const [initcar, setInitCar] = useState<boolean>(false);
+  const [Snsdetails, setSnsdetails] = useState<SnsdetailsType>();
   const [showLogin, setShowLogin] = useState(false);
-  const [height, setHeight] = useState(0);
-  const [imageIdx, setImageIdx] = useState(0);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [option, setOption] = useState<any>(); // 기존 옵션 리스트
-  const [value, setValue] = useState(); // 현재 선택값
   const [addOption, setAddOption] = useState<any>([]); // 선택 누적 리스트
-  const [total, setTotal] = useState<number>(0);
   const [showOption, setShowOption] = useState<boolean>(false);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-  const [bottomSheetModal, setBottomSheetModal] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [bannerListMobile, setBannerListMobile] = useState<TImage[]>([]);
-  const [isLikeList,setIsLikeList] = useState(false)
-  const [isBookMark,setIsBookMark] = useState(false)
-  const [followed,setFollowed] = useState(false)
+  const [ ip , setIp ] = useState();
 
 
   const leftBoxRef = useRef<HTMLDivElement>(null);
@@ -134,60 +47,49 @@ function PersonalPage() {
   const TRANSITION_DURATION = 200;
   useAnimationOffsetEffect(embla, TRANSITION_DURATION);
 
-  const getShopDetails = async () => {
-    setShopDetails({
-      idx: 1,
-      category: 1,
-      name: '이름',
-      price: 8000,
-      size: '사이즈',
-      weight: '무게',
-      country: '지역',
-      description: '종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 종이접기와 풍선과 같이 본래 물성은 얇지만, 볼륨감을 ',
-      designer: '제작자(디자이너)',
-      sns: 'SNS',
-      email: '이메일',
-      website: '웹사이트',
-      delivery_info: '배송정보',
-      like_count: 11,
-      imageList: [
-          {
-            idx: 1,
-            file_name: '이미지1',
-          },
-          {
-            idx: 2,
-            file_name: '이미지2',
-          },
-          {
-            idx: 3,
-            file_name: '이미지3',
-          },
-        ],
-      optionList: [
-        {
-          idx: 1,
-          name: '옵션1번',
-        },
-        {
-          idx: 2,
-          name: '옵션2번',
-        },
-      ],
-      isLike: true,
-      }
-      )
-  }
-      
-  const onLikeShop = async () => {
+ 
+
+  const getSnsDetails = async () => {
     if (user.idx) {
       const data = {
-        idx: shopDetails?.idx,
+        idx: location.state,
       };
       try {
-        const res = await APILikeShop(data);
+        const res = await APISnsDetails(data);
+        setSnsdetails(res);
+        // SNSCount()
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  const UserFollow = async() =>{
+    if (user.idx) {
+      const data = {
+        designer_idx: Snsdetails?.user.idx,
+      };
+      try {
+        const res = await APIArtistFollowAdd(data);
         console.log(res);
-        setIsLike((prev) => !prev);
+        getSnsDetails()
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setShowLogin(true);
+    }
+  }
+      
+  const LikeSns = async () => {
+    if (user.idx) {
+      const data = {
+        idx: location.state,
+      };
+      try {
+        const res = await APISnsLike(data);
+        console.log(res);
+        getSnsDetails()
       } catch (error) {
         console.log(error);
       }
@@ -196,10 +98,43 @@ function PersonalPage() {
     }
   };
 
+  const LikeBookMark = async () => {
+    if (user.idx) {
+      const data = {
+        idx: location.state,
+      };
+      try {
+        const res = await APIBookMarkLike(data);
+        console.log(res);
+        getSnsDetails()
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setShowLogin(true);
+    }
+  };
+
+  const SNSCount = async() => {
+    let stringip = JSON.stringify(ip)
+    
+    const data = {
+      res: ip,
+      sns_idx: location.state
+    };
+    try {
+      const res = await APISnsCount(data);
+      console.log('resresresresresresresres',res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+
   const onAddCartItem = async () => {
     if (user.idx) {
       const data = {
-        idx: shopDetails?.idx,
+        idx: Snsdetails?.idx,
         options: addOption.length > 0 ? addOption : [],
         // amount: 1,
       };
@@ -216,22 +151,29 @@ function PersonalPage() {
   };
 
   useEffect(() => {
-    getShopDetails();
-    // console.log('shopDetails', shopDetails);
+    fetch('https://api.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => setIp(data.ip))
+      .catch(error => console.log(error))
   }, []);
 
   useEffect(() => {
-    setInitCar(showImageModal);
-  }, [showImageModal]);
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
 
   useEffect(() => {
-    setHeight(Leftheight);
-  }, [Leftheight]);
+    getSnsDetails();
+    // console.log('Snsdetails', Snsdetails);
+  }, []);
+
 
   useEffect(() => {
-    console.log(history.action);
+    // console.log(history.action);
     const backCheck = history.listen(({ location, action }) => {
-      console.log(action);
+      // console.log(action);
       if (action === 'POP') {
         console.log('뒤로');
       }
@@ -239,108 +181,26 @@ function PersonalPage() {
     return backCheck;
   }, []);
 
-  const getBannerList = async () => {
-    var array1 = new Array(); //pc
-    var array2 = new Array(); //mobile
-    try {
-      const res = await APIGetBanner();
-      console.log('banner@@@@@@@@', res);
-      res.forEach((list:any) => {
-        if(list.type === 'P'){
-          array1.push(list);
-        } else {
-          array2.push(list);
-        }
-      });
-      // console.log(array1, array2);
-      setBannerList(array1);
-      setBannerListMobile(array2);
-    } catch (error) {
-      console.log('Banner', error);
-    }
-  };
-
-  const getTotal = () => {
-    const count = addOption.reduce((a: any, v: any) => (a = a + v.count), 0);
-    return count;
-  };
-
-  const getPrice = () => {
-    const count = getTotal();
-    console.log(getTotal(), shopDetails?.price);
-    const price = Number(count) * Number(shopDetails?.price);
-    console.log(price);
-    return price;
-  };
-
-  var bullet = ['1번', '2번', '3번'];
-
-  const pagination = {
-    // el:<PaginationBox/>,
-    clickable: true,
-    renderBullet: function (index:number, className:string) {
-      let array : string[] = []
-      shopDetails?.imageList.map((item)=>{
-        array.push(item.file_name);
-      })
-      return '<span class="' + className + '">' + array[index] + "</span>";
-    },
-  };
-
-  const slides = shopDetails?.imageList.map((item, index) => (
-    <Carousel.Slide key={item.idx}>
-      <ImageBox2>
-        <SliderImage src={item.file_name} />
-      </ImageBox2>
-    </Carousel.Slide>
-  ));
-
-  const slidesMobile = bannerListMobile.map((item:any) => {
-    // console.log('item', item);
-    return(
-      <Carousel.Slide key={item.idx}>
-      <a href={item?.link}>
-        <SliderImage src={item.file_name} className={classes.carouselImages} />
-      </a>
-    </Carousel.Slide>
-    );
-  });
-  
-
-  useEffect(() => {
-    console.log('addOption', addOption);
-  }, [addOption]);
-
-  useEffect(() => {
-    getBannerList();
-  }, []);
-
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
-    };
-    if(innerWidth > 768){
-      setBottomSheetModal(false)
-    }
-    // console.log("innerWidth", innerWidth);
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
 
   return (
     <ContainerWrap id="productContainer">
       <Container>
         <ProfileHeaderWrap>
           <HeaderLeft>
-            <ImageWrap>
-              <ProfileImage src={profileImage}/>
+            <ImageWrap Image={Snsdetails?.user.image.file_name? true : false}>
+              {Snsdetails?.user.image.file_name ?
+              <ProfileImage src={Snsdetails?.user.image.file_name}/>
+              :
+              <BasicImage src={profileImage}/>
+              }
             </ImageWrap>
             <NameBox>
             <FlexBox>
-              <NameText>SEOYOON SHIN</NameText>
+              <NameText>{Snsdetails?.user.name}</NameText>
               
             </FlexBox>
             <ButtonBox>
-              <FollowButtonBox onClick={()=>{setFollowed(!followed)}}>
+              <FollowButtonBox follow={Snsdetails?.user.isLike? Snsdetails?.user.isLike : false} onClick={UserFollow}>
                 Follow
               </FollowButtonBox>
               <ReportImageWrap onClick={()=>{alert('구현예정')}}>
@@ -369,42 +229,38 @@ function PersonalPage() {
         // pagination={{ type: "progressbar" }}
         style={{paddingBottom:2.5,}}
       >
-        {bannerListMobile.map((item:any) => {
+        {Snsdetails?.imageList  ?
+        Snsdetails?.imageList.map((item:TImage) => {
           // console.log('item', item);
           return(
-            <SwiperSlide>
-              <ImageBox2>
+            <SwiperSlide key={item.idx}>
+              <ImageBox2 innerWidth={innerWidth}>
                 <SliderImage src={item.file_name} />
               </ImageBox2>
             </SwiperSlide>
           );
         })
+        :
+        <ImageBox2 innerWidth={innerWidth}>
+        </ImageBox2>
         }
       </Swiper>
       <LinkUrlBox >
         <LinkTitle>
-          Link Title
+          {Snsdetails?.link_title}
         </LinkTitle>
-        <LinkUrl href={'/'}>
-          Link Url
+        <LinkUrl href={Snsdetails?.link_url}>
+          {Snsdetails?.link_url}
         </LinkUrl>
       </LinkUrlBox>
       <LikeButtonWrap>
         <LikeBox>
-          <LikeButton onClick={()=>{setIsLikeList(!isLikeList)}
-            // e.stopPropagation();
-            // onCancelLikeProduct(item.product.idx);
-          } src={isLikeList ? likeOnImage : likeOffImage} />
-          <BookMarkButton onClick={()=>{setIsBookMark(!isBookMark)}
-            // e.stopPropagation();
-            // onCancelLikeProduct(item.product.idx);
-          } src={isBookMark ? bookmarkOnImage : bookmarkOffImage} />
+          <LikeButton onClick={LikeSns} src={Snsdetails?.isLike ? likeOnImage : likeOffImage} />
+          <BookMarkButton onClick={LikeBookMark}src={Snsdetails?.isBookmark ? bookmarkOnImage : bookmarkOffImage} />
         </LikeBox>
       </LikeButtonWrap>
       <DescriptionWrap>
-        종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 
-        종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 
-        종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 종이접기와 풍선과 
+        {Snsdetails?.about} 
       </DescriptionWrap>
         <AlertModal
           visible={showLogin}
@@ -456,8 +312,10 @@ const Container = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width:50%;
-  height:50%;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:1px solid #e0e0e0;
   object-fit:contain;
 `;
 const LikeButtonWrap = styled.div`
@@ -478,9 +336,10 @@ const DescriptionWrap = styled.div`
 font-family:'Pretendard Variable';
 font-weight: 300;
 font-size:16px;
-  margin:25.14px 38px 51.36px 22px;
+  margin:25.14px 38px 150px 22px;
   text-align:start;
   @media only screen and (max-width: 768px) {
+    margin:25.14px 38px 51.36px 22px;
     font-size:12px;
   }
 `;
@@ -504,19 +363,6 @@ const BookMarkButton = styled.img`
   }
 `;
 
-const Title = styled.span`
-  font-weight: 410;
-  color: #121212;
-  font-size: 15px;
-  display: inline-block;
-  width: 80px;
-  @media only screen and (max-width: 768px) {
-    width: 60px;
-    font-size: 12px;
-  }
-`;
-
-
 const LinkUrlBox = styled.div`
   width:100%;
   display:flex;
@@ -538,45 +384,18 @@ font-size:12px;
   text-decoration:none;
 `;
 
-const ImageBox2 = styled.div`
-  width: 100%;
-  height:100%;
+const ImageBox2 = styled.div<{innerWidth:number}>`
+  width: 768px;
+  height: 768px;
+  background:#c7c7c7;
   /* max-height:800px; */
   object-fit:contain;
   /* overflow: hidden; */
   /* background-color:aqua; */
   /* aspect-ratio: 0.8; */
   @media only screen and (max-width: 768px) {
-    width: 100%;
-  }
-`;
-const PagenationDiv = styled.div`
-  /* width: 100%; */
-  width: 100px;
-  height:100px;
-  /* max-height:800px; */
-  /* object-fit:contain; */
-  /* overflow: hidden; */
-  /* background-color:aqua; */
-  /* aspect-ratio: 0.8; */
-`;
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
-`;
-
-const LeftLabelBox = styled.div`
-  display: flex;
-  width: 60%;
-  font-size: 16px;
-  padding: 0.4rem 0rem;
-  align-items: center;
-  float: left;
-  @media only screen and (max-width: 768px) {
-    padding: 0.4rem 0rem;
-    font-size: 14px;
+    width: ${props=>props.innerWidth}px;
+    height: ${props=>props.innerWidth}px;
   }
 `;
 
@@ -588,6 +407,7 @@ const SliderImage = styled.img`
   max-width: 100%;
   @media only screen and (max-width: 768px) {
     width: 100%;
+    height:100%;
   }
 `;
 
@@ -622,13 +442,15 @@ font-family:'Pretendard Variable';
     font-size:14px;
   }
 `;
-const FollowButtonBox = styled.div`
+const FollowButtonBox = styled.div<{follow:boolean}>`
 font-family:'Pretendard Variable';
   display: flex;
   justify-content: center;
   align-items: center;
   width:100%;
   cursor: pointer;
+  background-color:${props=>props.follow? '#505050':'#ffffff'};
+  color:${props=>props.follow? '#ffffff': '#505050'};
   border:1px solid #c7c7c7;;
   border-radius:4.93px;
   font-size:12px;
@@ -646,7 +468,7 @@ const FlexBox = styled.div`
   display:flex;
   align-items:center;
 `
-const ImageWrap = styled.div`
+const ImageWrap = styled.div<{Image:boolean}>`
   width:65px;
   height:65px;
   margin-right:10px;
@@ -655,11 +477,16 @@ const ImageWrap = styled.div`
   align-items:center;
   border-radius:50%;
   aspect-ratio: 1.0;
-  background-color: #DBDBDB;
+  background-color:${props => props.Image?  'none': '#DBDBDB'} ;
   @media only screen and (max-width: 768px) {
     width:36px;
     height:36px;
   }
+`;
+const BasicImage = styled.img`
+  width:50%;
+  height:50%;
+  object-fit:contain;
 `;
 const ReportImageWrap = styled.div`
   margin-left:10px;
@@ -677,32 +504,11 @@ const ImageRotate = styled.img`
     height: 3px;
   }
 `
-const Image = styled.img`
-  width:100%;
-  height:100%;
-  border-radius:7px;
-  background:#313131;
-  @media only screen and (max-width: 768px) {
-  }
-`;
 const ButtonBox = styled.div`
   display:flex;
   justify-content:center;
   align-items:center;
 
   /* background-color:black; */
-`;
-const SubTextBox = styled.p`
-  font-size:14px;
-  font-weight: 410;
-  text-align:start;
-  color:#a1a1a1;
-  margin:0;
-  @media only screen and (max-width: 768px) {
-    font-size:12px;
-  }
-  @media only screen and (max-width: 768px) {
-    font-size:10px;
-  }
 `;
 export default PersonalPage;

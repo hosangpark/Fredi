@@ -1,18 +1,20 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useLayoutEffect} from 'react';
 import styled from 'styled-components';
+import likeOnImage from '../../asset/image/heart.svg';
+import likeOffImage from '../../asset/image/heart.svg';
 // Import Swiper styles
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import rotateLeft from '../../asset/image/right.svg'
+import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
+import { SnsList, TImage } from '../../types/Types';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import rotateLeft from '../../asset/image/right.svg'
-import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
-import { TImage } from '../../types/Types';
-import './ProductMainList.css'
+import './FairMainList.css'
 
-function ProductMainList({
+function HomeStyleList({
   // item,
   // showType,
   // index,
@@ -39,7 +41,7 @@ function ProductMainList({
   ProductViews:number
   naviArrow:boolean
   scrollbar:boolean
-  ProducList:TImage[]
+  ProducList:SnsList[]
   productLink?:string
   arrowView?:boolean
   titlesize?:number
@@ -51,6 +53,7 @@ function ProductMainList({
 }) {
   const navigationPrevRef = React.useRef(null)
   const navigationNextRef = React.useRef(null)
+
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
@@ -64,9 +67,7 @@ function ProductMainList({
     <ContainerWrap>
       
       <TitleBox marginT={marginT} marginB={marginB}
-      // onClick={()=>{navigate(`/${link}`);}}
       >
-        {/* <a href={item?.link}> */}
         <TitleText titlesize={titlesize}>
           {title}
         </TitleText>
@@ -74,14 +75,7 @@ function ProductMainList({
           <ArrowRightIcon src={rightarrowIcon}/>
         }
       </TitleBox>
-      {/* <StyledButton ref={prevRef}>
-        <Image src={leftarrowIcon} alt="prev" />
-      </StyledButton>
-      <StyledButton ref={nextRef}>
-        <Image src={rightarrowIcon} alt="next" />
-      </StyledButton> */}
       <Swiper
-        // install Swiper modules
         modules={[Navigation, Pagination, Scrollbar]}
         slidesPerView={ProductViews}
         navigation= {naviArrow ?
@@ -99,25 +93,15 @@ function ProductMainList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList &&
-        ProducList.map((item,index)=>{
+        {ProducList.map((item,index)=>{
           return(
             <SwiperSlide key={index}>
               <ProductWrap marginRight={marginRight? marginRight:20}>
-                {title?.includes('Featured') &&
-                <ToptextWrap>
-                  <FeaturedTitleText>
-                    MoreTitleM{item.idx}
-                  </FeaturedTitleText>
-                  {/* <LikeButton onClick={()=>{setLike(!like)}} src={like ? likeOnImage : likeOffImage} /> */}
-                </ToptextWrap>
-                }
                 <ProductImageWrap aspect={aspect? aspect:1} height={innerWidth} 
                 onClick={(e)=>LinkHandler(e,title,item.idx)}
                 >
-                  <ProductImage src={item.file_name}/>
+                  <ProductImage src={item.image[0].file_name}/>
                 </ProductImageWrap>
-                {!title?.includes('Featured') &&
                 <TextWrap title={title}>
                   <ProductTitleText>
                     Title{item.idx}
@@ -126,7 +110,6 @@ function ProductMainList({
                     ArtistName{item.idx}
                   </ProductSubText>
                 </TextWrap>
-                }
               </ProductWrap>
             </SwiperSlide>
           )
@@ -325,4 +308,4 @@ const StyledButton = styled.div`
   height:20px;
 `;
 
-export default ProductMainList;
+export default HomeStyleList;

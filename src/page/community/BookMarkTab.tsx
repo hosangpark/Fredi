@@ -9,7 +9,7 @@ import bookMarkImage from '../../asset/image/Bookoff.svg';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { SnsList, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -25,6 +25,7 @@ import Feed from './Feed';
 import BookMark from './BookMark';
 import { FairListItem } from '../../types/Types';
 import { CategoryList } from '../../components/List/List';
+import { APIBookMarkLikeList } from '../../api/ProductAPI';
 
 
 
@@ -48,63 +49,64 @@ function BookMarkTab() {
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
 
-  const [shopList, setShopList] = useState<FairListItem[]>([]);
+  const [BookMarkList, setBookMarkList] = useState<SnsList[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
-  const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
+  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);;
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
-
-
-  const content = [
-    { 
-      tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-        <TabImage src={snsImage}/></div>,
-      content:<Feed productList={shopList}/>
-    },
-    {
-      tab: "Follow",
-      content:<Follow/>
-    },
-    {
-      tab: <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-        <TabImage src={bookMarkImage}/>
-        </div>,
-      content:<BookMark/>
-    }
-  ];
-  const useTabs = (initialTabs:any, allTabs:any) => {
-    const [contentIndex, setContentIndex] = useState(initialTabs);
-    return {
-      contentItem: allTabs[contentIndex],
-      contentChange: setContentIndex
-    };
-  };
-  const { contentItem, contentChange } = useTabs(0, content);
-
   
-  const findHistory = () => {
-    // const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
-
-    // setShopList(list);
-    setHistory(true);
-    setPage(page);
-    setShowType(type);
-
-    sessionStorage.removeItem('shop');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
+  
+  const getproductList = async () => {
+    // console.log('ccccccccccc',category)
+    const data = {
+      page: 1,
+    };
+    try {
+      if (history) {
+        return setHistory(false);
+      }
+      const { list, total } = await APIBookMarkLikeList(data);
+      console.log('bbbbbbbokkkk',list)
+      setBookMarkList(list);
+      // console.log('shop', list, page);
+    } catch (error) {
+      console.log(error);
+    }
   };
+  
+
+  const findHistory = () => {
+    const list = JSON.parse(sessionStorage.getItem('List') ?? '');
+    console.log('list불러옴',list)
+    // setCategory(categ);
+    setBookMarkList(list);
+    setHistory(true);
+
+    sessionStorage.removeItem('List');
+    
+  };
+
+
+  const saveHistory = (e: React.MouseEvent, idx: number) => {
+    const div = document.getElementById('root');
+    if (div) {
+      console.log(div.scrollHeight, globalThis.scrollY);
+      const y = globalThis.scrollY;
+      sessionStorage.setItem('List', JSON.stringify(BookMarkList));
+      sessionStorage.setItem('y', String(y ?? 0));
+      navigate(`/personalpage/${idx}`,{state:idx});
+    }
+  };
+
+  useLayoutEffect(() => {
+      getproductList();
+  }, []);
 
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    if (shopList.length > 0 && scrollY) {
+    if (BookMarkList.length > 0 && scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -114,8 +116,8 @@ function BookMarkTab() {
       }, 50);
       sessionStorage.removeItem('y');
     }
-  }, [shopList]);
-
+  }, [BookMarkList]);
+ 
   const onSearch = () => {
     navigate(
       {
@@ -129,13 +131,6 @@ function BookMarkTab() {
     );
   };
 
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
 
 
   return (
@@ -153,7 +148,7 @@ function BookMarkTab() {
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
           onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
-            chageCategory(value);
+            // chageCategory(value);
           }}
         />
       </TitleWrap>
@@ -171,7 +166,7 @@ function BookMarkTab() {
             <TabImage src={bookMarkImage}/></div>
           </UnderLineTab>
         </TabButtonWrap>
-        <BookMark/>
+        <BookMark saveHistory={saveHistory} productList={BookMarkList} CategoryClick={e=>setCategory(e)}/>
       </div>
     </Container>
   );

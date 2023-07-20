@@ -1,32 +1,20 @@
-import React, { memo, useCallback, useContext, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import logoImage from '../../asset/image/logo.png';
 import AlertModal from '../Modal/AlertModal';
 import menuheart from '../../asset/image/heart.svg';
 import menuselling from '../../asset/image/Selling.svg';
-import menuorderlist from '../../asset/image/orderlist.png';
-import menutextballoon from '../../asset/image/textballoon.png';
 import menucontact from '../../asset/image/contact.svg';
 import menusetting from '../../asset/image/Settings.svg';
 
 import profileImage from '../../asset/image/web_my.svg';
 import likeOffImage from '../../asset/image/heart.svg';
-import likeOnImage from '../../asset/image/heart_on.png';
 import menuicon from '../../asset/image/threecircle.png';
-import cartImage from '../../asset/image/cart.png';
-import ContactImage from '../../asset/image/home05.png';
-import LogoutImage from '../../asset/image/ico_logout.png';
-import { APICheckNew } from '../../api/SettingAPI';
 import { UserContext } from '../../context/user';
-import newIconImage from '../../asset/image/ico_new.png';
 import ConfirmModal from '../Modal/ConfirmModal';
-import signIn from '../../asset/image/sign_in.png';
-import signOut from '../../asset/image/sign_out.png';
 import backButtonImage from '../../asset/image/back.svg';
-import { Menu, Button, Text } from '@mantine/core';
-import { IconSettings, IconSearch, IconPhoto, IconMessageCircle, IconTrash, IconArrowsLeftRight } from '@tabler/icons';
-import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
+import { APICheckPassword } from '../../api/UserAPI';
 import { Modal } from '@mantine/core';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 
@@ -166,12 +154,7 @@ function Header() {
 
   const goCommunity = useCallback(() => {
     removeHistory();
-    if (!token) {
-      setShowLogin(true);
-    }else {
-      navigate('/Community/FeedTab');
-    }
-    
+    navigate('/Community/FeedTab');
   }, [token]);
 
   const goMyPage = useCallback(() => {
@@ -179,7 +162,8 @@ function Header() {
     if (!token) {
       setShowLogin(true);
     } else {
-      navigate(`/MobileProfile/${user.idx}`)
+      console.log(Number(user.idx))
+      navigate(`/MobileProfile/${(user.idx)}`,{state:user.idx})
     }
   }, [token]);
 
@@ -210,6 +194,7 @@ function Header() {
     setShowModal(false);
   }, []);
 
+
   const closeLoginAlertModal = useCallback(() => {
     removeHistory();
     navigate('/signin');
@@ -221,25 +206,7 @@ function Header() {
     patchUser(0, 3);
     window.location.replace('/');
   };
-  const nextHandle = () => {
-    if(pathName === 'AddPhoto'){
-      navigate('/AddPhoto2')
-    } else if (pathName === 'AddPhoto2'){
-      navigate('/AddPhoto')
-    } 
-  };
-  const saveHandle = () => {
-    if(pathName === 'modifyuserinfo'){
-      alert('저장되었습니다.')
-      navigate('/')
-      // navigate('/AddPhoto2')
-    } else if (pathName === 'AddPhoto2'){
-      alert('저장되었습니다.')
-      navigate(-2)
-    } else if (pathName === 'EditProfile'){
-      navigate(-1)
-    } 
-  };
+
   const BackbuttonHandle = () => {
     if(pathName === 'AddPhoto'){
       navigate(-1)
@@ -250,36 +217,6 @@ function Header() {
       navigate(-1)
     }
   };
-
-  // useEffect(() => {
-  //   const userAgent = window.navigator.userAgent;
-  //   if (userAgent === 'APP-android' || userAgent === 'APP-ios') {
-  //     if (
-  //       pathName === 'productdetails' ||
-  //       pathName === 'shopdetails' ||
-  //       pathName === 'cart' ||
-  //       pathName === 'order' ||
-  //       pathName === 'shopdetails' ||
-  //       pathName === 'orderlist' ||
-  //       pathName === 'orderdetails' ||
-  //       pathName === 'request' ||
-  //       pathName === 'modifyuserinfo' ||
-  //       pathName === 'finduserid' ||
-  //       pathName === 'findpassword' ||
-  //       pathName === 'signup' ||
-  //       pathName === 'producerdetails' ||
-  //       pathName === 'kakao' ||
-  //       pathName === 'naver' ||
-  //       pathName === 'asklist-shop'
-  //     ) {
-  //       setShowBackButton(true);
-  //     } else {
-  //       setShowBackButton(false);
-  //     }
-  //   } else {
-  //     setShowBackButton(false);
-  //   }
-  // }, [pathName]);
   
   useEffect(() => {
     if (
@@ -391,9 +328,6 @@ function Header() {
       <Sheet isOpen={bottomSheetModal} onClose={() => setBottomSheetModal(false)}
         detent={'content-height'}
         ref={ref}
-        // snapPoints={[700, 400, 100, 50]}
-        // initialSnap={3}
-        // onClick={() => setBottomSheetModal(false)}
         >
           <Sheet.Container>
             <Sheet.Header>
@@ -407,7 +341,6 @@ function Header() {
                   <IconWrap>
                   <HeartIconImage src={menuheart}/>
                   </IconWrap>
-                  {/* 찜한작품 */}
                   Like
                 </SheetMenu>
                 <SheetMenu onClick={goSelling}>
@@ -416,16 +349,6 @@ function Header() {
                   </IconWrap>
                   Selling
                 </SheetMenu>
-                {/* <SheetMenu onClick={go_orderList}>
-                  <IconImage src={menuorderlist}/>
-                  Order List
-                  
-                </SheetMenu>
-                <SheetMenu onClick={()=>{}}>
-                  <IconImage src={menutextballoon}/>
-                  83.58 -56  27.58 
-                  Product Q & A
-                </SheetMenu> */}
                 <SheetMenu onClick={goContact}>
                   <IconWrap>
                   <ContactIconImage src={menucontact}/>
@@ -859,20 +782,6 @@ const SettingsIconImage = styled(IconImage)`
   height: 23.62px;
 }
 `
-const NewIcon = styled.img`
-  width: 12px;
-  height: 12px;
-  position: absolute;
-  left: -15px;
-  top: 0px;
-`;
-
-const MenuButtonImage = styled.img`
-  width: 28px;
-  height: 28px;
-  margin-bottom: 3px;
-`;
-
 const BackButtonWrap = styled.div`
   position:absolute;
   left:15px;

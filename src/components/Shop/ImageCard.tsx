@@ -1,11 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart_on.png';
-import likeOffImage from '../../asset/image/heart_off.png';
-import newIconImage from '../../asset/image/ico_new.png';
-import { replaceString } from '../../util/Price';
-import { ImageItem } from '../../page/user/MobileProfile';
+import { SnsList } from '../../types/Types';
 
 function ImageCard({
   item,
@@ -14,7 +10,7 @@ function ImageCard({
   // onClickLike,
   isLikeList,
 }: {
-  item: ImageItem;
+  item: SnsList;
   index: number;
   onClick: (e: any) => void;
   // onClickLike: (e: any) => void;

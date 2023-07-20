@@ -97,8 +97,6 @@ function ChangePassword() {
       };
       const res = await APIModifyPassword(data);
       setAlertType('password');
-      // alert('수정되었습니다.')
-      navigate(-1)
     } catch (error) {
       console.log(error);
     }
@@ -186,12 +184,6 @@ function ChangePassword() {
             ? '비밀번호가 변경되었습니다.'
             : alertType === 'needPasswordAuth'
             ? '기존 비밀번호 인증을 먼저 완료해 주세요.'
-            : alertType === 'reason'
-            ? '탈퇴 사유를 입력해 주세요.'
-            : alertType === 'agree'
-            ? '탈퇴 약관에 동의해 주세요.'
-            : alertType === 'deleted'
-            ? '회원 탈퇴가 완료되었습니다.'
             : alertType === 'passwordDiffrent'
             ? '새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.'
             : ''

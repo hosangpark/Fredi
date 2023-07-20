@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export type FairDetailsType = {
   idx: number;
   name: string;
@@ -9,6 +11,7 @@ export type FairDetailsType = {
   deleted_time: string | null,
   image: TImage[];
   image_m: TImage[];
+  range:string;
   fair_link_data : FairLinkData[]
   artwork_data:FairDetailsArtworkItem[]
   isLike?: boolean;
@@ -24,7 +27,7 @@ export type FairLinkData = {
 
 export type FairListItem = {
   idx: number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
+  category: string;
   name: string;
   price: number;
   size: string;
@@ -53,10 +56,23 @@ export type FairList = {
   start_dt:string;
   updated_time?:string | null;
 };
+export type MainFairList = {
+  created_time: string;
+  deleted_time?: string | null;
+  end_dt: string;
+  idx: number;
+  image:ImageType;
+  image_m:ImageType;
+  location:string;
+  name: string;
+  start_dt:string;
+  updated_time?:string | null;
+};
+
 
 export type ArtworkItem = {
   idx: number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
+  category:string;
   name: string;
   size: string;
   description: string;
@@ -118,8 +134,8 @@ export type FairDetailsArtistItem = {
   birth: string,
   login_time: string,
   created_time: string,
-  suspended_time: null,
-  deleted_time: null,
+  suspended_time: string | null,
+  deleted_time: string | null,
   reason: string,
   level: number,
   zipcode: string,
@@ -128,17 +144,89 @@ export type FairDetailsArtistItem = {
   following: number,
   followers: number
 }
+export type ArtistList = {
+  idx: number,
+  type: number,
+  user_id: string,
+  password: string,
+  name: string,
+  nickname: string,
+  phone: string,
+  gender: number,
+  birth: string,
+  login_time: string,
+  created_time: string,
+  suspended_time: string | null,
+  deleted_time: string | null,
+  reason: string,
+  level: number,
+  zipcode: string,
+  address1: string,
+  address2: string,
+  following: number,
+  followers: number,
+  email:string,
+  image_idx:number;
+  image:TImage
+}
+
+export type FeaturedListType = {
+  idx: number,
+  category: string,
+  user_idx: number,
+  name: string,
+  about: string,
+  link_title: string,
+  link_url: string,
+  created_time: string,
+  updated_time: string | null,
+  deleted_time: string | null,
+  like_count: number,
+  read_count: number,
+  is_featured: string,
+  is_hide: number,
+  image: ImageType[],
+  isLike: boolean,
+  isBookmark: boolean,
+  category_arr: number[]
+}
+export type DesignerType = {
+  idx:number;
+  type:number;
+  user_id:string;
+  password:string;
+  name:string;
+  nickname:string;
+  phone:number;
+  gender:number;
+  birth:string;
+  login_time:string;
+  created_time:string;
+  suspended_time:string | null;
+  deleted_time:string | null;
+  reason: string;
+  level:number;
+  zipcode:string;
+  address1:string;
+  address2:string;
+  following:number;
+  followers:number;
+  email:string | null;
+  image_idx:number;
+  is_tranding:string;
+}
 export type ArtworkListItem = {
   idx: number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
+  category: string;
   name: string;
   price?: number;
   designer_idx?:number;
+  designer_name?:string;
   size: string;
   weight: string;
   country: string;
   description: string;
-  designer: string;
+  designer: DesignerType;
   sns: string;
   email: string;
   website: string;
@@ -183,8 +271,8 @@ export type TProducerListItem = {
   website: string;
   description: string;
   created_time: string;
-  updated_time: string;
-  deleted_time: string;
+  updated_time: string | null;
+  deleted_time: string | null;
   image: TImage[];
   isLike: boolean;
   like_count: number;
@@ -224,6 +312,7 @@ export type UserType = {
   gender: number;
   birth: string;
   login_time: string;
+  brand_name?:string;
   created_time: string;
   suspended_time: string | null;
   deleted_time: string | null;
@@ -234,14 +323,41 @@ export type UserType = {
   address2: string;
   following: number;
   followers: number;
+  email:string | null;
+  image_idx:number;
+  image:TImage;
+  isLike:boolean;
+  about?:string;
 }
 
-export type FollowArtistList = {
+export type FollowArtistListType = {
   idx: number,
   created_time: string,
   designer: designerType   
 }
+export type LikeSnsListType = {
+  idx: number,
+  created_time: string,
+  sns: snsType
+}
 
+export type snsType = {
+  idx: number,
+  category: string,
+  user_idx: number,
+  name: string,
+  about: string,
+  link_title: string,
+  link_url: string,
+  created_time: string,
+  updated_time: string | null,
+  deleted_time: string | null,
+  like_count: number,
+  read_count: number,
+  is_featured: string,
+  is_hide: number,
+  image: ImageType[]
+}
 export type designerType = {
   idx: number,
   type: number,
@@ -256,7 +372,7 @@ export type designerType = {
   created_time: string,
   suspended_time: string | null,
   deleted_time: string | null,
-  image:ImageType[],
+  image:ImageType,
   count:number;
   reason: string,
   level: string,
@@ -281,8 +397,8 @@ export type TProductListItem = {
   website: string;
   description: string;
   created_time: string;
-  updated_time: string;
-  deleted_time: string;
+  updated_time: string | null;
+  deleted_time: string | null;
   image: TImage[];
   isLike: boolean;
   like_count: number;
@@ -291,7 +407,7 @@ export type TProductListItem = {
 export type ArtworkLikeListItem = {
   idx: number;
   created_time: string;
-  artwork: ArtworkItem
+  artwork: ArtworkListItem
 };
 
 export type LatestList = [
@@ -334,3 +450,85 @@ export type TShopListItem = {
   image: TImage[];
   isLike: boolean;
 };
+
+export type WeeklyListItem = {
+  idx:number;
+  name:string;
+  month:number;
+  weeknum:number;
+  week:string;
+  created_time: string;
+  updated_time: string | null;
+  deleted_time: string | null;
+  image: TImage[]
+}
+export type WeeklyDetailsType = {
+  idx:number;
+  name:string;
+  month:number;
+  weeknum:number;
+  week:string;
+  created_time:string;
+  updated_time:string | null;
+  deleted_time:string | null;
+  artwork_data:ArtworkListItem[]
+}
+
+export type SnsList = {
+  idx:number;
+  category:string;
+  user_idx:number;
+  name:string;
+  about:string;
+  link_title:string;
+  link_url:string;
+  created_time:string;
+  updated_time:string | null;
+  deleted_time:string | null;
+  like_count:number;
+  read_count:number;
+  image:TImage[];
+  isLike:boolean;
+  isBookmark:boolean;
+  category_arr:number[]
+}
+export type SnsdetailsType = {
+  idx:number;
+  category:string;
+  user_idx:number;
+  name:string;
+  about:string;
+  link_title:string;
+  link_url:string;
+  created_time:string;
+  updated_time:string | null;
+  deleted_time:string | null;
+  like_count:number;
+  read_count:number;
+  is_featured:string;
+  is_hide:number;
+  imageList:TImage[];
+  isLike:boolean;
+  isBookmark:boolean;
+  user:UserType
+}
+export type FollowCardType = {
+  idx:number;
+  category:string;
+  user_idx:number;
+  name:string;
+  about:string;
+  link_title:string;
+  link_url:string;
+  created_time:string;
+  updated_time:string | null;
+  deleted_time:string | null;
+  like_count:number;
+  read_count:number;
+  is_featured:string;
+  is_hide:number;
+  image:ImageType[];
+  isLike:boolean;
+  isBookmark:boolean;
+  user:UserType
+}

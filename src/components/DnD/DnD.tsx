@@ -8,7 +8,7 @@ export type dndData = {
   url?: any;
   symbol: string;
   name: string;
-  file?: File;
+  file: File;
   link?: any;
   mobile?: any;
   bnum?: any;

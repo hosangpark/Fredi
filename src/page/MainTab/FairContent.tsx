@@ -27,28 +27,30 @@ import { CategoryList } from '../../components/List/List';
 import { APIFairDetails, APIProductList, UPDATEURL } from '../../api/ProductAPI';
 import dayjs from 'dayjs';
 import FairArtwork from './Fair_Artwork';
-import { initialFairDetails } from '../../components/List/initailData';
 import FairArtist from './Fair_Artist';
 
 
 function FairContent() {
   const navigate = useNavigate();
   const { idx } = useParams();
-  const [FairDetail,setFairDetail] = useState<FairDetailsType>(initialFairDetails)
+  const [FairDetail,setFairDetail] = useState<FairDetailsType>()
 
-  const saveHistory = (e: React.MouseEvent, item:number | string) => {
-    // console.log('itemitemitemitemitem',typeof item)
-    // console.log('itemitemitemitemitem',typeof item == 'number')
+  const saveHistory1 = (e: React.MouseEvent, item:number) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
-      sessionStorage.setItem('tab', String(contentItem.tab));
-      sessionStorage.setItem('y', String(y ?? 0));
-      if(typeof item == 'number'){
-        navigate(`/productdetails/${item}`, {});
-      } else {
-        navigate(`/ArtistProducts/${item}`,{ state:{name:item} });
-      }
+      sessionStorage.setItem('FairContab', String(contentItem.tab));
+      sessionStorage.setItem('FairCon_y', String(y ?? 0));
+      navigate(`/productdetails/${item}`);
+    }
+  };
+  const saveHistory2 = (e: React.MouseEvent, item:string, item2:number) => {
+    const div = document.getElementById('root');
+    if (div) {
+      const y = globalThis.scrollY;
+      sessionStorage.setItem('FairContab', String(contentItem.tab));
+      sessionStorage.setItem('FairCon_y', String(y ?? 0));
+      navigate(`/ArtistProducts/${item}`,{ state:{name:item,idx:item2} });
     }
   };
 
@@ -56,27 +58,29 @@ function FairContent() {
   const content = [
     {
       tab: "Artworks",
-      content:<FairArtwork saveHistory={saveHistory} productList={FairDetail?.artwork_data}/>
+      content:<FairArtwork saveHistory={saveHistory1} productList={FairDetail?.artwork_data}/>
     },
     {
       tab: "Exhibitors",
-      content:<FairArtist saveHistory={saveHistory} productList={FairDetail?.designer_data}/>
+      content:<FairArtist saveHistory={saveHistory2} productList={FairDetail?.designer_data}/>
     }
   ];
   const useTabs = (initialTabs:any, allTabs:any) => {
     const [contentIndex, setContentIndex] = useState(initialTabs);
+    sessionStorage.removeItem('FairContab');
     return {
       contentItem: allTabs[contentIndex],
       contentChange: setContentIndex
     };
   };
-  const { contentItem, contentChange } = useTabs(0, content);
+  const tab = sessionStorage.getItem('FairContab');
+  const { contentItem, contentChange } = useTabs(tab == 'Exhibitors'? 1 : 0, content);
 
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
   const [keyword, setKeyword] = useState<string>(keywordParams);
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
+  const categoryParams = (searchParams.get('category') as string) ?? '1';
+  const [category, setCategory] = useState<string>(categoryParams);
 
   const onSearch = () => {
     navigate(
@@ -90,7 +94,7 @@ function FairContent() {
       { replace: true }
     );
   };
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
+  const chageCategory = (value: string) => {
     setCategory(value);
     setSearchParams({
       keyword,
@@ -102,15 +106,26 @@ function FairContent() {
   const getFairDetail = async () => {
     try {
       const res = await APIFairDetails({idx:idx});
-      console.log('banner@@@@@@@@', res);
       if(res) {
         setFairDetail(res)
       }
-      
     } catch (error) {
-      console.log('Banner', error);
     }
   };
+
+
+  useLayoutEffect(() => {
+    const scrollY = Number(sessionStorage.getItem('FairCon_y'));
+    if (scrollY) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollY,
+          behavior: 'auto',
+        });
+      }, 100);
+      sessionStorage.removeItem('FairCon_y');
+    }
+  }, []);
 
   useEffect(()=>{
     getFairDetail()
@@ -127,7 +142,7 @@ function FairContent() {
   return (
     <Container>
       <MainImage height={innerWidth}>
-        <BannerImage src={innerWidth > 768 ?  UPDATEURL+FairDetail?.image[0].file_name : UPDATEURL+FairDetail?.image_m[0].file_name}/>
+        <BannerImage src={innerWidth > 768 ?  FairDetail?.image[0].file_name : FairDetail?.image_m[0].file_name}/>
       </MainImage>
       <TitleWrap>
         <div>
@@ -135,11 +150,13 @@ function FairContent() {
             {FairDetail?.name}
           </TitleText>
           <SubText>
-            {dayjs(FairDetail?.start_dt).format('MMMM DD')}-{
+            {FairDetail?.range} &nbsp;
+            {/* {dayjs(FairDetail?.start_dt).format('MMMM DD')}-{
             dayjs(FairDetail?.end_dt).format('MM') > dayjs(FairDetail?.start_dt).format('MM') ?
             dayjs(FairDetail?.end_dt).format('MMMM DD') :
             dayjs(FairDetail?.end_dt).format('DD')
-            }  {FairDetail?.location}
+            }   */}
+            {FairDetail?.location}
           </SubText>
         </div>
         <SearchBox
@@ -154,7 +171,7 @@ function FairContent() {
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
-          onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
+          onChangeCategory={(value: string) => {
             chageCategory(value);
           }}
         />

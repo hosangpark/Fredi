@@ -16,4 +16,5 @@ export const FileAPI = (uri, data, auth = { Authorization: '' }, isPost = true) 
     ? API.post(uri, data, { headers: { ...auth, 'Content-Type': 'multipart/form-data' } })
     : API.put(uri, data, { headers: { ...auth, 'Content-Type': 'multipart/form-data' } });
 
+
 export default API;

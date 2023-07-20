@@ -1,7 +1,7 @@
 import React,{useState,useRef} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import likeOnImage from '../../asset/image/heart_on.png';
+import likeOnImage from '../../asset/image/heart_on.svg';
 import likeOffImage from '../../asset/image/heart_off.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -14,7 +14,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import leftarrowIcon from '../../asset/image/ico_prev_mobile.png'
 import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
-import { TImage } from '../../types/Types';
+import { TImage, WeeklyListItem } from '../../types/Types';
 import { useNavigate } from 'react-router-dom';
 
 function WeeklyEditionList({
@@ -43,7 +43,7 @@ function WeeklyEditionList({
   naviArrow:boolean
   scrollbar:boolean
   ProductTitle?:number
-  ProducList:TImage[]
+  ProducList:WeeklyListItem[]
   arrowView?:boolean
   productLink?:boolean
   paddingnum?:number
@@ -84,37 +84,38 @@ function WeeklyEditionList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList.map((item,index)=>{
+        {ProducList &&
+        ProducList.map((item,index)=>{
           return(
           <SwiperSlide key={index}>
           <ProductWrap onClick={(e)=>LinkHandler(e,title,item.idx)}>
             <ProductTopbox>
               <ProductTopboxLeft>
-                <ProductImage src={item.file_name}/>
+                <ProductImage src={item.image[0].file_name}/>
               </ProductTopboxLeft>
               <ProductTopboxRight>
                 <ProductTopboxRightWrap style={{marginBottom:5}}>
-                  <ProductImage src={item.file_name} style={{marginBottom:10}}/>
+                  <ProductImage src={item.image[0].file_name} style={{marginBottom:10}}/>
                 </ProductTopboxRightWrap>
                 <ProductTopboxRightWrap>
-                  <ProductImage src={item.file_name}/>
+                  <ProductImage src={item.image[0].file_name}/>
                 </ProductTopboxRightWrap>
               </ProductTopboxRight>
             </ProductTopbox>
             <ProductBottombox>
                 <ProductBottomImageWrap style={{marginRight:6}}>
-                  <ProductImage src={item.file_name}/>
+                  <ProductImage src={item.image[0].file_name}/>
                 </ProductBottomImageWrap>
                 <ProductBottomImageWrap>
-                  <ProductImage src={item.file_name}/>
+                  <ProductImage src={item.image[0].file_name}/>
                 </ProductBottomImageWrap>
             </ProductBottombox>
             <TextWrap>
               <ProductTitleText>
-                Title {item.idx}
+                {item.name}
               </ProductTitleText>
               <ProductSubText>
-                Text Name{item.idx}
+                {item.week}
               </ProductSubText>
             </TextWrap>
           </ProductWrap>
