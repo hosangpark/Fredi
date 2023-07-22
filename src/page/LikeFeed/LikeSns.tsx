@@ -38,13 +38,7 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 
 function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
-  const location = useLocation();
-  let [searchParams, setSearchParams] = useSearchParams();
-  const keywordParams = searchParams.get('keyword') ?? '';
   const [LikeSnsList, setLikeSnsList] = useState<LikeSnsListType[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
   const [showLogin, setShowLogin] = useState(false);
   const [history, setHistory] = useState(false);
 
@@ -63,38 +57,32 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
       }
       const { list } = await APISnsLikeList(data);
       setLikeSnsList(list);
-      console.log('ddddddddddddddddddsada',list[0])
     } catch (error) {
       console.log(error);
     }
   };
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
+    const list = JSON.parse(sessionStorage.getItem('LikeSnsList') ?? '');
 
-    // setFollowArtistList(list);
+    setLikeSnsList(list)
     setHistory(true);
-    setPage(page);
 
-    sessionStorage.removeItem('shop');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
+    sessionStorage.removeItem('LikeSnsSave');
+    sessionStorage.removeItem('LikeSnsList');
   };
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(LikeSnsList));
-      sessionStorage.setItem('page', String(page));
+      sessionStorage.setItem('LikeSnsList', JSON.stringify(LikeSnsList));
+      sessionStorage.setItem('LikeSnsSave','Save')
       sessionStorage.setItem('y', String(y ?? 0));
+
       navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
-
-  
-
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -110,20 +98,16 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
     }
   }, [LikeSnsList]);
 
-  // useLayoutEffect(() => {
-  //   const page = Number(sessionStorage.getItem('page'));
+  useLayoutEffect(() => {
+    const Save = sessionStorage.getItem('LikeSnsSave')
 
-  //   if (page) {
-  //     findHistory();
-  //   } else {
-  //     setPage(1);
-  //     getShopList(1);
-  //   }
-  // }, [searchParams, category]);
-  
-  useEffect(() => {
-    getLikeSnsData();
+    if (Save) {
+      findHistory();
+    } else {
+      getLikeSnsData();
+    }
   }, []);
+  
 
 
   return (

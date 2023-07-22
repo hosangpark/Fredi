@@ -10,12 +10,9 @@ type TCategory = { value: string; label: string };
 function SearchBox({
   onClickSearch,
   onKeyDown,
-  categoryList,
-  category,
   keyword,
   none,
   onChangeInput,
-  onChangeCategory,
 }: {
   onClickSearch: (e: any) => void;
   onKeyDown: (e: any) => void;

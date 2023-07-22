@@ -21,6 +21,7 @@ import FairCard from '../../components/Shop/FairCard';
 import { APIFairList, APIProductList } from '../../api/ProductAPI';
 import SearchBox from '../../components/Product/SearchBox';
 import { CategoryList } from '../../components/List/List';
+import Nodata from '../../components/Product/NoData';
 
 
 function FairTab() {
@@ -49,7 +50,7 @@ const { type, idx } = useParams();
     const data = {
       page: 1,
       category: '',
-      keyword: '',
+      keyword: keyword? keyword : "",
     };
     try {
       const { list, total } = await APIFairList(data);
@@ -92,13 +93,8 @@ const { type, idx } = useParams();
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
-      // console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
       sessionStorage.setItem('FairTab_y', String(y ?? 0));
-      sessionStorage.setItem('FairList', JSON.stringify(FairList));
-      // sessionStorage.setItem('page', String(page));
-      // sessionStorage.setItem('type', String(showType));
-      // navigate(`/shopdetails/${idx}`);
       navigate(`/FairContent/${idx}`);
     }
   };
@@ -124,24 +120,8 @@ const { type, idx } = useParams();
   }, []);
 
   const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
-  };
-
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
+    createSearchParams({keyword:keyword})
+    getFairsList()
   };
 
   return (
@@ -158,8 +138,8 @@ const { type, idx } = useParams();
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
-          onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
-            chageCategory(value);
+          onChangeCategory={(value: string) => {
+            // chageCategory(value);
           }}
         />
       </TitleWrap>
@@ -175,7 +155,7 @@ const { type, idx } = useParams();
         </TabContents>
       </TabBox>
       <ProductListWrap>
-        {FairList.length > 0 &&
+        {FairList && FairList.length > 0 ?
         FairList.map((item,index)=>{
           return(
             <FairCard
@@ -186,6 +166,8 @@ const { type, idx } = useParams();
             />
           )
         })
+        :
+        <Nodata/>
         }
       </ProductListWrap>
       <AlertModal
@@ -231,6 +213,7 @@ const TitleWrap = styled.div`
 const TabBox = styled.div`
   width:100%;
   display:flex;
+  cursor:pointer;
   border-bottom:1.7px solid rgb(204,204,204);
 `
 const TabContents = styled.div<{On?:boolean}>`

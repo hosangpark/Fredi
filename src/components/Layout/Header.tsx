@@ -14,7 +14,7 @@ import menuicon from '../../asset/image/threecircle.png';
 import { UserContext } from '../../context/user';
 import ConfirmModal from '../Modal/ConfirmModal';
 import backButtonImage from '../../asset/image/back.svg';
-import { APICheckPassword } from '../../api/UserAPI';
+import { APICheckPassword, APIUserDetails } from '../../api/UserAPI';
 import { Modal } from '@mantine/core';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 
@@ -161,13 +161,21 @@ function Header() {
     removeHistory();
     if (!token) {
       setShowLogin(true);
-    } else {
-      console.log(Number(user.idx))
-      navigate(`/MobileProfile/${(user.idx)}`,{state:user.idx})
+    } else if(user.idx===0){
+      getIdx()
+    } else{
+      navigate(`/MobileProfile/${user.idx}`,{state:user.idx})
     }
-  }, [token]);
+  }, [token])
+
+  const getIdx = async()=>{
+    const result = await APIUserDetails()
+      patchUser(result.idx, result.level)
+      navigate(`/MobileProfile/${result.idx}`,{state:user.idx})
+  }
 
   const goAdmin = useCallback(() => {
+    
     removeHistory();
     navigate('/admin');
   }, []);
@@ -267,6 +275,8 @@ function Header() {
       }
     }
   }, [innerWidth,pathName]);
+
+
 
   useEffect(() => {
     const resizeListener = () => {

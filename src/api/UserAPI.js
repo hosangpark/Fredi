@@ -115,11 +115,13 @@ export const APILinkAdd = async (data) => {
   const res = await API.post('/user/link', data, {headers: config});
   return res.data;
 };
+
 export const APILinkModify = async (data) => {
   const config = Authorization();
   const res = await API.put('/user/link', data, {headers: config});
   return res.data;
 };
+
 export const APILinkDelete = async (data) => {
   const config = Authorization();
   const res = await API.post('/user/link-delete', data, {headers: config});
@@ -138,8 +140,21 @@ export const APIModifyName = async (data) => {
   const res = await API.put('/user/profile-v2', data, { headers: config });
   return res.data;
 };
+
 export const APISnsProfile = async (data) => {
   const config = Authorization();
   const res = await API.put('/user/profile-sns', data, { headers: config });
+  return res.data;
+};
+
+export const APISnsReport = async (data) => {
+  const config = Authorization();
+  const res = await API.post('/sns/report', data, {headers: config });
+  return res.data;
+};
+
+export const APIUserReport = async (data) => {
+  const config = Authorization();
+  const res = await API.post('/user/report', data, {headers: config });
   return res.data;
 };

@@ -13,7 +13,7 @@ import ButtonContainer from '../../components/Layout/ButtonBox';
 import AlertModal from '../../components/Modal/AlertModal';
 
 
-function AddLink() {
+function AddLink({Check,Cancel}:{Check:(name:string,url:string)=>void,Cancel:()=>void}) {
 
   const navigate = useNavigate();
   const [name, setName] = useState<string>('');
@@ -22,28 +22,15 @@ function AddLink() {
   const [showContentModal, setShowContentModal] = useState(false);
   const { user } = useContext(UserContext);
 
-  const LinkAdd = async () => {
-    if (!name) return setAlertType('Title을 입력해주세요.'),setShowContentModal(true);
-    if (!url) return setAlertType('Url을 입력해주세요.'),setShowContentModal(true);
-    const data = {
-      title:name,
-      url: url
-    };
-    try {
-      const res = await APILinkAdd(data);
-      console.log(res)
-      navigate(-1)
-      // setIsSnsUser(res.type !== 1 ? true : false);
-    } catch (error) {
-      // console.log(error);
-      // navigate('/signin', { replace: true });
-    }
-  };
+  const Save = ()=>{
+    Check(name,url)
+  }
+
 
 
   return (
     <Container>
-      <TopTextButton text='Save' onClick={LinkAdd}/>
+      {/* <TopTextButton text='Save' onClick={LinkAdd}/> */}
       <ProfileContainer>
         <InputWrap>
           <InputTitle>Title</InputTitle>
@@ -72,11 +59,12 @@ function AddLink() {
           text1={'Save'}
           text2={'Cancle'}
           onClick1={()=>{}}
-          onClick2={LinkAdd}
-          cancle={()=>navigate(-1)}
+          onClick2={Save}
+          cancle={Cancel}
           marginT={50}
-          marginB={100}
-          visible={true}
+          marginB={50}
+          width={500}
+          visible={false}
         />
       </ProfileContainer>
       <AlertModal
@@ -93,13 +81,13 @@ function AddLink() {
 
 const Container = styled.div`
   /* display: flex; */
-  max-width: 800px;
-  margin:0 auto;
-  flex: 1;
-  min-height: calc(100vh - 80px);
+  width: 700px;
+  /* min-height: calc(100vh - 80px); */
+  
   /* flex-direction: row; */
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
+    width: 400px;
     flex-direction: column;
     border-top: 0;
   }

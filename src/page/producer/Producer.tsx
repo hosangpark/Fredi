@@ -87,7 +87,7 @@ function Producer() {
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const y = window.scrollY;
 
-    sessionStorage.setItem('producers', JSON.stringify(producerList));
+    // sessionStorage.setItem('producers', JSON.stringify(producerList));
     sessionStorage.setItem('page', String(page));
     sessionStorage.setItem('type', String(showType));
     sessionStorage.setItem('y', String(y ?? 0));
@@ -95,11 +95,11 @@ function Producer() {
   };
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('producers') ?? '');
+    // const list = JSON.parse(sessionStorage.getItem('producers') ?? '');
     const page = Number(sessionStorage.getItem('page'));
     const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    setProducerList(list);
+    // setProducerList(list);
     setHistory(true);
     setPage(page);
     setShowType(type);

@@ -80,7 +80,6 @@ function FairMainList({
       <TitleBox marginT={marginT} marginB={marginB}
       // onClick={()=>{navigate(`/${link}`);}}
       >
-        {/* <a href={item?.link}> */}
         <TitleText titlesize={titlesize}>
           {title}
         </TitleText>

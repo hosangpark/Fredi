@@ -57,7 +57,6 @@ function MainArtistList({
     <ContainerWrap>
       <TitleBox marginT={marginT} marginB={marginB}
       >
-        {/* <a href={item?.link}> */}
         <TitleText>{title}</TitleText>
         {arrowView&&
           <ArrowRightIcon src={rightarrowIcon}/>

@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { Modal } from '@mantine/core';
 import { FileButton } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/user';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import linkImage from '../../asset/image/links.png';
+import deleteButtonImage from '../../asset/image/ico_del.png';
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
@@ -13,9 +15,14 @@ import {  dndData } from '../../components/DnD/DnD';
 import TopTextButton from '../../components/Layout/TopTextButton';
 import ButtonContainer from '../../components/Layout/ButtonBox';
 import AlertModal from '../../components/Modal/AlertModal';
-import { APISnsAdd } from '../../api/ProductAPI';
+import { APICategoryList, APISnsAdd } from '../../api/ProductAPI';
 import { CategoryListCheck } from '../../components/List/List';
 import CategoryItem from '../../components/Shop/CategoryItem';
+import { AddLinkListType, CategoryType, LinkListType } from '../../types/Types';
+import { APILink, APIUserDetails } from '../../api/UserAPI';
+import LoadingIndicator from '../../components/Product/LoadingIndicator';
+import AddLink from './AddLink';
+import EditLink from './EditLink';
 
 export type TUserDetails = {
   idx: number;
@@ -50,21 +57,36 @@ function AddPhoto() {
   const { user } = useContext(UserContext);
   const [ShowModal,setShowModal] = useState<boolean>(false)
   const [ShowImage, setShowImage] = useState<any[]>([]);
+  // const [Name, setName] = useState<string>('');
+  const [Title, setTitle] = useState<string>('');
   const [About, setAbout] = useState<string>('');
   const [alertType, setAlertType] = useState<string>();
   const [UploadImage, setUploadImages] = useState<dndData[]>([]);
-  const [categoryitemList,setcategoriitemList] = useState(CategoryListCheck)
+  const [LinkList, setLinkList] = useState<AddLinkListType[]>([]);
+  const [SelectMain, setSelectMain] = useState(0)
+  const [categoryList,setcategoriList] = useState<CategoryType[]>([])
+  const [categoryArray,setcategoryArray] = useState<number[]>([])
+  const [IsLoading,setIsLoading] = useState<boolean>(false)
+  const [LinkModal, setLinkModal] = useState<boolean>(false);
   
   const UploadSns = async() =>{
-    if(UploadImage.length > 12){
-      setUploadImages(UploadImage.slice(0,12))
-    }
+    if(UploadImage.length == 0)return(setShowModal(true),setAlertType('사진을 등록해주세요.'))
+    if(About.length == 0)return(setShowModal(true),setAlertType('내용을 등록해주세요.'))
+    if(LinkList.length == 0)return(setShowModal(true),setAlertType('링크를 등록해주세요.'))
+    if(categoryArray.length == 0)return(setShowModal(true),setAlertType('카테고리를 등록해주세요.'))
+
     const formData = new FormData();
-    formData.append('category[]', '1')
-    formData.append('name', '안녕하세요')
+    for (var i = 0; i < categoryArray.length; i++){
+      formData.append('category[]', JSON.stringify(categoryArray[i]))
+    }
+    formData.append('name', Title)
     formData.append('about', About)
-    formData.append('link_title', '꾸글')
-    formData.append('link_url', 'www.google.com')
+
+
+    formData.append('link_title', LinkList[0].title)
+    formData.append('link_url', LinkList[0].url)
+    
+
     for (var i = 0; i < UploadImage.length; i++){
       formData.append('images', UploadImage[i].file);
       // console.log(UploadImage[i].file)
@@ -82,14 +104,36 @@ function AddPhoto() {
         // navigate('/signin', { replace: true });
     }
   }
-
+  
+  const getCategoryList = async () => {
+    const data = {
+      page: 1
+    };
+    try {
+      const {list,total} = await APICategoryList(data);
+      setcategoriList(list);
+    } catch (error) {
+    }
+  };
+  
+  const getLinks = async () => {
+    const data = {
+      page: 1
+    };
+    try {
+      const {list,total} = await APILink(data);
+      setLinkList(list);
+    } catch (error) {
+    }
+  };
   
   const handleImage = (value: File[]) => {
-    if(value.length > 12)return(setShowModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
     if(UploadImage.length > 12)return(setShowModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
+    if(value.length > 12)return(setShowModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
     let fileURLs:dndData[] = [...UploadImage];
     const ShowImages = value;
     let imageUrlLists = [...ShowImage];
+    setIsLoading(true)
     for (let i = 0; i < value.length; i++) {
       let reader = new FileReader();
       const currentImageUrl = URL.createObjectURL(ShowImages[i]);
@@ -103,8 +147,16 @@ function AddPhoto() {
     }
     setShowImage(imageUrlLists.slice(0, 12))
     setUploadImages(fileURLs)
+    setIsLoading(false)
   };
   
+  const handleDelete = (ItemIndex: number) => {
+    console.log(ItemIndex)
+    setShowImage((prev) => prev.filter((item,index) => index !== ItemIndex))
+    setUploadImages((prev) => prev.filter((item,index) => index !== ItemIndex))
+  };
+
+
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
@@ -113,40 +165,119 @@ function AddPhoto() {
     };
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
+  /** drageEvent */
+  const scrollRef = useRef<any>(null);
+  const [isDrag, setIsDrag] = useState(false);
+  const [startX, setStartX] = useState<any>();
+  const [isDragging, setIsDragging] = useState(false);
+  const [movingX, setmovingX] = useState<any>();
+  const onDragStart = (e:any) => {
+    e.preventDefault();
+    setIsDrag(true);
+    setStartX(e.pageX + scrollRef.current.scrollLeft);
+  };
+  const onDragEnd = () => {
+    setIsDrag(false);
+  };
+  const onDragMove = (e:any) => {
+    if (isDrag) {
+      scrollRef.current.scrollLeft = startX - e.pageX;
+      setmovingX(scrollRef.current.scrollLeft)
+    }
+  };
+  const throttle = (func:any, ms:any) => {
+    let throttled = false;
+    return (...args:any) => {
+      if (!throttled) {
+        throttled = true;
+        setTimeout(() => {
+          func(...args);
+          throttled = false;
+        }, ms);
+      }
+    };
+  };
+  
+  useEffect(()=>{
+    setIsDragging(true)
+    setTimeout(() => {
+      setIsDragging(false);
+    }, 500);
+  },[movingX])
+  
+  const delay = 10;
+  const onThrottleDragMove = throttle(onDragMove, delay);
 
+  useEffect(()=>{
+    // getLinks()
+    getCategoryList()
+  },[])
+  
   return (
     <Container>
-      <TopTextButton text='Next' onClick={()=>navigate('/AddPhoto2')}/>
+      <TopTextButton text='Save' onClick={UploadSns}/>
       <ProfileContainer>
-        {/* <DndList data={images} setData={setImages} initList={[]} /> */}
-        <SwiperWrap>
+        {
+        ShowImage.length > 0 &&
+        <ShowMainImage>
+          <MainUploadImageItem height={innerWidth} src={ShowImage[SelectMain]? ShowImage[SelectMain]:ShowImage[0]}/>
+          <FileButton onChange={handleImage} multiple accept="image/png,image/jpeg">
+            {(props) => (
+            <MiniPlusImage height={innerWidth} key={0} index={0} {...props}>
+              <PlusH></PlusH>
+              <PlusV></PlusV>
+            </MiniPlusImage>
+            )}
+          </FileButton>
+        </ShowMainImage>
+        }
+        
+        <ImageFlexBox
+          onMouseDown={onDragStart}
+          onMouseMove={onThrottleDragMove}
+          onMouseUp={onDragEnd}
+          onMouseLeave={onDragEnd}
+          ref={scrollRef} 
+          >
           {
           ShowImage.map((item,index)=>{
             return(
-            <PlusImage height={innerWidth} index={1} key={index}>
-              <UploadImageItem src={item}/>
-            </PlusImage>
+            <UploadImageItemWrap key={index}>
+              <UploadImageItem onClick={()=>setSelectMain(index)} src={item}/>
+              <DeleteButton onClick={() => handleDelete(index)} src={deleteButtonImage} />
+            </UploadImageItemWrap>
             )
           })
           }
+          {ShowImage.length < 1 &&
           <FileButton onChange={handleImage} multiple accept="image/png,image/jpeg">
             {(props) => (
             <PlusImage height={innerWidth} key={0} index={0} {...props}>
-              <label>
-              <UploadButton type={'file'} multiple name='addButton'/>
               <PlusH></PlusH>
               <PlusV></PlusV>
-              </label>
             </PlusImage>
             )}
           </FileButton>
-        </SwiperWrap>
+          }
+        </ImageFlexBox>
         <>
+        <AboutWrap>
+          Title
+        </AboutWrap>
+        <TextInput
+          maxLength={20}
+          value={Title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
+          placeholder="Input here"
+          />
         <AboutWrap>
           About
         </AboutWrap>
         <InputWrap>
-          <TextInput
+          <TextAreaInput
+            maxLength={300}
             value={About}
             onChange={(e) => {
               setAbout(e.target.value);
@@ -159,7 +290,14 @@ function AddPhoto() {
           <BoxTitle>
             LINK
           </BoxTitle>
-          <LayoutWrap onClick={()=>{navigate('/AddLink', { state: 'Add' });}}>
+          <LayoutWrap onClick={()=>{
+            if(LinkList.length < 1){
+              setLinkModal(true)
+            } else {
+              setShowModal(true);
+              setAlertType('링크는 1개 이상 추가 할 수 없습니다.')
+            }
+          }}>
             <LinkImageWrap>
               <LinkImage src={linkImage}/>
             </LinkImageWrap>
@@ -169,17 +307,19 @@ function AddPhoto() {
               </LinkTitleBox>
             </LinkItemBox>
           </LayoutWrap>
-          <LayoutWrap onClick={()=>{navigate('/EditLink', { state: 'Edit' });}}>
+          {LinkList.map((item,index)=>{
+          return(
+          <LayoutWrap key={index} onClick={()=>{setLinkModal(true)}}>
             <LinkImageWrap>
               <LinkImage src={linkImage}/>
             </LinkImageWrap>
             <LinkItemBox>
               <LinkTitleBox>
                 <LinkName>
-                  Website (FREDI)
+                  {item.title}
                 </LinkName>
                 <LinkUrl>
-                  www.fredi.co.kr
+                  {item.url}
                 </LinkUrl>
               </LinkTitleBox>
               <ArrowImageWrap>
@@ -187,24 +327,25 @@ function AddPhoto() {
               </ArrowImageWrap>
             </LinkItemBox>
           </LayoutWrap>
+          )
+        })}
         </BoxWrap>
         <BoxWrap>
           <BoxTitle>
-            Category<CategoryCount>{categoryitemList.filter(element => element.checked === true).length}</CategoryCount>
+            Category<CategoryCount>{categoryArray.length}</CategoryCount>
           </BoxTitle>
           <CategoryItemContainer>
-            {categoryitemList.map((item,index)=>{
+            {categoryList && 
+            categoryList.map((item,index)=>{
               return(
-                <CategoryItem item={item.item} checked={item.checked} 
+                <CategoryItem key={index} item={item.name} idx={item.idx} checked={categoryArray.includes(item.idx)} 
                 setChecked={(e,type)=>{
-                  if(categoryitemList.filter(element => element.checked === true).length < 3){
-                    categoryitemList[index].checked = e
-                  }else{
-                    categoryitemList[index].checked = false
+                  console.log(e,type)
+                  if(categoryArray.includes(e)){
+                    setcategoryArray((prev) => prev?.filter((item) => item !== e))
+                  } else if(categoryArray.length < 3){
+                    setcategoryArray((prev) => [...prev, e])
                   }
-                  setcategoriitemList([
-                    ...categoryitemList,
-                  ])
                 }}/>
               )
             })}
@@ -212,6 +353,12 @@ function AddPhoto() {
         </BoxWrap>
       </WebContainer>
         </>
+        <Modal opened={LinkModal} onClose={() => setLinkModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
+          <AddLink Check={(name,url)=>{setLinkList([{title:name, url:url}]);setLinkModal(false)}} Cancel={()=>setLinkModal(false)}/>
+        </Modal>
+        {/* <Modal opened={LinkModal} onClose={() => setLinkModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
+          <EditLink Check={(name,url)=>{setLinkList([{title:name, url:url}]);setLinkModal(false)}} Cancel={()=>setLinkModal(false)}/>
+        </Modal> */}
       </ProfileContainer>
       <ButtonContainer
         text1={'Save'}
@@ -227,7 +374,14 @@ function AddPhoto() {
       visible={ShowModal}
       setVisible={setShowModal}
       onClick={() => {
-        if(alertType == '12장 이상 등록할 수 없습니다.'){
+        if(alertType == '12장 이상 등록할 수 없습니다.' ||
+        alertType == '링크는 1개 이상 추가 할 수 없습니다.' ||
+        alertType == '사진을 등록해주세요.' ||
+        alertType == '내용을 등록해주세요.' ||
+        alertType == '링크를 등록해주세요.' ||
+        alertType == '카테고리를 등록해주세요.'
+        
+        ){
           setShowModal(false);
         } else{
           setShowModal(false);
@@ -242,17 +396,26 @@ function AddPhoto() {
 
 const Container = styled.div`
   /* display: flex; */
-  width:100%;
+  max-width:768px;
   flex: 1;
   min-height: calc(100vh - 80px);
+  margin:0 auto;
   /* flex-direction: row; */
   /* border-top: 1px solid #121212; */
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
+    width:100%;
+    margin:0;
     flex-direction: column;
     border-top: 0;
   }
 `;
+
+const ShowMainImage = styled.div`
+  width:100%;
+  height:width;
+  position:relative;
+`
 const SwiperWrap = styled.div`
 display:flex;
 flex-wrap:wrap;
@@ -263,7 +426,8 @@ flex-wrap:wrap;
   margin-bottom:20px;
 `;
 const ProfileContainer = styled.div`
-  margin:20px;
+  flex:1;
+  width:100%;
 `;
 const ProductListWrap = styled.div`
   width:100%;
@@ -272,7 +436,7 @@ const ProductListWrap = styled.div`
 const WebContainer = styled.div`
   display:block;
   @media only screen and (max-width: 768px) {
-    display:none
+    /* display:none */
   }
 `
 const PlusImage = styled.div<{height:number,index:number}>`
@@ -283,24 +447,32 @@ const PlusImage = styled.div<{height:number,index:number}>`
   align-items:center;
   aspect-ratio: 1;
   background-color:#d1d1d1;
-  margin-right: ${(props) => ((props.index) % 3 === 0 ? 12:0)}px;
-  width: calc(25% - 9px);
+  margin-right:10px;
+  width: 150px;
+  height: 150px;
   cursor: pointer;
   overflow: hidden;
   margin-bottom: 30px;
-  @media only screen and (max-width: 1440px) {
-    margin-bottom: 12px;
-    margin-right: ${(props) => ((props.index) % 3 === 0 ? 12:0)}px;
-    /* width: 24.25%; */
-    width: calc(33.3333% - 8px)
-  }
-  @media only screen and (max-width: 768px) {
-    margin-right: ${(props) => ((props.index) % 2 === 0 ? 12:0)}px;
-    width: calc(50% - 6px);
-    margin-bottom: 12px;
-    height:${props => (props.height/2-6)}px;
-  }
 `;
+
+const MiniPlusImage = styled.div<{height:number,index:number}>`
+  /* border:1px solid #a1a1a1;; */
+  position:absolute;
+  right:30px;
+  bottom:30px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background-color:#ffffff;
+  border-radius:50%;
+  border:1px solid #646464;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  overflow: hidden;
+  margin-bottom: 30px;
+`;
+
 const PlusH = styled.div`
   position:absolute;
   left:50%;
@@ -323,24 +495,51 @@ const PlusV = styled.div`
     height:20px;
   }
 `
-const UploadImageItem = styled.img`
-  width:100%;
-  height:100%;
+const MainUploadImageItem = styled.img<{height:number}>`
+  width: ${props => props.height > 768 ? 768 : props.height}px;
+  height: ${props => props.height > 768 ? 768 : props.height}px;
+  margin-right:10px;
+  object-fit:contain;
 `
+const UploadImageItemWrap = styled.div`
+position:relative;
+  width: 150px;
+  height: 150px;
+`
+const UploadImageItem = styled.img`
+  width: 150px;
+  height: 150px;
+  margin-right:10px;
+  object-fit:contain;
+`
+const DeleteButton = styled.img`
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  cursor: pointer;
+`;
 const UploadButton = styled.input`
   display:none;
 `
-const ImagePlus = styled.div`
-  height:100%;
-  /* max-height:800px; */
-  object-fit:contain;
-  /* overflow: hidden; */
-  background-color:#8d8d8d;
-  cursor: pointer;
-  /* aspect-ratio: 0.8; */
-  @media only screen and (max-width: 768px) {
-    width: 100%;
+const ImageFlexBox = styled.div`
+  display:flex;
+  flex:1;
+  width:100%;
+  align-items: center;
+  margin-bottom: 30px;
+
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+
+  ::-webkit-scrollbar{
+    display:none;
   }
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin: 20px 0px 20px 20px;;
+  } */
 `;
 const InputWrap = styled.div`
   display: flex;
@@ -352,7 +551,22 @@ const InputWrap = styled.div`
   }
 `;
 
-const TextInput = styled.textarea`
+const TextInput = styled.input`
+  width:100%;
+  font-size: 16px;
+  color: #121212;
+  height:40px;
+  font-weight: 400;
+  text-align:start;
+  border-radius: 0;
+  min-height:35px;
+  margin:0;
+  border:1px dotted black;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
+const TextAreaInput = styled.textarea`
   width:100%;
   font-size: 16px;
   color: #121212;
@@ -366,7 +580,6 @@ const TextInput = styled.textarea`
     font-size: 14px;
   }
 `;
-
 const AboutWrap = styled.div`
   text-align:start;
   padding:10px;
@@ -381,11 +594,16 @@ const BoxWrap = styled.div`
   display: flex;
   flex-direction: column;
   margin:0 5px 50px;
+  @media only screen and (max-width: 768px) {
+    margin:0 0px 50px;
+    padding:0 10px;
+  }
 `;
 
 const LayoutWrap = styled.div`
   display: flex;
   margin: 15px 0 ;
+  cursor: pointer;
 `;
 const BoxTitle = styled.p`
 font-family:'Pretendard Variable';

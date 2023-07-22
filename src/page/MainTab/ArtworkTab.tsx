@@ -18,10 +18,9 @@ function ArtworkTab() {
   const [productList, setProductList] = useState<ArtworkListItem[]>([]);
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category')) ?? '1';
   const pathName = location.pathname.split('/')[1];
   const [total, setTotal] = useState<number>(0);
-  const [category, setCategory] = useState<string>(categoryParams);
+  const [category, setCategory] = useState<string>('1');
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
 
@@ -35,6 +34,7 @@ function ArtworkTab() {
     const data = {
       page: 1,
       category: category,
+      keyword:keyword? keyword : ""
     };
     try {
       if (history) {
@@ -80,26 +80,25 @@ function ArtworkTab() {
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('List', JSON.stringify(productList));
-      sessionStorage.setItem('category', category);
+      sessionStorage.setItem('ArtworkTabList', JSON.stringify(productList));
+      sessionStorage.setItem('ArtworkTabCategory', category);
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/productdetails/${idx}`);
     }
   };
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('List') ?? '');
-    const categ = sessionStorage.getItem('category');
-console.log('list불러옴',list)
+    const list = JSON.parse(sessionStorage.getItem('ArtworkTabList') ?? '');
+    const categ = sessionStorage.getItem('ArtworkTabCategory');
     // setCategory(categ);
     setProductList(list);
     setHistory(true);
     if(categ){
-      setCategory(JSON.parse(categ))
+      setCategory(categ)
     }
 
-    sessionStorage.removeItem('category');
-    sessionStorage.removeItem('List');
+    sessionStorage.removeItem('ArtworkTabCategory');
+    sessionStorage.removeItem('ArtworkTabList');
   };
 
 
@@ -107,8 +106,8 @@ console.log('list불러옴',list)
 
   useLayoutEffect(() => {
     // const page = Number(sessionStorage.getItem('page'));
-    const categ = sessionStorage.getItem('category');
-    console.log(categ)
+    const categ = sessionStorage.getItem('ArtworkTabCategory');
+    // console.log(categ)
 // console.log(categ&& setCategory(JSON.parse(categ)))
 
     if (categ) {
@@ -118,7 +117,7 @@ console.log('list불러옴',list)
       console.log('getlist')
       getproductList();
     }
-  }, [category]);
+  }, [searchParams,category]);
 
 
   useEffect(() => {
@@ -135,16 +134,8 @@ console.log('list불러옴',list)
   
 
   const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
+    createSearchParams({keyword:keyword})
+    getproductList()
   };
 
 
@@ -209,6 +200,7 @@ const TitleWrap = styled.div`
 const TabBox = styled.div`
   display:none;
   width:100%;
+  cursor:pointer;
   border-bottom:1.7px solid rgb(204,204,204);
   @media only screen and (max-width: 768px) {
     display:flex;

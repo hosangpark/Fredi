@@ -70,48 +70,24 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 function ArtistTab() {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
-  const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-
   const [artistList, setArtistList] = useState<[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
   const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
-  const [showsearch,setShowsearch] = useState(false)
-  const { user } = useContext(UserContext);
-  const { classes } = useStyles();
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const interSectRef = useRef(null);
 
-  const getBannerList = async () => {
-    try {
-      const res = await APIGetBanner();
-      console.log('banner', res);
-      setBannerList(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const getDesignerList = async()=> {
     const data = {
       page: 1,
+      keyword:keyword? keyword : ''
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIArtistList(data);
-      setTotal(total);
-
+      const { list } = await APIArtistList(data);
       setArtistList(list);
       console.log('arrrrrrr',list)
       
@@ -121,54 +97,18 @@ function ArtistTab() {
     }
   };
 
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      setPage((prev) => prev + 1);
-    }
-  }, []);
-
-  const options = {
-    root: null, //기본 null, 관찰대상의 부모요소를 지정
-    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
-    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
-  };
-
   const saveHistory = (e: React.MouseEvent, name: string , idx:number) => {
     const div = document.getElementById('root');
     if (div) {
       // console.log(div.scrollHeight, globalThis.scrollY);
-      // const y = globalThis.scrollY;
+      const y = globalThis.scrollY;
+      sessionStorage.setItem('y', String(y ?? 0));
       // sessionStorage.setItem('shop', JSON.stringify(shopList));
       // sessionStorage.setItem('page', String(page));
       // sessionStorage.setItem('type', String(showType));
-      // sessionStorage.setItem('y', String(y ?? 0));
     }
     navigate(`/ArtistProducts/${name}`,{ state:{name:name,idx:idx} });
   };
-
-  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-  const pathName = location.pathname.split('/')[1];
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
-    };
-    // console.log("innerWidth", innerWidth);
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
-
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
-
-  useEffect(() => {
-    console.log(browserHistory.location);
-    console.log(location);
-    getBannerList();
-  }, []);
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -184,48 +124,15 @@ function ArtistTab() {
     }
   }, [artistList]);
 
-
-  useEffect(()=>{
-    if(pathName !== 'Artist'){
-      setShowsearch(false)
-    }else{
-      setShowsearch(true)
-    }
-    // console.log(pathName)
-  },[pathName])
-
   useEffect(() => {
     getDesignerList();
   }, []);
   
 
   const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
+    createSearchParams({keyword:keyword})
+    getDesignerList()
   };
-
-  const chageCategory = (value: '1' | '2' | '3' | '4' | '5' | '6') => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
-
-  const slides = bannerList.map((item) => (
-    <Carousel.Slide key={item.idx}>
-      <Image src={item.file_name} className={classes.carouselImages} />
-    </Carousel.Slide>
-  ));
-  
 
   return (
     <Container>
@@ -241,11 +148,11 @@ function ArtistTab() {
             }
           }}
           categoryList={CategoryList}
-          category={category}
+          category={'1'}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
           onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
-            chageCategory(value);
+            // chageCategory(value);
           }}
         />
       </TitleWrap>
@@ -287,6 +194,7 @@ const Container = styled.div`
 const TabBox = styled.div`
   display:none;
   width:100%;
+  cursor:pointer;
   border-bottom:1.7px solid rgb(204,204,204);
   @media only screen and (max-width: 768px) {
     display:flex;

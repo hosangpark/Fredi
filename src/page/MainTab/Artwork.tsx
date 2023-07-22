@@ -30,6 +30,7 @@ import ArtworkCard from '../../components/Shop/ArtworkCard';
 import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
 import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
+import Nodata from '../../components/Product/NoData';
 
 
 interface ICategorySelectButton {
@@ -126,7 +127,7 @@ function Artwork({saveHistory,onLikeProduct,CategoryClick,productList,showType,s
         })}
       </CategorySelectButtonWrap>
       <ProductListWrap>
-        {productList &&
+        {productList && productList.length> 0 ?
         productList.map((item:any,index:number)=>{
           return(
             <ArtworkCard
@@ -147,6 +148,8 @@ function Artwork({saveHistory,onLikeProduct,CategoryClick,productList,showType,s
             />
           )
           })
+          :
+          <Nodata/>
         }
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}

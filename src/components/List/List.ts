@@ -18,7 +18,7 @@ export const CategoryList = [
   { value: '17', label: 'accessory' },
 ]
 export const CategoryListCheck = [
-  {
+    {
       item:'Home & styling',
       checked:false
     },

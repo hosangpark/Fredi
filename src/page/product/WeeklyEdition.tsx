@@ -21,12 +21,11 @@ import { removeHistory } from '../../components/Layout/Header';
 import AppdownModal from '../../components/Modal/AppdownModal';
 import ProductMainList from '../../components/Product/ProductMainList';
 import { TImage, TProductListItem } from '../../types/Types';
+import { APIWeeklyDetails } from '../../api/ListAPI';
 
 function WeeklyEdition() {
   const navigate = useNavigate();
   const [productList, setProductList] = useState<TProductListItem[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
   const [showLogin, setShowLogin] = useState(false);
   const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [bannerListMobile, setBannerListMobile] = useState<TImage[]>([]);
@@ -35,32 +34,11 @@ function WeeklyEdition() {
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [appdownModal, setAppdownModal] = useState(false);
 
-  const { user } = useContext(UserContext);
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const interSectRef = useRef(null);
-
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
-    };
-    if(innerWidth > 768){
-      console.log('big');
-      setAppdownModal(false)
-    } else {
-      console.log('s');
-      setAppdownModal(true)
-    }
-    // console.log("innerWidth", innerWidth);
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
-  // console.log("innerWidth", innerWidth);
-
   const getBannerList = async () => {
     var array1 = new Array(); //pc
     var array2 = new Array(); //mobile
     try {
       const res = await APIGetBanner();
-      console.log('banner@@@@@@@@', res);
       res.forEach((list:any) => {
         if(list.type === 'P'){
           array1.push(list);
@@ -71,6 +49,17 @@ function WeeklyEdition() {
       // console.log(array1, array2);
       setBannerList(array1);
       setBannerListMobile(array2);
+    } catch (error) {
+      console.log('Banner', error);
+    }
+  };
+
+  const getWeeklyDetails = async () => {
+
+    try {
+      const res = await APIWeeklyDetails();
+      console.log('WWWWWWWWWWWWWWW', res);
+
     } catch (error) {
       console.log('Banner', error);
     }
@@ -118,7 +107,7 @@ function WeeklyEdition() {
     if(title === 'Fairs'){
       navigate(`/FairContent/${idx}`)
     } else if (title.includes('Home')) {
-      navigate(`/personalpage/${idx}`)
+      navigate(`/personalpage/${idx}`,{state:idx})
     } else if (title.includes('Trending')) {
       navigate(`/MobileProfile/${idx}`,{state:idx})
     } else if (title.includes('Featured')) {
@@ -128,67 +117,19 @@ function WeeklyEdition() {
     }
   }
 
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      setPage((prev) => prev + 1);
-    }
-  }, []);
 
-  const options = {
-    root: null, //기본 null, 관찰대상의 부모요소를 지정
-    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
-    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
-  };
-
-  const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('products') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
-    setProductList(list);
-    setHistory(true);
-    setPage(page);
-    setShowType(type);
-
-    sessionStorage.removeItem('products');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
-  };
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const y = globalThis.scrollY;
-    sessionStorage.setItem('products', JSON.stringify(productList));
-    sessionStorage.setItem('page', String(page));
-    sessionStorage.setItem('type', String(showType));
+    // sessionStorage.setItem('products', JSON.stringify(productList));
+    // sessionStorage.setItem('page', String(page));
+    // sessionStorage.setItem('type', String(showType));
     sessionStorage.setItem('y', String(y ?? 0));
     navigate(`/productdetails/${idx}`);
   };
 
-  const onDeleteAsk = async () => {
-    // setAppdownModal(false);
-    // const data = {
-    //   idx: itemIdx,
-    // };
-    // try {
-    //   const res = await APIDeleteAsk(data);
-    //   console.log(res);
-    //   setShowModal(true);
-    //   getAskList();
-    // } catch (error) {
-    //   console.log(error);
-    //   alert(error);
-    // }
-  };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (interSectRef.current) observer.observe(interSectRef.current);
-    return () => observer.disconnect();
-  }, [handleObserver]);
 
-  useEffect(() => {
-    getBannerList();
-  }, []);
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -204,20 +145,13 @@ function WeeklyEdition() {
     }
   }, [productList]);
 
-  // useLayoutEffect(() => {
-  //   const page = Number(sessionStorage.getItem('page'));
-  //   console.log('카테고리', category);
-  //   if (page) {
-  //     findHistory();
-  //   } else {
-  //     setPage(1);
-  //     getProductList(1);
-  //   }
-  // }, [searchParams, category]);
+  useLayoutEffect(() => {
 
-  // useEffect(() => {
-  //   if (page > 1) getProductList(page);
-  // }, [page]);
+    getWeeklyDetails()
+    getBannerList();
+
+  }, [productList]);
+
 
 
   return (

@@ -1,22 +1,25 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import logoImage from '../../asset/image/logo.png';
-import { APICompanyInfo, APISelling } from '../../api/SettingAPI';
-import { TCompanyInfo } from '../../components/Layout/Footer';
-import CheckBox from '../../components/Shop/CheckBox';
-import { CategoryList } from '../../components/List/List';
+import { FileButton } from '@mantine/core';
+import { APISelling } from '../../api/SettingAPI';
+import deleteButtonImage from '../../asset/image/ico_del.png';
 import ButtonContainer from '../../components/Layout/ButtonBox';
 import { useNavigate } from 'react-router-dom';
 import AlertModal from '../../components/Modal/AlertModal';
-import UploadImage from '../../asset/image/save_img.svg'
+import { dndData } from '../../components/DnD/DnD';
+import { APICategoryList } from '../../api/ProductAPI';
+import { CategoryType } from '../../types/Types';
+import CheckCategoryItem from '../../components/Shop/CheckCategoryItem';
 
 function AskInfo() {
   const navigate = useNavigate();
-  const [companyInfo, setCompanyInfo] = useState<TCompanyInfo>();
+  const [ShowImage, setShowImage] = useState<any[]>([]);
   const [alertType, setAlertType] = useState('');
   const [showContentModal, setShowContentModal] = useState(false);
   const [checked, setChecked] = useState(0);
-  const [Images, setImages] = useState<any>();
+  const [UploadImage, setUploadImages] = useState<dndData[]>([]);
+  const [categoryList,setcategoriList] = useState<CategoryType[]>([])
+  const [categoryArray,setcategoryArray] = useState<number[]>([])
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [sellingAsk,setSellingAsk] = useState<any>({
     artistname:'',
@@ -40,13 +43,13 @@ function AskInfo() {
     if (!sellingAsk.email) return setAlertType('email을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.sns) return setAlertType('sns을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.phone) return setAlertType('phone을 입력해주세요.'),setShowContentModal(true);
-    if (!sellingAsk.categories) return setAlertType('categories을 입력해주세요.'),setShowContentModal(true);
+    if (categoryArray.length == 0) return setAlertType('categories을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.title) return setAlertType('title을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.materials) return setAlertType('materials을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.height) return setAlertType('height을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.width) return setAlertType('width을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.depth) return setAlertType('depth을 입력해주세요.'),setShowContentModal(true);
-    if (!Images) return setAlertType('Image를 업로드 해주세요.'),setShowContentModal(true);
+    if (!UploadImage) return setAlertType('Image를 업로드 해주세요.'),setShowContentModal(true);
 
     formData.append('artist_name', sellingAsk.artistname);
     formData.append('brand_name', sellingAsk.brandname);
@@ -59,34 +62,67 @@ function AskInfo() {
     formData.append('height', sellingAsk.height);
     formData.append('materials', sellingAsk.materials);
 
-    for (var i = 0; i < Images.length; i++){
-      formData.append('images', Images[i]);
+    for (var i = 0; i < categoryArray.length; i++){
+      formData.append('category[]', JSON.stringify(categoryArray[i]))
     }
-    
+
+    for (var i = 0; i < UploadImage.length; i++){
+      formData.append('images', UploadImage[i].file);
+    }
     try {
       const res = await APISelling(formData);
       console.log(res)
-      navigate(-1)
+      setAlertType('success')
+      setShowContentModal(true)
       // setIsSnsUser(res.type !== 1 ? true : false);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       // navigate('/signin', { replace: true });
     }
   };
-  const onUploadImageButtonClick = useCallback(() => {
-    if (!inputRef.current) {
-      return;
-    }
-    inputRef.current.click();
-  }, []);
 
-  const onUploadImage = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) {
-      return;
+  const getCategoryList = async () => {
+    const data = {
+      page: 1
+    };
+    try {
+      const {list,total} = await APICategoryList(data);
+      setcategoriList(list);
+    } catch (error) {
     }
-    console.log(e.target.files)
-    setImages(e.target.files)    
-  }, []);
+  };
+
+
+  const onUploadImage = (value: File[]) => {
+    if(UploadImage.length > 12)return(setShowContentModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
+    if(value.length > 12)return(setShowContentModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
+    // console.log(value)
+    const ShowImages = value;
+    let fileURLs:dndData[] = [...UploadImage];
+    let imageUrlLists = [...ShowImage];
+    for (let i = 0; i < value.length; i++) {
+      let reader = new FileReader();
+      const currentImageUrl = URL.createObjectURL(ShowImages[i]);
+      imageUrlLists.push(currentImageUrl);
+      let file = value[i];
+      reader.onload = () => {
+        const file = { url: reader.result as string, name: value[i].name, symbol: String(Date.now()), file: value[i] };
+        fileURLs.push(file)
+        // console.log('fsfsfs',file)
+        
+      };
+      reader.readAsDataURL(file);
+    }
+    setShowImage(imageUrlLists.slice(0, 12))
+    // console.log(fileURLs)
+    setUploadImages(fileURLs)
+  };
+
+  const handleDelete = (ItemIndex: number) => {
+    console.log(ItemIndex)
+    setShowImage((prev) => prev.filter((item,index) => index !== ItemIndex))
+    setUploadImages((prev) => prev.filter((item,index) => index !== ItemIndex))
+  };
 
 
   const setInfoHandle = (e:any,type:string) =>{
@@ -95,8 +131,56 @@ function AskInfo() {
   }
 
   useEffect(() => {
+    getCategoryList()
     // getCompanyInfo();
   }, []);
+  useEffect(() => {
+    console.log('dasdsa')
+    setChecked(ShowImage.length)
+  }, [ShowImage]);
+
+  /** drageEvent */
+  const scrollRef = useRef<any>(null);
+  const [isDrag, setIsDrag] = useState(false);
+  const [startX, setStartX] = useState<any>();
+  const [isDragging, setIsDragging] = useState(false);
+  const [movingX, setmovingX] = useState<any>();
+  const onDragStart = (e:any) => {
+    e.preventDefault();
+    setIsDrag(true);
+    setStartX(e.pageX + scrollRef.current.scrollLeft);
+  };
+  const onDragEnd = () => {
+    setIsDrag(false);
+  };
+  const onDragMove = (e:any) => {
+    if (isDrag) {
+      scrollRef.current.scrollLeft = startX - e.pageX;
+      setmovingX(scrollRef.current.scrollLeft)
+    }
+  };
+  const throttle = (func:any, ms:any) => {
+    let throttled = false;
+    return (...args:any) => {
+      if (!throttled) {
+        throttled = true;
+        setTimeout(() => {
+          func(...args);
+          throttled = false;
+        }, ms);
+      }
+    };
+  };
+  
+  useEffect(()=>{
+    setIsDragging(true)
+    setTimeout(() => {
+      setIsDragging(false);
+    }, 500);
+  },[movingX])
+  
+  const delay = 10;
+  const onThrottleDragMove = throttle(onDragMove, delay);
 
   return (
     <Container>
@@ -152,12 +236,18 @@ function AskInfo() {
           </MessageInform>
           <LeftText>Categories</LeftText>
           <CheckBoxWrap>
-            {CategoryList.slice(1).map((item,index)=>{
+            {categoryList && 
+            categoryList.map((item,index)=>{
               return(
-                <CheckboxItems key={index} onClick={()=>setChecked(index)}>
-                  <CheckBox checked={checked==index} size={20}/>
-                  <CheckBoxText>{item.label}</CheckBoxText>
-                </CheckboxItems>
+                <CheckCategoryItem key={index} item={item.name} idx={item.idx} checked={categoryArray.includes(item.idx)} 
+                setChecked={(e,type)=>{
+                  console.log(e,type)
+                  if(categoryArray.includes(e)){
+                    setcategoryArray((prev) => prev?.filter((item) => item !== e))
+                  } else if(categoryArray.length < 3){
+                    setcategoryArray((prev) => [...prev, e])
+                  }
+                }} />
               )
             })}
           </CheckBoxWrap>
@@ -183,7 +273,7 @@ function AskInfo() {
             <LeftText>Height</LeftText>
             <RightInput
               value={sellingAsk.Height} 
-              onChange={(e) => setInfoHandle(e.target.value,'materials')} 
+              onChange={(e) => setInfoHandle(e.target.value,'height')} 
               placeholder='mm'
             />
           </RowWap>
@@ -191,7 +281,15 @@ function AskInfo() {
             <LeftText>Width</LeftText>
             <RightInput
               value={sellingAsk.Width} 
-              onChange={(e) => setInfoHandle(e.target.value,'materials')} 
+              onChange={(e) => setInfoHandle(e.target.value,'width')} 
+              placeholder='mm'
+            />
+          </RowWap>
+          <RowWap>
+            <LeftText>Depth</LeftText>
+            <RightInput
+              value={sellingAsk.Width} 
+              onChange={(e) => setInfoHandle(e.target.value,'depth')} 
               placeholder='mm'
             />
           </RowWap>
@@ -200,12 +298,44 @@ function AskInfo() {
         <MessageInform>
           About Artwork
         </MessageInform>
+        <FileButton onChange={onUploadImage} multiple accept="image/png,image/jpeg">
+          {(props) => (
+          <FileUpload {...props}>
+            {/* <UplodaImage src={UploadImage}/> */}
+            File upload {checked}
+          </FileUpload>
+          )}
+        </FileButton>
 
-        <FileUpload htmlFor='Upload' onClick={onUploadImageButtonClick}>
-          {/* <UplodaImage src={UploadImage}/> */}
-          <HideInput type='file' multiple accept='image/*' ref={inputRef} onChange={onUploadImage} name='Upload'/>
-          File upload {Images? Images.length : 0}
-        </FileUpload>
+        <ImageFlexBox
+          onMouseDown={onDragStart}
+          onMouseMove={onThrottleDragMove}
+          onMouseUp={onDragEnd}
+          onMouseLeave={onDragEnd}
+          ref={scrollRef} 
+          >
+          {
+          ShowImage.map((item,index)=>{
+            return(
+            <UploadImageItemWrap key={index}>
+              <UploadImageItem onClick={()=>{}} src={item}/>
+              <DeleteButton onClick={() => handleDelete(index)} src={deleteButtonImage} />
+            </UploadImageItemWrap>
+            )
+          })
+          }
+          {ShowImage.length < 1 &&
+          <FileButton onChange={onUploadImage} multiple accept="image/png,image/jpeg">
+            {(props) => (
+            <PlusImage key={0} index={0} {...props}>
+              <PlusH></PlusH>
+              <PlusV></PlusV>
+            </PlusImage>
+            )}
+          </FileButton>
+          }
+        </ImageFlexBox>
+        
 
         <ButtonContainer
           text1={'Send'}
@@ -221,7 +351,12 @@ function AskInfo() {
       visible={showContentModal}
       setVisible={setShowContentModal}
       onClick={() => {
-        setShowContentModal(false);
+        if(alertType == 'success'){
+          setShowContentModal(false);
+          navigate(-1)
+        } else {
+          setShowContentModal(false);
+        }
       }}
       text={alertType}
       />
@@ -276,14 +411,16 @@ const UplodaImage = styled.img`
   height:30px;
   transform:rotate(180deg);
 `
-const FileUpload = styled.label`
+const FileUpload = styled.div`
 display:flex;
 justify-content:center;
+cursor:pointer;
 align-items:center;
   width: 150px;
   border-radius:12.5px;
   border:1px solid #b1b1b1;
   font-weight:410;
+  margin-bottom:20px;
 `
 const CheckBoxContainer = styled.div`
   padding:10px 5px;
@@ -351,6 +488,98 @@ font-family:'Pretendard Variable';
     font-size: 12px;
   }
 `;
+const ImageFlexBox = styled.div`
+  display:flex;
+  flex:1;
+  width:100%;
+  align-items: center;
+  margin-bottom: 30px;
 
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+
+  ::-webkit-scrollbar{
+    display:none;
+  }
+  /* 1440px */
+  /* @media only screen and (max-width: 1440px) {
+    margin: 20px 0px 20px 20px;;
+  } */
+`;
+const UploadImageItemWrap = styled.div`
+position:relative;
+  width: 150px;
+  height: 150px;
+`
+const UploadImageItem = styled.img`
+  width: 150px;
+  height: 150px;
+  margin-right:10px;
+  object-fit:contain;
+`
+const DeleteButton = styled.img`
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  cursor: pointer;
+`;
+const PlusImage = styled.div<{index:number}>`
+  /* border:1px solid #a1a1a1;; */
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  aspect-ratio: 1;
+  background-color:#d1d1d1;
+  margin-right:10px;
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  overflow: hidden;
+  margin-bottom: 30px;
+`;
+
+const MiniPlusImage = styled.div<{height:number,index:number}>`
+  /* border:1px solid #a1a1a1;; */
+  position:absolute;
+  right:30px;
+  bottom:30px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background-color:#ffffff;
+  border-radius:50%;
+  border:1px solid #646464;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  overflow: hidden;
+  margin-bottom: 30px;
+`;
+
+const PlusH = styled.div`
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:30px;
+  transform:translate(-50%,-50%);
+  border-bottom:1px solid #585858;
+  @media only screen and (max-width: 768px) {
+    width:20px;
+  }
+`
+const PlusV = styled.div`
+  position:absolute;
+  left:50%;
+  top:50%;
+  height:30px;
+  transform:translate(-50%,-50%);
+  border-right:1px solid #585858;
+  @media only screen and (max-width: 768px) {
+    height:20px;
+  }
+`
 
 export default AskInfo;

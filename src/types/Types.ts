@@ -188,7 +188,7 @@ export type FeaturedListType = {
   image: ImageType[],
   isLike: boolean,
   isBookmark: boolean,
-  category_arr: number[]
+  category_arr: string[]
 }
 export type DesignerType = {
   idx:number;
@@ -254,6 +254,16 @@ export type LinkListType = {
   title: string;
   url:string;
   user_idx:number;
+};
+export type AddLinkListType = {
+  title: string;
+  url:string;
+};
+export type CategoryType = {
+  idx:number;
+  order_num:number;
+  name:string;
+  is_gide:number;
 };
 
 export type TProducerListItem = {
@@ -490,7 +500,8 @@ export type SnsList = {
   image:TImage[];
   isLike:boolean;
   isBookmark:boolean;
-  category_arr:number[]
+  category_arr:string[]
+  user:UserType
 }
 export type SnsdetailsType = {
   idx:number;
@@ -511,6 +522,31 @@ export type SnsdetailsType = {
   isLike:boolean;
   isBookmark:boolean;
   user:UserType
+}
+export type ArtworkDetailsType = {
+  idx:number;
+  category:string;
+  name:string;
+  size:string;
+  description:string
+  designer_idx:string | null
+  designer_name:string
+  sns:string;
+  email:string;
+  user_idx:number;
+  created_time:string;
+  updated_time:string | null;
+  deleted_time:string | null;
+  width: number,
+  depth: number,
+  height: number,
+  materials: null,
+  link_buy: null,
+  imageList:ImageType[];
+  category_arr:string[]
+  isLike:boolean;
+  isLink:boolean;
+  user:UserType | null
 }
 export type FollowCardType = {
   idx:number;

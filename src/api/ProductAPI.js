@@ -80,7 +80,7 @@ export const APIArtistFollowingList = async (data) => {
 
 export const APIArtistFollowAdd = async (data) => {
   const config = Authorization();
-  const res = await API.post('/user/like', { params: data, headers: config });
+  const res = await API.post('/user/like', data, {headers: config });
   return res.data;
 };
 
@@ -112,7 +112,7 @@ export const APISnsDetails = async (data) => {
 
 export const APISnsLike = async (data) => {
   const config = Authorization();
-  const res = await API.post('/sns/like', { params: data, headers: config });
+  const res = await API.post('/sns/like', data, {headers: config });
   return res.data;
 };
 
@@ -124,7 +124,7 @@ export const APISnsLikeList = async (data) => {
 
 export const APIBookMarkLike = async (data) => {
   const config = Authorization();
-  const res = await API.post('/sns/bookmark', { params: data, headers: config });
+  const res = await API.post('/sns/bookmark', data, {headers: config });
   return res.data;
 };
 
@@ -137,5 +137,11 @@ export const APIBookMarkLikeList = async (data) => {
 export const APIFollowersProductList = async (data) => {
   const config = Authorization();
   const res = await API.get('/user/like-designer-sns', { params: data, headers: config });
+  return res.data;
+};
+
+export const APICategoryList = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/category/list', { params: data, headers: config });
   return res.data;
 };

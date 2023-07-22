@@ -102,12 +102,12 @@ function HomeStyleList({
                 >
                   <ProductImage src={item.image[0].file_name}/>
                 </ProductImageWrap>
-                <TextWrap title={title}>
+                <TextWrap>
                   <ProductTitleText>
-                    Title{item.idx}
+                    {item.name}
                   </ProductTitleText>
                   <ProductSubText>
-                    ArtistName{item.idx}
+                    {item.user.name}
                   </ProductSubText>
                 </TextWrap>
               </ProductWrap>
@@ -167,8 +167,8 @@ const ProductImage = styled.img`
   object-fit:cover;
 `;
 
-const TextWrap = styled.div<{title?:string}>`
-  display:${props => props.title?.includes('Home')? 'none':'block'};
+const TextWrap = styled.div`
+  display:block;
   padding:40px 5px 7px;
   @media only screen and (max-width: 768px) {
     padding:10px 10px 0;

@@ -58,7 +58,7 @@ const [showLogin, setShowLogin] = useState(false);
   const LikeSns = async (idx:number) => {
     if (user.idx) {
       const data = {
-        idx: idx,
+        sns_idx: idx,
       };
       try {
         const res = await APISnsLike(data);
@@ -86,7 +86,6 @@ const [showLogin, setShowLogin] = useState(false);
       <TitleBox marginT={marginT} marginB={marginB}
       // onClick={()=>{navigate(`/${link}`);}}
       >
-        {/* <a href={item?.link}> */}
         <TitleText titlesize={titlesize}>
           {title}
         </TitleText>

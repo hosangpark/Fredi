@@ -16,7 +16,7 @@ function RegisterAsk() {
   console.log('idxxxxxxxxxxxxxxxxxxxxxxxxxxx',idx);
   const navigate = useNavigate();
   const [titlechecked, setTitleChecked] = useState(0);
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>('About Product');
   const [content, setContent] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
   const [showTitleModal, setShowTitleModal] = useState(false);
@@ -32,6 +32,7 @@ function RegisterAsk() {
       console.log(res);
       setTitle(res.title);
       setContent(res.question);
+      setTitleChecked(res.ask_type)
     } catch (error) {
       console.log(error);
       alert(error);
@@ -46,6 +47,7 @@ function RegisterAsk() {
     const data = {
       title: title,
       question: content,
+      ask_type: titlechecked
     };
     try {
       const res = await APIRegisterAsk(data);
@@ -64,6 +66,7 @@ function RegisterAsk() {
       idx: idx,
       title: title,
       question: content,
+      ask_type: titlechecked
     };
     try {
       const res = await APIModifyAsk(data);

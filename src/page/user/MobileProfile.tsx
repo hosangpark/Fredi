@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { APICheckPassword, APILink, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
@@ -26,7 +26,6 @@ import { APISnsList } from '../../api/ProductAPI';
 function MobileProfile() {
   const navigate = useNavigate();
   const { idx } = useParams();
-  const location = useLocation();
   const [isSnsUser, setIsSnsUser] = useState(false);
   const [linkList, setLinkList] = useState<LinkListType[]>([]);
   const [SnsList, setSnsList] = useState<SnsList[]>([]);
@@ -44,10 +43,9 @@ function MobileProfile() {
   }, [innerWidth]);
 
   const getproductList = async () => {
-    console.log('loccccccccccccccccc',location.state)
     const data = {
       page: 1,
-      user_idx: location.state === null ? user.idx : location.state
+      user_idx: idx
     };
     try {
       const { list } = await APISnsList(data);
@@ -60,7 +58,7 @@ function MobileProfile() {
 
   const getUserDetails = async () => {
     let data = {
-      idx:location.state
+      idx:idx
     }
     try {
       const res = await APIUserDetails(data);
@@ -92,18 +90,17 @@ function MobileProfile() {
       // navigate('/signin', { replace: true });
     }
   };
-  const gotoLink = (e:string)=>{
 
-  }
 
-  useEffect(() => {
-    console.log('idxidxidxidx',idx)
+  useLayoutEffect(() => {
+    console.log('useparamsIdxType',idx)
+    console.log('useparamsIdx',String(user.idx))
     getUserDetails();
     getproductList()
     getLinks()
     
     
-  }, [location.state]);
+  }, [idx]);
   
 
   return (
@@ -123,11 +120,11 @@ function MobileProfile() {
                 {/* 링크 최대갯수 알아야함 */}
                 {linkList.map((item,index)=>{
                   return(
-                <LayoutWrap key={index} onClick={()=>gotoLink('aaa')}>
+                <LayoutWrap key={index}>
                   <LinkImageWrap>
                     <LinksImage src={linkImage}/>
                   </LinkImageWrap>
-                  <LinkItemBox href={item.url}>
+                  <LinkItemBox onClick={() => window.open(`${item.url}`, '_blank')}>
                     <LinkTitleBox>
                       <LinkName>
                         {item.title}
@@ -179,7 +176,7 @@ function MobileProfile() {
               }
             </ImageWrap>
           </HeaderLeft>
-          {user.idx !== location.state?
+          {user.idx !== userDetails?.idx ?
           <ButtonBox>
             <ButtonImageWrap style={{marginRight:10}} onClick={() => setBottomSheetModal(true)}>
               <ButtonImage src={LinksIcon}/>
@@ -196,7 +193,7 @@ function MobileProfile() {
             <FollowButtonBox style={{marginRight:12}} onClick={()=>{navigate('/EditProfile')}}>
               Edit Profile
             </FollowButtonBox>
-            <FollowButtonBox onClick={()=>{navigate('/EditProfile')}}>
+            <FollowButtonBox onClick={()=>{setQrModal(true)}}>
               Share Profile
             </FollowButtonBox>
           </ButtonBox>
@@ -206,9 +203,15 @@ function MobileProfile() {
           {userDetails?.about? userDetails.about : ''}
         </DescriptionText>
       </ProfileContainer>
+      <FlexBox>
+
       <WorksLengthBox>
         {SnsList.length}works
       </WorksLengthBox>
+      <UploadButton onClick={()=>navigate('/AddPhoto')}>
+        UpLoad
+      </UploadButton>
+      </FlexBox>
       <ProductListWrap>
         {SnsList.length > 0 &&
           SnsList.map((item,index)=>{
@@ -222,11 +225,16 @@ function MobileProfile() {
             )
             })
           }
-          
+          <PlusButton onClick={()=>navigate('/AddPhoto')}>
+            <PlusH></PlusH>
+            <PlusV></PlusV>
+          </PlusButton>
+          {SnsList.length == 0 &&
           <PlusImage onClick={()=>navigate('/AddPhoto')} height={innerWidth}>
             <PlusH></PlusH>
             <PlusV></PlusV>
           </PlusImage>
+          }
           
       </ProductListWrap>
       <QrModal
@@ -511,7 +519,7 @@ const PlusH = styled.div`
   top:50%;
   width:30px;
   transform:translate(-50%,-50%);
-  border-bottom:1px solid #585858;
+  border-bottom:1px solid #353535;
   @media only screen and (max-width: 768px) {
     width:20px;
   }
@@ -522,7 +530,7 @@ const PlusV = styled.div`
   top:50%;
   height:30px;
   transform:translate(-50%,-50%);
-  border-right:1px solid #585858;
+  border-right:1px solid #353535;
   @media only screen and (max-width: 768px) {
     height:20px;
   }
@@ -574,10 +582,11 @@ const ImageFlexBox = styled.div`
 const PlusButton = styled.div`
   position:sticky;
   bottom:100px;
-  border:1px solid black;
+  border:1px solid #3b3b3b;
   border-radius:50%;
   font-weight: 410;
   display:none;
+  background:#ffffff;
   @media only screen and (max-width: 768px) {
     display:block;
     left:calc(100% - 100px);
@@ -613,15 +622,32 @@ const ProductListWrap = styled.div`
 
 const WorksLengthBox = styled.div`
 font-family:'Pretendard Variable';
+font-weight: 310;
   text-align:start;
   margin-left:20px;
-  font-weight: 310;
   margin-bottom:10px;
   font-size:16px;
   color:#000000;
   @media only screen and (max-width: 450px) {
     font-size:12px;
   }
+  `;
+const UploadButton = styled.div`
+font-family:'Pretendard Variable';
+font-weight: 460;
+  display:block;
+  border:1px solid rgb(180, 180, 180);
+  padding:12px 60px;
+  border-radius:5px;
+  @media only screen and (max-width: 768px) {
+    padding:10px 40px;
+    display:none;
+  }
+`
+const FlexBox = styled.div`
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
 `;
 
 const BlackButtonText = styled.span`

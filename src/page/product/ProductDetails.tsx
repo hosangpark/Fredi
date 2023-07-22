@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState,MouseEvent } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
-import likeOnImage from '../../asset/image/heart.svg';
+import likeOnImage from '../../asset/image/heart_on.svg';
 import likeOffImage from '../../asset/image/heart.svg';
 import ximage from '../../asset/image/close.svg';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { createStyles, Modal } from '@mantine/core';
-import { TImage, TProductListItem } from '../../types/Types';
+import { ArtworkDetailsType, TImage, TProductListItem } from '../../types/Types';
 import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import { useRef } from 'react';
@@ -24,36 +24,10 @@ import './ProductDetails.css'
 import { APIGetBanner } from '../../api/SettingAPI';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
-import { APIProductDetails } from '../../api/ProductAPI';
+import { APILikeProduct, APIProductDetails } from '../../api/ProductAPI';
 import ContactModal from '../../components/Modal/ContactModal';
 
 SwiperCore.use([Keyboard, Mousewheel]);
-
-export type TShopDetails = {
-  idx: number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  name: string;
-  price: number;
-  size: string;
-  weight: string;
-  country: string;
-  description: string;
-  designer: string;
-  sns: string;
-  email: string;
-  website: string;
-  delivery_info: string;
-  like_count: number;
-  imageList: TImage[];
-  optionList: OptionDetailList[];
-  isLike: boolean;
-};
-
-export type OptionDetailList = {
-  idx: number;
-  name: string;
-};
-
 
 function ProductDetails() {
   const { idx } = useParams();
@@ -61,7 +35,7 @@ function ProductDetails() {
   const history = createBrowserHistory();
   const { user } = useContext(UserContext);
   const [defaultoverlay, setDefaultoverlay] = useState(false)
-  const [shopDetails, setShopDetails] = useState<TShopDetails>();
+  const [shopDetails, setShopDetails] = useState<ArtworkDetailsType>();
   const [isLike, setIsLike] = useState<boolean>(false);
   const [showImageModal, setShowImageModal] = useState<boolean>(false);
   const [initcar, setInitCar] = useState<boolean>(false);
@@ -107,43 +81,26 @@ function ProductDetails() {
     }
   };
 
-  const onLikeShop = async () => {
+  const AddLike = async (idx: number) => {
     if (user.idx) {
       const data = {
-        idx: shopDetails?.idx,
+        artwork_idx: idx,
       };
       try {
-        const res = await APILikeShop(data);
-        console.log(res);
-        setIsLike((prev) => !prev);
+        const res = await APILikeProduct(data);
+        getProductDetails()
       } catch (error) {
         console.log(error);
       }
     } else {
       setShowLogin(true);
     }
-  };
 
-  const onAddCartItem = async () => {
-    if (user.idx) {
-      const data = {
-        idx: shopDetails?.idx,
-        options: addOption.length > 0 ? addOption : [],
-        // amount: 1,
-      };
-      try {
-        const res = await APIAddCartItem(data);
-        console.log(res);
-        setShowModal(true);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      setShowLogin(true);
-    }
   };
+  
 
   useEffect(() => {
+    console.log('productidx',idx)
     getProductDetails();
     // getShopDetails();
   }, []);
@@ -190,18 +147,7 @@ function ProductDetails() {
     return result;
   };
 
-  const getTotal = () => {
-    const count = addOption.reduce((a: any, v: any) => (a = a + v.count), 0);
-    return count;
-  };
 
-  const getPrice = () => {
-    const count = getTotal();
-    console.log(getTotal(), shopDetails?.price);
-    const price = Number(count) * Number(shopDetails?.price);
-    console.log(price);
-    return price;
-  };
 
   var bullet = ['1번', '2번', '3번'];
 
@@ -222,6 +168,7 @@ function ProductDetails() {
 
   useEffect(() => {
     console.log('addOption', addOption);
+    console.log(shopDetails?.isLike);
   }, [addOption]);
 
   useEffect(() => {
@@ -257,9 +204,9 @@ function ProductDetails() {
                 <NameBox>
                   <NameDesigner>
                     <ProductName>{shopDetails?.name}</ProductName>
-                    <Designer>{shopDetails?.designer}</Designer>
+                    <Designer>{shopDetails?.designer_name}</Designer>
                   </NameDesigner>
-                  <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
+                  <LikeButton onClick={()=>{if(shopDetails?.idx){AddLike(shopDetails?.idx)}}} src={shopDetails?.isLike ? likeOnImage : likeOffImage} />
                 </NameBox>
                 <BottomBoxContent readmore={readmore} >value={shopDetails?.description}
                 </BottomBoxContent>
@@ -278,7 +225,7 @@ function ProductDetails() {
               </ContentRowWrap>
               <ContentRowWrap>
                 <Title>Materials</Title>
-                <Content>{shopDetails?.weight}</Content>
+                <Content>{shopDetails?.materials}</Content>
               </ContentRowWrap>
               
               </ContentBox>
@@ -310,9 +257,9 @@ function ProductDetails() {
               <NameBox>
                 <NameDesigner>
                   <ProductName>{shopDetails?.name}</ProductName>
-                  <Designer>{shopDetails?.designer}</Designer>
+                  <Designer>{shopDetails?.designer_name}</Designer>
                 </NameDesigner>
-                <LikeButton onClick={onLikeShop} src={isLike ? likeOnImage : likeOffImage} />
+                <LikeButton onClick={()=>{if(shopDetails?.idx){AddLike(shopDetails?.idx)}}} src={isLike ? likeOnImage : likeOffImage} />
               </NameBox>
               <BottomBoxContent readmore={readmore}>{shopDetails?.description}</BottomBoxContent>
               {!readmore &&
@@ -331,7 +278,7 @@ function ProductDetails() {
               </ContentRowWrap>
               <ContentRowWrap>
                 <Title>Materials</Title>
-                <Content>{shopDetails?.weight}</Content>
+                <Content>{shopDetails?.height}</Content>
               </ContentRowWrap>
               {option && option.length > 0 && (
                 <ContentRowWrap>

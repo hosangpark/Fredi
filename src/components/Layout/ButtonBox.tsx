@@ -14,6 +14,7 @@ function ButtonContainer({
   cancle,
   marginT,
   marginB,
+  width,
   visible
 }: {
   idx?:string | undefined;
@@ -24,11 +25,12 @@ function ButtonContainer({
   cancle: () => void;
   marginT?:number
   marginB?:number
+  width?:number
   visible?:boolean
 }) {
 
   return (
-    <ButtonWrap visible={visible? visible : false} marginT={marginT? marginT :37} marginB={marginB? marginB :37}>
+    <ButtonWrap width={width&&width} visible={visible? visible : false} marginT={marginT? marginT :37} marginB={marginB? marginB :37}>
       <WhiteButton onClick={cancle}>
         <WhiteButtonText>{text2}</WhiteButtonText>
       </WhiteButton>
@@ -40,9 +42,9 @@ function ButtonContainer({
   );
 }
 
-const ButtonWrap = styled.div<{marginT?:number,marginB?:number,visible?:boolean}>`
+const ButtonWrap = styled.div<{width?:number,marginT?:number,marginB?:number,visible?:boolean}>`
   display: flex;
-  width:748px;
+  width:${props=>props.width ? props.width : 748}px;
   margin:${props=>props.marginT&& props.marginT}px auto ${props=>props.marginB&& props.marginB}px;
   min-height:55px;
   

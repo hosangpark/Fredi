@@ -55,6 +55,7 @@ function FeedTab() {
     const data = {
       page: 1,
       category: category,
+      keyword: keyword? keyword : ''
     };
     try {
       if (history) {
@@ -71,44 +72,38 @@ function FeedTab() {
   
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('List') ?? '');
-    const categ = sessionStorage.getItem('category');
-    console.log('cate불러옴',categ&& JSON.parse(categ))
-    console.log('list불러옴',list)
+    const list = JSON.parse(sessionStorage.getItem('FeedTabList') ?? '');
+    const categ = sessionStorage.getItem('FeedTabCategory');
+
     // setCategory(categ);
     setSnsList(list);
-    setHistory(true);
     if(categ){
       setCategory(categ)
     }
-    sessionStorage.removeItem('category');
-    sessionStorage.removeItem('List');
+    sessionStorage.removeItem('FeedTabList');
+    sessionStorage.removeItem('FeedTabCategory');
   };
 
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('List', JSON.stringify(SnsList));
-      sessionStorage.setItem('category', category);
+      sessionStorage.setItem('FeedTabList', JSON.stringify(SnsList));
+      sessionStorage.setItem('FeedTabCategory', category);
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
 
   useLayoutEffect(() => {
-    const categ = sessionStorage.getItem('category');
-
+    const categ = sessionStorage.getItem('FeedTabCategory');
     if (categ) {
-      console.log('find')
       findHistory();
     } else {
-      console.log('getlist')
       getproductList();
     }
-  }, [category]);
+  }, [searchParams,category]);
 
 
   useLayoutEffect(() => {
@@ -127,25 +122,10 @@ function FeedTab() {
  
 
   const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
+    createSearchParams({keyword:keyword})
+    getproductList()
   };
 
-  const chageCategory = (value:string) => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
 
   return (
     <Container>
@@ -162,7 +142,7 @@ function FeedTab() {
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
           onChangeCategory={(value: string) => {
-            chageCategory(value);
+            setCategory(value);
           }}
         />
       </TitleWrap>

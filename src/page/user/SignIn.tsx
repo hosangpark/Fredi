@@ -147,7 +147,7 @@ function SignIn() {
           <NaverLoginButton />
         </SnsRowWrap>
         <BottomText onClick={() => navigate('/SignUp1')}>
-          아직 회원이 아니신가요?&p;<UnderLinedText>회원가입</UnderLinedText>
+          아직 회원이 아니신가요?&nbsp;<UnderLinedText>회원가입</UnderLinedText>
         </BottomText>
       </SignInBox>
     </Container>

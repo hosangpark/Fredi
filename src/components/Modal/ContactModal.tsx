@@ -30,7 +30,7 @@ function ContactModal({
         </Xheader>
         {contactUrl.map((item,index) => {
           return(
-        <LayoutWrap key={index} href={'https://'+item.url}>
+        <LayoutWrap key={index}  href={'https://'+item.url}>
           <LinkImageWrap>
             <LinksImage src={linkImage}/>
           </LinkImageWrap>

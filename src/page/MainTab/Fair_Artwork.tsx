@@ -48,12 +48,13 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 });
 
 
-function FairArtwork({saveHistory,onLikeProduct,productList,showType}
+function FairArtwork({saveHistory,CategoryClick,onLikeProduct,productList,selectCategory}
   :
   {saveHistory:(e:React.MouseEvent, idx: number)=>void,
+  CategoryClick:(e:any)=>void,
   onLikeProduct?:(e:number)=>void,
   productList?:FairDetailsArtworkItem[],
-  showType?:number}) {
+  selectCategory?:string}) {
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
@@ -70,13 +71,7 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
 
 
 
-  const chageCategory = (value: string) => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
+
 
 
   /** drageEvent */
@@ -135,7 +130,7 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
       showcategory={showcategory}>
         {CategoryList.map((item) => {
           return (
-            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{if(!isDragging)chageCategory(item.value as string)}} />
+            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={selectCategory === item.value} onClickFilter={()=>{if(!isDragging)CategoryClick(item.value as string)}} />
 
           );
         })}
@@ -158,7 +153,7 @@ function FairArtwork({saveHistory,onLikeProduct,productList,showType}
                   setShowLogin(true);
                 }
               }}
-              showType={showType? 2:1}
+              showType={2}
               index={index}
             />
           )
@@ -200,33 +195,6 @@ const ProductListWrap = styled.div`
   @media only screen and (max-width: 768px) {
     margin:0;
   }
-`;
-
-const CarouselWrap = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4697/1737;
-  max-height: 700px;
-`;
-const MobileCarouselWrap = styled.div`
-  display: none;
-  max-height: 700px;
-  position: relative;
-  @media only screen and (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const ControlImage = styled.img`
-  width: 40px;
-  @media only screen and (max-width: 768px) {
-    width: 15px;
-  }
-`;
-
-const InterView = styled.div`
-  height: 200px;
 `;
 
 const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`

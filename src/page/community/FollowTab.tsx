@@ -43,33 +43,32 @@ function FollowTab() {
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
 
-  const [category, setCategory] = useState<string>(categoryParams);
+  const [category, setCategory] = useState<string>('1');
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [FollowArtistList, setFollowArtistList] = useState<FollowArtistListType[]>([]);
   const [LikeSnsList, setLikeSnsList] = useState<FollowCardType[]>([]);
 
   const findHistory = () => {
-    // const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
-
-    // setShopList(list);
+    const list1 = JSON.parse(sessionStorage.getItem('FollowTabArtist') ?? '');
+    const list2 = JSON.parse(sessionStorage.getItem('FollowTabList') ?? '');
+    // setCategory(categ);
+    setFollowArtistList(list1)
+    setLikeSnsList(list2)
     setHistory(true);
 
-    sessionStorage.removeItem('shop');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
+    sessionStorage.removeItem('FollowTabSave');
+    sessionStorage.removeItem('FollowTabArtist');
+    sessionStorage.removeItem('FollowTabList');
   };
-
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(LikeSnsList));
+      sessionStorage.setItem('FollowTabArtist', JSON.stringify(FollowArtistList));
+      sessionStorage.setItem('FollowTabList', JSON.stringify(LikeSnsList));
+      sessionStorage.setItem('FollowTabSave', 'Save');
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/personalpage/${idx}`,{state:idx});
     }
@@ -94,6 +93,7 @@ function FollowTab() {
   const getLikeSnsData = async () => {
     const data = {
       page: 1,
+      keyword:keyword? keyword : ""
     };
     try {
       if (history) {
@@ -121,31 +121,20 @@ function FollowTab() {
     }
   }, [LikeSnsList]);
 
-  useEffect(() => {
-    getArtistData();
-    getLikeSnsData();
-  }, []);
-
   const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
+    createSearchParams({keyword:keyword})
+    getLikeSnsData()
   };
 
-  const chageCategory = (value: string) => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
+  useLayoutEffect(() => {
+  const Save = sessionStorage.getItem('FollowTabSave');
+    if (Save) {
+      findHistory();
+    } else {
+      getArtistData();
+      getLikeSnsData();
+    }
+  }, [searchParams]);
 
 
   return (
@@ -163,7 +152,7 @@ function FollowTab() {
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
           onChangeCategory={(value: string) => {
-            chageCategory(value);
+            setCategory(value);
           }}
         />
       </TitleWrap>

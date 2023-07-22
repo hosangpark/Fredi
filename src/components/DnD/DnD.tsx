@@ -21,9 +21,9 @@ interface DndListProps {
 }
 
 export function DndList({ data, setData, initList }: DndListProps) {
+  const [fileList, setFileList] = useState<dndData[]>([]);
   const [target, setTarget] = useState<string>();
   const now = useRef<string>();
-  const [fileList, setFileList] = useState<dndData[]>([]);
 
   const onDragStart = (e: React.DragEvent<HTMLDivElement>, idx: dndData) => {
     if (e.dataTransfer) {

@@ -93,25 +93,12 @@ function ArtistProducts() {
     }
   };
 
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      setPage((prev) => prev + 1);
-    }
-  }, []);
-
-  const options = {
-    root: null, //기본 null, 관찰대상의 부모요소를 지정
-    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
-    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
-  };
-
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
+    // const list = JSON.parse(sessionStorage.getItem('SnsArtistList') ?? '');
     const page = Number(sessionStorage.getItem('page'));
     const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    setSnsList(list);
+    // setSnsList(list);
     setHistory(true);
     setPage(page);
     setShowType(type);
@@ -126,7 +113,7 @@ function ArtistProducts() {
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(SnsList));
+      // sessionStorage.setItem('shop', JSON.stringify(SnsList));
       sessionStorage.setItem('page', String(page));
       sessionStorage.setItem('type', String(showType));
       sessionStorage.setItem('y', String(y ?? 0));
@@ -149,14 +136,10 @@ function ArtistProducts() {
   }, [SnsList]);
 
   useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
-
-    if (page) {
-      findHistory();
-    } else {
-      setPage(1);
-      getSnsList(1);
-    }
+    const page = sessionStorage.getItem('Save')
+    setPage(1);
+    getSnsList(1);
+    
   }, [searchParams]);
 
   useEffect(() => {
@@ -168,7 +151,7 @@ function ArtistProducts() {
     <Container>
       <NameBox>{name}</NameBox>
       <ProductListWrap>
-        {SnsList.length > 0 &&
+        {SnsList.length > 0 ?
         SnsList.map((item,index)=>{
           return(
             <FeedCard
@@ -188,6 +171,10 @@ function ArtistProducts() {
             />
           )
           })
+          :
+          <>
+          ...게시글이 없습니다.
+          </>
         }
       </ProductListWrap>
       <AlertModal

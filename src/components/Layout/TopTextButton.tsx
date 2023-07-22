@@ -21,7 +21,7 @@ function TopTextButton({
 }
 
 const ButtonBox = styled.div`
-  position:absolute;
+  position:fixed;
   right:25px;
   top:15px;
   z-index:101;

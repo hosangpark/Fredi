@@ -1,31 +1,12 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { createSearchParams, useLocation, useNavigate, useSearchParams,useParams } from 'react-router-dom';
-import Autoplay from 'embla-carousel-autoplay';
-import leftButtonImage from '../../asset/image/ico_prev.png';
-import rightButtonImage from '../../asset/image/ico_next.png';
-import leftButtonMobileImage from '../../asset/image/ico_prev_mobile.png';
-import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
-import { createStyles, Image } from '@mantine/core';
-import { Carousel } from '@mantine/carousel';
-import { APIGetBanner } from '../../api/SettingAPI';
-import { ArtistItem, FairDetailsArtworkItem, FairDetailsType, FairListItem, TProductListItem } from '../../types/Types';
-import { UserContext } from '../../context/user';
-import AlertModal from '../../components/Modal/AlertModal';
+import { createSearchParams, useNavigate, useSearchParams,useParams } from 'react-router-dom';
+import { FairDetailsType } from '../../types/Types';
 import { useLayoutEffect } from 'react';
-import { createBrowserHistory } from 'history';
-import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
-import ShopCard from '../../components/Shop/ShopCard';
-import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
-import { removeHistory } from '../../components/Layout/Header';
-import FairCard from '../../components/Shop/FairCard';
-import Artwork from './Artwork';
-import Artist from './Artist';
 import { CategoryList } from '../../components/List/List';
-import { APIFairDetails, APIProductList, UPDATEURL } from '../../api/ProductAPI';
-import dayjs from 'dayjs';
+import { APIFairDetails, APILikeProduct } from '../../api/ProductAPI';
 import FairArtwork from './Fair_Artwork';
 import FairArtist from './Fair_Artist';
 
@@ -33,12 +14,21 @@ import FairArtist from './Fair_Artist';
 function FairContent() {
   const navigate = useNavigate();
   const { idx } = useParams();
+  let [searchParams, setSearchParams] = useSearchParams();
+  const keywordParams = searchParams.get('keyword') ?? '';
   const [FairDetail,setFairDetail] = useState<FairDetailsType>()
+  const categoryParams = (searchParams.get('category') as string) ?? '1';
+  const [category, setCategory] = useState<string>(categoryParams);
+  const [keyword, setKeyword] = useState<string>(keywordParams);
+  const [history, setHistory] = useState(false);
+
 
   const saveHistory1 = (e: React.MouseEvent, item:number) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
+      sessionStorage.setItem('FairContents', JSON.stringify(FairDetail));
+      sessionStorage.setItem('FairContentsCatg', category);
       sessionStorage.setItem('FairContab', String(contentItem.tab));
       sessionStorage.setItem('FairCon_y', String(y ?? 0));
       navigate(`/productdetails/${item}`);
@@ -54,11 +44,25 @@ function FairContent() {
     }
   };
 
+  const onLikeProduct = async (idx: number) => {
+    const data = {
+      artwork_idx: idx,
+    };
+    try {
+      const res = await APILikeProduct(data);
+      console.log(res);
+      getFairDetail()
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
 
   const content = [
     {
       tab: "Artworks",
-      content:<FairArtwork saveHistory={saveHistory1} productList={FairDetail?.artwork_data}/>
+      content:<FairArtwork saveHistory={saveHistory1}  CategoryClick={e=>setCategory(e)} productList={FairDetail?.artwork_data} onLikeProduct={onLikeProduct} selectCategory={category}/>
     },
     {
       tab: "Exhibitors",
@@ -76,42 +80,41 @@ function FairContent() {
   const tab = sessionStorage.getItem('FairContab');
   const { contentItem, contentChange } = useTabs(tab == 'Exhibitors'? 1 : 0, content);
 
-  let [searchParams, setSearchParams] = useSearchParams();
-  const keywordParams = searchParams.get('keyword') ?? '';
-  const [keyword, setKeyword] = useState<string>(keywordParams);
-  const categoryParams = (searchParams.get('category') as string) ?? '1';
-  const [category, setCategory] = useState<string>(categoryParams);
 
-  const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
-  };
-  const chageCategory = (value: string) => {
-    setCategory(value);
-    setSearchParams({
-      keyword,
-      category: value,
-    });
-  };
+  
 
   
   const getFairDetail = async () => {
+    const data = {
+      idx:idx,
+      category:category == '1'? "1" : "2",
+      // keyword:keyword? keyword : ''
+    }
     try {
-      const res = await APIFairDetails({idx:idx});
-      if(res) {
-        setFairDetail(res)
+      if (history) {
+        return setHistory(false);
       }
+      const res = await APIFairDetails(data);
+
+      setFairDetail(res)
+      
     } catch (error) {
     }
   };
+  const findHistory = () => {
+    const list = JSON.parse(sessionStorage.getItem('FairContents') ?? '');
+    const categ = sessionStorage.getItem('FairContentsCatg');
+    // setCategory(categ);
+    setFairDetail(list);
+    setHistory(true);
+    if(categ){
+      setCategory(categ)
+    }
+
+    sessionStorage.removeItem('FairContentsCatg');
+    sessionStorage.removeItem('FairContents');
+  };
+
 
 
   useLayoutEffect(() => {
@@ -127,9 +130,19 @@ function FairContent() {
     }
   }, []);
 
-  useEffect(()=>{
-    getFairDetail()
-  },[])
+  useLayoutEffect(() => {
+    // const page = Number(sessionStorage.getItem('page'));
+    const categ = sessionStorage.getItem('FairContentsCatg');
+    // console.log(categ)
+// console.log(categ&& setCategory(JSON.parse(categ)))
+
+    if (categ) {
+      findHistory();
+    } else {
+      console.log('getlist')
+      getFairDetail();
+    }
+  }, [searchParams,category]);
   
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
@@ -138,6 +151,11 @@ function FairContent() {
     };
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
+
+  const onSearch = () => {
+    createSearchParams({keyword:keyword})
+    getFairDetail()
+  };
 
   return (
     <Container>
@@ -151,11 +169,6 @@ function FairContent() {
           </TitleText>
           <SubText>
             {FairDetail?.range} &nbsp;
-            {/* {dayjs(FairDetail?.start_dt).format('MMMM DD')}-{
-            dayjs(FairDetail?.end_dt).format('MM') > dayjs(FairDetail?.start_dt).format('MM') ?
-            dayjs(FairDetail?.end_dt).format('MMMM DD') :
-            dayjs(FairDetail?.end_dt).format('DD')
-            }   */}
             {FairDetail?.location}
           </SubText>
         </div>
@@ -172,7 +185,7 @@ function FairContent() {
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
           onChangeCategory={(value: string) => {
-            chageCategory(value);
+            // chageCategory(value);
           }}
         />
       </TitleWrap>
@@ -217,6 +230,7 @@ const TabButtonWrap = styled.div`
   width:400px;
   display:flex;
   border-bottom:1px solid #cccccc;
+  cursor: pointer;
   margin:0 50px 40px;
   @media only screen and (max-width: 768px) {
     margin:0px;

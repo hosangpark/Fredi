@@ -274,7 +274,7 @@ function Home() {
   const slides = bannerList.map((item:any) => {
     return(
     <Carousel.Slide key={item.idx}>
-      <a href={item?.link}>
+      <a>
         <SlideImage src={item.file_name} className={classes.carouselImages} />
       </a>
     </Carousel.Slide>
@@ -285,7 +285,7 @@ function Home() {
     // console.log('item', item);
     return(
       <Carousel.Slide key={item.idx}>
-      <a href={item?.link}>
+      <a>
         <SlideImage src={item.file_name} className={classes.carouselImages} />
       </a>
     </Carousel.Slide>

@@ -82,7 +82,7 @@ function LikeArtwork() {
   const saveProductHistory = (e: React.MouseEvent, idx: number) => {
     const y = window.scrollY;
 
-    sessionStorage.setItem('List', JSON.stringify(likeList));
+    // sessionStorage.setItem('List', JSON.stringify(likeList));
     sessionStorage.setItem('category', category);
     sessionStorage.setItem('y', String(y ?? 0));
     navigate(`/productdetails/${idx}`);

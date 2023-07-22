@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { UserContext } from '../../context/user';
-import { TImage } from '../../types/Types';
+import { CategoryType, TImage } from '../../types/Types';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
 import CategoryItem from '../../components/Shop/CategoryItem';
 import linkImage from '../../asset/image/links.png';
@@ -35,6 +35,8 @@ export type TUserDetails = {
 function AddPhoto2() {
   const navigate = useNavigate();
   const types = useLocation();
+  const [categoryList,setcategoriList] = useState<CategoryType[]>([])
+  const [categoryArray,setcategoryArray] = useState<number[]>([])
   const propsData = types.state;
   const { user } = useContext(UserContext);
   const [imageList, setimageList] = useState<TImage[]>([]);
@@ -82,22 +84,21 @@ function AddPhoto2() {
         </BoxWrap>
         <BoxWrap>
           <BoxTitle>
-            Category<CategoryCount>{categoryitemList.filter(element => element.checked === true).length}</CategoryCount>
+            Category<CategoryCount>{categoryArray.length}</CategoryCount>
           </BoxTitle>
           <CategoryItemContainer>
-            {categoryitemList.map((item,index)=>{
+            {categoryList && 
+            categoryList.map((item,index)=>{
               return(
-                <CategoryItem item={item.item} checked={item.checked} 
-                setChecked={(e,type)=>{
-                  if(categoryitemList.filter(element => element.checked === true).length < 3){
-                    categoryitemList[index].checked = e
-                  }else{
-                    categoryitemList[index].checked = false
-                  }
-                  setcategoriitemList([
-                    ...categoryitemList,
-                  ])
-                }}/>
+              <CategoryItem key={index} item={item.name} idx={item.idx} checked={categoryArray.includes(item.idx)} 
+              setChecked={(e,type)=>{
+                console.log(e,type)
+                if(categoryArray.includes(e)){
+                  setcategoryArray((prev) => prev?.filter((item) => item !== e))
+                } else if(categoryArray.length < 3){
+                  setcategoryArray((prev) => [...prev, e])
+                }
+              }}/>
               )
             })}
           </CategoryItemContainer>
@@ -115,6 +116,7 @@ const Container = styled.div`
   /* flex-direction: row; */
   border-top: 1px solid #121212;
   background-color: #ffffff;
+  max-width: 768px;
   @media only screen and (max-width: 768px) {
     flex-direction: column;
     border-top: 0;

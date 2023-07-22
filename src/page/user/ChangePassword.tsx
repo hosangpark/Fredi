@@ -11,7 +11,6 @@ import {
   APIModifyPassword,
   APIModifyUserDetails,
   APISendAuthNumber,
-  APIUserDetails,
   APIVerifyAuthNumber,
   checkNicknameExcludeUser,
 } from '../../api/UserAPI';

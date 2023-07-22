@@ -30,7 +30,6 @@ import UserDetails from './page/admin/UserDetails';
 import UserList from './page/admin/UserList';
 import Admin from './page/admin/Admin';
 import Contact from './page/contact/Contact';
-import LikeList from './page/user/LikeList';
 import AskListAdmin from './page/admin/AskListAdmin';
 import ProductList from './page/admin/ProductList';
 import ProducerList from './page/admin/ProducerList';
@@ -96,7 +95,7 @@ function Router() {
       <Layout>
         <Routes>
           {/* '작품보기' 메인 페이지 */}
-          <Route path="/" element={<Home />} />
+          <Route path="" element={<Home />} />
           {/* 로그인 페이지 */}
           <Route path="/signin" element={<SignIn />} />
           {/* 회원가입 페이지 */}
@@ -132,7 +131,7 @@ function Router() {
           <Route path="/ordercompleted-mobile" element={<OrderCompletedMobile />} />
           {/* '마이페이지' 메인 페이지 */}
           <Route path="/profile" element={<Profile />} />
-          <Route path="/MobileProfile/:name" element={<MobileProfile />} />
+          <Route path="/MobileProfile/:idx" element={<MobileProfile />} />
           <Route path="/EditProfile" element={<EditProfile />} />
           <Route path="/AddLink" element={<AddLink />} />
           <Route path="/EditLink" element={<EditLink />} />
@@ -163,8 +162,6 @@ function Router() {
           <Route path="/changePassword" element={<ChangePassword />} />
           {/* 개인정보 수정 페이지 */}
           <Route path="/changePhone" element={<ChangePhone />} />
-          {/* 찜한상품 페이지 */}
-          <Route path="/likelist" element={<LikeList />} />
           {/* 카카오 회원가입 페이지 */}
           <Route path="/kakao" element={<Kakao />} />
           {/* 네이버 회원가입 페이지 */}

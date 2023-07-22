@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import CheckBox from './CheckBox';
 
 interface Props {
   item: string;
@@ -7,16 +8,31 @@ interface Props {
   checked:boolean;
   setChecked: (idx:number,item:string)=>void;
 }
-function CategoryItem({item,idx,checked,setChecked}: Props) {
+function CheckCategoryItem({item,idx,checked,setChecked}: Props) {
   // const [checked, setChecked] = useState(false)
   return (
-  <ProductBox  onClick={()=>setChecked(idx,item)} home={item.includes('&')}>
-    <ProductItem checked={checked} >
-      {item}
-    </ProductItem>
-  </ProductBox>
+  <CheckboxItems  onClick={()=>setChecked(idx,item)}>
+    <CheckBox checked={checked} size={20}/>
+    <CheckBoxText>{item}</CheckBoxText>
+  </CheckboxItems>
   )
 }
+
+const CheckboxItems = styled.div`
+  display:flex;
+  align-items:center;
+  padding:5px;
+  width:33.3333%;
+`
+const CheckBoxText = styled.span`
+  font-family:'Pretendard Variable';
+  font-size: 14px;
+  margin-left: 7px;
+  font-weight: 410;
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
+`;
 
 const ProductItem = styled.div<{checked:boolean}>`
   color: ${(props)=>(props.checked === true? '#FFFFFF':'#000000')};
@@ -43,4 +59,4 @@ const ProductBox = styled.div<{home?:boolean }>`
 `;
 
 
-export default CategoryItem;
+export default CheckCategoryItem;

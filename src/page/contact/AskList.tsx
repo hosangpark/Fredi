@@ -72,32 +72,6 @@ function AskList() {
     }
   };
 
-  const handleAsk = () => {
-    setTotal(1);
-    setAskList([
-      {
-        idx: 1,
-        title: 'title1',
-        question: 'question1',
-        answer: '답변1',
-        created_time: date
-      },
-      {
-        idx: 2,
-        title: 'title2',
-        question: 'question2',
-        answer: null,
-        created_time: date
-      },
-      {
-        idx: 3,
-        title: 'title3',
-        question: 'question3',
-        answer: '답변1',
-        created_time: date
-      },
-    ])
-  };
   const date = new Date()
   useEffect(() => {
     getAskList();
@@ -116,6 +90,14 @@ function AskList() {
     <Container>
     <Title>1:1 Message</Title>
     <TopTextButton text='send Message' onClick={()=>navigate('/registerask')}/>
+        <UnderTitleBox>
+          <RowWrap>
+            <ListItemTitle> </ListItemTitle>
+            <SendMessageBox onClick={()=>navigate('/registerask')}>
+              send Message
+            </SendMessageBox>
+          </RowWrap>
+        </UnderTitleBox>
       {total === 0 ? (
         <NoDataBox>
           <>
@@ -125,14 +107,6 @@ function AskList() {
         </NoDataBox>
       ) : (
         <ListWrap>
-          <UnderTitleBox>
-            <RowWrap>
-              <ListItemTitle> </ListItemTitle>
-              <SendMessageBox onClick={()=>navigate('/registerask')}>
-                send Message
-              </SendMessageBox>
-            </RowWrap>
-          </UnderTitleBox>
           <Accordion
             value={isOpen}
             onChange={setOpen}

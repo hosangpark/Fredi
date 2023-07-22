@@ -43,15 +43,11 @@ const TabImage = styled.img`
 
 function BookMarkTab() {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
-  const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
 
   const [BookMarkList, setBookMarkList] = useState<SnsList[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
   const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);;
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
@@ -61,12 +57,13 @@ function BookMarkTab() {
     // console.log('ccccccccccc',category)
     const data = {
       page: 1,
+      keyword: keyword? keyword : ''
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list, total } = await APIBookMarkLikeList(data);
+      const { list } = await APIBookMarkLikeList(data);
       console.log('bbbbbbbokkkk',list)
       setBookMarkList(list);
       // console.log('shop', list, page);
@@ -77,31 +74,34 @@ function BookMarkTab() {
   
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('List') ?? '');
-    console.log('list불러옴',list)
-    // setCategory(categ);
-    setBookMarkList(list);
+    const list = JSON.parse(sessionStorage.getItem('BookMarkTabList') ?? '');
+    setBookMarkList(list)
     setHistory(true);
 
-    sessionStorage.removeItem('List');
-    
+    sessionStorage.removeItem('BookMarkTabList');
+    sessionStorage.removeItem('BookMarkTabSave');    
   };
 
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('List', JSON.stringify(BookMarkList));
+      sessionStorage.setItem('BookMarkTabList', JSON.stringify(BookMarkList));
+      sessionStorage.setItem('BookMarkTabSave', 'Save');
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
 
   useLayoutEffect(() => {
-      getproductList();
-  }, []);
+  const Save = sessionStorage.getItem('BookMarkTabSave');
+    if (Save) {
+      findHistory();
+    } else {
+      getproductList()
+    }
+  }, [searchParams]);
 
 
   useLayoutEffect(() => {
@@ -119,16 +119,8 @@ function BookMarkTab() {
   }, [BookMarkList]);
  
   const onSearch = () => {
-    navigate(
-      {
-        pathname: '/shop',
-        search: createSearchParams({
-          keyword: keyword,
-          category,
-        }).toString(),
-      },
-      { replace: true }
-    );
+    createSearchParams({keyword:keyword})
+    getproductList()
   };
 
 

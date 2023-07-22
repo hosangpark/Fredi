@@ -169,11 +169,11 @@ function Shop() {
   };
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
+    // const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
     const page = Number(sessionStorage.getItem('page'));
     const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    setShopList(list);
+    // setShopList(list);
     setHistory(true);
     setPage(page);
     setShowType(type);
@@ -188,7 +188,7 @@ function Shop() {
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      sessionStorage.setItem('shop', JSON.stringify(shopList));
+      // sessionStorage.setItem('shop', JSON.stringify(shopList));
       sessionStorage.setItem('page', String(page));
       sessionStorage.setItem('type', String(showType));
       sessionStorage.setItem('y', String(y ?? 0));

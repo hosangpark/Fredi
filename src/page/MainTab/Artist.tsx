@@ -28,8 +28,8 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
 import { ArtworkListItem } from '../../types/Types';
-import { APIArtistList, APILikeProduct, APIProductList } from '../../api/ProductAPI';
 import ArtistCard from '../../components/Shop/ArtistCard';
+import Nodata from '../../components/Product/NoData';
 
 
 function Artist({saveHistory,productList}
@@ -61,7 +61,7 @@ function Artist({saveHistory,productList}
   return (
     <Container>      
       <ProductListWrap>
-        {productList &&
+        {productList && productList.length > 0 ?
         productList.map((item,index)=>{
           return(
             <ArtistCard
@@ -71,6 +71,8 @@ function Artist({saveHistory,productList}
             />
           )
         })
+        :
+        <Nodata/>
         }
       </ProductListWrap>
       <AlertModal
