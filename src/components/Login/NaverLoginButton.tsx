@@ -7,7 +7,7 @@ import naverImage from '../../asset/image/sns_naver.png';
 function NaverLoginButton() {
   const naver = (window as any).naver;
   const NAVER_CLIENT_ID = 'iESKNVDDiIJZJakD29lF';
-  const NAVER_CALLBACK_URL = 'https://fredi.co.kr/naver';
+  const NAVER_CALLBACK_URL = 'https://fredi.dmonster.kr/naver';
   const naverRef = useRef<HTMLDivElement>(null);
 
   const onLogin = () => {

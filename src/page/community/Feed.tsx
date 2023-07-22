@@ -130,7 +130,13 @@ function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,
             <FeedCard
               item={item}
               key={item.idx}
-              onClick={(e) => saveHistory(e, item.idx)}
+              onClick={(e) => {
+                if(user.idx){
+                saveHistory(e, item.idx)
+              } else {
+                setShowLogin(true)
+              }
+              }}
               onClickLike={(e) => {
                 if (user.idx && onLikeProduct) {
                   e.stopPropagation();

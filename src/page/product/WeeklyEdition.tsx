@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Autoplay from 'embla-carousel-autoplay';
 import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
@@ -20,44 +20,26 @@ import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 import AppdownModal from '../../components/Modal/AppdownModal';
 import ProductMainList from '../../components/Product/ProductMainList';
-import { TImage, TProductListItem } from '../../types/Types';
+import { ArtworkListItem, TImage, WeeklyDetailsItem } from '../../types/Types';
 import { APIWeeklyDetails } from '../../api/ListAPI';
+import WeeklyListItem from '../../components/Product/WeeklyListItem';
 
 function WeeklyEdition() {
   const navigate = useNavigate();
-  const [productList, setProductList] = useState<TProductListItem[]>([]);
+  const location = useLocation()
+  const [WeeklyList, setWeeklyList] = useState<WeeklyDetailsItem>();
   const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
-  const [bannerListMobile, setBannerListMobile] = useState<TImage[]>([]);
-  const [history, setHistory] = useState(false);
-  const [showType, setShowType] = useState<1 | 2>(1);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [appdownModal, setAppdownModal] = useState(false);
 
-  const getBannerList = async () => {
-    var array1 = new Array(); //pc
-    var array2 = new Array(); //mobile
-    try {
-      const res = await APIGetBanner();
-      res.forEach((list:any) => {
-        if(list.type === 'P'){
-          array1.push(list);
-        } else {
-          array2.push(list);
-        }
-      });
-      // console.log(array1, array2);
-      setBannerList(array1);
-      setBannerListMobile(array2);
-    } catch (error) {
-      console.log('Banner', error);
-    }
-  };
 
   const getWeeklyDetails = async () => {
-
+    const data = {
+      idx : location.state
+    }
     try {
-      const res = await APIWeeklyDetails();
+      const res = await APIWeeklyDetails(data);
+      setWeeklyList(res)
       console.log('WWWWWWWWWWWWWWW', res);
 
     } catch (error) {
@@ -78,9 +60,9 @@ function WeeklyEdition() {
   //     const { list, total } = await APIProductList(data);
   //     setTotal(total);
   //     if (page === 1) {
-  //       setProductList((prev) => [...list]);
+  //       setWeeklyList((prev) => [...list]);
   //     } else {
-  //       setProductList((prev) => [...prev, ...list]);
+  //       setWeeklyList((prev) => [...prev, ...list]);
   //     }
   //     // console.log('product', list, page);
   //   } catch (error) {
@@ -95,8 +77,8 @@ function WeeklyEdition() {
   //   try {
   //     const res = await APILikeProduct(data);
   //     console.log(res);
-  //     const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-  //     setProductList(newList);
+  //     const newList = WeeklyList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
+  //     setWeeklyList(newList);
   //   } catch (error) {
   //     console.log(error);
   //   }
@@ -104,24 +86,15 @@ function WeeklyEdition() {
   const LinkHandler = (e:React.MouseEvent,title:string,idx?:number)=>{
     const y = globalThis.scrollY;
     sessionStorage.setItem('y', String(y ?? 0));
-    if(title === 'Fairs'){
-      navigate(`/FairContent/${idx}`)
-    } else if (title.includes('Home')) {
-      navigate(`/personalpage/${idx}`,{state:idx})
-    } else if (title.includes('Trending')) {
-      navigate(`/MobileProfile/${idx}`,{state:idx})
-    } else if (title.includes('Featured')) {
-      navigate(`/MobileProfile/${idx}`,{state:idx})
-    } else {
-      console.log(title,idx)
-    }
+
+    navigate(`/productdetails/${idx}`,{state:idx})
   }
 
 
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const y = globalThis.scrollY;
-    // sessionStorage.setItem('products', JSON.stringify(productList));
+    // sessionStorage.setItem('products', JSON.stringify(WeeklyList));
     // sessionStorage.setItem('page', String(page));
     // sessionStorage.setItem('type', String(showType));
     sessionStorage.setItem('y', String(y ?? 0));
@@ -133,7 +106,7 @@ function WeeklyEdition() {
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
-    if (productList.length > 0 && scrollY) {
+    if (WeeklyList && scrollY) {
       console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
@@ -143,14 +116,14 @@ function WeeklyEdition() {
       }, 50);
       sessionStorage.removeItem('y');
     }
-  }, [productList]);
+  }, [WeeklyList]);
 
   useLayoutEffect(() => {
 
     getWeeklyDetails()
-    getBannerList();
+    // getBannerList();
 
-  }, [productList]);
+  }, []);
 
 
 
@@ -158,7 +131,7 @@ function WeeklyEdition() {
     <Container id="productContainer">
       <ProductListWrap>
         <WeeklyTitle>Weekly Edition</WeeklyTitle>
-        <ProductMainList
+        <WeeklyListItem
         LinkHandler={LinkHandler}
         title={'May 1st'}
         titlesize={18}
@@ -168,40 +141,10 @@ function WeeklyEdition() {
         naviArrow={false}
         scrollbar={false}
         aspect={348/432}
-        ProducList={bannerListMobile}
+        ProducList={WeeklyList&& WeeklyList.artwork_data}
         paddingnum={innerWidth <= 768? 0:50}
         marginT={innerWidth <= 768? 60:130}
         marginB={innerWidth <= 768? 20:65}
-        />
-        <ProductMainList
-        LinkHandler={LinkHandler}
-        title={'April 4th'}
-        titlesize={18}
-        ProductViews={innerWidth <= 768? 2.3 : 5}
-        // naviArrow = {innerWidth <= 768? false : true}
-        // scrollbar = {innerWidth <= 768? false : true}
-        naviArrow={false}
-        scrollbar={false}
-        aspect={348/432}
-        ProducList={bannerListMobile}
-        paddingnum={innerWidth <= 768? 0:50}
-        marginT={innerWidth <= 768? 60:130}
-        marginB={innerWidth <= 768? 20:65}
-        />
-        <ProductMainList
-        LinkHandler={LinkHandler}
-        title={'April 3th'}
-        titlesize={18}
-        ProductViews={innerWidth <= 768? 2.3 : 5}
-        // naviArrow = {innerWidth <= 768? false : true}
-        // scrollbar = {innerWidth <= 768? false : true}
-        naviArrow={false}
-        scrollbar={false}
-        aspect={348/432}
-        paddingnum={innerWidth <= 768? 0:50}
-        marginT={innerWidth <= 768? 60:130}
-        marginB={innerWidth <= 768? 21:65}
-        ProducList={bannerListMobile}
         />
         
       </ProductListWrap>

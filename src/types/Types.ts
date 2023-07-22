@@ -568,3 +568,15 @@ export type FollowCardType = {
   isBookmark:boolean;
   user:UserType
 }
+
+export type WeeklyDetailsItem = {
+  idx: number,
+  name: string,
+  month: number,
+  weeknum: number,
+  week: string,
+  created_time: string,
+  updated_time: string | null,
+  deleted_time: string | null,
+  artwork_data: ArtworkListItem[]
+}

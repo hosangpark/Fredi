@@ -148,7 +148,7 @@ function Router() {
 
           <Route path="/ArtistProducts/:name" element={<ArtistProducts />}/>
 
-          <Route path="/WeeklyEdition" element={<WeeklyEdition />}/>
+          <Route path="/WeeklyEdition/:idx" element={<WeeklyEdition />}/>
           {/* <Route path="Artwork" element={<Artwork />} />
           <Route path="Artist" element={<Artist />} /> */}
           <Route path="/FairContent/:idx" element={<FairContent />} />

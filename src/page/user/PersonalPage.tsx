@@ -82,7 +82,12 @@ function PersonalPage() {
       };
       try {
         const res = await APIArtistFollowAdd(data);
-        console.log(res);
+        if(res.message == '좋아요 완료'){
+          setAlertType('팔로우 완료')
+        } else {
+          setAlertType('팔로우 해제')
+        }
+        setShowAlertModal(true)
         getSnsDetails()
       } catch (error) {
         console.log(error);
@@ -99,7 +104,8 @@ function PersonalPage() {
       };
       try {
         const res = await APISnsLike(data);
-        console.log(res);
+        setAlertType(res.message)
+        setShowAlertModal(true)
         getSnsDetails()
       } catch (error) {
         console.log(error);
@@ -116,7 +122,12 @@ function PersonalPage() {
       };
       try {
         const res = await APIBookMarkLike(data);
-        console.log(res);
+        if(res.message == '좋아요 완료'){
+          setAlertType('북마크 완료')
+        } else {
+          setAlertType('북마크 해제')
+        }
+        setShowAlertModal(true)
         getSnsDetails()
       } catch (error) {
         console.log(error);
@@ -381,15 +392,13 @@ function PersonalPage() {
           setVisible={setShowAlertModal}
           onClick={() => {
             if(
-              alertType == '이미 신고되었습니다.' || 
-              alertType == '신고사유를 선택해주세요.' || 
-              alertType == '신고내용을 입력해주세요.' 
+              alertType == '회원가입 후 이용 가능합니다.'
             ){
-              setShowAlertModal(false);
-            } else {
               removeHistory();
               navigate('/signin');
-
+            } else {
+              setShowAlertModal(false);
+              
             }
           }}
           text={alertType}

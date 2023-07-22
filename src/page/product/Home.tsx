@@ -235,7 +235,7 @@ function Home() {
     } else if (title.includes('Home')) {
       navigate(`/personalpage/${idx}`,{state:idx});
     } else if (title.includes('Weekly')) {
-      navigate(`/WeeklyEdition`)
+      navigate(`/WeeklyEdition/${idx}`,{state:idx})
     } else if (title.includes('Trending')) {
       navigate(`/MobileProfile/${idx}`,{state:idx})
     } else if (title.includes('Featured')) {

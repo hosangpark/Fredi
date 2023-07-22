@@ -89,7 +89,7 @@ function BottomNav() {
         onClick={() => {
           removeHistory();
           navigate(`/MobileProfile/${user.idx}`,{state:user.idx});
-            // console.log(user.idx)
+          // console.log(user.idx)
         }}
       >
         <MenuButtonImage src={home05} width={29}/>

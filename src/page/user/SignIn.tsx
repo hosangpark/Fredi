@@ -8,7 +8,7 @@ import { UserContext } from '../../context/user';
 import { removeHistory } from '../../components/Layout/Header';
 
 const JAVASCRIPT_KEY = '1abc385bc918f8e46dfb85b5128a89d5';
-const REDIRECT_URI = 'https://fredi.co.kr/kakao';
+const REDIRECT_URI = 'https://fredi.dmonster.kr/kakao';
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${JAVASCRIPT_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
 function SignIn() {

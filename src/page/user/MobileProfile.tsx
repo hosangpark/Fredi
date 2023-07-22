@@ -124,7 +124,7 @@ function MobileProfile() {
                   <LinkImageWrap>
                     <LinksImage src={linkImage}/>
                   </LinkImageWrap>
-                  <LinkItemBox onClick={() => window.open(`${item.url}`, '_blank')}>
+                  <LinkItemBox onClick={() => window.open(`https://${item.url}`, '_blank')}>
                     <LinkTitleBox>
                       <LinkName>
                         {item.title}
@@ -208,9 +208,11 @@ function MobileProfile() {
       <WorksLengthBox>
         {SnsList.length}works
       </WorksLengthBox>
+      {user.idx == userDetails?.idx &&
       <UploadButton onClick={()=>navigate('/AddPhoto')}>
         UpLoad
       </UploadButton>
+      }
       </FlexBox>
       <ProductListWrap>
         {SnsList.length > 0 &&
@@ -229,7 +231,7 @@ function MobileProfile() {
             <PlusH></PlusH>
             <PlusV></PlusV>
           </PlusButton>
-          {SnsList.length == 0 &&
+          {SnsList.length == 0 && user.idx == userDetails?.idx &&
           <PlusImage onClick={()=>navigate('/AddPhoto')} height={innerWidth}>
             <PlusH></PlusH>
             <PlusV></PlusV>

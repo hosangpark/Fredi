@@ -41,8 +41,6 @@ function ProductDetails() {
   const [initcar, setInitCar] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState(false);
   const [height, setHeight] = useState(0);
-  const [imageIdx, setImageIdx] = useState(0);
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [value, setValue] = useState(); // 현재 선택값
   const [option, setOption] = useState<any>(); // 기존 옵션 리스트
   const [addOption, setAddOption] = useState<any>([]); // 선택 누적 리스트
@@ -51,6 +49,7 @@ function ProductDetails() {
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [alertType, setAlertType] = useState<string>('')
   const ref = useRef<SheetRef>();
 
 
@@ -89,10 +88,14 @@ function ProductDetails() {
       try {
         const res = await APILikeProduct(data);
         getProductDetails()
+        console.log(res)
+        setAlertType(res.message)
+        setShowLogin(true)
       } catch (error) {
         console.log(error);
       }
     } else {
+      setAlertType("회원가입 후 이용 가능합니다.")
       setShowLogin(true);
     }
 
@@ -164,7 +167,9 @@ function ProductDetails() {
       return '<span class="' + className + '"><img src="' + array[index] +'"/></span>';
     },
   };
-  
+  const Click = () => {
+    
+  }
 
   useEffect(() => {
     console.log('addOption', addOption);
@@ -239,6 +244,7 @@ function ProductDetails() {
                       //   state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
                       // });
                     } else {
+                      setAlertType("회원가입 후 이용 가능합니다.")
                       setShowLogin(true);
                     }
                   }}
@@ -307,6 +313,7 @@ function ProductDetails() {
                     if (user.idx) {
                       setShowContact(true);
                     } else {
+                      setAlertType("회원가입 후 이용 가능합니다.")
                       setShowLogin(true);
                     }
                   }}
@@ -321,13 +328,14 @@ function ProductDetails() {
         <RightBox>
           <SwiperWrap>
             <Swiper 
+              onMouseEnter={Click}
               // modules={[Navigation,Pagination]}
               // mousewheel={true}
               modules={[Pagination,Scrollbar,FreeMode,Thumbs]}
               thumbs={{ swiper: thumbsSwiper }}
               scrollbar={innerWidth <= 768? false : true}
               loop={true}
-              mousewheel
+              mousewheel={true} 
               // onSlideChange={() => {/*...*/}}
               // allowTouchMove={false}
               // noSwiping={false}
@@ -393,11 +401,15 @@ function ProductDetails() {
           visible={showLogin}
           setVisible={setShowLogin}
           onClick={() => {
-            removeHistory();
-            setShowLogin(false);
-            navigate('/signin');
+            if(alertType == "회원가입 후 이용 가능합니다."){
+              removeHistory();
+              setShowLogin(false);
+              navigate('/signin');
+            }else{
+              setShowLogin(false);
+            }
           }}
-          text="회원가입 후 이용 가능합니다."
+          text={alertType}
         />
         <ContactModal
           visible={ShowContact}

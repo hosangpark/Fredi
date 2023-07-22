@@ -30,7 +30,7 @@ function ContactModal({
         </Xheader>
         {contactUrl.map((item,index) => {
           return(
-        <LayoutWrap key={index}  href={'https://'+item.url}>
+        <LayoutWrap key={index} onClick={() => window.open(`https://${item.url}`, '_blank')}>
           <LinkImageWrap>
             <LinksImage src={linkImage}/>
           </LinkImageWrap>
@@ -75,7 +75,7 @@ const Xheader = styled.div`
   justify-content:flex-end;
   align-items:center;
 `
-const LayoutWrap = styled.a`
+const LayoutWrap = styled.div`
   border-top:0.5px solid #CBCBCB;
   text-decoration:none;
   display: flex;

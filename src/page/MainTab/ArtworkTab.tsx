@@ -8,7 +8,8 @@ import { ArtworkListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
-import SearchBox from '../../components/Product/SearchBox';;
+import SearchBox from '../../components/Product/SearchBox';import AlertModal from '../../components/Modal/AlertModal';
+;
 
 
 function ArtworkTab() {
@@ -23,6 +24,8 @@ function ArtworkTab() {
   const [category, setCategory] = useState<string>('1');
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
+  const [alertType, setAlertType] = useState<string>('')
+  const [ShowAlertModal, setShowAlertModal] = useState(false);
 
 
   const { user } = useContext(UserContext);
@@ -55,9 +58,11 @@ function ArtworkTab() {
     };
     try {
       const res = await APILikeProduct(data);
-      console.log(res);
-      const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-      setProductList(newList);
+      setAlertType(res.message)
+      setShowAlertModal(true)
+      getproductList()
+      // const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
+      // setProductList(newList);
     } catch (error) {
       console.log(error);
     }
@@ -174,6 +179,22 @@ function ArtworkTab() {
       </TabBox>
     <Artwork saveHistory={saveHistory} productList={productList} onLikeProduct={onLikeProduct} CategoryClick={e=>setCategory(e)}
     selectCategory={category}/>
+    <AlertModal
+      visible={ShowAlertModal}
+      setVisible={setShowAlertModal}
+      onClick={() => {
+        if(
+          alertType == '회원가입 후 이용 가능합니다.'
+        ){
+          // removeHistory();
+          navigate('/signin');
+        } else {
+          setShowAlertModal(false);
+          
+        }
+      }}
+      text={alertType}
+    />
 </Container>   
   );
 }
