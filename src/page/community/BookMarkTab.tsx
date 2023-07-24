@@ -45,27 +45,26 @@ function BookMarkTab() {
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
-
   const [BookMarkList, setBookMarkList] = useState<SnsList[]>([]);
-  const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);;
   const [history, setHistory] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
   const [keyword, setKeyword] = useState<string>(keywordParams);
+  const interSectRef = useRef(null);
   
-  
-  const getproductList = async () => {
+  const getproductList = async (page:number) => {
     // console.log('ccccccccccc',category)
     const data = {
-      page: 1,
+      page: page,
       keyword: keyword? keyword : ''
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list } = await APIBookMarkLikeList(data);
-      console.log('bbbbbbbokkkk',list)
+      const { list, total } = await APIBookMarkLikeList(data);
       setBookMarkList(list);
+      setTotal(total)
       // console.log('shop', list, page);
     } catch (error) {
       console.log(error);
@@ -75,9 +74,13 @@ function BookMarkTab() {
 
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('BookMarkTabList') ?? '');
+    const page = Number(sessionStorage.getItem('BookMarkPage'));
+
     setBookMarkList(list)
     setHistory(true);
-
+    setPage(page);
+    
+    sessionStorage.removeItem('BookMarkPage');
     sessionStorage.removeItem('BookMarkTabList');
     sessionStorage.removeItem('BookMarkTabSave');    
   };
@@ -88,18 +91,42 @@ function BookMarkTab() {
     if (div) {
       const y = globalThis.scrollY;
       sessionStorage.setItem('BookMarkTabList', JSON.stringify(BookMarkList));
+      sessionStorage.setItem('BookMarkPage', String(page));
       sessionStorage.setItem('BookMarkTabSave', 'Save');
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
 
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+  useEffect(() => {
+    if (page > 1) getproductList(page);
+  }, [page]);
+
   useLayoutEffect(() => {
   const Save = sessionStorage.getItem('BookMarkTabSave');
     if (Save) {
       findHistory();
     } else {
-      getproductList()
+      getproductList(1)
     }
   }, [searchParams]);
 
@@ -120,7 +147,7 @@ function BookMarkTab() {
  
   const onSearch = () => {
     createSearchParams({keyword:keyword})
-    getproductList()
+    getproductList(1)
   };
 
 
@@ -136,10 +163,10 @@ function BookMarkTab() {
             }
           }}
           categoryList={CategoryList}
-          category={category}
+          category={'1'}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
-          onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
+          onChangeCategory={(value: string) => {
             // chageCategory(value);
           }}
         />
@@ -158,7 +185,7 @@ function BookMarkTab() {
             <TabImage src={bookMarkImage}/></div>
           </UnderLineTab>
         </TabButtonWrap>
-        <BookMark saveHistory={saveHistory} productList={BookMarkList} CategoryClick={e=>setCategory(e)}/>
+        <BookMark saveHistory={saveHistory} productList={BookMarkList}/>
       </div>
     </Container>
   );

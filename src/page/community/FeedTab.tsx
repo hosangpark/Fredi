@@ -44,16 +44,17 @@ function FeedTab() {
   const categoryParams = (searchParams.get('category')) ?? '1';
   const [showLogin, setShowLogin] = useState(false);
   const [SnsList, setSnsList] = useState<SnsList[]>([]);
+  const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [category, setCategory] = useState<string>(categoryParams);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
+  const interSectRef = useRef(null);
 
-
-  const getproductList = async () => {
+  const getproductList = async (page:number) => {
     // console.log('ccccccccccc',category)
     const data = {
-      page: 1,
+      page: page,
       category: category,
       keyword: keyword? keyword : ''
     };
@@ -74,14 +75,16 @@ function FeedTab() {
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('FeedTabList') ?? '');
     const categ = sessionStorage.getItem('FeedTabCategory');
-
-    // setCategory(categ);
-    setSnsList(list);
+    const page = Number(sessionStorage.getItem('FeedTabPage'));
+    setHistory(true);
     if(categ){
       setCategory(categ)
     }
+    setPage(page);
+    setSnsList(list);
     sessionStorage.removeItem('FeedTabList');
     sessionStorage.removeItem('FeedTabCategory');
+    sessionStorage.removeItem('FeedTabPage');
   };
 
 
@@ -91,20 +94,45 @@ function FeedTab() {
       const y = globalThis.scrollY;
       sessionStorage.setItem('FeedTabList', JSON.stringify(SnsList));
       sessionStorage.setItem('FeedTabCategory', category);
+      sessionStorage.setItem('FeedTabPage', String(page));
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
 
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+  useEffect(() => {
+    if (page > 1) getproductList(page);
+  }, [page]);
+
   useLayoutEffect(() => {
     const categ = sessionStorage.getItem('FeedTabCategory');
-    if (categ) {
+    const page = Number(sessionStorage.getItem('FeedTabPage'));
+    if (page) {
       findHistory();
     } else {
-      getproductList();
+      setPage(1);
+      getproductList(1);
     }
   }, [searchParams,category]);
-
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -123,7 +151,7 @@ function FeedTab() {
 
   const onSearch = () => {
     createSearchParams({keyword:keyword})
-    getproductList()
+    getproductList(1)
   };
 
 

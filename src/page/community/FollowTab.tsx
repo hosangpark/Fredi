@@ -46,28 +46,36 @@ function FollowTab() {
 
   const [category, setCategory] = useState<string>('1');
   const [history, setHistory] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [FollowArtistList, setFollowArtistList] = useState<FollowArtistListType[]>([]);
   const [LikeSnsList, setLikeSnsList] = useState<FollowCardType[]>([]);
+  const interSectRef = useRef(null);
+
 
   const findHistory = () => {
     const list1 = JSON.parse(sessionStorage.getItem('FollowTabArtist') ?? '');
     const list2 = JSON.parse(sessionStorage.getItem('FollowTabList') ?? '');
+    const page = Number(sessionStorage.getItem('FollowTabPage'));
     // setCategory(categ);
     setFollowArtistList(list1)
     setLikeSnsList(list2)
+    setPage(page);
     setHistory(true);
 
     sessionStorage.removeItem('FollowTabSave');
     sessionStorage.removeItem('FollowTabArtist');
     sessionStorage.removeItem('FollowTabList');
   };
+
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
       sessionStorage.setItem('FollowTabArtist', JSON.stringify(FollowArtistList));
       sessionStorage.setItem('FollowTabList', JSON.stringify(LikeSnsList));
+      sessionStorage.setItem('FollowTabPage', String(page));
       sessionStorage.setItem('FollowTabSave', 'Save');
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/personalpage/${idx}`,{state:idx});
@@ -90,22 +98,57 @@ function FollowTab() {
     }
   };
 
-  const getLikeSnsData = async () => {
+  const getLikeSnsData = async (page:number) => {
     const data = {
-      page: 1,
+      page: page,
       keyword:keyword? keyword : ""
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list } = await APIFollowersProductList(data);
+      const { list,total } = await APIFollowersProductList(data);
       setLikeSnsList(list);
-      console.log(list)
+      setTotal(total);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+  useEffect(() => {
+    if (page > 1) getLikeSnsData(page);
+  }, [page]);
+
+  useLayoutEffect(() => {
+    const Save = sessionStorage.getItem('FollowTabSave');
+    const page = Number(sessionStorage.getItem('FeedTabPage'));
+    if (Save) {
+      findHistory();
+    } else {
+      setPage(1);
+      getArtistData();
+      getLikeSnsData(1);
+    }
+  }, [searchParams]);
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -123,18 +166,8 @@ function FollowTab() {
 
   const onSearch = () => {
     createSearchParams({keyword:keyword})
-    getLikeSnsData()
+    getLikeSnsData(1)
   };
-
-  useLayoutEffect(() => {
-  const Save = sessionStorage.getItem('FollowTabSave');
-    if (Save) {
-      findHistory();
-    } else {
-      getArtistData();
-      getLikeSnsData();
-    }
-  }, [searchParams]);
 
 
   return (

@@ -38,7 +38,7 @@ function PersonalPage() {
   const { user } = useContext(UserContext);
   const [Snsdetails, setSnsdetails] = useState<SnsdetailsType>();
   const [ShowAlertModal, setShowAlertModal] = useState(false);
-  const [addOption, setAddOption] = useState<any>([]); // 선택 누적 리스트
+  const [alertType, setAlertType] = useState<string>('')
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [reason, setReason] = useState<string | null>('');
   const [reasonText, setReasonText] = useState<string>('');
@@ -47,11 +47,9 @@ function PersonalPage() {
   const [ReportType, setReportType] = useState(1)
   const [ReportNumber, setReportNumber] = useState<number>(0)
   const [ ip , setIp ] = useState();
-  const [alertType, setAlertType] = useState<string>('')
 
 
   const leftBoxRef = useRef<HTMLDivElement>(null);
-  const Leftheight = leftBoxRef.current ? leftBoxRef.current?.offsetHeight : 0;
   const [embla, setEmbla] = useState<Embla | null>(null);
   const TRANSITION_DURATION = 200;
   useAnimationOffsetEffect(embla, TRANSITION_DURATION);

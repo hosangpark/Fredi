@@ -1,12 +1,12 @@
 import React,{useState,useRef} from 'react';
 import styled from 'styled-components';
 
-function Nodata() { 
+function Nodata({NoData}:{NoData?:boolean}) { 
   return (
     <ContainerWrap>
       <NodataBox>
         <NodataText>
-          검색결과가 없습니다.
+          {NoData? '데이터를 불러올 수 없습니다.' : '검색결과가 없습니다.'}
         </NodataText>
       </NodataBox>
     </ContainerWrap>
@@ -14,6 +14,7 @@ function Nodata() {
 }
 
 const ContainerWrap = styled.div`
+  padding-top:50px;
   flex:1;
 `;
 const NodataBox = styled.div`

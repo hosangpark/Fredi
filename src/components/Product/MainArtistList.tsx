@@ -1,4 +1,4 @@
-import React,{useState,useRef} from 'react';
+import React,{useState,useRef, useContext} from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 // Import Swiper styles
@@ -11,6 +11,9 @@ import 'swiper/css/scrollbar';
 import profileImage from '../../asset/image/Profile.svg';
 import rightarrowIcon from '../../asset/image/ico_next_mobile.png'
 import { ArtistList } from '../../types/Types';
+import AlertModal from '../Modal/AlertModal';
+import { UserContext } from '../../context/user';
+import { APIArtistFollowAdd } from '../../api/ProductAPI';
 
 function MainArtistList({
   // item,
@@ -32,7 +35,8 @@ function MainArtistList({
   aspect,
   paddingnum,
   marginT,
-  marginB
+  marginB,
+  UserFollow
 }:{
   LinkHandler:(e:React.MouseEvent, title:string, idx?:number)=>void
   title:string
@@ -48,10 +52,14 @@ function MainArtistList({
   paddingnum?:number
   marginT?:number
   marginB?:number
+  UserFollow:(e:number)=>void
 }) {
 
   const navigate = useNavigate();
-  const [follow,followed] = useState(false)
+  const [ShowAlertModal, setShowAlertModal] = useState(false);
+  const [alertType, setAlertType] = useState<string>('')
+
+
  
   return (
     <ContainerWrap>
@@ -62,12 +70,6 @@ function MainArtistList({
           <ArrowRightIcon src={rightarrowIcon}/>
         }
       </TitleBox>
-      {/* <StyledButton ref={prevRef}>
-        <Image src={leftarrowIcon} alt="prev" />
-      </StyledButton>
-      <StyledButton ref={nextRef}>
-        <Image src={rightarrowIcon} alt="next" />
-      </StyledButton> */}
       <Swiper
         // install Swiper modules
         modules={[Navigation, Pagination, Scrollbar]}
@@ -99,7 +101,7 @@ function MainArtistList({
                     {/* {item.idx} */}
                     More Artis Name More Artis Name More Artis Name
                   </ProductTitleText>
-                  <FollowButtonBox follow={follow} style={{marginRight:0}} onClick={()=>followed(!follow)}>
+                  <FollowButtonBox follow={item.isLike? item.isLike :false} style={{marginRight:0}} onClick={()=>UserFollow(item.idx)}>
                     Follow
                   </FollowButtonBox>
                   {/* <ProductSubText>
@@ -111,25 +113,25 @@ function MainArtistList({
           )
         })}
       </Swiper>
+      <AlertModal
+        visible={ShowAlertModal}
+        setVisible={setShowAlertModal}
+        onClick={() => {
+          if(
+            alertType == '회원가입 후 이용 가능합니다.'
+          ){
+            navigate('/signin');
+          } else {
+            setShowAlertModal(false);
+          }
+        }}
+        text={alertType}
+      />
     </ContainerWrap>
   );
 }
 
-const ProductBox = styled.div<{ isLast: boolean; showType: 1 | 2 }>`
-  position: relative;
-  display: column;
-  width: 24.25%;
-  margin-bottom: 110px;
-  margin-right: ${(props) => (props.isLast ? 0 : 1)}%;
-  cursor: pointer;
-  overflow: hidden;
 
-  @media only screen and (max-width: 768px) {
-    width: ${(props) => (props.showType === 1 ? 100 : 50)}%;
-    margin-right: 0;
-    margin-bottom: 50px;
-  }
-`;
 const FollowButtonBox = styled.span<{follow:boolean}>`
 font-family:'Pretendard Variable';
   padding:5px 25px;

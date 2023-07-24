@@ -168,6 +168,7 @@ export type ArtistList = {
   email:string,
   image_idx:number;
   image:TImage
+  isLike?:boolean
 }
 
 export type FeaturedListType = {

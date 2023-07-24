@@ -33,11 +33,10 @@ import { APIProductList } from '../../api/ProductAPI';
 import FeedCard from '../../components/Shop/FeedCard';
 
 
-function BookMark({saveHistory,onLikeProduct,CategoryClick,productList,selectCategory}
+function BookMark({saveHistory,onLikeProduct,productList,selectCategory}
   :
   {saveHistory:(e:React.MouseEvent, idx: number)=>void,
   onLikeProduct?:(e:number)=>void,
-  CategoryClick?:(e:any)=>void,
   productList?:SnsList[],
   selectCategory?:string}) {
   const navigate = useNavigate();

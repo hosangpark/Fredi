@@ -396,8 +396,7 @@ function AddPhoto() {
 
 const Container = styled.div`
   /* display: flex; */
-  max-width:768px;
-  flex: 1;
+  width:768px;
   min-height: calc(100vh - 80px);
   margin:0 auto;
   /* flex-direction: row; */
@@ -498,7 +497,6 @@ const PlusV = styled.div`
 const MainUploadImageItem = styled.img<{height:number}>`
   width: ${props => props.height > 768 ? 768 : props.height}px;
   height: ${props => props.height > 768 ? 768 : props.height}px;
-  margin-right:10px;
   object-fit:contain;
 `
 const UploadImageItemWrap = styled.div`

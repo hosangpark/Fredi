@@ -76,25 +76,39 @@ function ArtistTab() {
   const [showLogin, setShowLogin] = useState(false);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
+  const [page, setPage] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
+  const interSectRef = useRef(null);
 
-
-  const getDesignerList = async()=> {
+  const getDesignerList = async(page:number)=> {
     const data = {
-      page: 1,
+      page: page,
       keyword:keyword? keyword : ''
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list } = await APIArtistList(data);
+      const { list , total } = await APIArtistList(data);
       setArtistList(list);
-      console.log('arrrrrrr',list)
-      
+      setTotal(total);
 
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const findHistory = () => {
+    const list = JSON.parse(sessionStorage.getItem('ArtistList') ?? '');
+    const page = Number(sessionStorage.getItem('ArtistPage'));
+    // setCategory(categ);
+
+    setArtistList(list);
+    setPage(page);
+    setHistory(true);
+
+    sessionStorage.removeItem('ArtistPage');
+    sessionStorage.removeItem('ArtistList');
   };
 
   const saveHistory = (e: React.MouseEvent, name: string , idx:number) => {
@@ -103,12 +117,45 @@ function ArtistTab() {
       // console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
       sessionStorage.setItem('y', String(y ?? 0));
-      // sessionStorage.setItem('shop', JSON.stringify(shopList));
-      // sessionStorage.setItem('page', String(page));
-      // sessionStorage.setItem('type', String(showType));
+      sessionStorage.setItem('ArtistList', JSON.stringify(artistList));
+      sessionStorage.setItem('ArtistPage', String(page));
     }
     navigate(`/ArtistProducts/${name}`,{ state:{name:name,idx:idx} });
   };
+
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+  useLayoutEffect(() => {
+    const page = Number(sessionStorage.getItem('ArtistPage'));
+    if (page){
+      findHistory();
+    } else {
+      console.log('getlist')
+      setPage(1);
+      getDesignerList(1);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (page > 1) getDesignerList(page);
+  }, [page]);
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -124,14 +171,9 @@ function ArtistTab() {
     }
   }, [artistList]);
 
-  useEffect(() => {
-    getDesignerList();
-  }, []);
-  
-
   const onSearch = () => {
     createSearchParams({keyword:keyword})
-    getDesignerList()
+    getDesignerList(1)
   };
 
   return (
@@ -151,7 +193,7 @@ function ArtistTab() {
           category={'1'}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
-          onChangeCategory={(value: '1' | '2' | '3' | '4' | '5' | '6') => {
+          onChangeCategory={(value: string) => {
             // chageCategory(value);
           }}
         />

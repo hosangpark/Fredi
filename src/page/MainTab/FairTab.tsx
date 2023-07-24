@@ -26,18 +26,15 @@ import Nodata from '../../components/Product/NoData';
 
 function FairTab() {
   const navigate = useNavigate();
-  const browserHistory = createBrowserHistory();
-  const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
   const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
 const { type, idx } = useParams();
   const [FairList, setFairList] = useState<FairList[]>([]);
   const [page, setPage] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
   const [category, setCategory] = useState<'1' | '2' | '3' | '4' | '5' | '6'>(categoryParams);
   const [showLogin, setShowLogin] = useState(false);
-  const [bannerList, setBannerList] = useState<TImage[]>([]);
-  const [bannerListMobile, setBannerListMobile] = useState<TImage[]>([]);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
 
@@ -46,22 +43,40 @@ const { type, idx } = useParams();
 
 
 
-    const getFairsList = async () => {
+  const getFairsList = async (page:number) => {
     const data = {
-      page: 1,
+      page: page,
       category: '',
       keyword: keyword? keyword : "",
     };
     try {
+      if (history) {
+        return setHistory(false);
+      }
       const { list, total } = await APIFairList(data);
       setFairList(list);
+      setTotal(total);
+      if (page === 1) {
+        setFairList((prev) => [...list]);
+      } else {
+        setFairList((prev) => [...prev, ...list]);
+      }
       console.log('productproductproduct', list);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const findHistory = () => {
+    const list = JSON.parse(sessionStorage.getItem('FairList') ?? '');
+    const page = Number(sessionStorage.getItem('FairPage'));
+    setFairList(list);
+    setHistory(true);
+    setPage(page);
 
+    sessionStorage.removeItem('FairList');
+    sessionStorage.removeItem('FairPage');
+  };
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
@@ -72,32 +87,51 @@ const { type, idx } = useParams();
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
 
-  
-
-  // const findHistory = () => {
-  //   const list = JSON.parse(sessionStorage.getItem('shop') ?? '');
-  //   const page = Number(sessionStorage.getItem('page'));
-  //   const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
-
-  //   setFairList(list);
-  //   setHistory(true);
-  //   setPage(page);
-  //   setShowType(type);
-
-  //   sessionStorage.removeItem('shop');
-  //   sessionStorage.removeItem('page');
-  //   sessionStorage.removeItem('type');
-  // };
-  
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
+      sessionStorage.setItem('FairList', JSON.stringify(FairList));
+      sessionStorage.setItem('FairPage', String(page));
       sessionStorage.setItem('FairTab_y', String(y ?? 0));
       navigate(`/FairContent/${idx}`);
     }
   };
+
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+  useLayoutEffect(() => {
+    const page = Number(sessionStorage.getItem('page'));
+    console.log('카테고리', category);
+    if (page) {
+      findHistory();
+    } else {
+      setPage(1);
+      getFairsList(1);
+    }
+  }, [searchParams, category]);
+
+  useEffect(() => {
+    if (page > 1) getFairsList(page);
+  }, [page]);
 
 
   useLayoutEffect(() => {
@@ -114,14 +148,11 @@ const { type, idx } = useParams();
     }
   }, [FairList]);
 
-  
-  useEffect(() => {
-    getFairsList()
-  }, []);
+
 
   const onSearch = () => {
     createSearchParams({keyword:keyword})
-    getFairsList()
+    getFairsList(page)
   };
 
   return (

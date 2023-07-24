@@ -41,15 +41,16 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
   const [LikeSnsList, setLikeSnsList] = useState<LikeSnsListType[]>([]);
   const [showLogin, setShowLogin] = useState(false);
   const [history, setHistory] = useState(false);
-
+  const [page, setPage] = useState<number>(1);
+  const interSectRef = useRef(null);
 
   const { user } = useContext(UserContext);
 
 
 
-  const getLikeSnsData = async () => {
+  const getLikeSnsData = async (page:number) => {
     const data = {
-      page: 1,
+      page: page,
     };
     try {
       if (history) {
@@ -64,12 +65,14 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
 
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('LikeSnsList') ?? '');
-
-    setLikeSnsList(list)
+    const page = Number(sessionStorage.getItem('LikeSnsPage'));
     setHistory(true);
+    setPage(page);
+    setLikeSnsList(list)
 
-    sessionStorage.removeItem('LikeSnsSave');
+    sessionStorage.removeItem('LikeSnsPage');
     sessionStorage.removeItem('LikeSnsList');
+    sessionStorage.removeItem('LikeSnsSave');
   };
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
@@ -77,12 +80,38 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
     if (div) {
       const y = globalThis.scrollY;
       sessionStorage.setItem('LikeSnsList', JSON.stringify(LikeSnsList));
+      sessionStorage.setItem('LikeSnsPage', String(page));
       sessionStorage.setItem('LikeSnsSave','Save')
       sessionStorage.setItem('y', String(y ?? 0));
 
       navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
+  
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+
+  useEffect(() => {
+    if (page > 1) getLikeSnsData(page);
+  }, [page]);
+
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -104,7 +133,7 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
     if (Save) {
       findHistory();
     } else {
-      getLikeSnsData();
+      getLikeSnsData(1);
     }
   }, []);
   

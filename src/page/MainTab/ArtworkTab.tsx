@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { CategoryList } from '../../components/List/List';
 import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
@@ -20,22 +20,23 @@ function ArtworkTab() {
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
   const pathName = location.pathname.split('/')[1];
+  const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [category, setCategory] = useState<string>('1');
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [alertType, setAlertType] = useState<string>('')
   const [ShowAlertModal, setShowAlertModal] = useState(false);
-
+  const interSectRef = useRef(null);
 
   const { user } = useContext(UserContext);
 
 
 
-  const getproductList = async () => {
+  const getproductList = async (page:number) => {
     console.log('ccccccccccc',category)
     const data = {
-      page: 1,
+      page: page,
       category: category,
       keyword:keyword? keyword : ""
     };
@@ -60,9 +61,8 @@ function ArtworkTab() {
       const res = await APILikeProduct(data);
       setAlertType(res.message)
       setShowAlertModal(true)
-      getproductList()
-      // const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-      // setProductList(newList);
+      const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
+      setProductList(newList);
     } catch (error) {
       console.log(error);
     }
@@ -79,48 +79,67 @@ function ArtworkTab() {
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
 
+  const findHistory = () => {
+    const list = JSON.parse(sessionStorage.getItem('ArtworkTabList') ?? '');
+    const categ = sessionStorage.getItem('ArtworkTabCategory');
+    const page = Number(sessionStorage.getItem('ArtworkPage'));
+    setHistory(true);
+    if(categ){
+      setCategory(categ)
+    }
+    setPage(page);
+    setProductList(list);
+    sessionStorage.removeItem('ArtworkPage');
+    sessionStorage.removeItem('ArtworkTabCategory');
+    sessionStorage.removeItem('ArtworkTabList');
+  };
 
+  
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
       console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
       sessionStorage.setItem('ArtworkTabList', JSON.stringify(productList));
+      sessionStorage.setItem('ArtworkPage', String(page));
       sessionStorage.setItem('ArtworkTabCategory', category);
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/productdetails/${idx}`);
     }
   };
 
-  const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('ArtworkTabList') ?? '');
-    const categ = sessionStorage.getItem('ArtworkTabCategory');
-    // setCategory(categ);
-    setProductList(list);
-    setHistory(true);
-    if(categ){
-      setCategory(categ)
+
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
     }
+  }, []);
 
-    sessionStorage.removeItem('ArtworkTabCategory');
-    sessionStorage.removeItem('ArtworkTabList');
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
   };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
 
 
-
+  useEffect(() => {
+    if (page > 1) getproductList(page);
+  }, [page]);
 
   useLayoutEffect(() => {
-    // const page = Number(sessionStorage.getItem('page'));
-    const categ = sessionStorage.getItem('ArtworkTabCategory');
-    // console.log(categ)
-// console.log(categ&& setCategory(JSON.parse(categ)))
-
-    if (categ) {
-      console.log('find')
+    const page = Number(sessionStorage.getItem('ArtworkPage'));
+    if (page) {
       findHistory();
     } else {
-      console.log('getlist')
-      getproductList();
+      setPage(1);
+      getproductList(1);
     }
   }, [searchParams,category]);
 
@@ -140,7 +159,7 @@ function ArtworkTab() {
 
   const onSearch = () => {
     createSearchParams({keyword:keyword})
-    getproductList()
+    getproductList(1)
   };
 
 

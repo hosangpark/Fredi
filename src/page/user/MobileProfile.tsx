@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Modal } from '@mantine/core';
@@ -19,7 +19,8 @@ import QrModal from '../../components/Modal/QrModal';
 import img01 from '../../asset/image/img01.png';
 import img03 from '../../asset/image/img03.png';
 import img04 from '../../asset/image/img05.png';
-import { APISnsList } from '../../api/ProductAPI';
+import { APIArtistFollowAdd, APISnsList } from '../../api/ProductAPI';
+import AlertModal from '../../components/Modal/AlertModal';
 
 
 
@@ -29,10 +30,38 @@ function MobileProfile() {
   const [isSnsUser, setIsSnsUser] = useState(false);
   const [linkList, setLinkList] = useState<LinkListType[]>([]);
   const [SnsList, setSnsList] = useState<SnsList[]>([]);
+  const [page, setPage] = useState<number>(1);
   const [userDetails, setUserDetails] = useState<UserType>();
+  const [history, setHistory] = useState(false);
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
   const [qrmodal,setQrModal] = useState(false);
+  const [ShowAlertModal, setShowAlertModal] = useState(false);
+  const [alertType, setAlertType] = useState<string>('')
   const { user } = useContext(UserContext);
+  const interSectRef = useRef(null);
+
+
+  const UserFollow = async(itemidx:number) =>{
+    if (user.idx) {
+      const data = {
+        designer_idx: itemidx,
+      };
+      try {
+        const res = await APIArtistFollowAdd(data);
+        if(res.message == '좋아요 완료'){
+          setAlertType('팔로우 완료')
+        } else {
+          setAlertType('팔로우 해제')
+        }
+        setShowAlertModal(true)
+        getproductList(page)
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setShowAlertModal(true);setAlertType('회원가입 후 이용 가능합니다.')
+    }
+  }
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   useEffect(() => {
@@ -42,12 +71,15 @@ function MobileProfile() {
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
 
-  const getproductList = async () => {
+  const getproductList = async (page:number) => {
     const data = {
-      page: 1,
+      page: page,
       user_idx: idx
     };
     try {
+      if (history) {
+        return setHistory(false);
+      }
       const { list } = await APISnsList(data);
       setSnsList(list);
       // console.log('shop', list, page);
@@ -69,11 +101,21 @@ function MobileProfile() {
     }
   };
 
-  
+  const findHistory = () => {
+    const list = JSON.parse(sessionStorage.getItem('PersonalList') ?? '');
+    const page = Number(sessionStorage.getItem('PersonalListPage'));
+    setHistory(true);
+    setPage(page);
+    setSnsList(list);
+    sessionStorage.removeItem('PersonalListPage');
+    sessionStorage.removeItem('PersonalList');
+  };
+
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
-      // sessionStorage.setItem('y', String(y ?? 0));
+      sessionStorage.setItem('PersonalList', JSON.stringify(SnsList));
+      sessionStorage.setItem('PersonalListPage', String(page));
       navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
@@ -91,15 +133,40 @@ function MobileProfile() {
     }
   };
 
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+
+  useEffect(() => {
+    if (page > 1) getproductList(page);
+  }, [page]);
 
   useLayoutEffect(() => {
-    console.log('useparamsIdxType',idx)
-    console.log('useparamsIdx',String(user.idx))
+    const page = Number(sessionStorage.getItem('PersonalListPage'));
     getUserDetails();
-    getproductList()
     getLinks()
-    
-    
+    if (page) {
+      findHistory();
+    } else {
+      setPage(1);
+      getproductList(1);
+    }
   }, [idx]);
   
 
@@ -184,7 +251,15 @@ function MobileProfile() {
             <ButtonImageWrap  style={{marginRight:6}} onClick={()=>setQrModal(true)}>
               <ButtonImage src={qrImage}/>
             </ButtonImageWrap>
-            <FollowButtonBox style={{marginLeft:6}}>
+            <FollowButtonBox follow={userDetails?.isLike ? userDetails?.isLike : false} style={{marginLeft:6}} onClick={()=> {
+              if(userDetails?.idx){
+                UserFollow(userDetails?.idx)
+                console.log(userDetails?.idx)
+                console.log(userDetails?.isLike)
+              }else{
+                // Snsdetails?.user.isLike? Snsdetails?.user.isLike : false
+              }
+              }}>
               Follow
             </FollowButtonBox>
           </ButtonBox>
@@ -245,6 +320,20 @@ function MobileProfile() {
         onClick={() => {
           setQrModal(false);
         }}
+      />
+      <AlertModal
+        visible={ShowAlertModal}
+        setVisible={setShowAlertModal}
+        onClick={() => {
+          if(
+            alertType == '회원가입 후 이용 가능합니다.'
+          ){
+            navigate('/signin');
+          } else {
+            setShowAlertModal(false);
+          }
+        }}
+        text={alertType}
       />
     </Container>
   );
@@ -430,10 +519,13 @@ const NameText = styled.p`
     font-size:14px;
   }
 `;
-const FollowButtonBox = styled.div`
+
+const FollowButtonBox = styled.div<{follow?:boolean}>`
 font-family:'Pretendard Variable';
   font-weight: 310;
   display: flex;
+  background-color:${props=>props.follow? '#505050':'#ffffff'};
+  color:${props=>props.follow? '#ffffff': '#505050'};
   justify-content: center;
   cursor: pointer;
   align-items: center;
@@ -463,9 +555,6 @@ justify-content:center;
     font-size:12px;
   }
 `;
-const PlusIcon = styled.img`
-  margin:0;
-  `;
 const DescriptionText = styled.p`
   font-family:'Pretendard Variable';
   font-weight: 310;
@@ -568,19 +657,11 @@ const LinksImage = styled.img`
   object-fit:contain;
 `;
 const ButtonImage = styled.img`
-
   width:65%;
   height:65%;
   object-fit:contain;
 `;
-const ImageFlexBox = styled.div`
-  display:flex;
-  height:40px;
-  justify-content:space-between;
 
-  @media only screen and (max-width: 768px) {
-  }
-`;
 const PlusButton = styled.div`
   position:sticky;
   bottom:100px;
@@ -651,16 +732,6 @@ const FlexBox = styled.div`
   justify-content:space-between;
   align-items:flex-end;
 `;
-
-const BlackButtonText = styled.span`
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 410;
-  @media only screen and (max-width: 768px) {
-    font-size: 11px;
-  }
-`;
-
 
 const EmptyBox = styled.div`
   height:15vh;

@@ -6,7 +6,7 @@ import leftButtonImage from '../../asset/image/ico_prev.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import { APIArtistList, APIFairList, APILikeProduct, APIProductList, APISnsList } from '../../api/ProductAPI';
+import { APIArtistFollowAdd, APIArtistList, APIFairList, APILikeProduct, APIProductList, APISnsList } from '../../api/ProductAPI';
 import { APIGetBanner } from '../../api/SettingAPI';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
@@ -91,6 +91,10 @@ function Home() {
   const [bannerList, setBannerList] = useState<TImage[]>([]);
   const [bannerListMobile, setBannerListMobile] = useState<TImage[]>([]);
   const [history, setHistory] = useState(false);
+  
+  const [ShowAlertModal, setShowAlertModal] = useState(false);
+  const [alertType, setAlertType] = useState<string>('')
+
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [appdownModal, setAppdownModal] = useState(false);
@@ -245,6 +249,7 @@ function Home() {
     }
   }
 
+
   useEffect(() => {
     getBannerList();
     getLatestList()
@@ -269,6 +274,27 @@ function Home() {
       sessionStorage.removeItem('Home_y');
     }
   }, []);
+  const UserFollow = async(itemidx:number) =>{
+    if (user.idx) {
+      const data = {
+        designer_idx: itemidx,
+      };
+      try {
+        const res = await APIArtistFollowAdd(data);
+        if(res.message == '좋아요 완료'){
+          setAlertType('팔로우 완료')
+        } else {
+          setAlertType('팔로우 해제')
+        }
+        setShowAlertModal(true)
+        getArtistList()
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setShowAlertModal(true);setAlertType('회원가입 후 이용 가능합니다.')
+    }
+  }
 
 
   const slides = bannerList.map((item:any) => {
@@ -410,6 +436,7 @@ function Home() {
         paddingnum={innerWidth <= 768? 5:50}
         marginT={innerWidth <= 768? 100:170}
         marginB={innerWidth <= 768? 21:54.38}
+        UserFollow={UserFollow}
         />
         <FeaturedList
         getList={getFeaturedList}
@@ -444,6 +471,20 @@ function Home() {
           navigate('/signin');
         }}
         text="회원가입 후 이용 가능합니다."
+      />
+      <AlertModal
+        visible={ShowAlertModal}
+        setVisible={setShowAlertModal}
+        onClick={() => {
+          if(
+            alertType == '회원가입 후 이용 가능합니다.'
+          ){
+            navigate('/signin');
+          } else {
+            setShowAlertModal(false);
+          }
+        }}
+        text={alertType}
       />
       <TopButton />
       <Footer />

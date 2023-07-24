@@ -54,20 +54,26 @@ function LikeArtwork() {
   const navigate = useNavigate();
   const location = useLocation();
   const [category, setCategory] = useState<string>('1');
+  const [page, setPage] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
+  const [history, setHistory] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [likeList,setLikeList] = useState<ArtworkLikeListItem[]>([])
-
   const [showcategory,setShowCategory] = useState(false)
+  const interSectRef = useRef(null);
 
 
   const { user } = useContext(UserContext);
 
-  const getLikeProductList = async () => {
+  const getLikeProductList = async (page:number) => {
     const data = {
-      page:1,
+      page:page,
       category:1
     };
     try {
+      if (history) {
+        return setHistory(false);
+      }
       const { list } = await APILikeProductList(data);
       setLikeList(list);
       // if(list){
@@ -79,13 +85,33 @@ function LikeArtwork() {
     }
   };
 
-  const saveProductHistory = (e: React.MouseEvent, idx: number) => {
-    const y = window.scrollY;
+  const findHistory = () => {
+    const list = JSON.parse(sessionStorage.getItem('LikeArtworkList') ?? '');
+    const categ = sessionStorage.getItem('LikeArtworkCategory');
+    const page = Number(sessionStorage.getItem('LikeArtworkPage'));
+    setHistory(true);
+    if(categ){
+      setCategory(categ)
+    }
+    setPage(page);
+    setLikeList(list);
+    sessionStorage.removeItem('LikeArtworkPage');
+    sessionStorage.removeItem('LikeArtworkCategory');
+    sessionStorage.removeItem('LikeArtworkList');
+  };
 
-    // sessionStorage.setItem('List', JSON.stringify(likeList));
-    sessionStorage.setItem('category', category);
-    sessionStorage.setItem('y', String(y ?? 0));
-    navigate(`/productdetails/${idx}`);
+  
+  const saveHistory = (e: React.MouseEvent, idx: number) => {
+    const div = document.getElementById('root');
+    if (div) {
+      console.log(div.scrollHeight, globalThis.scrollY);
+      const y = globalThis.scrollY;
+      sessionStorage.setItem('LikeArtworkList', JSON.stringify(likeList));
+      sessionStorage.setItem('LikeArtworkCategory', category);
+      sessionStorage.setItem('LikeArtworkPage', String(page));
+      sessionStorage.setItem('y', String(y ?? 0));
+      navigate(`/productdetails/${idx}`);
+    }
   };
 
   const onCancelLikeProduct = async (idx: number) => {
@@ -102,6 +128,30 @@ function LikeArtwork() {
     }
   };
   
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+
+  useEffect(() => {
+    if (page > 1) getLikeProductList(page);
+  }, [page]);
+
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -118,9 +168,13 @@ function LikeArtwork() {
   }, [likeList]);
 
   useLayoutEffect(() => {
-
-    getLikeProductList()
-
+    const page = Number(sessionStorage.getItem('LikeArtworkPage'));
+    if (page) {
+      findHistory();
+    } else {
+      setPage(1);
+      getLikeProductList(1);
+    }
   }, []);
 
 
@@ -130,7 +184,7 @@ function LikeArtwork() {
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState<any>();
   const [isDragging, setIsDragging] = useState(false);
-const [movingX, setmovingX] = useState<any>();
+  const [movingX, setmovingX] = useState<any>();
 
   const onDragStart = (e:any) => {
     e.preventDefault();
@@ -201,7 +255,7 @@ const [movingX, setmovingX] = useState<any>();
             <LikeCard
               item={item.artwork}
               key={item.idx}
-              onClick={(e) => saveProductHistory(e, item.artwork.idx)}
+              onClick={(e) => saveHistory(e, item.artwork.idx)}
               isLikeList
               onClickLike={(e) => {
                 if (user.idx) {

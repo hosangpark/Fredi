@@ -27,23 +27,26 @@ import WeeklyListItem from '../../components/Product/WeeklyListItem';
 function WeeklyEdition() {
   const navigate = useNavigate();
   const location = useLocation()
-  const [WeeklyList, setWeeklyList] = useState<WeeklyDetailsItem>();
+  const [WeeklyList, setWeeklyList] = useState<WeeklyDetailsItem[]>([]);
   const [showLogin, setShowLogin] = useState(false);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [appdownModal, setAppdownModal] = useState(false);
 
 
   const getWeeklyDetails = async () => {
+    console.log('1');
     const data = {
-      idx : location.state
+      page : 1
     }
-    try {
-      const res = await APIWeeklyDetails(data);
-      setWeeklyList(res)
-      console.log('WWWWWWWWWWWWWWW', res);
+    console.log('2');
+    
+    try {;
+      const {list} = await APIWeeklyDetails(data);
+      console.log('3');
+      // const res = await APIWeeklyDetails(data);
+      setWeeklyList(list)
 
     } catch (error) {
-      console.log('Banner', error);
     }
   };
 
@@ -131,21 +134,26 @@ function WeeklyEdition() {
     <Container id="productContainer">
       <ProductListWrap>
         <WeeklyTitle>Weekly Edition</WeeklyTitle>
-        <WeeklyListItem
-        LinkHandler={LinkHandler}
-        title={'May 1st'}
-        titlesize={18}
-        ProductViews={innerWidth <= 768? 2.3 : 5}
-        // naviArrow = {innerWidth <= 768? false : true}
-        // scrollbar = {innerWidth <= 768? false : true}
-        naviArrow={false}
-        scrollbar={false}
-        aspect={348/432}
-        ProducList={WeeklyList&& WeeklyList.artwork_data}
-        paddingnum={innerWidth <= 768? 0:50}
-        marginT={innerWidth <= 768? 60:130}
-        marginB={innerWidth <= 768? 20:65}
-        />
+        {WeeklyList.map((item,index) => {
+          return(
+            <WeeklyListItem
+              LinkHandler={LinkHandler}
+              title={WeeklyList[index].week}
+              titlesize={18}
+              ProductViews={innerWidth <= 768? 2.3 : 5}
+              // naviArrow = {innerWidth <= 768? false : true}
+              // scrollbar = {innerWidth <= 768? false : true}
+              naviArrow={false}
+              scrollbar={false}
+              aspect={348/432}
+              ProducList={WeeklyList[index].artwork_data}
+              paddingnum={innerWidth <= 768? 0:50}
+              marginT={innerWidth <= 768? 60:130}
+              marginB={innerWidth <= 768? 20:65}
+              />
+          )
+        })}
+        
         
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}

@@ -49,36 +49,38 @@ function FeaturedList({
   marginT?:number
   marginB?:number
 }) {
-  const navigationPrevRef = React.useRef(null)
-  const navigationNextRef = React.useRef(null)
+const navigationPrevRef = React.useRef(null)
+const navigationNextRef = React.useRef(null)
 
 const { user } = useContext(UserContext);
 const [showLogin, setShowLogin] = useState(false);
-  const navigate = useNavigate();
-  const LikeSns = async (idx:number) => {
-    if (user.idx) {
-      const data = {
-        sns_idx: idx,
-      };
-      try {
-        const res = await APISnsLike(data);
-        console.log(res);
-        getList()
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      setShowLogin(true);
-    }
-  };
-
-  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const resizeListener = () => {
-      setInnerWidth(window.innerWidth);
+const [alertType, setAlertType] = useState<string>('')
+const navigate = useNavigate();
+const LikeSns = async (idx:number) => {
+  if (user.idx) {
+    const data = {
+      sns_idx: idx,
     };
-    window.addEventListener("resize", resizeListener);
-  }, [innerWidth]);
+    try {
+      const res = await APISnsLike(data);
+      console.log(res);
+      getList()
+      setShowLogin(true);setAlertType(res.message)
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    setShowLogin(true);setAlertType('회원가입 후 이용 가능합니다.')
+  }
+};
+
+const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+useEffect(() => {
+  const resizeListener = () => {
+    setInnerWidth(window.innerWidth);
+  };
+  window.addEventListener("resize", resizeListener);
+}, [innerWidth]);
 
   return (
     <ContainerWrap>
@@ -115,12 +117,12 @@ const [showLogin, setShowLogin] = useState(false);
               <ProductWrap marginRight={marginRight? marginRight:20}>
                 <ToptextWrap>
                   <FeaturedTitleText>
-                    MoreTitleM{item.idx}
+                    {item.name}
                   </FeaturedTitleText>
-                  <LikeButton onClick={()=>LikeSns(item.idx)} src={item.isLike ? likeOnImage : likeOffImage} />
+                  <LikeButton onClick={()=>LikeSns(item.idx)} src={!item.isLike ? likeOnImage : likeOffImage} />
                 </ToptextWrap>
                 <ProductImageWrap aspect={aspect? aspect:1} height={innerWidth} 
-                onClick={(e)=>LinkHandler(e,title,item.idx)}
+                onClick={(e)=>LinkHandler(e,title,item.user_idx)}
                 >
                   <ProductImage src={item.image[0].file_name}/>
                 </ProductImageWrap>
@@ -143,10 +145,16 @@ const [showLogin, setShowLogin] = useState(false);
         visible={showLogin}
         setVisible={setShowLogin}
         onClick={() => {
-          setShowLogin(false);
-          navigate('/signin');
+          if(
+            alertType == '회원가입 후 이용 가능합니다.'
+          ){
+            navigate('/signin');
+          } else {
+            setShowLogin(false);
+            
+          }
         }}
-        text="회원가입 후 이용 가능합니다."
+        text={alertType}
       />
     </ContainerWrap>
   );

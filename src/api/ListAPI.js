@@ -8,7 +8,7 @@ export const APIWeeklyList = async (data) => {
 };
 export const APIWeeklyDetails = async (data) => {
   const config = Authorization();
-  const res = await API.get('/weekly/details', { params: data, headers: config });
+  const res = await API.get('/weekly/list-details', { params: data, headers: config });
   return res.data;
 };
 

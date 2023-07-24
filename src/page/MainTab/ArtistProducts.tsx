@@ -40,8 +40,6 @@ function ArtistProducts() {
   const location = useLocation();
   const { name, idx } = location.state;
   console.log(name)
-  let [searchParams, setSearchParams] = useSearchParams();
-  const keywordParams = searchParams.get('keyword') ?? '';
 
 
   const [SnsList, setSnsList] = useState<SnsList[]>([]);
@@ -49,15 +47,14 @@ function ArtistProducts() {
   const [page, setPage] = useState<number>(1);
   const [showLogin, setShowLogin] = useState(false);
   const [history, setHistory] = useState(false);
-  const [keyword, setKeyword] = useState<string>(keywordParams);
-  const [showType, setShowType] = useState<1 | 2>(1);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  const interSectRef = useRef(null);
 
   const { user } = useContext(UserContext);
 
   const getSnsList = async (page: number) => {
     const data = {
-      page: 1,
+      page: page,
       user_idx: location.state === null ? user.idx : idx
     };
     try {
@@ -94,32 +91,53 @@ function ArtistProducts() {
   };
 
   const findHistory = () => {
-    // const list = JSON.parse(sessionStorage.getItem('SnsArtistList') ?? '');
-    const page = Number(sessionStorage.getItem('page'));
-    const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
+    const list = JSON.parse(sessionStorage.getItem('ArtistProductList') ?? '');
+    const page = Number(sessionStorage.getItem('ArtistProductPage'));
 
-    // setSnsList(list);
     setHistory(true);
     setPage(page);
-    setShowType(type);
+    setSnsList(list);
 
-    sessionStorage.removeItem('shop');
-    sessionStorage.removeItem('page');
-    sessionStorage.removeItem('type');
+    sessionStorage.removeItem('ArtistProductList');
+    sessionStorage.removeItem('ArtistProductPage');
   };
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
-      // sessionStorage.setItem('shop', JSON.stringify(SnsList));
-      sessionStorage.setItem('page', String(page));
-      sessionStorage.setItem('type', String(showType));
+      sessionStorage.setItem('Save', 'Save');
+      sessionStorage.setItem('ArtworkTabList', JSON.stringify(SnsList));
+      sessionStorage.setItem('ArtworkPage', String(page));
       sessionStorage.setItem('y', String(y ?? 0));
       navigate(`/personalpage/${idx}`,{state:idx});
     }
   };
+  
+  
+  const handleObserver = useCallback((entries: any) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const options = {
+    root: null, //기본 null, 관찰대상의 부모요소를 지정
+    rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
+    threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
+  };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (interSectRef.current) observer.observe(interSectRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+
+  useEffect(() => {
+    if (page > 1) getSnsList(page);
+  }, [page]);
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -136,15 +154,15 @@ function ArtistProducts() {
   }, [SnsList]);
 
   useLayoutEffect(() => {
-    const page = sessionStorage.getItem('Save')
-    setPage(1);
-    getSnsList(1);
-    
-  }, [searchParams]);
+    const Save = sessionStorage.getItem('Save')
+    if (Save) {
+      findHistory();
+    } else {
+      setPage(1);
+      getSnsList(1);
+    }
+  }, []);
 
-  useEffect(() => {
-    if (page > 1) getSnsList(page);
-  }, [page]);
 
 
   return (
@@ -223,69 +241,5 @@ const ProductListWrap = styled.div`
 
 `;
 
-const FollowTitle = styled.p`
-  font-size:17px;
-  font-weight: 410;
-  text-align:start;
-  padding:0 10px;
-`
-
-const CategorySelectButton = styled.div<{ selected: boolean }>`
-  background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
-  border : 1px solid ${(props) => (props.selected ? '#121212' : '#7a7a7a')};
-  padding: 0 18px;
-  margin-right: 10px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 32px;
-  cursor: pointer;
-  @media only screen and (max-width: 1440px) {
-    height: 27px;
-  }
-`;
-
-const CategorySelectButtonText = styled.span<{ selected: boolean }>`
-  color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-size: 12px;
-  font-weight: 410;
-  text-transform: capitalize;
-`;
-const FollowingListWrap = styled.div`
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-`;
-const TitleWrap = styled.div`
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:20px 0%;
-  @media only screen and (max-width: 768px) {
-    display:none
-  }
-`;
-const FollowingName = styled.span`
-  width:80%;
-  font-size: 16px;
-  font-weight: 410;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-  }
-`;
-const ImageWrap = styled.div`
-  width:110px;
-  height:110px;
-  border:1px solid #c9c9c9;
-  @media only screen and (max-width: 768px) {
-    width:80px;
-    height:80px;
-  }
-`
 
 export default ArtistProducts;
