@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { APICheckUserId } from '../../api/UserAPI';
-import { emailRegEx, passwordReg } from '../../util/Reg';
+import { NoEmptySpace, emailRegEx, passwordReg } from '../../util/Reg';
 import 'dayjs/locale/ko';
 
 function SignUp2() {
@@ -70,7 +70,7 @@ function SignUp2() {
             // maxLength={25}
             value={Email}
             onChange={e=>{
-              setEmail(e.target.value);
+              setEmail(NoEmptySpace(e.target.value));
               clearAlert('NoEmail');
               
               }}
@@ -93,7 +93,7 @@ function SignUp2() {
               // maxLength={25}
               value={password}
               onChange={e=>{
-                setpassword(e.target.value)
+                setpassword(NoEmptySpace(e.target.value))
                 }}
               placeholder="Password"
               type={'password'}
@@ -102,7 +102,7 @@ function SignUp2() {
               // maxLength={25}
               value={password2}
               onChange={e=>{
-                setpassword2(e.target.value)
+                setpassword2(NoEmptySpace(e.target.value))
                 clearAlert('NoPassWord');
                 }}
               placeholder="Confirm Password"

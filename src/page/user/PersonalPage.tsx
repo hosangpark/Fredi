@@ -20,6 +20,7 @@ import { Pagination,Navigation, Scrollbar } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { APIArtistFollowAdd, APIBookMarkLike, APISnsCount, APISnsDetails, APISnsLike } from '../../api/ProductAPI';
 import { APISnsReport, APIUserReport } from '../../api/UserAPI';
+import { NoDoubleEmptySpace } from '../../util/Reg';
 
 const REASONLIST = [
   { value: '', label: '사유를 선택해주세요' },
@@ -155,7 +156,8 @@ function PersonalPage() {
         const res = await APISnsReport(data);
         setShowReportModal(false)
         setReasonText('')
-        console.log('snsReport',res);
+        setShowAlertModal(true);
+        setAlertType('신고되었습니다.');
         // console.log(res);
       } catch (error) {
         setShowReportModal(false)
@@ -188,6 +190,8 @@ function PersonalPage() {
       try {
         const res = await APIUserReport(data);
         setShowReportModal(false)
+        setShowAlertModal(true);
+        setAlertType('신고되었습니다.');
         setReasonText('')
         console.log('userReport',res);
       } catch (error) {
@@ -341,7 +345,7 @@ function PersonalPage() {
         <LinkTitle>
           {Snsdetails?.link_title}
         </LinkTitle>
-        <LinkUrl onClick={() => window.open(`https://${Snsdetails?.link_url}`, '_blank')}>
+        <LinkUrl onClick={() =>{window.open(`https://${Snsdetails?.link_url}`, '_blank')}}>
           {Snsdetails?.link_url}
         </LinkUrl>
       </LinkUrlBox>
@@ -375,7 +379,7 @@ function PersonalPage() {
           data={REASONLIST}
           onChange={setReason}   
         />
-        <ModalContentBox value={reasonText} onChange={e=>setReasonText(e.target.value)}></ModalContentBox>
+        <ModalContentBox value={reasonText} onChange={e=>setReasonText(NoDoubleEmptySpace(e.target.value))}></ModalContentBox>
         <ButtonWrap visible={true} marginT={37} marginB={37}>
           <WhiteButton onClick={()=>setShowReportModal(false)}>
             <WhiteButtonText>Cancel</WhiteButtonText>
@@ -503,6 +507,7 @@ const LikeButton = styled.img`
   width: 23px;
     height: 19px;
   object-fit:contain;
+  cursor: pointer;
   @media only screen and (max-width: 768px) {
     width: 23.28px;
     height: 19.49px;
@@ -513,6 +518,7 @@ const BookMarkButton = styled.img`
     height: 19px;
   margin-left:24px;
   object-fit:contain;
+  cursor: pointer;
   @media only screen and (max-width: 768px) {
     width: 15.54px;
     height: 19.49px;
@@ -538,6 +544,7 @@ font-size:12px;
   color:#ffffff;
   font-weight: 210;
   text-decoration:none;
+  cursor: pointer;
 `;
 
 const ImageBox2 = styled.div<{innerWidth:number}>`
@@ -647,7 +654,7 @@ const BasicImage = styled.img`
   object-fit:contain;
 `;
 const ReportImageWrap = styled.div`
-  padding:0 10px;
+  padding:0 1px;
   margin-left:0px;
   display:flex;
   align-items:center;
@@ -677,6 +684,8 @@ const ImageRotate = styled.img`
   width:24px;
   height: 6px;
   aspect-ratio:1.0;
+  margin:0 10px;
+  cursor: pointer;
   transform:rotate(90deg);
   @media only screen and (max-width: 768px) {
     width:14px;

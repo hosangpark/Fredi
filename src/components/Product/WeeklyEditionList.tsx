@@ -1,4 +1,4 @@
-import React,{useState,useRef} from 'react';
+import React,{useState,useRef, useEffect} from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import likeOnImage from '../../asset/image/heart_on.svg';
@@ -51,6 +51,15 @@ function WeeklyEditionList({
   marginB?:number
 }) { 
   const navigate = useNavigate();
+
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  }, [innerWidth]);
+
   return (
     <ContainerWrap>
       <TitleBox marginT={marginT} marginB={marginB} onClick={()=>{navigate(`/`);}}>
@@ -90,24 +99,24 @@ function WeeklyEditionList({
           <SwiperSlide key={index}>
           <ProductWrap onClick={(e)=>LinkHandler(e,title,item.idx)}>
             <ProductTopbox>
-              <ProductTopboxLeft>
+              <ProductTopboxLeft innerWidth={innerWidth}>
                 <ProductImage src={item.image[0].file_name}/>
               </ProductTopboxLeft>
               <ProductTopboxRight>
-                <ProductTopboxRightWrap style={{marginBottom:5}}>
-                  <ProductImage src={item.image[0].file_name} style={{marginBottom:10}}/>
+                <ProductTopboxRightWrap innerWidth={innerWidth} style={{marginBottom:5}}>
+                  <ProductImage src={item.image[1].file_name} style={{marginBottom:10}}/>
                 </ProductTopboxRightWrap>
-                <ProductTopboxRightWrap>
-                  <ProductImage src={item.image[0].file_name}/>
+                <ProductTopboxRightWrap innerWidth={innerWidth}>
+                  <ProductImage src={item.image[2].file_name}/>
                 </ProductTopboxRightWrap>
               </ProductTopboxRight>
             </ProductTopbox>
             <ProductBottombox>
-                <ProductBottomImageWrap style={{marginRight:6}}>
-                  <ProductImage src={item.image[0].file_name}/>
+                <ProductBottomImageWrap innerWidth={innerWidth} style={{marginRight:6}}>
+                  <ProductImage src={item.image[3].file_name}/>
                 </ProductBottomImageWrap>
-                <ProductBottomImageWrap>
-                  <ProductImage src={item.image[0].file_name}/>
+                <ProductBottomImageWrap innerWidth={innerWidth}>
+                  <ProductImage src={item.image[4].file_name}/>
                 </ProductBottomImageWrap>
             </ProductBottombox>
             <TextWrap>
@@ -133,10 +142,15 @@ const ProductTopbox = styled.div`
   width:100%;
   aspect-ratio:340/280;
 `;
-const ProductTopboxLeft = styled.div`
-  width:67%;
+const ProductTopboxLeft = styled.div<{innerWidth:number}>`
+  width:${props => props.innerWidth*0.213}px;
+  height:${props => props.innerWidth*0.213*1.244}px;
   aspect-ratio:225/280;
   margin-right:5px;
+  @media only screen and (max-width: 768px) {
+    width:${props => props.innerWidth*0.584}px;
+    height:${props => props.innerWidth*0.584*1.239}px;
+  }
 `;
 const ProductTopboxRight = styled.div`
   width:33%;
@@ -146,10 +160,14 @@ const ProductTopboxRight = styled.div`
   /* aspect-ratio:110/280; */
 `;
 
-const ProductTopboxRightWrap = styled.div`
-  width:100%;  
-  height:50%;
+const ProductTopboxRightWrap = styled.div<{innerWidth:number}>`
+  width:${props => props.innerWidth*0.105}px;
+  height:${props => props.innerWidth*0.105*1.273}px;
   aspect-ratio:0.7857;
+  @media only screen and (max-width: 768px) {
+    width:${props => props.innerWidth*0.287}px;
+    height:${props => props.innerWidth*0.287*1.258}px;
+  }
 `
 
 const ProductBottombox = styled.div`
@@ -157,9 +175,14 @@ const ProductBottombox = styled.div`
   width:100%;
   aspect-ratio:340/200;
 `;
-const ProductBottomImageWrap = styled.div`
-  width:calc(50% - 3px);
-  aspect-ratio:340/200;
+const ProductBottomImageWrap = styled.div<{innerWidth:number}>`
+  width:${props => props.innerWidth*0.159}px;
+  height:${props => props.innerWidth*0.158*1.196}px;
+  aspect-ratio:158/189;
+  @media only screen and (max-width: 768px) {
+    width:${props => props.innerWidth*0.435}px;
+    height:${props => props.innerWidth*0.435*1.186}px;
+  }
 `;
 const ProductBottomInner = styled.div`
   width:100%;

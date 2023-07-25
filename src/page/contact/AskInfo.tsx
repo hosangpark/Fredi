@@ -10,6 +10,7 @@ import { dndData } from '../../components/DnD/DnD';
 import { APICategoryList } from '../../api/ProductAPI';
 import { CategoryType } from '../../types/Types';
 import CheckCategoryItem from '../../components/Shop/CheckCategoryItem';
+import imageCompression from 'browser-image-compression';
 
 function AskInfo() {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ function AskInfo() {
     if (!sellingAsk.height) return setAlertType('height을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.width) return setAlertType('width을 입력해주세요.'),setShowContentModal(true);
     if (!sellingAsk.depth) return setAlertType('depth을 입력해주세요.'),setShowContentModal(true);
-    if (!UploadImage) return setAlertType('Image를 업로드 해주세요.'),setShowContentModal(true);
+    if (UploadImage.length == 0) return setAlertType('Image를 업로드 해주세요.'),setShowContentModal(true);
 
     formData.append('artist_name', sellingAsk.artistname);
     formData.append('brand_name', sellingAsk.brandname);
@@ -93,10 +94,14 @@ function AskInfo() {
   };
 
 
-  const onUploadImage = (value: File[]) => {
+  const onUploadImage = async(value: File[]) => {
     if(UploadImage.length > 12)return(setShowContentModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
     if(value.length > 12)return(setShowContentModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
     // console.log(value)
+    const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 500,
+    };
     const ShowImages = value;
     let fileURLs:dndData[] = [...UploadImage];
     let imageUrlLists = [...ShowImage];
@@ -105,13 +110,14 @@ function AskInfo() {
       const currentImageUrl = URL.createObjectURL(ShowImages[i]);
       imageUrlLists.push(currentImageUrl);
       let file = value[i];
+      const compressedFile = await imageCompression(file, options);
       reader.onload = () => {
-        const file = { url: reader.result as string, name: value[i].name, symbol: String(Date.now()), file: value[i] };
+        const file = { url: reader.result as string, name: compressedFile.name, symbol: String(Date.now()), file: compressedFile };
         fileURLs.push(file)
         // console.log('fsfsfs',file)
         
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(compressedFile);
     }
     setShowImage(imageUrlLists.slice(0, 12))
     // console.log(fileURLs)
@@ -193,7 +199,7 @@ function AskInfo() {
           <LeftText>Artist name</LeftText>
           <RightInput
             value={sellingAsk.artistname} 
-            onChange={(e) => setInfoHandle(e.target.value,'artistname')} 
+            onChange={(e) => setInfoHandle(e.target.value.trim(),'artistname')} 
             placeholder='[Artist name]'
           />
         </RowWap>
@@ -201,14 +207,14 @@ function AskInfo() {
           <LeftText>Brand name</LeftText>
           <RightInput
             value={sellingAsk.brandname} 
-            onChange={(e) => setInfoHandle(e.target.value,'brandname')} 
+            onChange={(e) => setInfoHandle(e.target.value.trim(),'brandname')} 
             placeholder='[Brand name]'/>
         </RowWap>
         <RowWap>
           <LeftText>E-mail</LeftText>
           <RightInput
             value={sellingAsk.email} 
-            onChange={(e) => setInfoHandle(e.target.value,'email')} 
+            onChange={(e) => setInfoHandle(e.target.value.trim(),'email')} 
             placeholder='[E-mail address]'
             />
           {/* <TextInput maxLength={10} value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="닉네임 입력" /> */}
@@ -218,7 +224,7 @@ function AskInfo() {
           <LeftText>SNS Account</LeftText>
           <RightInput
             value={sellingAsk.sns} 
-            onChange={(e) => setInfoHandle(e.target.value,'sns')} 
+            onChange={(e) => setInfoHandle(e.target.value.trim(),'sns')} 
             placeholder='[URL]'
           />
         </RowWap>
@@ -226,7 +232,7 @@ function AskInfo() {
           <LeftText>Phone</LeftText>
           <RightInput
             value={sellingAsk.phone} 
-            onChange={(e) => setInfoHandle(e.target.value,'phone')} 
+            onChange={(e) => setInfoHandle(e.target.value.trim(),'phone')} 
             placeholder='[Phone]'
           />
         </RowWap>
@@ -256,7 +262,7 @@ function AskInfo() {
           <LeftText>Title</LeftText>
           <RightInput
             value={sellingAsk.title} 
-            onChange={(e) => setInfoHandle(e.target.value,'title')} 
+            onChange={(e) => setInfoHandle(e.target.value.trim(),'title')} 
             placeholder='[Title]'
           />
         </RowWap>
@@ -264,7 +270,7 @@ function AskInfo() {
           <LeftText>Materials</LeftText>
           <RightInput
             value={sellingAsk.materials} 
-            onChange={(e) => setInfoHandle(e.target.value,'materials')} 
+            onChange={(e) => setInfoHandle(e.target.value.trim(),'materials')} 
             placeholder='[Materials]'
           />
         </RowWap>
@@ -273,7 +279,7 @@ function AskInfo() {
             <LeftText>Height</LeftText>
             <RightInput
               value={sellingAsk.Height} 
-              onChange={(e) => setInfoHandle(e.target.value,'height')} 
+              onChange={(e) => setInfoHandle(e.target.value.trim(),'height')} 
               placeholder='mm'
             />
           </RowWap>
@@ -281,7 +287,7 @@ function AskInfo() {
             <LeftText>Width</LeftText>
             <RightInput
               value={sellingAsk.Width} 
-              onChange={(e) => setInfoHandle(e.target.value,'width')} 
+              onChange={(e) => setInfoHandle(e.target.value.trim(),'width')} 
               placeholder='mm'
             />
           </RowWap>
@@ -289,7 +295,7 @@ function AskInfo() {
             <LeftText>Depth</LeftText>
             <RightInput
               value={sellingAsk.Width} 
-              onChange={(e) => setInfoHandle(e.target.value,'depth')} 
+              onChange={(e) => setInfoHandle(e.target.value.trim(),'depth')} 
               placeholder='mm'
             />
           </RowWap>

@@ -78,9 +78,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 function Home() {
   const navigate = useNavigate();
-  // let [searchParams, setSearchParams] = useSearchParams();
-  // const keywordParams = searchParams.get('keyword') ?? '';
-  // const categoryParams = (searchParams.get('category') as '1' | '2' | '3' | '4' | '5' | '6') ?? '1';
+  const token = sessionStorage.getItem('token');
   const [FairList, setFairList] = useState<FairList[]>([]);
   const [LatestList, setLatestList] = useState<ArtworkListItem[]>([]);
   const [WeeklyList, setWeeklyList] = useState<WeeklyListItem[]>([]);
@@ -161,8 +159,9 @@ function Home() {
         return setHistory(false);
       }
       const { list } = await APIWeeklyList({page:1});
-      setWeeklyList(list.slice(0,10));
-      // console.log('product', list,);
+      let sliceList = list.slice(0,20)
+      setWeeklyList(sliceList);
+      console.log('product', sliceList);
     } catch (error) {
       console.log(error);
     }
@@ -186,7 +185,7 @@ function Home() {
         return setHistory(false);
       }
       const { list } = await APITrendingArtist({page:1});
-      setArtistList(list.slice(0,10));
+      setArtistList(list.slice(0,20));
     } catch (error) {
       console.log(error);
     }
@@ -237,13 +236,25 @@ function Home() {
       // sessionStorage.setItem('LatestList', JSON.stringify(LatestList));
       navigate(`/productdetails/${idx}`);
     } else if (title.includes('Home')) {
-      navigate(`/personalpage/${idx}`,{state:idx});
+      // if(!token){
+      //   setShowLogin(true)
+      // } else {
+      // }
+        navigate(`/personalpage/${idx}`,{state:idx});
     } else if (title.includes('Weekly')) {
       navigate(`/WeeklyEdition/${idx}`,{state:idx})
     } else if (title.includes('Trending')) {
-      navigate(`/MobileProfile/${idx}`,{state:idx})
+      if (!token) {
+        setShowLogin(true);
+      } else {
+        navigate(`/MobileProfile/${idx}`,{state:idx})
+      }
     } else if (title.includes('Featured')) {
+      if (!token) {
+        setShowLogin(true);
+      } else {
       navigate(`/MobileProfile/${idx}`,{state:idx})
+      }
     } else {
       console.log(title,idx)
     }
@@ -330,7 +341,7 @@ function Home() {
             nextControlIcon={<ControlImage left={true} src={rightButtonImage} />}
             previousControlIcon={<ControlImage src={leftButtonImage} />}
             styles={{
-              root: { maxHeight: 700 },
+              root: { maxHeight: 600 },
               control: { background: 'transparent', width: 45, border: 0, '@media (max-width: 768px)': { width: 25 } },
             }}
             classNames={{
@@ -402,7 +413,7 @@ function Home() {
         ProductViews={innerWidth <= 768? 1.1 : innerWidth <= 1440? 2.7 :3.4}
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList = {WeeklyList}
+        ProducList = {WeeklyList.slice(0,20)}
         arrowView={false}
         paddingnum={innerWidth <= 768? 0:50}
         marginT={innerWidth <= 768? 120:175.22}
@@ -521,9 +532,7 @@ const CarouselWrap = styled.div`
   display: block;
   position: relative;
   width: 100%;
-  @media only screen and (max-width: 769px) {
-    aspect-ratio: 4697/1737;
-  }
+  
   @media only screen and (max-width: 768px) {
     aspect-ratio: 1/1;
     // height: 100%;

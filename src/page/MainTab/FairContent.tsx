@@ -87,7 +87,7 @@ function FairContent() {
   const getFairDetail = async () => {
     const data = {
       idx:idx,
-      category:category == '1'? "1" : "2",
+      category:category
       // keyword:keyword? keyword : ''
     }
     try {
@@ -95,16 +95,20 @@ function FairContent() {
         return setHistory(false);
       }
       const res = await APIFairDetails(data);
+      console.log(res)
 
       setFairDetail(res)
       
     } catch (error) {
+      if(FairDetail){
+        setFairDetail({...FairDetail,artwork_data:[]})
+      }
     }
   };
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('FairContents') ?? '');
     const categ = sessionStorage.getItem('FairContentsCatg');
-    // setCategory(categ);
+
     setFairDetail(list);
     setHistory(true);
     if(categ){

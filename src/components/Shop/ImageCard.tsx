@@ -23,6 +23,7 @@ function ImageCard({
     };
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
+  
 
   return (
     <ProductBox index={(index + 1)} onClick={onClick} height={innerWidth}>

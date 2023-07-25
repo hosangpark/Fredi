@@ -95,11 +95,11 @@ function Producer() {
   };
 
   const findHistory = () => {
-    // const list = JSON.parse(sessionStorage.getItem('producers') ?? '');
+    const list = JSON.parse(sessionStorage.getItem('producers') ?? '');
     const page = Number(sessionStorage.getItem('page'));
     const type = (Number(sessionStorage.getItem('type')) as 1 | 2) ?? 1;
 
-    // setProducerList(list);
+    setProducerList(list);
     setHistory(true);
     setPage(page);
     setShowType(type);

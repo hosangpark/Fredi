@@ -334,7 +334,7 @@ function ProductDetails() {
               modules={[Pagination,Scrollbar,FreeMode,Thumbs]}
               thumbs={{ swiper: thumbsSwiper }}
               scrollbar={innerWidth <= 768? false : true}
-              loop={true}
+              loop={false}
               mousewheel={true} 
               // onSlideChange={() => {/*...*/}}
               // allowTouchMove={false}
@@ -719,7 +719,7 @@ const ReadMore = styled.div`
 font-family:'Pretendard Variable';
 font-weight : 360;
 font-size:14px;
-
+cursor: pointer;
   text-align:start;
   text-decoration:underline;
   @media only screen and (max-width: 768px) {
@@ -740,7 +740,7 @@ text-align:start;
   color: #121212;
   /* resize: none; */
   background-color: #fff;
-  display: -webkit-box;
+  display: ${props => props.readmore? 'block' : '-webkit-box' };
   -webkit-line-clamp: 5; // 원하는 라인수
   -webkit-box-orient: vertical;
     overflow:hidden; 
@@ -927,6 +927,7 @@ const RowWrap = styled.div`
   align-items: flex-end;
   justify-content:flex-end;
   margin-bottom:30px;
+  padding-bottom:30px;
   @media only screen and (max-width: 768px) {
     position:fixed;
     width:calc(100% - 40px);

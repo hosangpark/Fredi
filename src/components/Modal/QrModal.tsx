@@ -1,39 +1,106 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Modal } from '@mantine/core';
 import styled from 'styled-components';
 import downImage from './../../asset/image/save_img.svg'
 import linkImage from './../../asset/image/rink.svg'
 import QrImage from './../../asset/image/qr.svg'
+import { QRCodeCanvas } from 'qrcode.react';
+import AlertModal from './AlertModal';
 
 function QrModal({
+  idx,
+  innerWidth,
   visible,
   setVisible,
   onClick,
 }: {
+  idx?:string;
+  innerWidth:number;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   onClick: () => void;
 }) {
-  const onCancel = () => {
-    setVisible(false);
+
+  const [showContentModal, setShowContentModal] = useState(false);
+  const [alertType, setAlertType] = useState<string>();
+  const svgRef = useRef();
+
+  const downloadFile = (url:string) => {
+    url = "파일에 대한 url"
+    fetch(url, { method: 'GET' })
+        .then((res) => {
+            return res.blob();
+        })
+        .then((blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "파일명";
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+            }, 60000);
+            a.remove();
+            setVisible(false);
+        })
+        .catch((err) => {
+            console.error('err: ', err);
+        });
+  };
+  const downloadQR = () => {
+    const canvas:any = document.getElementById("FrediQr");
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    let downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = "FrediQr.png";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
 
+  const DownloadQRCode = () => {
+    const canvas = document.querySelector("#qrcode-canvas") as HTMLCanvasElement
+    if (!canvas) throw new Error("<canvas> not found in the DOM")
+
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream")
+    const downloadLink = document.createElement("a")
+    downloadLink.href = pngUrl
+    downloadLink.download = "QR code.png"
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
+    document.body.removeChild(downloadLink)
+  }
+  
+
+  const handleCopyClipBoard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setShowContentModal(true)
+      setAlertType('복사 되었습니다.')
+    } catch (error) {
+      setShowContentModal(true)
+      setAlertType('복사에 실패하였습니다.')
+    }
+  }
+
   return (
-    <Modal opened={visible} onClose={onCancel} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
-      <ModalBox>
+    <Modal opened={visible} onClose={()=>setVisible(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
+      <ModalBox >
         {/* <ModalTitle>{text}</ModalTitle> */}
-        <QrcodeImage src={QrImage}/>
-        {/* <ModalBlackButton onClick={onClick}>
-          <BlackButtonText>확인</BlackButtonText>
-        </ModalBlackButton> */}
-        {/* <EmptyBox/> */}
+        {/* <QrcodeImage src={QrImage}/> */}
+        <QRCodeCanvas id='qrcode-canvas' value={`https://new.fredi.co.kr/MobileProfile/${idx}`} size={innerWidth < 768 ? 250 : 400}/>
       </ModalBox>
       <PositionBox>
         <ButtonWrap style={{marginRight:15}}>
           <ImageWrap>
             <ImageRotate src={downImage}/>
           </ImageWrap>
-          <ButtonTextWrap onClick={()=>{}}>
+          <ButtonTextWrap onClick={DownloadQRCode}>
             Save Image
           </ButtonTextWrap>
         </ButtonWrap>
@@ -41,11 +108,19 @@ function QrModal({
           <ImageWrap>
             <Image src={linkImage}/>
           </ImageWrap>
-          <ButtonTextWrap onClick={()=>{}}>
+          <ButtonTextWrap onClick={()=>{handleCopyClipBoard(`https://new.fredi.co.kr/MobileProfile/${idx}`)}}>
             Copy Link
           </ButtonTextWrap>
         </ButtonWrap>
       </PositionBox>
+      <AlertModal
+        visible={showContentModal}
+        setVisible={setShowContentModal}
+        onClick={() => {
+          setShowContentModal(false);
+        }}
+        text={alertType? alertType : '확인되었습니다'}
+      />
     </Modal>
   );
 }
@@ -125,6 +200,8 @@ const ButtonWrap = styled.div`
 const ImageWrap = styled.div`
   display:flex;
   justify-content:center;
+  cursor: pointer;
+  cursor: pointer;
   align-items:center;
   width:100%;
   border:0;
@@ -136,6 +213,7 @@ font-family:'Pretendard Variable';
   justify-content:center;
   align-items:center;
   font-size:14px;
+  cursor: pointer;
   font-weight: 310;
   margin:0;
   height:40%;
@@ -146,7 +224,7 @@ font-family:'Pretendard Variable';
 
 
 const BlackButtonText = styled.span`
-  font-family:'Pretendard Variable'; !important;
+  font-family:'Pretendard Variable' !important;
   font-weight: 410;
   color: #ffffff;
   font-size: 14px;

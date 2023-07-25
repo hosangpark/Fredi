@@ -16,7 +16,7 @@ function SignUp3() {
   const [authnumber, setAuthNumber] = useState('')
   const [timer, setTimer] = useState(0);
   const [isSend, setIsSend] = useState(false);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
+  // const [isAuth, setIsAuth] = useState<boolean>(false);
   const [Checked, setChecked] = useState<boolean>(false);
   const [alertType, setAlertType] = useState<string[] | undefined>();
   const [showModal, setShowModal] = useState(false);
@@ -52,6 +52,7 @@ function SignUp3() {
     if(!Name) type.push('NoName')
     if(!Checked) type.push('NoCheck')
     if(!authnumber) type.push('NoAuthNumber')
+
     
     if (type.length > 0) {
       return setAlertType(type);
@@ -77,22 +78,22 @@ function SignUp3() {
     }
   }
 
-  const onCheckAuth = async () => {
-    try {
-      const data = {
-        phone_number: Phone,
-        auth_number: authnumber,
-      };
-      const res = await APIVerifyAuthNumber(data);
-      setIsAuth(true);
-      // setAlertType('auth');
-      // setTimer(0);
-    } catch (error) {
-      console.log(error);
-      setIsAuth(false);
-      // setAlertType('authFaild');
-    }
-  };
+  // const onCheckAuth = async () => {
+  //   try {
+  //     const data = {
+  //       phone_number: Phone,
+  //       auth_number: authnumber,
+  //     };
+  //     const res = await APIVerifyAuthNumber(data);
+  //     setIsAuth(true);
+  //     // setAlertType('auth');
+  //     // setTimer(0);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setIsAuth(false);
+  //     // setAlertType('authFaild');
+  //   }
+  // };
 
   const clearAlert = (alert: any) => {
     setAlertType((prev) => prev?.filter((item) => item !== alert));
@@ -134,11 +135,11 @@ function SignUp3() {
     }
   }, [timer]);
 
-  useEffect(() => {
-    if (authnumber.length > 0) {
-      onCheckAuth()
-    }
-  }, [authnumber]);
+  // useEffect(() => {
+  //   if (authnumber.length > 0) {
+  //     onCheckAuth()
+  //   }
+  // }, [authnumber]);
   
 
   return (

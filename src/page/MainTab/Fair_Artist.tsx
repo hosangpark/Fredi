@@ -62,15 +62,11 @@ function FairArtist({saveHistory,productList}
         {productList &&
         productList.map((item,index)=>{
           return(
-            <>
-            {item !== null &&
-              <ArtistCard
-                item={item}
-                key={item.idx}
-                onClick={(e) => saveHistory(e, item.name,item.idx)}
-              />
-            }
-            </>
+            <ArtistCard
+              item={item}
+              key={item.idx}
+              onClick={(e) => saveHistory(e, item.name,item.idx)}
+            />
           )
         })
         }

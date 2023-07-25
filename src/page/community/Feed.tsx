@@ -32,6 +32,7 @@ import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
 import { APIProducerList } from '../../api/ProducerAPI';
 import { APIProductList } from '../../api/ProductAPI';
+import Nodata from '../../components/Product/NoData';
 
 
 interface ICategorySelectButton {
@@ -125,17 +126,17 @@ function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,
       </CategorySelectButtonWrap>
       <ProductListWrap>
         {
-        productList? productList.map((item:any,index:number)=>{
+        productList&& 
+        productList.length > 0 ?
+        productList.map((item:any,index:number)=>{
           return(
             <FeedCard
               item={item}
               key={item.idx}
               onClick={(e) => {
-                if(user.idx){
+
                 saveHistory(e, item.idx)
-              } else {
-                setShowLogin(true)
-              }
+
               }}
               onClickLike={(e) => {
                 if (user.idx && onLikeProduct) {
@@ -150,8 +151,8 @@ function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,
             />
           )
           })
-        : 
-        <>NO ITEMS</>
+        :
+        <Nodata/> 
         }
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}

@@ -176,11 +176,9 @@ function ArtistProducts() {
               item={item}
               key={item.idx}
               onClick={(e) =>{
-                if(user.idx){
+
                 saveHistory(e, item.idx)
-              } else {
-                setShowLogin(true)
-              }
+
               }}
               onClickLike={(e) => {
                 if (user.idx) {

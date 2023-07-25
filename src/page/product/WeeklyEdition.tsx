@@ -29,63 +29,33 @@ function WeeklyEdition() {
   const location = useLocation()
   const [WeeklyList, setWeeklyList] = useState<WeeklyDetailsItem[]>([]);
   const [showLogin, setShowLogin] = useState(false);
+    const [page, setPage] = useState<number>(1);
+  const [history, setHistory] = useState(false);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [appdownModal, setAppdownModal] = useState(false);
 
 
-  const getWeeklyDetails = async () => {
-    console.log('1');
-    const data = {
-      page : 1
-    }
-    console.log('2');
-    
-    try {;
-      const {list} = await APIWeeklyDetails(data);
-      console.log('3');
-      // const res = await APIWeeklyDetails(data);
-      setWeeklyList(list)
 
+  const getWeeklyDetails = async (page : number) => {
+    const data = {
+      page: page,
+    };
+    try {
+      if (history) {
+        return setHistory(false);
+      }
+      const { list, total } = await APIWeeklyDetails(data);
+      if (page === 1) {
+        setWeeklyList((prev) => [...list]);
+      } else {
+        setWeeklyList((prev) => [...prev, ...list]);
+      }
+      // console.log('product', list, page);
     } catch (error) {
+      console.log(error);
     }
   };
 
-  // const getProductList = async (page: number) => {
-  //   const data = {
-  //     page: page,
-  //     category: category,
-  //     keyword: keywordParams,
-  //   };
-  //   try {
-  //     if (history) {
-  //       return setHistory(false);
-  //     }
-  //     const { list, total } = await APIProductList(data);
-  //     setTotal(total);
-  //     if (page === 1) {
-  //       setWeeklyList((prev) => [...list]);
-  //     } else {
-  //       setWeeklyList((prev) => [...prev, ...list]);
-  //     }
-  //     // console.log('product', list, page);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const onLikeProduct = async (idx: number) => {
-  //   const data = {
-  //     artwork_idx: idx,
-  //   };
-  //   try {
-  //     const res = await APILikeProduct(data);
-  //     console.log(res);
-  //     const newList = WeeklyList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
-  //     setWeeklyList(newList);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   const LinkHandler = (e:React.MouseEvent,title:string,idx?:number)=>{
     const y = globalThis.scrollY;
     sessionStorage.setItem('y', String(y ?? 0));
@@ -93,19 +63,15 @@ function WeeklyEdition() {
     navigate(`/productdetails/${idx}`,{state:idx})
   }
 
+  const findHistory = () => {
+    const page = Number(sessionStorage.getItem('WeeklyPage'));
+    // setCategory(categ);
 
+    setPage(page);
+    setHistory(true);
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
-    const y = globalThis.scrollY;
-    // sessionStorage.setItem('products', JSON.stringify(WeeklyList));
-    // sessionStorage.setItem('page', String(page));
-    // sessionStorage.setItem('type', String(showType));
-    sessionStorage.setItem('y', String(y ?? 0));
-    navigate(`/productdetails/${idx}`);
+    sessionStorage.removeItem('WeeklyPage');
   };
-
-
-
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
@@ -122,11 +88,20 @@ function WeeklyEdition() {
   }, [WeeklyList]);
 
   useLayoutEffect(() => {
-
-    getWeeklyDetails()
-    // getBannerList();
-
+    const page = Number(sessionStorage.getItem('ArtistPage'));
+    if (page){
+      findHistory();
+    } else {
+      console.log('getlist')
+      setPage(1);
+      getWeeklyDetails(1);
+    }
   }, []);
+
+  useEffect(() => {
+    if (page > 1) getWeeklyDetails(page);
+  }, [page]);
+
 
 
 
@@ -134,9 +109,10 @@ function WeeklyEdition() {
     <Container id="productContainer">
       <ProductListWrap>
         <WeeklyTitle>Weekly Edition</WeeklyTitle>
-        {WeeklyList.map((item,index) => {
+        {WeeklyList.slice(0,5).map((item,index) => {
           return(
             <WeeklyListItem
+              key={index}
               LinkHandler={LinkHandler}
               title={WeeklyList[index].week}
               titlesize={18}

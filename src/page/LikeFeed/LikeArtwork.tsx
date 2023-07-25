@@ -32,6 +32,7 @@ import { APILikeProduct, APILikeProductList, APIProductList } from '../../api/Pr
 import dayjs from 'dayjs';
 import snsImage from '../../asset/image/snsicon.png';
 import LikeCard from '../../components/Shop/LikeCard';
+import Nodata from '../../components/Product/NoData';
 
 
 
@@ -250,6 +251,7 @@ function LikeArtwork() {
       
       <ProductListWrap>
         {likeList &&
+        likeList.length > 0 ?
         likeList.map((item:ArtworkLikeListItem,index:number)=>{
           return(
             <LikeCard
@@ -271,8 +273,11 @@ function LikeArtwork() {
             />
           )
           })
+          :
+          <Nodata/>
         }
       </ProductListWrap>
+      <InterView ref={interSectRef} />
       <AlertModal
         visible={showLogin}
         setVisible={setShowLogin}
@@ -299,7 +304,7 @@ const ProductListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin:0 50px;
+  margin:0 50px 100px;
   /* 1440px */
   /* @media only screen and (max-width: 1440px) {
     margin:0 20px;
@@ -308,6 +313,10 @@ const ProductListWrap = styled.div`
     margin:0;
   }
 `;
+
+const Marginbox = styled.div`
+  height:200px;
+`
 
 const CarouselWrap = styled.div`
   display: block;

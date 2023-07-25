@@ -101,7 +101,10 @@ function MainArtistList({
                     {/* {item.idx} */}
                     More Artis Name More Artis Name More Artis Name
                   </ProductTitleText>
-                  <FollowButtonBox follow={item.isLike? item.isLike :false} style={{marginRight:0}} onClick={()=>UserFollow(item.idx)}>
+                  <FollowButtonBox follow={item.isLike? item.isLike :false} style={{marginRight:0}} onClick={()=>{
+                    UserFollow(item.idx)
+                    console.log(item.isLike)
+                  }}>
                     Follow
                   </FollowButtonBox>
                   {/* <ProductSubText>

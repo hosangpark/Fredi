@@ -31,6 +31,7 @@ import { FairListItem } from '../../types/Types';
 import SnsCard from '../../components/Shop/SnsCard';
 import { APIProductList } from '../../api/ProductAPI';
 import FeedCard from '../../components/Shop/FeedCard';
+import Nodata from '../../components/Product/NoData';
 
 
 function BookMark({saveHistory,onLikeProduct,productList,selectCategory}
@@ -49,7 +50,9 @@ function BookMark({saveHistory,onLikeProduct,productList,selectCategory}
     <Container>
       <ProductListWrap>
         {
-        productList? productList.map((item:any,index:number)=>{
+        productList&&
+        productList.length > 0 ?
+        productList.map((item:any,index:number)=>{
           return(
             <SnsCard
               item={item.sns}
@@ -60,7 +63,7 @@ function BookMark({saveHistory,onLikeProduct,productList,selectCategory}
           )
           })
         : 
-        <>NO ITEMS</>
+        <Nodata/> 
         }
       </ProductListWrap>
       <AlertModal

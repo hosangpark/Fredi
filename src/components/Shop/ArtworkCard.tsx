@@ -39,7 +39,7 @@ function ArtworkCard({
       {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
       <TextWrap>
         <ProductNameWrap>
-          <ProductName>{item.name} {item.name} {item.name} {item.name}</ProductName>
+          <ProductName>{item.name}</ProductName>
           <Designer>{item.designer_name}</Designer>
         </ProductNameWrap>
         <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} />

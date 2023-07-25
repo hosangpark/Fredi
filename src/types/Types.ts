@@ -114,7 +114,7 @@ export type FairDetailsArtworkItem = {
   link_buy:string | null;
   user: UserType
   country?: string;
-  designer?: string;
+  designer_name?: string;
   imageList: ImageType[];
   imageList_m:ImageType[];
   price?:number;
@@ -498,7 +498,7 @@ export type SnsList = {
   deleted_time:string | null;
   like_count:number;
   read_count:number;
-  image:TImage[];
+  image:ImageType[];
   isLike:boolean;
   isBookmark:boolean;
   category_arr:string[]

@@ -107,7 +107,7 @@ function HomeStyleList({
                     {item.name}
                   </ProductTitleText>
                   <ProductSubText>
-                    {item.user.name}
+                    {item.user?.name? item.user.name : " "}
                   </ProductSubText>
                 </TextWrap>
               </ProductWrap>

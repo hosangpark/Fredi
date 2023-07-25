@@ -39,7 +39,7 @@ function Fair_ArtworkCard({
       <TextWrap>
         <ProductNameWrap>
           <ProductName>{item?.name} {item?.idx}</ProductName>
-          <Designer>{item?.designer}</Designer>
+          <Designer>{item?.designer_name}</Designer>
         </ProductNameWrap>
         <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item?.isLike ? likeOnImage : likeOffImage} />
       </TextWrap>
@@ -118,7 +118,7 @@ font-family:'Pretendard Variable';
   font-weight: 310;
   text-align: left;
   font-size: 17px;
-  line-height:18px;
+  line-height:19px;
   @media only screen and (max-width: 1440px) {
     font-size: 14px;
     line-height:14px;

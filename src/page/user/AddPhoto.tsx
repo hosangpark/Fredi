@@ -23,6 +23,8 @@ import { APILink, APIUserDetails } from '../../api/UserAPI';
 import LoadingIndicator from '../../components/Product/LoadingIndicator';
 import AddLink from './AddLink';
 import EditLink from './EditLink';
+import imageCompression from 'browser-image-compression';
+import { NoDoubleEmptySpace } from '../../util/Reg';
 
 export type TUserDetails = {
   idx: number;
@@ -59,7 +61,7 @@ function AddPhoto() {
   const [ShowImage, setShowImage] = useState<any[]>([]);
   // const [Name, setName] = useState<string>('');
   const [Title, setTitle] = useState<string>('');
-  const [About, setAbout] = useState<string>('');
+  const [About, setAbout] = useState<string>(' ');
   const [alertType, setAlertType] = useState<string>();
   const [UploadImage, setUploadImages] = useState<dndData[]>([]);
   const [LinkList, setLinkList] = useState<AddLinkListType[]>([]);
@@ -70,10 +72,12 @@ function AddPhoto() {
   const [LinkModal, setLinkModal] = useState<boolean>(false);
   
   const UploadSns = async() =>{
+    if(Title.length == 0)return(setShowModal(true),setAlertType('제목을 입력해주세요.'))
     if(UploadImage.length == 0)return(setShowModal(true),setAlertType('사진을 등록해주세요.'))
     if(About.length == 0)return(setShowModal(true),setAlertType('내용을 등록해주세요.'))
     if(LinkList.length == 0)return(setShowModal(true),setAlertType('링크를 등록해주세요.'))
     if(categoryArray.length == 0)return(setShowModal(true),setAlertType('카테고리를 등록해주세요.'))
+    setIsLoading(true)
 
     const formData = new FormData();
     for (var i = 0; i < categoryArray.length; i++){
@@ -95,13 +99,17 @@ function AddPhoto() {
     try {
       const res = APISnsAdd(formData);
       // console.log('55')
-      console.log('APISnsAdd',res);
-      // setShowModal(true)
+      // console.log('APISnsAdd',res);
+        setShowModal(true)
+        setAlertType('업로드 되었습니다.')
       // setUserDetails(res);
       // setIsSnsUser(res.type !== 1 ? true : false);
+      
+        // setIsLoading(false)
       } catch (error) {
         console.log(error);
         // navigate('/signin', { replace: true });
+        // setIsLoading(false)
     }
   }
   
@@ -127,23 +135,29 @@ function AddPhoto() {
     }
   };
   
-  const handleImage = (value: File[]) => {
+  const handleImage = async(value: File[]) => {
     if(UploadImage.length > 12)return(setShowModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
     if(value.length > 12)return(setShowModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
+    
+    const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 500,
+    };
     let fileURLs:dndData[] = [...UploadImage];
-    const ShowImages = value;
     let imageUrlLists = [...ShowImage];
-    setIsLoading(true)
+    const ShowImages = value;
+    // setIsLoading(true)
     for (let i = 0; i < value.length; i++) {
       let reader = new FileReader();
       const currentImageUrl = URL.createObjectURL(ShowImages[i]);
       imageUrlLists.push(currentImageUrl);
       let file = value[i];
+      const compressedFile = await imageCompression(file, options);
       reader.onload = () => {
-        const file = { url: reader.result as string, name: value[i].name, symbol: String(Date.now()), file: value[i] };
+        const file = { url: reader.result as string, name: compressedFile.name, symbol: String(Date.now()), file: compressedFile };
         fileURLs.push(file)
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(compressedFile);
     }
     setShowImage(imageUrlLists.slice(0, 12))
     setUploadImages(fileURLs)
@@ -268,7 +282,7 @@ function AddPhoto() {
           maxLength={20}
           value={Title}
           onChange={(e) => {
-            setTitle(e.target.value);
+            setTitle(NoDoubleEmptySpace(e.target.value));
           }}
           placeholder="Input here"
           />
@@ -280,7 +294,7 @@ function AddPhoto() {
             maxLength={300}
             value={About}
             onChange={(e) => {
-              setAbout(e.target.value);
+              setAbout(NoDoubleEmptySpace(e.target.value));
             }}
             placeholder="Input here"
             />
@@ -376,6 +390,7 @@ function AddPhoto() {
       onClick={() => {
         if(alertType == '12장 이상 등록할 수 없습니다.' ||
         alertType == '링크는 1개 이상 추가 할 수 없습니다.' ||
+        alertType == '제목을 입력해주세요.' ||
         alertType == '사진을 등록해주세요.' ||
         alertType == '내용을 등록해주세요.' ||
         alertType == '링크를 등록해주세요.' ||
@@ -389,6 +404,10 @@ function AddPhoto() {
         }
       }}
       text={alertType? alertType : '저장되었습니다.'}
+      />
+      <LoadingIndicator
+      loading={IsLoading}
+      setLoading={setIsLoading}
       />
     </Container>
   );
@@ -404,7 +423,7 @@ const Container = styled.div`
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
     width:100%;
-    margin:0;
+    margin:0 20px;
     flex-direction: column;
     border-top: 0;
   }

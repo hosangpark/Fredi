@@ -21,12 +21,14 @@ import img03 from '../../asset/image/img03.png';
 import img04 from '../../asset/image/img05.png';
 import { APIArtistFollowAdd, APISnsList } from '../../api/ProductAPI';
 import AlertModal from '../../components/Modal/AlertModal';
+import Nodata from '../../components/Product/NoData';
 
 
 
 function MobileProfile() {
   const navigate = useNavigate();
   const { idx } = useParams();
+  const paramsidx = idx
   const [isSnsUser, setIsSnsUser] = useState(false);
   const [linkList, setLinkList] = useState<LinkListType[]>([]);
   const [SnsList, setSnsList] = useState<SnsList[]>([]);
@@ -54,7 +56,7 @@ function MobileProfile() {
           setAlertType('팔로우 해제')
         }
         setShowAlertModal(true)
-        getproductList(page)
+        getUserDetails()
       } catch (error) {
         console.log(error);
       }
@@ -74,7 +76,7 @@ function MobileProfile() {
   const getproductList = async (page:number) => {
     const data = {
       page: page,
-      user_idx: idx
+      user_idx: paramsidx
     };
     try {
       if (history) {
@@ -90,7 +92,7 @@ function MobileProfile() {
 
   const getUserDetails = async () => {
     let data = {
-      idx:idx
+      idx:paramsidx
     }
     try {
       const res = await APIUserDetails(data);
@@ -106,7 +108,7 @@ function MobileProfile() {
     const page = Number(sessionStorage.getItem('PersonalListPage'));
     setHistory(true);
     setPage(page);
-    setSnsList(list);
+    // setSnsList(list);
     sessionStorage.removeItem('PersonalListPage');
     sessionStorage.removeItem('PersonalList');
   };
@@ -116,13 +118,14 @@ function MobileProfile() {
     if (div) {
       sessionStorage.setItem('PersonalList', JSON.stringify(SnsList));
       sessionStorage.setItem('PersonalListPage', String(page));
-      navigate(`/personalpage/${idx}`,{state:idx});
+      navigate(`/personalpage/${paramsidx}`,{state:paramsidx});
     }
   };
   
   const getLinks = async () => {
     const data = {
-      page: 1
+      page: 1,
+      idx: paramsidx
     };
     try {
       const {list,total} = await APILink(data);
@@ -185,7 +188,9 @@ function MobileProfile() {
               </Sheet.Header>
               <SheetWrap>
                 {/* 링크 최대갯수 알아야함 */}
-                {linkList.map((item,index)=>{
+                {linkList&&
+                linkList.length > 0 ?
+                linkList.map((item,index)=>{
                   return(
                 <LayoutWrap key={index}>
                   <LinkImageWrap>
@@ -206,7 +211,10 @@ function MobileProfile() {
                   </LinkItemBox>
                 </LayoutWrap>
                   )
-                })}
+                })
+                :
+                <Nodata Text={'등록된 링크가 없습니다.'}/>
+                }
                 
               </SheetWrap>
               {/* 링크 갯수에 따라 빈박스 삭제 */}
@@ -251,7 +259,7 @@ function MobileProfile() {
             <ButtonImageWrap  style={{marginRight:6}} onClick={()=>setQrModal(true)}>
               <ButtonImage src={qrImage}/>
             </ButtonImageWrap>
-            <FollowButtonBox follow={userDetails?.isLike ? userDetails?.isLike : false} style={{marginLeft:6}} onClick={()=> {
+            <FollowButtonBox follow={userDetails? userDetails?.isLike : false} style={{marginLeft:6}} onClick={()=> {
               if(userDetails?.idx){
                 UserFollow(userDetails?.idx)
                 console.log(userDetails?.idx)
@@ -315,6 +323,8 @@ function MobileProfile() {
           
       </ProductListWrap>
       <QrModal
+        innerWidth={innerWidth}
+        idx={paramsidx}
         visible={qrmodal}
         setVisible={setQrModal}
         onClick={() => {
@@ -719,6 +729,7 @@ const UploadButton = styled.div`
 font-family:'Pretendard Variable';
 font-weight: 460;
   display:block;
+  cursor: pointer;
   border:1px solid rgb(180, 180, 180);
   padding:12px 60px;
   border-radius:5px;
@@ -731,6 +742,10 @@ const FlexBox = styled.div`
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
+  margin-bottom:20px;
+  @media only screen and (max-width: 768px) {
+    margin-bottom:10px;
+  }
 `;
 
 const EmptyBox = styled.div`

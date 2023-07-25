@@ -19,6 +19,7 @@ import 'swiper/css/scrollbar';
 import { ArtworkListItem } from '../../types/Types';
 import { APISnsLikeList } from '../../api/ProductAPI';
 import SNSCard from '../../components/Shop/SnsCard';
+import Nodata from '../../components/Product/NoData';
 
 
 interface ICategorySelectButton {
@@ -79,7 +80,7 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
-      sessionStorage.setItem('LikeSnsList', JSON.stringify(LikeSnsList));
+      // sessionStorage.setItem('LikeSnsList', JSON.stringify(LikeSnsList));
       sessionStorage.setItem('LikeSnsPage', String(page));
       sessionStorage.setItem('LikeSnsSave','Save')
       sessionStorage.setItem('y', String(y ?? 0));
@@ -163,7 +164,7 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
         )
         })
         :
-        <>NO ITEMS</>
+        <Nodata/>
         }
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}

@@ -7,8 +7,9 @@ import NaverLoginButton from '../../components/Login/NaverLoginButton';
 import { UserContext } from '../../context/user';
 import { removeHistory } from '../../components/Layout/Header';
 
-const JAVASCRIPT_KEY = '1abc385bc918f8e46dfb85b5128a89d5';
-const REDIRECT_URI = 'https://fredi.dmonster.kr/kakao';
+// const JAVASCRIPT_KEY = '1abc385bc918f8e46dfb85b5128a89d5';
+const JAVASCRIPT_KEY = 'cac5b20c67f677c0d379cb1d25ad4140';
+const REDIRECT_URI = 'https://new.fredi.co.kr/kakao';
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${JAVASCRIPT_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
 function SignIn() {
@@ -19,6 +20,7 @@ function SignIn() {
   const [alertType, setAlertType] = useState<'emptyUserId' | 'emptyPassword' | 'faild'>();
 
   const onKakaoLogin = async () => {
+    console.log('dad')
     const userAgent = window.navigator.userAgent;
     if (userAgent === 'APP-android' || userAgent === 'APP-ios') {
       window.ReactNativeWebView.postMessage(

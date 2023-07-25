@@ -28,6 +28,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import FollowCard from '../../components/Shop/FollowCard';
+import Nodata from '../../components/Product/NoData';
 
 
 
@@ -82,7 +83,7 @@ function Follow({saveHistory,LikeSnsList,FollowArtistList}
             modules={[Navigation, Pagination, Scrollbar]}
             slidesPerView={innerWidth<=768? innerWidth/110:(innerWidth-100)/110}
           >
-            {FollowArtistList?
+            {FollowArtistList && FollowArtistList.length > 0 ?
             FollowArtistList.map((item,index) => {
               return (
               <SwiperSlide key={index}>
@@ -105,7 +106,8 @@ function Follow({saveHistory,LikeSnsList,FollowArtistList}
           </Swiper>
         </SwiperWrap>
       <ProductListWrap>
-        {LikeSnsList ?
+        {LikeSnsList &&
+        LikeSnsList.length > 0 ?
         LikeSnsList.map((item,index)=>{
           return(
             // <div onClick={()=>console.log(item)}>asdsadasd</div>
@@ -118,9 +120,7 @@ function Follow({saveHistory,LikeSnsList,FollowArtistList}
           )
           })
           :
-          <>
-          팔로우 아티스트가 없습니다.
-          </>
+          <Nodata/>
         }
       </ProductListWrap>
       <AlertModal

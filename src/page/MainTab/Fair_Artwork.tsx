@@ -31,6 +31,7 @@ import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
 import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
 import Fair_ArtworkCard from '../../components/Shop/Fair_ArtworkCard';
+import Nodata from '../../components/Product/NoData';
 
 
 interface ICategorySelectButton {
@@ -137,7 +138,8 @@ function FairArtwork({saveHistory,CategoryClick,onLikeProduct,productList,select
       </CategorySelectButtonWrap>
       
       <ProductListWrap>
-        {productList &&
+        {productList && 
+        productList.length > 0 ?
         productList.map((item:any,index:number)=>{
           return(
             <Fair_ArtworkCard
@@ -153,11 +155,13 @@ function FairArtwork({saveHistory,CategoryClick,onLikeProduct,productList,select
                   setShowLogin(true);
                 }
               }}
-              showType={2}
+              showType={1}
               index={index}
             />
           )
           })
+          :
+          <Nodata/>
         }
       </ProductListWrap>
       {/* <InterView ref={interSectRef} /> */}

@@ -88,7 +88,11 @@ function BottomNav() {
       <MenuButton
         onClick={() => {
           removeHistory();
+          if (!token) {
+            setShowLogin(true);
+          } else {
           navigate(`/MobileProfile/${user.idx}`,{state:user.idx});
+          }
           // console.log(user.idx)
         }}
       >

@@ -76,7 +76,7 @@ function BookMarkTab() {
     const list = JSON.parse(sessionStorage.getItem('BookMarkTabList') ?? '');
     const page = Number(sessionStorage.getItem('BookMarkPage'));
 
-    setBookMarkList(list)
+    // setBookMarkList(list)
     setHistory(true);
     setPage(page);
     

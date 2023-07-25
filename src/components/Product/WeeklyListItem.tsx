@@ -82,7 +82,7 @@ function WeeklyListItem({
       <Swiper
         // install Swiper modules
         modules={[Navigation, Pagination, Scrollbar]}
-        slidesPerView={ProductViews}
+        slidesPerView={innerWidth <= 768? 2.3 : 5}
         navigation= {naviArrow ?
             {
               prevEl: navigationPrevRef.current,

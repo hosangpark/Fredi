@@ -15,6 +15,7 @@ import { DndList, dndData } from '../../components/DnD/DnD';
 import AlertModal from '../../components/Modal/AlertModal';
 import AddLink from './AddLink';
 import EditLink from './EditLink';
+import { NoDoubleEmptySpace } from '../../util/Reg';
 
 export type TUserDetails = {
   idx: number;
@@ -50,9 +51,9 @@ function EditProfile() {
   const [ChangeImageFormData, setChangeImageFormData] = useState<any>();
   const [images, setImages] = useState<any>();
   const [showContentModal, setShowContentModal] = useState(false);
+  const [alertType, setAlertType] = useState<string>();
 
   const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
-  const [alertType, setAlertType] = useState<string>();
 
   const [isSnsUser, setIsSnsUser] = useState(false);
   const [userDetails, setUserDetails] = useState<UserType>();
@@ -237,7 +238,7 @@ function EditProfile() {
               maxLength={20}
               value={name}
               onChange={(e) => {
-                setName(e.target.value);
+                setName(NoDoubleEmptySpace(e.target.value));
               }}
               placeholder="Brand name or Nickname"
             />
@@ -252,7 +253,7 @@ function EditProfile() {
               maxLength={500}
               value={About}
               onChange={(e) => {
-                setAbout(e.target.value);
+                setAbout(NoDoubleEmptySpace(e.target.value));
               }}
               placeholder="Add a brief bio"
             />
