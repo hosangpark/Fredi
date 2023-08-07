@@ -6,11 +6,15 @@ import { APISignIn } from '../../api/UserAPI';
 import NaverLoginButton from '../../components/Login/NaverLoginButton';
 import { UserContext } from '../../context/user';
 import { removeHistory } from '../../components/Layout/Header';
+import axios from 'axios';
 
-// const JAVASCRIPT_KEY = '1abc385bc918f8e46dfb85b5128a89d5';
-const JAVASCRIPT_KEY = 'cac5b20c67f677c0d379cb1d25ad4140';
-const REDIRECT_URI = 'https://new.fredi.co.kr/kakao';
-const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${JAVASCRIPT_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+const RESTAPI_KEY = 'e02372a61c8e0045150426a18b5dbe1b';
+const JAVASCRIPT_KEY = '1abc385bc918f8e46dfb85b5128a89d5';
+const REDIRECT_URI = 'https://new.fredi.co.kr/SignUpKaKao';
+// const REDIRECT_URI = 'http://localhost:3000/SignUpKaKao';
+// const REDIRECT_URI = 'https://new.fredi.co.kr/kakao';
+const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${RESTAPI_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+const grantType = "authorization_code";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -19,18 +23,20 @@ function SignIn() {
   const [password, setPassword] = useState<string>('');
   const [alertType, setAlertType] = useState<'emptyUserId' | 'emptyPassword' | 'faild'>();
 
-  const onKakaoLogin = async () => {
-    console.log('dad')
+    
+
+const onKakaoLogin = async () => {
     const userAgent = window.navigator.userAgent;
     if (userAgent === 'APP-android' || userAgent === 'APP-ios') {
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
-          action: 'kakao',
+          action: 'SignUpKaKao',
         })
       );
       return;
     }
-    window.Kakao.Auth.authorize({ redirectUri: REDIRECT_URI });
+    // window.Kakao.Auth.authorize({ redirectUri: REDIRECT_URI });
+    window.location.href = KAKAO_AUTH_URL
   };
 
   const onSignIn = async () => {
@@ -43,7 +49,6 @@ function SignIn() {
       uuid: uuid,
     };
     try {
-      // const res = {token:'dasda',userInfo:{idx:0,level:1}};
       const res = await APISignIn(data);
       console.log(res);
       setAlertType(undefined);
@@ -68,8 +73,8 @@ function SignIn() {
     window.ReactNativeWebView.postMessage(JSON.stringify(e));
     const response = JSON.parse(e.data);
 
-    if (response.action === 'kakao') {
-      navigate(`/kakao?code=${response.code}`);
+    if (response.action === 'SignUpKaKao') {
+      navigate(`/SignUpKaKao?code=${response.code}`);
     }
   }, []);
 
@@ -77,8 +82,8 @@ function SignIn() {
     if (document) {
       window.ReactNativeWebView.postMessage(JSON.stringify(e));
       const response = JSON.parse(e.data);
-      if (response.action === 'kakao') {
-        navigate(`/kakao?code=${response.code}`);
+      if (response.action === 'SignUpKaKao') {
+        navigate(`/SignUpKaKao?code=${response.code}`);
       } else {
       }
     }
@@ -106,50 +111,50 @@ function SignIn() {
   return (
     <Container>
       <SignInBox>
-        <Title>로그인</Title>
+        <Title>LOGIN</Title>
         <InputWrap>
-          <InputTitle>아이디</InputTitle>
+          <InputTitle>ID</InputTitle>
           <TextInput
-            maxLength={20}
+            maxLength={40}
             value={userId}
             autoCapitalize="off"
             onChange={(e) => setUserId(e.target.value)}
-            placeholder="아이디를 입력해 주세요."
+            placeholder="E-mail"
           />
-          {alertType === 'emptyUserId' && <AlertText>*아이디를 입력해 주세요.</AlertText>}
-          {alertType === 'faild' && <AlertText>아이디 또는 비밀번호를 확인해 주세요.</AlertText>}
+          {alertType === 'emptyUserId' && <AlertText>*enter your ID.</AlertText>}
+          {alertType === 'faild' && <AlertText>check your ID or password.</AlertText>}
         </InputWrap>
         <InputWrap>
-          <InputTitle>비밀번호</InputTitle>
+          <InputTitle>Password</InputTitle>
           <TextInput
             maxLength={16}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
-            placeholder="비밀번호를 입력해 주세요."
+            placeholder="Password"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 onSignIn();
               }
             }}
           />
-          {alertType === 'emptyPassword' && <AlertText>*비밀번호를 입력해 주세요.</AlertText>}
-          {alertType === 'faild' && <AlertText>아이디 또는 비밀번호를 확인해 주세요.</AlertText>}
+          {alertType === 'emptyPassword' && <AlertText>*enter your password.</AlertText>}
+          {alertType === 'faild' && <AlertText>check your ID or password.</AlertText>}
         </InputWrap>
         <BlackButton onClick={onSignIn}>
-          <BlackButtonText>로그인</BlackButtonText>
+          <BlackButtonText>Login</BlackButtonText>
         </BlackButton>
         <FindIdRowWrap>
-          <FindIdText onClick={() => navigate('/finduserid')}>아이디 찾기</FindIdText>
+          <FindIdText onClick={() => navigate('/finduserid')}>I forgot ID</FindIdText>
           <Line />
-          <FindIdText onClick={() => navigate('/findpassword')}>비밀번호 찾기</FindIdText>
+          <FindIdText onClick={() => navigate('/findpassword')}>I forgot Password</FindIdText>
         </FindIdRowWrap>
         <SnsRowWrap>
           <SnsButton src={kakaoImage} onClick={onKakaoLogin} />
           <NaverLoginButton />
         </SnsRowWrap>
         <BottomText onClick={() => navigate('/SignUp1')}>
-          아직 회원이 아니신가요?&nbsp;<UnderLinedText>회원가입</UnderLinedText>
+          <UnderLinedText>Sign in</UnderLinedText>
         </BottomText>
       </SignInBox>
     </Container>

@@ -1,12 +1,11 @@
-import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
-import Autoplay from 'embla-carousel-autoplay';
-import leftButtonImage from '../../asset/image/ico_prev.png';
-import rightButtonImage from '../../asset/image/ico_next.png';
+import { useNavigate } from 'react-router-dom';
+import leftButtonImage from '../../asset/image/prev.svg';
+import rightButtonImage from '../../asset/image/next.svg';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import { APIArtistFollowAdd, APIArtistList, APIFairList, APILikeProduct, APIProductList, APISnsList } from '../../api/ProductAPI';
+import { APIArtistFollowAdd, APIFairList, APIProductList, APISnsList } from '../../api/ProductAPI';
 import { APIGetBanner } from '../../api/SettingAPI';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
@@ -20,60 +19,17 @@ import ProductMainList from '../../components/Product/ProductMainList';
 import WeeklyEditionList from '../../components/Product/WeeklyEditionList';
 import Footer from '../../components/Layout/Footer';
 import MainArtistList from '../../components/Product/MainArtistList';
-import { ArtistItem, ArtistList, ArtworkListItem, FairList, FeaturedListType, MainFairList, SnsList, TImage, TProductListItem, WeeklyListItem } from '../../types/Types';
+import { Navigation, Pagination, Scrollbar, Autoplay } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { ArtistList, ArtworkListItem, FairList, FeaturedListType, SnsList, TImage, WeeklyListItem } from '../../types/Types';
 import LastestList from '../../components/Product/LastestList';
 import FairMainList from '../../components/Product/FairMainList';
-import { APIFeaturedWorksList, APITrendingArtist, APIWeeklyList } from '../../api/ListAPI';
+import { APIFeaturedWorksList, APIHomeStyleList, APITrendingArtist, APIWeeklyList } from '../../api/ListAPI';
 import FeaturedList from '../../components/Product/FeaturedList';
 import HomeStyleList from '../../components/Product/HomeStyleList';
-
-
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {
-    width: '100%',
-    // height: '100%',
-    // aspectRatio: '1/1',
-},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
+import 'swiper/css';
+import 'swiper/css/pagination';
+import './Home.css';
 
 
 function Home() {
@@ -98,26 +54,14 @@ function Home() {
   const [appdownModal, setAppdownModal] = useState(false);
 
   const { user } = useContext(UserContext);
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const { classes } = useStyles();
-  const interSectRef = useRef(null);
+  const navigationPrevRef = React.useRef(null)
+  const navigationNextRef = React.useRef(null)
+
 
   useEffect(() => {
-    const userAgent = window.navigator.userAgent;
     const resizeListener = () => {
       setInnerWidth(window.innerWidth);
     };
-    if(innerWidth > 768){
-      setAppdownModal(false)
-    } else {
-      // console.log('userAgent',userAgent);
-      // const code = searchParams.get("code");
-      if (userAgent === "APP-android" || userAgent === "APP-ios") {
-        setAppdownModal(false)
-      } else{
-        setAppdownModal(true)
-      }
-    }
     window.addEventListener("resize", resizeListener);
   }, [innerWidth]);
 
@@ -171,9 +115,8 @@ function Home() {
       if (history) {
         return setHistory(false);
       }
-      const { list } = await APISnsList({page:1});
-      setHomeList(list.slice(0,10));
-      // console.log('product', list,);
+      const { list } = await APIHomeStyleList({page:1,is_home:"Y"});
+      setHomeList(list.slice(0,20));
     } catch (error) {
       console.log(error);
     }
@@ -227,9 +170,10 @@ function Home() {
   };
 
 
-  const LinkHandler = (e:React.MouseEvent,title:string,idx?:number)=>{
+  const LinkHandler = (e:React.MouseEvent,title:string,idx?:number,index?:number)=>{
     const y = globalThis.scrollY;
     sessionStorage.setItem('Home_y', String(y ?? 0));
+    sessionStorage.setItem('SNSy', 'ScrollOnce');
     if(title === 'Fairs'){
       navigate(`/FairContent/${idx}`)
     } else if (title.includes('Latest')) {
@@ -240,7 +184,9 @@ function Home() {
       //   setShowLogin(true)
       // } else {
       // }
-        navigate(`/personalpage/${idx}`,{state:idx});
+      sessionStorage.setItem('SNSy', 'ScrollOnce');
+      sessionStorage.setItem('removeSNSHistory', 'SnsFeed');
+      navigate(`/personalpage/${idx}`,{state:{idx:idx,page:1,index:index}});
     } else if (title.includes('Weekly')) {
       navigate(`/WeeklyEdition/${idx}`,{state:idx})
     } else if (title.includes('Trending')) {
@@ -271,6 +217,31 @@ function Home() {
     getFeaturedList()
   }, []);
 
+  const HOME_VISITED:any = localStorage.getItem("homeVisited");
+  const userAgent = window.navigator.userAgent;
+  const AAA = JSON.parse(HOME_VISITED)
+
+  useEffect(() => {
+      const today = new Date();
+  if(innerWidth > 768){
+    setAppdownModal(false)
+  } else {
+    if (userAgent === "APP-android" || userAgent === "APP-ios") {
+      const handleMainPop = () => {
+        if (AAA && AAA > today) {
+          return;
+        }
+         if (!AAA || AAA < today) {
+          setAppdownModal(true);
+        }
+      };
+      window.setTimeout(handleMainPop, 1000); // 1초 뒤 실행
+    } 
+  }
+
+    
+  }, [HOME_VISITED]);
+
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('Home_y'));
     // console.log('scrollYscrollYscrollY',scrollY)
@@ -285,98 +256,76 @@ function Home() {
       sessionStorage.removeItem('Home_y');
     }
   }, []);
+
   const UserFollow = async(itemidx:number) =>{
     if (user.idx) {
       const data = {
         designer_idx: itemidx,
       };
-      try {
-        const res = await APIArtistFollowAdd(data);
-        if(res.message == '좋아요 완료'){
-          setAlertType('팔로우 완료')
-        } else {
-          setAlertType('팔로우 해제')
+      if(itemidx !== user.idx){
+        try {
+          const res = await APIArtistFollowAdd(data);
+          if(res.message == '좋아요 완료'){
+            setAlertType('Followed')
+          } else {
+            setAlertType('unFollowed')
+          }
+          setShowAlertModal(true)
+          getArtistList()
+        } catch (error) {
+          console.log(error);
         }
-        setShowAlertModal(true)
-        getArtistList()
-      } catch (error) {
-        console.log(error);
+      } else {
+        setShowAlertModal(true);setAlertType(`You can't follow yourself`)
       }
     } else {
-      setShowAlertModal(true);setAlertType('회원가입 후 이용 가능합니다.')
+      setShowAlertModal(true);setAlertType('Available after Sign up.')
     }
   }
-
-
-  const slides = bannerList.map((item:any) => {
-    return(
-    <Carousel.Slide key={item.idx}>
-      <a>
-        <SlideImage src={item.file_name} className={classes.carouselImages} />
-      </a>
-    </Carousel.Slide>
-    );
-  });
-
-  const slidesMobile = bannerListMobile.map((item:any) => {
-    // console.log('item', item);
-    return(
-      <Carousel.Slide key={item.idx}>
-      <a>
-        <SlideImage src={item.file_name} className={classes.carouselImages} />
-      </a>
-    </Carousel.Slide>
-    );
-  });
 
   return (
     <Container id="productContainer">
       <CarouselWrap>
-        {innerWidth > 768 && bannerList.length > 0 && (
-          <Carousel
-            plugins={[autoplay.current]}
-            withIndicators
-            loop
-            withKeyboardEvents={false}
-            nextControlIcon={<ControlImage left={true} src={rightButtonImage} />}
-            previousControlIcon={<ControlImage src={leftButtonImage} />}
-            styles={{
-              root: { maxHeight: 600 },
-              control: { background: 'transparent', width: 45, border: 0, '@media (max-width: 768px)': { width: 25 } },
+        <Swiper
+        modules={[Navigation, Pagination, Scrollbar, Autoplay]}
+        
+        navigation= {
+            {
+              prevEl: navigationPrevRef.current,
+              nextEl: navigationNextRef.current,
             }}
-            classNames={{
-              root: classes.carousel,
-              // controls: classes.carouselControls,
-              indicator: classes.carouselIndicator,
-              control: classes.carouselControl,
-            }}
-          >
-            {slides}
-          </Carousel>
-        )}
-        {innerWidth <= 768 && bannerListMobile.length > 0 && (
-          <Carousel
-            plugins={[autoplay.current]}
-            withIndicators
-            nextControlIcon={<ControlImage left={true} src={rightButtonImage} />}
-            previousControlIcon={<ControlImage src={leftButtonImage} />}
-            loop
-            withKeyboardEvents={false}
-            styles={{
-              root: { maxHeight: 700, aspectRatio: '1/1' },
-              control: { background: 'transparent', width: 45, border: 0, aspectRatio: '1/1'},
-            }}
-            classNames={{
-              root: classes.carousel,
-              // controls: classes.carouselControls,
-              indicator: classes.carouselIndicator,
-              control: classes.carouselControl,
-            }}
-            className="casual"
-          >
-            {slidesMobile}
-          </Carousel>
-        )}
+        // spaceBetween={30}
+        pagination={{clickable: true}}
+        onSwiper={(swiper) => console.log(swiper)}
+        onSlideChange={() => console.log('slide change')}
+        // autoplay={{delay: 5000}}
+        style={{}}
+      >
+        {innerWidth <= 768 ? 
+        bannerListMobile.map((item,index)=>{
+          return(
+            <SwiperSlide key={index}>
+              <ProductImage height={innerWidth} src={item.file_name} />
+            </SwiperSlide>
+          )
+        })
+        : 
+        bannerList.map((item,index)=>{
+          return(
+            <SwiperSlide key={index}>
+              <ProductImage height={innerWidth} src={item.file_name} />
+            </SwiperSlide>
+          )
+        })}
+      <>
+        <LeftArrow ref={navigationPrevRef}>
+          <ControlImage left={true} src={leftButtonImage}/>
+        </LeftArrow>
+        <RightArrow ref={navigationNextRef}>
+          <ControlImage src={rightButtonImage}/>
+        </RightArrow>
+      </>
+      </Swiper>
       </CarouselWrap>
       <ProductListWrap>
         <FairMainList
@@ -388,7 +337,7 @@ function Home() {
         ProducList={FairList}
         arrowView={false}
         aspect={495/332}
-        paddingnum={innerWidth <= 768? 0:60}
+        paddingnum={innerWidth <= 768? 0:67}
         marginT={innerWidth <= 768? 100:169.97}
         marginB={innerWidth <= 768? 21:55}
         />
@@ -402,7 +351,7 @@ function Home() {
         arrowView={false}
         aspect={300/370}
         titlesize={21}
-        paddingnum={innerWidth <= 768? 0:60}
+        paddingnum={innerWidth <= 768? 0:67}
         marginRight={18}
         marginT={innerWidth <= 768? 143:172.22}
         marginB={innerWidth <= 768? 21:56.36}
@@ -410,10 +359,10 @@ function Home() {
         <WeeklyEditionList
         LinkHandler={LinkHandler}
         title={'Weekly Edition'}
-        ProductViews={innerWidth <= 768? 1.1 : innerWidth <= 1440? 2.7 :3.4}
+        ProductViews={innerWidth <= 768? 1.1 : 2.7} // innerWidth <= 1440? 2.7 :3.4
         naviArrow = {false}
         scrollbar = {innerWidth <= 768? false : true}
-        ProducList = {WeeklyList.slice(0,20)}
+        ProducList = {WeeklyList}
         arrowView={false}
         paddingnum={innerWidth <= 768? 0:50}
         marginT={innerWidth <= 768? 120:175.22}
@@ -469,7 +418,7 @@ function Home() {
       {/* <InterView ref={interSectRef} /> */}
       {appdownModal&&
       <AppdownModal 
-        onClose={()=>setAppdownModal(false)} 
+        onClose={(e)=>setAppdownModal(e)} 
         // children={}
       />
       }
@@ -481,14 +430,14 @@ function Home() {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <AlertModal
         visible={ShowAlertModal}
         setVisible={setShowAlertModal}
         onClick={() => {
           if(
-            alertType == '회원가입 후 이용 가능합니다.'
+            alertType == 'Available after Sign up.'
           ){
             navigate('/signin');
           } else {
@@ -527,6 +476,17 @@ const ProductListWrap = styled.div`
     margin-left:0px;
   }
 `;
+const ProductImage = styled.img<{height:number}>`
+  width: 100%;
+  height:${props => (props.height/(3.2118))}px;
+  background-color:black;
+  object-fit:cover;
+  cursor: pointer;
+  @media only screen and (max-width: 768px) {
+    height:${props => props.height}px;
+  }
+`;
+
 
 const CarouselWrap = styled.div`
   display: block;
@@ -549,6 +509,32 @@ const ControlImage = styled.img<{left?:boolean}>`
     height: 15.16px;
   }
 `;
+const LeftArrow = styled.div`
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor: pointer;
+  position:absolute;
+  top:45%;
+  left:50px;
+  z-index:99999;
+  @media only screen and (max-width: 768px) {
+    left:20px;
+  }
+`
+const RightArrow = styled.div`
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor: pointer;
+  position:absolute;
+  top:45%;
+  right:50px;
+  z-index:99999;
+  @media only screen and (max-width: 768px) {
+    right:20px;
+  }
+`
 
 const SlideImage = styled.img`
   vertical-align: middle;

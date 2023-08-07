@@ -93,6 +93,7 @@ function RegisterProduct() {
     console.log(resData);
     setCategory(String(resData.category) as '1' | '2' | '3' | '4' | '5' | '6');
     setWeight(resData.weight);
+    console.log('setInite',resData.imageList)
     setInit(resData.imageList.map((image: any) => ({ symbol: image.idx, name: image.file_name, url: image.file_name })));
     setName(resData.name);
     setDesigner(resData.designer);

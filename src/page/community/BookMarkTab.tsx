@@ -4,12 +4,12 @@ import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'r
 import Autoplay from 'embla-carousel-autoplay';
 import leftButtonImage from '../../asset/image/home02.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
-import snsImage from '../../asset/image/snsicon.png';
+import snsImage from '../../asset/image/discover.svg';
 import bookMarkImage from '../../asset/image/Bookoff.svg';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { SnsList, TImage, TProductListItem } from '../../types/Types';
+import { CategoryType, SnsList, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -18,17 +18,25 @@ import ShowTypeButton from '../../components/Shop/ShowTypeButton';
 import SearchBox from '../../components/Product/SearchBox';
 import { APILikeShop, } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
-import { removeHistory } from '../../components/Layout/Header';
+import { removeHistory, removeSNSHistory } from '../../components/Layout/Header';
 import FairCard from '../../components/Shop/FairCard';
 import Follow from './Follow';
 import Feed from './Feed';
 import BookMark from './BookMark';
 import { FairListItem } from '../../types/Types';
-import { CategoryList } from '../../components/List/List';
-import { APIBookMarkLikeList } from '../../api/ProductAPI';
+import { APIBookMarkLikeList, APICategoryList } from '../../api/ProductAPI';
 
 
 
+const SnsImage = styled.img`
+  width:25px;
+  height:25px;
+  object-fit:contain;
+  @media only screen and (max-width:768px){
+    width:20px;
+    height:20px;
+  }
+`
 const TabImage = styled.img`
   width:25px;
   height:25px;
@@ -49,6 +57,7 @@ function BookMarkTab() {
   const [history, setHistory] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
+  const [categoriList, setcategoriList] = useState<CategoryType[]>([]);
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const interSectRef = useRef(null);
   
@@ -63,20 +72,34 @@ function BookMarkTab() {
         return setHistory(false);
       }
       const { list, total } = await APIBookMarkLikeList(data);
-      setBookMarkList(list);
+      if(page > 1){
+        setBookMarkList((prev) => [...prev, ...list]);
+      } else {
+        setBookMarkList(list);
+      }
       setTotal(total)
       // console.log('shop', list, page);
     } catch (error) {
       console.log(error);
     }
   };
-  
+
+  const getCategoryList = async () => {
+    const data = {
+      page: 1
+    };
+    try {
+      const {list,total} = await APICategoryList(data);
+      setcategoriList(list);
+    } catch (error) {
+    }
+  };
 
   const findHistory = () => {
     const list = JSON.parse(sessionStorage.getItem('BookMarkTabList') ?? '');
     const page = Number(sessionStorage.getItem('BookMarkPage'));
 
-    // setBookMarkList(list)
+    setBookMarkList(list)
     setHistory(true);
     setPage(page);
     
@@ -86,7 +109,7 @@ function BookMarkTab() {
   };
 
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
+  const saveHistory = (e: React.MouseEvent, idx: number, index:number) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
@@ -94,7 +117,9 @@ function BookMarkTab() {
       sessionStorage.setItem('BookMarkPage', String(page));
       sessionStorage.setItem('BookMarkTabSave', 'Save');
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/personalpage/${idx}`,{state:idx});
+      sessionStorage.setItem('SNSy', 'ScrollOnce');
+      sessionStorage.setItem('removeSNSHistory', 'SnsBookMark');
+      navigate(`/personalpage/${idx}`,{state:{idx:idx,page:page,index:index}});
     }
   };
 
@@ -123,6 +148,7 @@ function BookMarkTab() {
 
   useLayoutEffect(() => {
   const Save = sessionStorage.getItem('BookMarkTabSave');
+  getCategoryList()
     if (Save) {
       findHistory();
     } else {
@@ -162,7 +188,7 @@ function BookMarkTab() {
               onSearch();
             }
           }}
-          categoryList={CategoryList}
+          categoryList={categoriList}
           category={'1'}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -187,13 +213,16 @@ function BookMarkTab() {
         </TabButtonWrap>
         <BookMark saveHistory={saveHistory} productList={BookMarkList}/>
       </div>
+      <InterView ref={interSectRef} />
     </Container>
   );
 }
 
 const Container = styled.div`
 `;
-
+const InterView = styled.div`
+  height: 150px;
+`;
 const TabButtonWrap = styled.div`
   width:400px;
   display:flex;
@@ -212,17 +241,14 @@ const TabButton = styled.div`
 `;
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
-  border-bottom: solid 1.7px ${(props) => props.color || "none"};
-  font-weight: ${props => props.color == 'black' ? 460 : 360};
-  color:#000000;
   font-family:'Pretendard Variable';
+  border-bottom: solid 1.7px ${(props) => props.color || "none"};
+  font-weight: 310;
+  color: #121212;
+  font-size: 16px;
   padding:10px 0;
   margin-top:5px;
   cursor: pointer;
-  font-size:18px;
-  @media only screen and (max-width: 768px) {
-    font-size:14px;
-  }
 `
 
 const TitleWrap = styled.div`

@@ -11,31 +11,6 @@ import ButtonContainer from '../../components/Layout/ButtonBox';
 import AlertModal from '../../components/Modal/AlertModal';
 
 
-export type TUserDetails = {
-  idx: number;
-  type: 1 | 2 | 3; // 1: fredi / 2: kakao / 3: naver
-  user_id: string;
-  password: string;
-  name: string;
-  nickname: string;
-  phone: string;
-  gender: 1 | 2;
-  birth: string;
-  visit_count: number;
-  login_time: Date | null;
-  created_time: Date;
-  suspended_time: Date | null;
-  deleted_time: Date | null;
-  reason: string;
-  level: 0 | 1 | 2 | 3; // 0: 관리자 / 1: 입점업체회원 / 2: 일반회원2 / 3: 일반회원1
-  status: 'active' | 'suspended' | 'deleted';
-};
-export type ImageItem = {
-  idx:number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  name: string;
-  image: TImage[];
-};
 
 function EditLink({Check,Cancel,Delete}:{Check:(name:string,url:string)=>void,Cancel:()=>void,Delete:()=>void}) {
   const navigate = useNavigate();
@@ -51,6 +26,15 @@ function EditLink({Check,Cancel,Delete}:{Check:(name:string,url:string)=>void,Ca
   }
 
 
+  useEffect(()=>{
+    const LinkSave = sessionStorage.getItem('LinkSave')
+    if(LinkSave){
+      let Parse = JSON.parse(LinkSave)
+      setName(Parse.title)
+      setUrl(Parse.url)
+      sessionStorage.removeItem('LinkSave');
+    }
+  },[])
 
 
   return (
@@ -63,7 +47,7 @@ function EditLink({Check,Cancel,Delete}:{Check:(name:string,url:string)=>void,Ca
           <TextInput
             value={name}
             onChange={(e) => {
-              setName(e.target.value);
+              setName(e.target.value.trim());
               // console.log(propsData)
             }}
             placeholder="Website Name"
@@ -74,7 +58,7 @@ function EditLink({Check,Cancel,Delete}:{Check:(name:string,url:string)=>void,Ca
           <TextInput
             value={url}
             onChange={(e) => {
-              setUrl(e.target.value);
+              setUrl(e.target.value.trim());
             }}
             placeholder="Website URL"
           />
@@ -151,6 +135,7 @@ const DeleteText = styled.p`
 font-family:'Pretendard Variable';
 font-weight : 310;
 color:#9C343F;
+cursor: pointer;
 font-size:14px;
   @media only screen and (max-width: 768px) {
     font-size:12px;

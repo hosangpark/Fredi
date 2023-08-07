@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { APICheckUserId } from '../../api/UserAPI';
@@ -14,7 +14,8 @@ function SignUp2() {
   const [alertType, setAlertType] = useState<string[] | undefined>();
 
   const StateData = {
-    type: location.state.type,
+    type: 1,
+    level: location.state.level,
     user_id: Email,
     password: password,
   };
@@ -79,12 +80,12 @@ function SignUp2() {
           <TimerBox>
             {alertType?.includes('NoEmail') ?
             <AuthText>
-              이메일을 확인해주세요.
+               check your e-mail.
             </AuthText>
             :
             alertType?.includes('UsedEmail') &&
             <AuthText>
-              이미 가입된 계정입니다.
+              Combine 8-16 characters and numbers.
             </AuthText>
             }
           </TimerBox>
@@ -112,12 +113,12 @@ function SignUp2() {
             <TimerBox>
             {alertType?.includes('NoPassWord') ?
             <AuthText>
-              비밀번호는 8-16자 영문, 숫자로 구성되어야 합니다.
+              Combine 8-16 characters and numbers.
             </AuthText>
             :
             alertType?.includes('NoEquale') &&
             <AuthText>
-              비밀번호를 일치해주세요.
+              match the password.
             </AuthText>
             }
             </TimerBox>

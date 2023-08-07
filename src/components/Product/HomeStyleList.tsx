@@ -13,6 +13,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import './FairMainList.css'
+import Nodata from './NoData';
 
 function HomeStyleList({
   // item,
@@ -36,7 +37,7 @@ function HomeStyleList({
   marginT,
   marginB
 }:{
-  LinkHandler:(e:React.MouseEvent, title:string, idx?:number)=>void
+  LinkHandler:(e:React.MouseEvent, title:string, idx?:number, index?:number)=>void
   title:string
   ProductViews:number
   naviArrow:boolean
@@ -93,27 +94,29 @@ function HomeStyleList({
         onSlideChange={() => console.log('slide change')}
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
-        {ProducList.map((item,index)=>{
+        {ProducList &&
+        ProducList.map((item,index)=>{
           return(
             <SwiperSlide key={index}>
               <ProductWrap marginRight={marginRight? marginRight:20}>
                 <ProductImageWrap aspect={aspect? aspect:1} height={innerWidth} 
-                onClick={(e)=>LinkHandler(e,title,item.idx)}
+                onClick={(e)=>LinkHandler(e,title,item.idx,index)}
                 >
-                  <ProductImage src={item.image[0].file_name}/>
+                  <ProductImage src={item.image[0]?.file_name? item.image[0]?.file_name : ''}/>
                 </ProductImageWrap>
-                <TextWrap>
+                {/* <TextWrap>
                   <ProductTitleText>
                     {item.name}
                   </ProductTitleText>
                   <ProductSubText>
                     {item.user?.name? item.user.name : " "}
                   </ProductSubText>
-                </TextWrap>
+                </TextWrap> */}
               </ProductWrap>
             </SwiperSlide>
           )
-        })}
+        })
+        }
         {naviArrow == true &&
         <>
         <LeftArrow ref={navigationPrevRef}>

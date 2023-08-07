@@ -35,10 +35,6 @@ return(
 
 const LoadingContainer = styled.div`
   flex:1;
-  position:absolute;
-  background:rgba(0,0,0,0.1);
-  justify-content:center;
-  align-items:center;
 `
 
 export default LoadingIndicator

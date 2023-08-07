@@ -4,7 +4,7 @@ import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'r
 import Autoplay from 'embla-carousel-autoplay';
 import leftButtonImage from '../../asset/image/home02.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
-import snsImage from '../../asset/image/snsicon.png';
+import snsImage from '../../asset/image/discover.svg';
 import bookMarkImage from '../../asset/image/Bookoff.svg';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
@@ -67,9 +67,10 @@ function FollowTab() {
     sessionStorage.removeItem('FollowTabSave');
     sessionStorage.removeItem('FollowTabArtist');
     sessionStorage.removeItem('FollowTabList');
+    sessionStorage.removeItem('FollowTabPage');
   };
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
+  const saveHistory = (e: React.MouseEvent, idx: number, index: number) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
@@ -78,7 +79,9 @@ function FollowTab() {
       sessionStorage.setItem('FollowTabPage', String(page));
       sessionStorage.setItem('FollowTabSave', 'Save');
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/personalpage/${idx}`,{state:idx});
+      sessionStorage.setItem('SNSy', 'ScrollOnce');
+      sessionStorage.setItem('removeSNSHistory', 'SnsFollow');
+      navigate(`/personalpage/${idx}`,{state:{idx:idx,page:page,index:index}});
     }
   };
   
@@ -98,7 +101,7 @@ function FollowTab() {
     }
   };
 
-  const getLikeSnsData = async (page:number) => {
+  const getFollowSnsData = async (page:number) => {
     const data = {
       page: page,
       keyword:keyword? keyword : ""
@@ -108,7 +111,11 @@ function FollowTab() {
         return setHistory(false);
       }
       const { list,total } = await APIFollowersProductList(data);
-      setLikeSnsList(list);
+      if(page > 1){
+        setLikeSnsList((prev) => [...prev, ...list]);
+      } else {
+        setLikeSnsList(list);
+      }
       setTotal(total);
     } catch (error) {
       console.log(error);
@@ -135,7 +142,7 @@ function FollowTab() {
   }, [handleObserver]);
 
   useEffect(() => {
-    if (page > 1) getLikeSnsData(page);
+    if (page > 1) getFollowSnsData(page);
   }, [page]);
 
   useLayoutEffect(() => {
@@ -146,7 +153,7 @@ function FollowTab() {
     } else {
       setPage(1);
       getArtistData();
-      getLikeSnsData(1);
+      getFollowSnsData(1);
     }
   }, [searchParams]);
 
@@ -166,7 +173,7 @@ function FollowTab() {
 
   const onSearch = () => {
     createSearchParams({keyword:keyword})
-    getLikeSnsData(1)
+    getFollowSnsData(1)
   };
 
 
@@ -180,7 +187,6 @@ function FollowTab() {
               onSearch();
             }
           }}
-          categoryList={CategoryList}
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -205,11 +211,17 @@ function FollowTab() {
         </TabButtonWrap>
         <Follow saveHistory={saveHistory} LikeSnsList={LikeSnsList} FollowArtistList={FollowArtistList} />
       </div>
+    <InterView ref={interSectRef} />
+      {/* <InterView /> */}
     </Container>
   );
 }
 
 const Container = styled.div`
+`;
+
+const InterView = styled.div`
+  height: 150px;
 `;
 
 const TabButtonWrap = styled.div`
@@ -230,17 +242,14 @@ const TabButton = styled.div`
 `;
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
-  border-bottom: solid 1.7px ${(props) => props.color || "none"};
-  font-weight: ${props => props.color == 'black' ? 460 : 360};
-  color:#000000;
   font-family:'Pretendard Variable';
+  border-bottom: solid 1.7px ${(props) => props.color || "none"};
+  font-weight: 310;
+  color: #121212;
+  font-size: 16px;
   padding:10px 0;
   margin-top:5px;
   cursor: pointer;
-  font-size:18px;
-  @media only screen and (max-width: 768px) {
-    font-size:14px;
-  }
 `
 
 const TitleWrap = styled.div`

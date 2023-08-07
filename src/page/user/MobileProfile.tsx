@@ -1,12 +1,11 @@
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Modal } from '@mantine/core';
-import { APICheckPassword, APILink, APIUserDetails } from '../../api/UserAPI';
+import { APILink, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
 import ImageCard from '../../components/Shop/ImageCard';
-import { LinkListType, SnsList, TImage, TProductListItem, UserType } from '../../types/Types';
-import Sheet,{SheetRef} from 'react-modal-sheet';
+import { LinkListType, SnsList, UserType } from '../../types/Types';
+import Sheet from 'react-modal-sheet';
 import RightArrowImage from '../../asset/image/right.svg'
 import LinksIcon from '../../asset/image/m10_home.svg';
 import BrandIcon from '../../asset/image/Brand.png';
@@ -16,9 +15,6 @@ import linkImage from '../../asset/image/rink.svg';
 import xImage from '../../asset/image/close.svg';
 import profileImage from '../../asset/image/Profile.svg';
 import QrModal from '../../components/Modal/QrModal';
-import img01 from '../../asset/image/img01.png';
-import img03 from '../../asset/image/img03.png';
-import img04 from '../../asset/image/img05.png';
 import { APIArtistFollowAdd, APISnsList } from '../../api/ProductAPI';
 import AlertModal from '../../components/Modal/AlertModal';
 import Nodata from '../../components/Product/NoData';
@@ -51,9 +47,9 @@ function MobileProfile() {
       try {
         const res = await APIArtistFollowAdd(data);
         if(res.message == '좋아요 완료'){
-          setAlertType('팔로우 완료')
+          setAlertType('Followed')
         } else {
-          setAlertType('팔로우 해제')
+          setAlertType('unFollowed')
         }
         setShowAlertModal(true)
         getUserDetails()
@@ -61,7 +57,7 @@ function MobileProfile() {
         console.log(error);
       }
     } else {
-      setShowAlertModal(true);setAlertType('회원가입 후 이용 가능합니다.')
+      setShowAlertModal(true);setAlertType('Available after Sign up.')
     }
   }
 
@@ -83,7 +79,12 @@ function MobileProfile() {
         return setHistory(false);
       }
       const { list } = await APISnsList(data);
-      setSnsList(list);
+      console.log(page)
+      if(page > 1){
+        setSnsList((prev) => [...prev, ...list]);
+      } else {
+        setSnsList(list);
+      }
       // console.log('shop', list, page);
     } catch (error) {
       console.log(error);
@@ -108,17 +109,20 @@ function MobileProfile() {
     const page = Number(sessionStorage.getItem('PersonalListPage'));
     setHistory(true);
     setPage(page);
-    // setSnsList(list);
+    setSnsList(list);
+    getproductList(1)
     sessionStorage.removeItem('PersonalListPage');
     sessionStorage.removeItem('PersonalList');
   };
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
+  const saveHistory = (e: React.MouseEvent, idx: number, index:number) => {
     const div = document.getElementById('root');
     if (div) {
       sessionStorage.setItem('PersonalList', JSON.stringify(SnsList));
       sessionStorage.setItem('PersonalListPage', String(page));
-      navigate(`/personalpage/${paramsidx}`,{state:paramsidx});
+      sessionStorage.setItem('SNSy', 'ScrollOnce');
+      sessionStorage.setItem('removeSNSHistory', 'MyFeed');
+      navigate(`/personalpage/${idx}`,{state:{idx:idx,page:page,index:index}});
     }
   };
   
@@ -273,7 +277,7 @@ function MobileProfile() {
           </ButtonBox>
           :
           <ButtonBox>
-            <FollowButtonBox style={{marginRight:12}} onClick={()=>{navigate('/EditProfile')}}>
+            <FollowButtonBox style={{marginRight:12}} onClick={()=>{navigate(`/EditProfile/${btoa(encodeURIComponent(user.idx))}`)}}>
               Edit Profile
             </FollowButtonBox>
             <FollowButtonBox onClick={()=>{setQrModal(true)}}>
@@ -292,7 +296,7 @@ function MobileProfile() {
         {SnsList.length}works
       </WorksLengthBox>
       {user.idx == userDetails?.idx &&
-      <UploadButton onClick={()=>navigate('/AddPhoto')}>
+      <UploadButton onClick={()=>{navigate('/AddPhoto');sessionStorage.removeItem('ModifySns')}}>
         UpLoad
       </UploadButton>
       }
@@ -304,24 +308,25 @@ function MobileProfile() {
               <ImageCard
                 item={item}
                 key={item.idx}
-                onClick={(e) => saveHistory(e, item.idx)}
+                onClick={(e) => saveHistory(e, item.idx,index)}
                 index={index}
               />
             )
             })
           }
-          <PlusButton onClick={()=>navigate('/AddPhoto')}>
+          <PlusButton onClick={()=>{navigate('/AddPhoto');sessionStorage.removeItem('ModifySns')}}>
             <PlusH></PlusH>
             <PlusV></PlusV>
           </PlusButton>
           {SnsList.length == 0 && user.idx == userDetails?.idx &&
-          <PlusImage onClick={()=>navigate('/AddPhoto')} height={innerWidth}>
+          <PlusImage onClick={()=>{navigate('/AddPhoto');sessionStorage.removeItem('ModifySns')}} height={innerWidth}>
             <PlusH></PlusH>
             <PlusV></PlusV>
           </PlusImage>
           }
           
       </ProductListWrap>
+      <InterView ref={interSectRef} />
       <QrModal
         innerWidth={innerWidth}
         idx={paramsidx}
@@ -336,7 +341,7 @@ function MobileProfile() {
         setVisible={setShowAlertModal}
         onClick={() => {
           if(
-            alertType == '회원가입 후 이용 가능합니다.'
+            alertType == 'Available after Sign up.'
           ){
             navigate('/signin');
           } else {
@@ -362,6 +367,9 @@ const Container = styled.div`
     flex-direction: column;
     border-top: 0;
   }
+`;
+const InterView = styled.div`
+  height: 150px;
 `;
 
 const ArrowImageWrap = styled.div`
@@ -508,13 +516,13 @@ const NameBox = styled.div`
   }
 `;
 const UserTypeIcon = styled.img<{userlevel:number}>`
-  display:${props => props.userlevel !== 3 ? 'block' : 'none'};
-  width:25px;
-  height:25px;
+  display:${props => props.userlevel == 1 || props.userlevel == 2 ? 'block' : 'none'};
+  width:20px;
+  height:20px;
 `
 const IconNameBox = styled.div<{userlevel:number}>`
   display:flex;
-  padding-right:${props => props.userlevel == 3 ? 0 : 25}px;
+  padding-right:${props => props.userlevel == 1 || props.userlevel == 2 ? 20 : 0}px;
   align-items:center;
   justify-content:center;
 `
@@ -673,7 +681,7 @@ const ButtonImage = styled.img`
 `;
 
 const PlusButton = styled.div`
-  position:sticky;
+  position:fixed;
   bottom:100px;
   border:1px solid #3b3b3b;
   border-radius:50%;

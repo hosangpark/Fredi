@@ -1,35 +1,22 @@
 import React, { useCallback, useContext, useEffect, useRef, useState ,memo } from 'react';
 import styled from 'styled-components';
-import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import Autoplay from 'embla-carousel-autoplay';
-import leftButtonImage from '../../asset/image/ico_prev.png';
-import rightButtonImage from '../../asset/image/ico_next.png';
-import leftButtonMobileImage from '../../asset/image/ico_prev_mobile.png';
-import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
-import { createStyles, Image } from '@mantine/core';
-import { Carousel } from '@mantine/carousel';
-import { APIGetBanner } from '../../api/SettingAPI';
-import { SnsList, TImage, TProductListItem } from '../../types/Types';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { SnsList } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
 import { createBrowserHistory } from 'history';
-import ShowTypeButton from '../../components/Shop/ShowTypeButton';
-import SearchBox from '../../components/Product/SearchBox';
-import { APILikeShop, APIShopList } from '../../api/ShopAPI';
+import { APILikeShop } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
-import FairCard from '../../components/Shop/FairCard';
 // swiper
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import FeedCard from '../../components/Shop/FeedCard';
-import { FairListItem } from '../../types/Types';
-import { APIProductList, APISnsList } from '../../api/ProductAPI';
+import { APIProductList } from '../../api/ProductAPI';
+import Nodata from '../../components/Product/NoData';
 
 
 
@@ -38,7 +25,7 @@ function ArtistProducts() {
   const navigate = useNavigate();
   const browserHistory = createBrowserHistory();
   const location = useLocation();
-  const { name, idx } = location.state;
+  const { name } = location.state;
   console.log(name)
 
 
@@ -55,14 +42,20 @@ function ArtistProducts() {
   const getSnsList = async (page: number) => {
     const data = {
       page: page,
-      user_idx: location.state === null ? user.idx : idx
+      category: '1',
+      keyword:"",
+      designer_name:name
     };
     try {
       if (history) {
         return setHistory(false);
       }
-      const { list } = await APISnsList(data);
-      setSnsList(list);
+      const { list, total } = await APIProductList(data);
+      if(page > 1){
+        setSnsList((prev) => [...prev, ...list]);
+      } else {
+        setSnsList(list);
+      }
       // console.log('shop', list, page);
     } catch (error) {
       console.log(error);
@@ -100,6 +93,7 @@ function ArtistProducts() {
 
     sessionStorage.removeItem('ArtistProductList');
     sessionStorage.removeItem('ArtistProductPage');
+    sessionStorage.removeItem('Save');
   };
 
   const saveHistory = (e: React.MouseEvent, idx: number) => {
@@ -107,10 +101,10 @@ function ArtistProducts() {
     if (div) {
       const y = globalThis.scrollY;
       sessionStorage.setItem('Save', 'Save');
-      sessionStorage.setItem('ArtworkTabList', JSON.stringify(SnsList));
-      sessionStorage.setItem('ArtworkPage', String(page));
+      sessionStorage.setItem('ArtistProductList', JSON.stringify(SnsList));
+      sessionStorage.setItem('ArtistProductPage', String(page));
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/personalpage/${idx}`,{state:idx});
+      navigate(`/productdetails/${idx}`,{state:idx});
     }
   };
   
@@ -194,9 +188,7 @@ function ArtistProducts() {
           )
           })
           :
-          <>
-          ...게시글이 없습니다.
-          </>
+          <Nodata/>
         }
       </ProductListWrap>
       <AlertModal
@@ -207,7 +199,7 @@ function ArtistProducts() {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>

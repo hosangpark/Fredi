@@ -75,16 +75,16 @@ function FindUserId() {
   return (
     <Container>
       <FindUserIdBox>
-        <Title>아이디 찾기</Title>
+        <Title>Find my ID</Title>
         <InputBox>
-          <InputTitle>이름</InputTitle>
+          <InputTitle>Name</InputTitle>
           <InputWrap>
             <TextInput maxLength={10} value={name} onChange={(e) => setName(e.target.value)} placeholder="이름을 입력해 주세요." />
           </InputWrap>
-          {alertType === 'name' && <AlertText>*이름을 입력해 주세요.</AlertText>}
+          {alertType === 'name' && <AlertText>*enter your name.</AlertText>}
         </InputBox>
         <InputBox>
-          <InputTitle>휴대폰 번호</InputTitle>
+          <InputTitle>Phone number</InputTitle>
           <InputWrap>
             <TextInput
               maxLength={11}
@@ -95,13 +95,13 @@ function FindUserId() {
               }}
               placeholder="'-'를 제외한 휴대폰 번호를 입력해 주세요."
             />
-            {timer === 0 && !isAuth && <UnderlineTextButton onClick={onFindUserId}>인증번호 발송</UnderlineTextButton>}
+            {timer === 0 && !isAuth && <UnderlineTextButton onClick={onFindUserId}>Send Code</UnderlineTextButton>}
           </InputWrap>
-          {alertType === 'phone' && <AlertText>*휴대폰 번호를 입력해 주세요.</AlertText>}
-          {alertType === 'send' && <AlertText>*회원을 찾을 수 없습니다.</AlertText>}
+          {alertType === 'phone' && <AlertText>*enter your cell phone number.</AlertText>}
+          {alertType === 'send' && <AlertText>*Member not found.</AlertText>}
         </InputBox>
         <InputBox>
-          <InputTitle>인증 번호</InputTitle>
+          <InputTitle>Verification code</InputTitle>
           <InputWrap>
             <TextInput
               maxLength={6}
@@ -110,7 +110,7 @@ function FindUserId() {
               onChange={(e) => {
                 setAuthNumber(e.target.value);
               }}
-              placeholder="인증 번호를 입력해 주세요."
+              placeholder="Verification code."
             />
             {receivedNumber && (
               <>
@@ -119,26 +119,26 @@ function FindUserId() {
                     {Math.floor(timer / 60)}:{timer % 60 > 10 ? timer % 60 : '0' + (timer % 60)}
                   </CountText>
                 )}
-                {!isAuth && <UnderlineTextButton onClick={onCheckAuth}>인증하기</UnderlineTextButton>}
+                {!isAuth && <UnderlineTextButton onClick={onCheckAuth}>Confirm</UnderlineTextButton>}
               </>
             )}
           </InputWrap>
-          {!isAuth && alertType?.includes('auth') && <AlertText>*인증번호를 확인해 주세요.</AlertText>}
-          {isAuth && <AlertTextGreen>*인증되었습니다.</AlertTextGreen>}
+          {!isAuth && alertType?.includes('auth') && <AlertText>*check the authentication number.</AlertText>}
+          {isAuth && <AlertTextGreen>*certified.</AlertTextGreen>}
         </InputBox>
 
         <BlackButton aria-disabled={!isAuth} onClick={onShowUserIdModal}>
-          <BlackButtonText>다음</BlackButtonText>
+          <BlackButtonText>Next</BlackButtonText>
         </BlackButton>
         <WhiteButton onClick={() => navigate(-1)}>
-          <WhiteButtonText>취소</WhiteButtonText>
+          <WhiteButtonText>Cancel</WhiteButtonText>
         </WhiteButton>
       </FindUserIdBox>
       <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
         <ModalBox>
-          <ModalText>등록된 아이디는</ModalText>
+          <ModalText>Your e-mail ID is</ModalText>
           <ModalText>
-            <ModalTextGreen>{receivedUserId}</ModalTextGreen>입니다.
+            <ModalTextGreen>{receivedUserId}</ModalTextGreen>.
           </ModalText>
           <ButtonWrap>
             <ModalBlackButton
@@ -146,10 +146,10 @@ function FindUserId() {
                 navigate('/findpassword');
               }}
             >
-              <BlackButtonText>비밀번호 찾기</BlackButtonText>
+              <BlackButtonText>Find Password</BlackButtonText>
             </ModalBlackButton>
             <ModalWhiteButton onClick={() => setShowModal(false)}>
-              <WhiteButtonText>확인</WhiteButtonText>
+              <WhiteButtonText>OK</WhiteButtonText>
             </ModalWhiteButton>
           </ButtonWrap>
         </ModalBox>
@@ -164,7 +164,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 80px);
-  border-top: 1px solid #121212;
   text-align: left;
   @media only screen and (max-width: 768px) {
     align-items: flex-start;

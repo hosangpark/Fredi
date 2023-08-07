@@ -6,20 +6,20 @@ import likeOffImage from '../../asset/image/heart_off.png';
 import newIconImage from '../../asset/image/ico_new.png';
 import arrowImage from '../../asset/image/arr_down.png';
 import { replaceString } from '../../util/Price';
-import { ArtistItem, FairDetailsArtistItem, FairListItem } from '../../types/Types';
+import { ArtistCardType, ArtistItem, FairDetailsArtistItem, FairListItem } from '../../types/Types';
 
 function ArtistCard({
   item,
   onClick,
 }: {
-  item: FairDetailsArtistItem;
+  item: ArtistCardType;
   onClick: (e: any) => void;
 }) {
   
   return (
     <ProductBox onClick={onClick}>
       <ProductNameWrap>
-        <Designer>{item.name}</Designer>
+        <Designer>{item.designer_name}</Designer>
         {/* {innerWidth <= 768?
         <ArrowImage src={arrowImage} />
         :

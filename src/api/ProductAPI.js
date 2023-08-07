@@ -41,6 +41,11 @@ export const APIProductDetails = async (data) => {
   return res.data;
 };
 
+export const APILinkMyAccount = async (data) => {
+  const config = Authorization();
+  const res = await API.post('/artwork/link', data, { headers: config });
+  return res.data;
+};
 export const APILikeProduct = async (data) => {
   const config = Authorization();
   const res = await API.post('/artwork/like', data, { headers: config });
@@ -68,7 +73,7 @@ export const APIFairDetails = async (data) => {
 /** Artist */
 export const APIArtistList = async (data) => {
   const config = Authorization();
-  const res = await API.get('/user/designer-list', { params: data, headers: config });
+  const res = await API.get('/artwork/designer-list', { params: data, headers: config });
   return res.data;
 };
 
@@ -89,6 +94,11 @@ export const APISnsAdd = async (data) => {
   const config = Authorization();
   // const res = await API.post('/sns', { params: data, headers: config,'Content-Type': 'multipart/form-data' });
   const res = await FileAPI('/sns', data, config, true);
+  return res.data;
+};
+export const APISnsModify = async (data) => {
+  const config = Authorization();
+  const res = await FileAPI('/sns', data, config, false);
   return res.data;
 };
 

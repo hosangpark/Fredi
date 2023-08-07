@@ -6,8 +6,6 @@ import dayjs from 'dayjs';
 import { replaceString } from '../../util/Price';
 import OrderDetailsCard, { TOrderDetailsCard } from '../../components/Shop/OrderDetailsCard';
 import CheckBox from '../../components/Shop/CheckBox';
-import { isTemplateSpan } from 'typescript';
-import { IconTent } from '@tabler/icons';
 import { APICancelOrder } from '../../api/ShopAPI';
 import AlertModal from '../../components/Modal/AlertModal';
 

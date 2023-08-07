@@ -7,22 +7,24 @@ function AlertModal({
   setVisible,
   text,
   onClick,
+  type,
 }: {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   text: string;
   onClick: () => void;
+  type?:boolean
 }) {
   const onCancel = () => {
     setVisible(false);
   };
 
   return (
-    <Modal opened={visible} onClose={onCancel} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
+    <Modal opened={visible} onClose={()=>{if(type){onClick()}else{setVisible(false)}}} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
       <ModalBox>
         <ModalTitle>{text}</ModalTitle>
         <ModalBlackButton onClick={onClick}>
-          <BlackButtonText>확인</BlackButtonText>
+          <BlackButtonText>OK</BlackButtonText>
         </ModalBlackButton>
       </ModalBox>
     </Modal>

@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { FairList, TImage, TProductListItem } from '../../types/Types';
+import { CategoryType, FairList, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -18,7 +18,7 @@ import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 import FairCard from '../../components/Shop/FairCard';
-import { APIFairList, APIProductList } from '../../api/ProductAPI';
+import { APICategoryList, APIFairList, APIProductList } from '../../api/ProductAPI';
 import SearchBox from '../../components/Product/SearchBox';
 import { CategoryList } from '../../components/List/List';
 import Nodata from '../../components/Product/NoData';
@@ -37,7 +37,7 @@ const { type, idx } = useParams();
   const [showLogin, setShowLogin] = useState(false);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
-
+  const [categoriList, setcategoriList] = useState<CategoryType[]>([]);
   const { user } = useContext(UserContext);
   const interSectRef = useRef(null);
 
@@ -46,7 +46,7 @@ const { type, idx } = useParams();
   const getFairsList = async (page:number) => {
     const data = {
       page: page,
-      category: '',
+      category: '1',
       keyword: keyword? keyword : "",
     };
     try {
@@ -119,15 +119,14 @@ const { type, idx } = useParams();
   }, [handleObserver]);
 
   useLayoutEffect(() => {
-    const page = Number(sessionStorage.getItem('page'));
-    console.log('카테고리', category);
+    const page = Number(sessionStorage.getItem('FairPage'));
     if (page) {
       findHistory();
     } else {
       setPage(1);
       getFairsList(1);
     }
-  }, [searchParams, category]);
+  }, [searchParams]);
 
   useEffect(() => {
     if (page > 1) getFairsList(page);
@@ -165,7 +164,6 @@ const { type, idx } = useParams();
               onSearch();
             }
           }}
-          categoryList={CategoryList}
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -209,7 +207,7 @@ const { type, idx } = useParams();
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>

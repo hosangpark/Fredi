@@ -12,6 +12,11 @@ export const APIWeeklyDetails = async (data) => {
   return res.data;
 };
 
+export const APIHomeStyleList = async (data) => {
+  const config = Authorization();
+  const res = await API.get('/sns/list', { params: data, headers: config });
+  return res.data;
+}
 export const APITrendingArtist = async (data) => {
   const config = Authorization();
   const res = await API.get('/user/designer-tranding-list', { params: data, headers: config });

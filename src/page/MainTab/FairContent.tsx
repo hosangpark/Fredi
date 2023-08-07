@@ -34,13 +34,13 @@ function FairContent() {
       navigate(`/productdetails/${item}`);
     }
   };
-  const saveHistory2 = (e: React.MouseEvent, item:string, item2:number) => {
+  const saveHistory2 = (e: React.MouseEvent, item:string) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
       sessionStorage.setItem('FairContab', String(contentItem.tab));
       sessionStorage.setItem('FairCon_y', String(y ?? 0));
-      navigate(`/ArtistProducts/${item}`,{ state:{name:item,idx:item2} });
+      navigate(`/ArtistProducts/${item}`,{ state:{name:item} });
     }
   };
 
@@ -87,8 +87,8 @@ function FairContent() {
   const getFairDetail = async () => {
     const data = {
       idx:idx,
-      category:category
-      // keyword:keyword? keyword : ''
+      category:category,
+      keyword:keyword? keyword : ''
     }
     try {
       if (history) {
@@ -164,7 +164,7 @@ function FairContent() {
   return (
     <Container>
       <MainImage height={innerWidth}>
-        <BannerImage src={innerWidth > 768 ?  FairDetail?.image[0].file_name : FairDetail?.image_m[0].file_name}/>
+        <BannerImage height={innerWidth} src={innerWidth > 768 ?  FairDetail?.image[0].file_name : FairDetail?.image_m[0].file_name}/>
       </MainImage>
       <TitleWrap>
         <div>
@@ -184,7 +184,6 @@ function FairContent() {
               onSearch();
             }
           }}
-          categoryList={CategoryList}
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -216,19 +215,11 @@ const Container = styled.div`
 `;
 
 const MainImage = styled.div<{height:number}>`
-  width: 100%;
-  /* height:${props => (props.height/(1.4642))}px; */
-  height:${props => (props.height/(2.7118))}px;
-  background-color:black;
-  margin-bottom:0px;
-  @media only screen and (max-width: 768px) {
-    height:${props => (props.height/(1.4642))}px;
-    /* height:${props => (props.height/(2.7118))}px; */
-  }
 `;
-const BannerImage = styled.img`
-  width:100%;
-  height:100%;
+const BannerImage = styled.img<{height:number}>`
+  width: 100%;
+  height:${props => (props.height/(3.2118))}px;
+  max-height:600px;
 `
 const TabButtonWrap = styled.div`
   width:400px;

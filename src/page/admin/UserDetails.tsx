@@ -231,12 +231,12 @@ function UserDetails() {
       {!isSnsUser && (
         <>
           <RowWap>
-            <LeftText>비밀번호</LeftText>
+            <LeftText>new password</LeftText>
             <TextInput
               maxLength={16}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="새 비밀번호"
+              placeholder="new password"
               type="password"
             />
           </RowWap>
@@ -246,10 +246,10 @@ function UserDetails() {
               maxLength={16}
               value={newPassword2}
               onChange={(e) => setNewPassword2(e.target.value)}
-              placeholder="새 비밀번호 확인"
+              placeholder="confirm password"
               type="password"
             />
-            <UnderlineTextButton onClick={onModifyPassword}>변경하기</UnderlineTextButton>
+            <UnderlineTextButton onClick={onModifyPassword}>Modify</UnderlineTextButton>
           </RowWap>
         </>
       )}
@@ -337,7 +337,7 @@ function UserDetails() {
             : alertType === 'password'
             ? '비밀번호가 변경되었습니다.'
             : alertType === 'passwordDiffrent'
-            ? '비밀번호와 비밀번호 확인이 일치하지 않습니다.'
+            ? '비밀번호가 일치하지 않습니다.'
             : alertType === 'modified'
             ? '유저 정보가 수정되었습니다.'
             : ''

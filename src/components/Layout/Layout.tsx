@@ -11,11 +11,13 @@ interface Props {
   children: ReactNode;
 }
 
+
 function Layout({ children }: Props) {
   const location = useLocation();
   const pathName = location.pathname.split('/')[1];
   // console.log('pathName:',pathName)
   return (
+    
     <Container>
       <ScrollToTop>
         <Header />
@@ -26,6 +28,7 @@ function Layout({ children }: Props) {
     </Container>
   );
 }
+
 
 const EmptyBox = styled.div`
   height:5vh;

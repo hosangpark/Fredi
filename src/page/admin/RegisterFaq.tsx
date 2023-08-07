@@ -36,15 +36,15 @@ function RegisterFaq() {
     <>
       <InputRowWrap>
         <LeftText>제목</LeftText>
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목을 입력해 주세요." />
+        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter the title." />
       </InputRowWrap>
       <ContentInputRowWrap>
         <LeftText>질문 내용</LeftText>
-        <ContentTextArea value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="질문을 입력해 주세요." />
+        <ContentTextArea value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="Enter the contents." />
       </ContentInputRowWrap>
       <ContentInputRowWrap>
         <LeftText>답변 내용</LeftText>
-        <ContentTextArea value={answer} onChange={(e) => setAnswer(e.target.value)} placeholder="답변을 입력해 주세요." />
+        <ContentTextArea value={answer} onChange={(e) => setAnswer(e.target.value)} placeholder="Enter your answer." />
       </ContentInputRowWrap>
       <ButtonWrap>
         <BlackButton onClick={onRegisterFaq}>
@@ -69,7 +69,7 @@ function RegisterFaq() {
         onClick={() => {
           setShowTitleModal(false);
         }}
-        text="제목을 입력해 주세요."
+        text="Enter the title"
       />
       <AlertModal
         visible={showContentModal}
@@ -77,7 +77,7 @@ function RegisterFaq() {
         onClick={() => {
           setShowContentModal(false);
         }}
-        text="내용을 입력해 주세요."
+        text="Enter the contents"
       />
     </>
   );

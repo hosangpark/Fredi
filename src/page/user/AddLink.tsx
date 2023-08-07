@@ -24,7 +24,18 @@ function AddLink({Check,Cancel}:{Check:(name:string,url:string)=>void,Cancel:()=
 
   const Save = ()=>{
     Check(name,url)
+    sessionStorage.removeItem('LinkSave');
   }
+  
+  useEffect(()=>{
+    const LinkSave = sessionStorage.getItem('LinkSave')
+    if(LinkSave){
+      let Parse = JSON.parse(LinkSave)
+      setName(Parse[0].title)
+      setUrl(Parse[0].url)
+      sessionStorage.removeItem('LinkSave');
+    }
+  },[])
 
 
 
@@ -35,10 +46,10 @@ function AddLink({Check,Cancel}:{Check:(name:string,url:string)=>void,Cancel:()=
         <InputWrap>
           <InputTitle>Title</InputTitle>
           <TextInput
-            maxLength={15}
+            maxLength={30}
             value={name}
             onChange={(e) => {
-              setName(e.target.value);
+              setName(e.target.value.trim());
               // console.log(propsData)
             }}
             placeholder="Website Name"
@@ -47,10 +58,10 @@ function AddLink({Check,Cancel}:{Check:(name:string,url:string)=>void,Cancel:()=
         <InputWrap>
           <InputTitle>URL</InputTitle>
           <TextInput
-            maxLength={30}
+            maxLength={100}
             value={url}
             onChange={(e) => {
-              setUrl(e.target.value);
+              setUrl(e.target.value.trim());
             }}
             placeholder="Website URL"
           />
@@ -87,7 +98,7 @@ const Container = styled.div`
   /* flex-direction: row; */
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
-    width: 400px;
+    width: 300px;
     flex-direction: column;
     border-top: 0;
   }

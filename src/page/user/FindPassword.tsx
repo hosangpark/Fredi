@@ -102,16 +102,16 @@ function FindPassword() {
   return (
     <Container>
       <FindPasswordBox>
-        <Title>비밀번호 찾기</Title>
+        <Title>Find my password</Title>
         <InputBox>
-          <InputTitle>아이디</InputTitle>
+          <InputTitle>ID</InputTitle>
           <InputWrap>
-            <TextInput maxLength={20} value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="아이디를 입력해 주세요." />
+            <TextInput maxLength={20} value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="E-mail ." />
           </InputWrap>
-          {alertType === 'userId' && <AlertText>*아이디를 입력해 주세요.</AlertText>}
+          {alertType === 'userId' && <AlertText>*enter your email.</AlertText>}
         </InputBox>
         <InputBox>
-          <InputTitle>휴대폰 번호</InputTitle>
+          <InputTitle>Phone number</InputTitle>
           <InputWrap>
             <TextInput
               maxLength={11}
@@ -120,15 +120,15 @@ function FindPassword() {
               onChange={(e) => {
                 setPhone(e.target.value.replace(/[^0-9]/g, ''));
               }}
-              placeholder="'-'를 제외한 휴대폰 번호를 입력해 주세요."
+              placeholder="Please enter your mobile phone number except '-'"
             />
-            {timer === 0 && !isAuth && <UnderlineTextButton onClick={onFindPassword}>인증번호 발송</UnderlineTextButton>}
+            {timer === 0 && !isAuth && <UnderlineTextButton onClick={onFindPassword}>Send Code</UnderlineTextButton>}
           </InputWrap>
-          {alertType === 'phone' && <AlertText>*휴대폰 번호를 입력해 주세요.</AlertText>}
-          {alertType === 'send' && <AlertText>*회원을 찾을 수 없습니다.</AlertText>}
+          {alertType === 'phone' && <AlertText>*Enter only numbers.</AlertText>}
+          {alertType === 'send' && <AlertText>*Member not found.</AlertText>}
         </InputBox>
         <InputBox>
-          <InputTitle>인증 번호</InputTitle>
+          <InputTitle>Verification code</InputTitle>
           <InputWrap>
             <TextInput
               maxLength={6}
@@ -137,7 +137,7 @@ function FindPassword() {
               onChange={(e) => {
                 setAuthNumber(e.target.value);
               }}
-              placeholder="인증 번호를 입력해 주세요."
+              placeholder="Verification code."
             />
             {receivedNumber && (
               <>
@@ -154,53 +154,53 @@ function FindPassword() {
           {isAuth && <AlertTextGreen>*인증되었습니다.</AlertTextGreen>}
         </InputBox>
         <BlackButton aria-disabled={!isAuth} onClick={onShowPassworddModal}>
-          <BlackButtonText>다음</BlackButtonText>
+          <BlackButtonText>Next</BlackButtonText>
         </BlackButton>
         <WhiteButton onClick={() => navigate(-1)}>
-          <WhiteButtonText>취소</WhiteButtonText>
+          <WhiteButtonText>Cancel</WhiteButtonText>
         </WhiteButton>
       </FindPasswordBox>
       <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
         <ModalBox>
-          <ModalTitle>비밀번호 재설정</ModalTitle>
+          <ModalTitle>Reset Password</ModalTitle>
           <InputBox>
-            <InputTitle>비밀번호</InputTitle>
+            <InputTitle>New password</InputTitle>
             <InputWrap>
               <TextInput
                 maxLength={16}
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="입력해 주세요"
+                placeholder="Enter"
               />
             </InputWrap>
-            {modalAlertType === 'reg' && <AlertText>*비밀번호는 8-16자 영문, 숫자로 구성되어야 합니다.</AlertText>}
+            {modalAlertType === 'reg' && <AlertText>*Combine 8-16 characters and numbers.</AlertText>}
           </InputBox>
           <InputBox>
-            <InputTitle>비밀번호 재확인</InputTitle>
+            <InputTitle>Confirm new password</InputTitle>
             <InputWrap>
               <TextInput
                 maxLength={16}
                 type="password"
                 value={newPassword2}
                 onChange={(e) => setNewPassword2(e.target.value)}
-                placeholder="입력해 주세요"
+                placeholder="Enter"
               />
             </InputWrap>
-            {modalAlertType === 'auth' && <AlertText>*비밀번호를 확인해 주세요.</AlertText>}
-            {modalAlertType === 'newPassword' && <AlertText>*비밀번호를 입력해 주세요.</AlertText>}
+            {modalAlertType === 'auth' && <AlertText>*check the password.</AlertText>}
+            {modalAlertType === 'newPassword' && <AlertText>*enter your password..</AlertText>}
           </InputBox>
           <ButtonWrap>
             <ModalBlackButton onClick={onModifyPassword}>
-              <BlackButtonText>확인</BlackButtonText>
+              <BlackButtonText>OK</BlackButtonText>
             </ModalBlackButton>
             <ModalWhiteButton onClick={() => setShowModal(false)}>
-              <WhiteButtonText>취소</WhiteButtonText>
+              <WhiteButtonText>Cancel</WhiteButtonText>
             </ModalWhiteButton>
           </ButtonWrap>
         </ModalBox>
       </Modal>
-      <AlertModal visible={showAlertModal} setVisible={setShowAlertModal} text="비밀번호가 변경되었습니다." onClick={() => navigate('/signin')} />
+      <AlertModal visible={showAlertModal} setVisible={setShowAlertModal} text="New password has been set" onClick={() => navigate('/signin')} />
     </Container>
   );
 }
@@ -211,7 +211,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 80px);
-  border-top: 1px solid #121212;
   text-align: left;
   @media only screen and (max-width: 768px) {
     align-items: flex-start;

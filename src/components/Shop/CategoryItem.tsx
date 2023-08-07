@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 interface Props {
   item: string;
-  idx:number;
+  idx:string;
   checked:boolean;
-  setChecked: (idx:number,item:string)=>void;
+  setChecked: (idx:string,item:string)=>void;
 }
 function CategoryItem({item,idx,checked,setChecked}: Props) {
   // const [checked, setChecked] = useState(false)

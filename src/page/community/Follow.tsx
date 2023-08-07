@@ -34,7 +34,7 @@ import Nodata from '../../components/Product/NoData';
 
 function Follow({saveHistory,LikeSnsList,FollowArtistList}
   :
-  {saveHistory:(e:React.MouseEvent, idx: number)=>void,
+  {saveHistory:(e:React.MouseEvent, idx: number, index:number)=>void,
   LikeSnsList?:FollowCardType[]
   FollowArtistList?:FollowArtistListType[]
 }) {
@@ -99,9 +99,7 @@ function Follow({saveHistory,LikeSnsList,FollowArtistList}
               );
             })
             :
-            <>
-            팔로우 아티스트가 없습니다.
-            </>
+            <Nodata Text='No artists are following.' />
             }
           </Swiper>
         </SwiperWrap>
@@ -114,7 +112,7 @@ function Follow({saveHistory,LikeSnsList,FollowArtistList}
             <FollowCard
               item={item}
               key={item.idx}
-              onClick={(e) => saveHistory(e, item.idx)}
+              onClick={(e) => saveHistory(e, item.idx, index)}
               index={index}
             />
           )
@@ -131,7 +129,7 @@ function Follow({saveHistory,LikeSnsList,FollowArtistList}
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>

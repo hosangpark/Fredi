@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { FairListItem, TImage, TProductListItem } from '../../types/Types';
+import { CategoryType, FairListItem, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -27,22 +27,22 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import ArtworkCard from '../../components/Shop/ArtworkCard';
-import { CategoryList } from '../../components/List/List';
+
 import { ArtworkListItem } from '../../types/Types';
-import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
+import { APICategoryList} from '../../api/ProductAPI';
 import Nodata from '../../components/Product/NoData';
 
 
 interface ICategorySelectButton {
-  item: { value: string; label: string };
+  item: CategoryType;
   isSelect: boolean;
-  onClickFilter: (e: { value: string; label: string }) => void;
+  onClickFilter: (e:CategoryType) => void;
 }
 
 const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategorySelectButton) => {
   return (
-    <CategorySelectButton selected={isSelect} onClick={() => onClickFilter(item)} key={item.label}>
-      <CategorySelectButtonText selected={isSelect}>{item.label}</CategorySelectButtonText>
+    <CategorySelectButton selected={isSelect} onClick={() => onClickFilter(item)} key={item.name}>
+      <CategorySelectButtonText selected={isSelect}>{item.name}</CategorySelectButtonText>
     </CategorySelectButton>
   );
 });
@@ -59,10 +59,24 @@ function Artwork({saveHistory,onLikeProduct,CategoryClick,productList,showType,s
   const location = useLocation();
   const [showLogin, setShowLogin] = useState(false)
   const [showcategory,setShowCategory] = useState(false)
-
+  const [categoriList, setcategoriList] = useState<CategoryType[]>([]);
 
   const { user } = useContext(UserContext);
 
+  const getCategoryList = async () => {
+    const data = {
+      page: 1
+    };
+    try {
+      const {list,total} = await APICategoryList(data);
+      setcategoriList(list);
+    } catch (error) {
+    }
+  };
+
+  useEffect(()=>{
+    getCategoryList()
+  },[])
 
   /** drageEvent */
   const scrollRef = useRef<any>(null);
@@ -105,7 +119,7 @@ function Artwork({saveHistory,onLikeProduct,CategoryClick,productList,showType,s
     setIsDragging(true)
     setTimeout(() => {
       setIsDragging(false);
-    }, 500);
+    }, 50);
   },[movingX])
 
   const delay = 10;
@@ -119,10 +133,20 @@ function Artwork({saveHistory,onLikeProduct,CategoryClick,productList,showType,s
       onMouseLeave={onDragEnd}
       ref={scrollRef}
       showcategory={showcategory}>
-        {CategoryList.map((item,index) => {
+        <CategroySelectButtons key={`Category-All`} item={{
+            idx:'1',
+            order_num:1,
+            name:'All',
+            show:1,
+            created_time: '',
+            updated_time: '',
+            deleted_time: ''
+        }} isSelect={selectCategory === '1'} 
+        onClickFilter={()=>{if(!isDragging){if(CategoryClick)CategoryClick('1')}}} />
+        {categoriList.map((item,index) => {
           return (
-            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={selectCategory === item.value} onClickFilter={()=>{
-              if(!isDragging){if(CategoryClick)CategoryClick(item.value)}}} />
+            <CategroySelectButtons key={`Category-${item.idx}`} item={item} isSelect={selectCategory == item.idx} onClickFilter={()=>{
+              if(!isDragging){if(CategoryClick)CategoryClick(item.idx)}}} />
           );
         })}
       </CategorySelectButtonWrap>
@@ -161,7 +185,7 @@ function Artwork({saveHistory,onLikeProduct,CategoryClick,productList,showType,s
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>
@@ -240,7 +264,7 @@ const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`
 
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
-  border : 1px solid ${(props) => (props.selected ? '#121212' : '#c0c0c0')};
+  border : 1px solid ${(props) => (props.selected ? '#121212' : '#dbdbdb')};
   padding: 13px 24px 14px 22px;
   margin-right: 10.88px;
   border-radius: 5px;
@@ -259,13 +283,11 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   font-family:'Pretendard Variable';
-  font-size:17px;
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-weight: 410;
+  font-weight: 310;
+  font-size: 14px;
   text-transform: capitalize;
-  @media only screen and (max-width: 1440px) {
-    font-size: 14px;
-  }
+  white-space:nowrap;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }

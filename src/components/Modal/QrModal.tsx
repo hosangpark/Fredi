@@ -3,7 +3,6 @@ import { Modal } from '@mantine/core';
 import styled from 'styled-components';
 import downImage from './../../asset/image/save_img.svg'
 import linkImage from './../../asset/image/rink.svg'
-import QrImage from './../../asset/image/qr.svg'
 import { QRCodeCanvas } from 'qrcode.react';
 import AlertModal from './AlertModal';
 
@@ -23,43 +22,7 @@ function QrModal({
 
   const [showContentModal, setShowContentModal] = useState(false);
   const [alertType, setAlertType] = useState<string>();
-  const svgRef = useRef();
-
-  const downloadFile = (url:string) => {
-    url = "파일에 대한 url"
-    fetch(url, { method: 'GET' })
-        .then((res) => {
-            return res.blob();
-        })
-        .then((blob) => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "파일명";
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                window.URL.revokeObjectURL(url);
-            }, 60000);
-            a.remove();
-            setVisible(false);
-        })
-        .catch((err) => {
-            console.error('err: ', err);
-        });
-  };
-  const downloadQR = () => {
-    const canvas:any = document.getElementById("FrediQr");
-    const pngUrl = canvas
-      .toDataURL("image/png")
-      .replace("image/png", "image/octet-stream");
-    let downloadLink = document.createElement("a");
-    downloadLink.href = pngUrl;
-    downloadLink.download = "FrediQr.png";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
+  const [cccc, ddd] = useState(0);
 
   const DownloadQRCode = () => {
     const canvas = document.querySelector("#qrcode-canvas") as HTMLCanvasElement
@@ -81,20 +44,22 @@ function QrModal({
     try {
       await navigator.clipboard.writeText(text);
       setShowContentModal(true)
-      setAlertType('복사 되었습니다.')
+      setAlertType(`It's been copied`)
     } catch (error) {
       setShowContentModal(true)
-      setAlertType('복사에 실패하였습니다.')
+      setAlertType('Copy failed')
     }
+  }
+  const CCC = () => {
+    ddd(cccc+1)
   }
 
   return (
     <Modal opened={visible} onClose={()=>setVisible(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
-      <ModalBox >
+      <ModalBox onClick={CCC}>
         {/* <ModalTitle>{text}</ModalTitle> */}
         {/* <QrcodeImage src={QrImage}/> */}
         <QRCodeCanvas id='qrcode-canvas' value={`https://new.fredi.co.kr/MobileProfile/${idx}`} size={innerWidth < 768 ? 250 : 400}/>
-      </ModalBox>
       <PositionBox>
         <ButtonWrap style={{marginRight:15}}>
           <ImageWrap>
@@ -113,13 +78,15 @@ function QrModal({
           </ButtonTextWrap>
         </ButtonWrap>
       </PositionBox>
+      </ModalBox>
+      
       <AlertModal
         visible={showContentModal}
         setVisible={setShowContentModal}
         onClick={() => {
           setShowContentModal(false);
         }}
-        text={alertType? alertType : '확인되었습니다'}
+        text={alertType? alertType : 'Ok'}
       />
     </Modal>
   );
@@ -154,12 +121,6 @@ const Image = styled.img`
     height:20px;
   }
 `
-const QrcodeImage = styled.img`
-  width:100%;
-  height:100%;
-  object-fit:fill;
-  aspect-ratio:1.0;
-`
 const ImageRotate = styled.img`
   width:30px;
   height:30px;
@@ -174,15 +135,15 @@ const PositionBox = styled.div`
   /* top:-100%; */
   top:100%;
   left:50%;
-  transform:translate(-50%,250px);
+  transform:translate(-225px,10px);
   display:flex;
   justify-content:space-between;
-  
+  z-index:9999;
   bottom:0px;
   width:450px;
   height:80px;
   @media only screen and (max-width: 768px) {
-    transform:translate(-50%,170px);
+    transform:translate(-150px,10px);
     width:300px;
     height: 58px;
   }
@@ -192,6 +153,7 @@ const ButtonWrap = styled.div`
   border-radius:10px;
   display:flex;
   flex:1;
+  z-index:100;
   flex-direction:column;
   justify-content:center;
   align-items:center;
@@ -222,15 +184,5 @@ font-family:'Pretendard Variable';
   }
 `;
 
-
-const BlackButtonText = styled.span`
-  font-family:'Pretendard Variable' !important;
-  font-weight: 410;
-  color: #ffffff;
-  font-size: 14px;
-  @media only screen and (max-width: 768px) {
-    font-size: 12px;
-  }
-`;
 
 export default QrModal;

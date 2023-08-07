@@ -14,6 +14,7 @@ body::-webkit-scrollbar {
   min-width: 100vw;
   font-family:'Pretendard Variable' !important;
   -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
 }
 .App::-webkit-scrollbar {
   width: 0;

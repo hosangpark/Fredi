@@ -94,37 +94,38 @@ function WeeklyEditionList({
         style={{paddingBottom:paddingnum? paddingnum : 0}}
       >
         {ProducList &&
-        ProducList.map((item,index)=>{
+        ProducList.length > 0 &&
+        ProducList.slice(0,20).map((item,index)=>{
           return(
           <SwiperSlide key={index}>
           <ProductWrap onClick={(e)=>LinkHandler(e,title,item.idx)}>
             <ProductTopbox>
               <ProductTopboxLeft innerWidth={innerWidth}>
-                <ProductImage src={item.image[0].file_name}/>
+                <ProductImage src={item?.image[0]?.file_name}/>
               </ProductTopboxLeft>
               <ProductTopboxRight>
                 <ProductTopboxRightWrap innerWidth={innerWidth} style={{marginBottom:5}}>
-                  <ProductImage src={item.image[1].file_name} style={{marginBottom:10}}/>
+                  <ProductImage src={item?.image[1]?.file_name} style={{}}/>
                 </ProductTopboxRightWrap>
                 <ProductTopboxRightWrap innerWidth={innerWidth}>
-                  <ProductImage src={item.image[2].file_name}/>
+                  <ProductImage src={item?.image[2]?.file_name}/>
                 </ProductTopboxRightWrap>
               </ProductTopboxRight>
             </ProductTopbox>
             <ProductBottombox>
                 <ProductBottomImageWrap innerWidth={innerWidth} style={{marginRight:6}}>
-                  <ProductImage src={item.image[3].file_name}/>
+                  <ProductImage src={item?.image[3]?.file_name}/>
                 </ProductBottomImageWrap>
                 <ProductBottomImageWrap innerWidth={innerWidth}>
-                  <ProductImage src={item.image[4].file_name}/>
+                  <ProductImage src={item?.image[4]?.file_name}/>
                 </ProductBottomImageWrap>
             </ProductBottombox>
             <TextWrap>
               <ProductTitleText>
-                {item.name}
+                {item?.name}
               </ProductTitleText>
               <ProductSubText>
-                {item.week}
+                {item?.week}
               </ProductSubText>
             </TextWrap>
           </ProductWrap>
@@ -140,16 +141,16 @@ const ProductTopbox = styled.div`
   display:flex;
   margin-bottom:5px;
   width:100%;
-  aspect-ratio:340/280;
 `;
 const ProductTopboxLeft = styled.div<{innerWidth:number}>`
   width:${props => props.innerWidth*0.213}px;
-  height:${props => props.innerWidth*0.213*1.244}px;
-  aspect-ratio:225/280;
+  height:${props => props.innerWidth*0.213*1.270618}px;
   margin-right:5px;
+  @media only screen and (max-width: 1440px) {
+  }
   @media only screen and (max-width: 768px) {
     width:${props => props.innerWidth*0.584}px;
-    height:${props => props.innerWidth*0.584*1.239}px;
+    height:${props => props.innerWidth*0.584*1.2553}px;
   }
 `;
 const ProductTopboxRight = styled.div`
@@ -162,11 +163,11 @@ const ProductTopboxRight = styled.div`
 
 const ProductTopboxRightWrap = styled.div<{innerWidth:number}>`
   width:${props => props.innerWidth*0.105}px;
-  height:${props => props.innerWidth*0.105*1.273}px;
+  height:${props => (props.innerWidth)*0.105*1.271}px;
   aspect-ratio:0.7857;
   @media only screen and (max-width: 768px) {
     width:${props => props.innerWidth*0.287}px;
-    height:${props => props.innerWidth*0.287*1.258}px;
+    height:${props => (props.innerWidth)*0.287*1.25825}px;
   }
 `
 
@@ -180,7 +181,7 @@ const ProductBottomImageWrap = styled.div<{innerWidth:number}>`
   height:${props => props.innerWidth*0.158*1.196}px;
   aspect-ratio:158/189;
   @media only screen and (max-width: 768px) {
-    width:${props => props.innerWidth*0.435}px;
+    width:${props => props.innerWidth*0.433333}px;
     height:${props => props.innerWidth*0.435*1.186}px;
   }
 `;
@@ -221,6 +222,7 @@ const ProductContainer = styled.div`
 const ProductWrap = styled.div`
   text-align:start;
   margin-right:40px;
+  overflow:hidden;
   @media only screen and (max-width: 768px) {
     margin-right:20px;
     /* margin-right:10px; */

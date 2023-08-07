@@ -70,7 +70,7 @@ const LikeSns = async (idx:number) => {
       console.log(error);
     }
   } else {
-    setShowLogin(true);setAlertType('회원가입 후 이용 가능합니다.')
+    setShowLogin(true);setAlertType('Available after Sign up.')
   }
 };
 
@@ -117,7 +117,7 @@ useEffect(() => {
               <ProductWrap marginRight={marginRight? marginRight:20}>
                 <ToptextWrap>
                   <FeaturedTitleText>
-                    {item.name}
+                    {item.user.name}
                   </FeaturedTitleText>
                   <LikeButton onClick={()=>LikeSns(item.idx)} src={!item.isLike ? likeOnImage : likeOffImage} />
                 </ToptextWrap>
@@ -146,7 +146,7 @@ useEffect(() => {
         setVisible={setShowLogin}
         onClick={() => {
           if(
-            alertType == '회원가입 후 이용 가능합니다.'
+            alertType == 'Available after Sign up.'
           ){
             navigate('/signin');
           } else {

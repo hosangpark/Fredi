@@ -28,7 +28,7 @@ function FeedCard({
 
   return (
     <ProductBox onClick={onClick} index={(index+1)} height={innerWidth}>
-      <ProductImage src={item.image[0].file_name} />
+      <ProductImage src={item.image[0]?.file_name? item.image[0]?.file_name : ''} />
       <ViewCount>
         <ViewImg src={viewImage} />
         <SpanCount>

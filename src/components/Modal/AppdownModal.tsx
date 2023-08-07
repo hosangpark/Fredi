@@ -11,45 +11,94 @@ function AppdownModal({
 
 }: {
 
-  onClose: () => void;
+  onClose: (e:boolean) => void;
 
 }) {
 
-const [isAnimationComplete, setIsAnimationComplete] = useState(false);
 
-  const handleClose = () => {
-    if (onClose && isAnimationComplete) {
-      onClose();
-    }
-  };
+
+const closeTodayPop = () => {
+  let expires = new Date();
+  let Time = expires.setHours(expires.getHours() + 24);
+  localStorage.setItem("homeVisited", JSON.stringify(Time));
+  // 현재 시간의 24시간 뒤의 시간을 homeVisited에 저장
+  onClose(false);
+};
+
+const [isAnimationComplete, setIsAnimationComplete] = useState(false);
 
   const handleAnimationEnd = () => {
     setIsAnimationComplete(true);
   };
 
+
+  const redireactApp = (type:number) => {
+    exeDeepLink();
+    checkInstallApp(type);
+  };
+
+  function checkInstallApp(type:number) {
+    function clearTimers() {
+      clearInterval(check);
+      clearTimeout(timer);
+    }
+
+    function isHideWeb() {
+      if (document.hidden) {
+        clearTimers();
+      }
+    }
+    const check = setInterval(isHideWeb, 200);
+
+    const timer = setTimeout(function() {
+      redirectStore(type);
+    }, 500);
+  }
+
+  const redirectStore = (type:number) => {
+    const ua = navigator.userAgent.toLowerCase();
+    if(type == 2){
+      if (window.confirm("스토어로 이동하시겠습니까?")) {
+        window.location.href =
+          "https://play.google.com/store/apps/details?id=com.fredi"
+      }
+    } else if (type == 1){
+      if (window.confirm("스토어로 이동하시겠습니까?")) {
+        window.location.href =
+          "https://apps.apple.com/kr/app/id1658309658";
+      }
+    }
+  };
+
+  function exeDeepLink() {
+    let url = "com.fredi://path/";
+    window.location.href = url;
+  }
+
   return (
     <ModalWrapper>
       <ModalContent onAnimationEnd={handleAnimationEnd}>
-        <Xbutton onClick={onClose}>
+        <Xbutton onClick={closeTodayPop}>
           <Image src={closeImage} />
         </Xbutton>
         <ButtonWrap>
-          <ModalBlackButton style={{marginRight:26}} onClick={()=>console.log('app')}>
+          <ModalBlackButton style={{marginRight:26}} onClick={()=>redireactApp(1)}>
             <Image src={appleImage}/>
             <BlackButtonText>
               App Store
             </BlackButtonText>
           </ModalBlackButton>
-          <ModalBlackButton onClick={()=>console.log('Google')}>
+          <ModalBlackButton onClick={()=>redireactApp(2)}>
             <Image src={googleImage}/>
             <BlackButtonText>
               Google Play
             </BlackButtonText>
           </ModalBlackButton>
         </ButtonWrap>
-        <ModalTitle onClick={onClose}>continue to use with website</ModalTitle>
+        {/* <ModalTitle onClick={()=>onClose(false)}>continue to use with website</ModalTitle> */}
+        <ModalTitle onClick={closeTodayPop}>Turn off pop-ups for one day</ModalTitle>
       </ModalContent>
-      <Overlay onClick={handleClose} />
+      <Overlay onClick={closeTodayPop} />
     </ModalWrapper>
   );
 }

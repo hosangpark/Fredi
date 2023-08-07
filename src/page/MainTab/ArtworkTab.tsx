@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { CategoryList } from '../../components/List/List';
 import { APILikeProduct, APIProductList } from '../../api/ProductAPI';
 import Artwork from './Artwork';
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -27,6 +26,7 @@ function ArtworkTab() {
   const [keyword, setKeyword] = useState<string>(keywordParams);
   const [alertType, setAlertType] = useState<string>('')
   const [ShowAlertModal, setShowAlertModal] = useState(false);
+  const [ViewPoint, setViewPoint] = useState(false);
   const interSectRef = useRef(null);
 
   const { user } = useContext(UserContext);
@@ -34,10 +34,9 @@ function ArtworkTab() {
 
 
   const getproductList = async (page:number) => {
-    console.log('ccccccccccc',category)
     const data = {
       page: page,
-      category: category,
+      category: category? category : 1,
       keyword:keyword? keyword : ""
     };
     try {
@@ -46,7 +45,11 @@ function ArtworkTab() {
       }
       const { list, total } = await APIProductList(data);
       setTotal(total);
-      setProductList(list);
+      if(page > 1){
+        setProductList((prev) => [...prev, ...list]);
+      } else {
+        setProductList(list);
+      }
       // console.log('shop', list, page);
     } catch (error) {
       console.log(error);
@@ -59,7 +62,11 @@ function ArtworkTab() {
     };
     try {
       const res = await APILikeProduct(data);
-      setAlertType(res.message)
+      if(res.message == '좋아요 완료'){
+        setAlertType('Liked')
+      } else {
+        setAlertType('unLiked')
+      }
       setShowAlertModal(true)
       const newList = productList.map((item) => (item.idx === idx ? { ...item, isLike: !item.isLike, like_count: res.likeCount } : { ...item }));
       setProductList(newList);
@@ -83,6 +90,7 @@ function ArtworkTab() {
     const list = JSON.parse(sessionStorage.getItem('ArtworkTabList') ?? '');
     const categ = sessionStorage.getItem('ArtworkTabCategory');
     const page = Number(sessionStorage.getItem('ArtworkPage'));
+    console.log('cccccccccccc',categ)
     setHistory(true);
     if(categ){
       setCategory(categ)
@@ -98,7 +106,6 @@ function ArtworkTab() {
   const saveHistory = (e: React.MouseEvent, idx: number) => {
     const div = document.getElementById('root');
     if (div) {
-      console.log(div.scrollHeight, globalThis.scrollY);
       const y = globalThis.scrollY;
       sessionStorage.setItem('ArtworkTabList', JSON.stringify(productList));
       sessionStorage.setItem('ArtworkPage', String(page));
@@ -133,8 +140,15 @@ function ArtworkTab() {
     if (page > 1) getproductList(page);
   }, [page]);
 
+  useEffect(() => {
+    if(productList.length>0){
+      setViewPoint(true)
+    }
+  }, [productList]);
+
   useLayoutEffect(() => {
     const page = Number(sessionStorage.getItem('ArtworkPage'));
+    console.log('paa',page)
     if (page) {
       findHistory();
     } else {
@@ -147,7 +161,6 @@ function ArtworkTab() {
   useEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
     if (productList.length > 0 && scrollY) {
-      console.log('불러옴', scrollY);
       window.scrollTo({
         top: scrollY,
         behavior: 'auto',
@@ -176,7 +189,6 @@ function ArtworkTab() {
             onSearch();
           }
         }}
-        categoryList={CategoryList}
         category={category}
         keyword={keyword}
         onChangeInput={(e) => setKeyword(e.target.value)}
@@ -198,12 +210,13 @@ function ArtworkTab() {
       </TabBox>
     <Artwork saveHistory={saveHistory} productList={productList} onLikeProduct={onLikeProduct} CategoryClick={e=>setCategory(e)}
     selectCategory={category}/>
+    <InterView ref={interSectRef} />
     <AlertModal
       visible={ShowAlertModal}
       setVisible={setShowAlertModal}
       onClick={() => {
         if(
-          alertType == '회원가입 후 이용 가능합니다.'
+          alertType == 'Available after Sign up.'
         ){
           // removeHistory();
           navigate('/signin');
@@ -223,6 +236,10 @@ const Container = styled.div`
   flex: 1;
   flex-direction: column;
   width:100%;
+`;
+
+const InterView = styled.div`
+  height: 150px;
 `;
 
 const TitleWrap = styled.div`
@@ -263,8 +280,9 @@ const TabContents = styled.div<{On?:boolean}>`
 `
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-size: 22px;
-  font-weight: 310;
+  font-weight: 410;
+  color: #121212;
+  font-size: 16px;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

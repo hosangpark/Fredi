@@ -28,7 +28,7 @@ function FairCard({
   return (
     <ProductBox>
       <ProductImageWrap onClick={onClick} height={innerWidth}>
-        <ProductImage src={item? innerWidth > 768 ?  item.image[0].file_name : item.image_m[0].file_name : 'null'} />
+        <ProductImage height={innerWidth} src={item? innerWidth > 768 ?  item.image[0].file_name : item.image_m[0].file_name : 'null'} />
         {/* <LikeButton onClick={onClickLike} src={isLikeList ? likeOnImage : item.isLike ? likeOnImage : likeOffImage} /> */}
       </ProductImageWrap>
       {/* {dayjs().diff(dayjs(item.created_time), 'day') < 14 && <NewIcon src={newIconImage} />} */}
@@ -54,36 +54,29 @@ const ProductBox = styled.div`
   } */
 `;
 const ProductImageWrap = styled.div<{height:number}>`
+`;
+
+const ProductImage = styled.img<{height:number}>`
   width: 100%;
-  /* aspect-ratio:2.7118; */
-  /* height:${props => (props.height/(1.4642))}px; */
-  height:${props => (props.height/(2.7118))}px;
+  height:${props => (props.height/(3.2118))}px;
+  max-height:600px;
   background-color:black;
+  object-fit:cover;
   cursor: pointer;
   @media only screen and (max-width: 768px) {
-    /* aspect-ratio:410/280; */
     height:${props => (props.height/(1.4642))}px;
-    /* height:${props => (props.height/(2.7118))}px; */
   }
-`;
-const ProductImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit:cover;
 `;
 
 
 const Designer = styled.span`
 font-family:'Pretendard Variable';
   color: #121212;
-  font-size: 22px;
+  font-size: 16px;
   margin-bottom:10px;
   line-height:1;
   font-weight: 410;
   text-align: left;
-  @media only screen and (max-width: 1440px) {
-    font-size: 16px;
-  }
   @media only screen and (max-width: 768px) {
     font-weight: 410;
     font-size: 11px;

@@ -26,11 +26,10 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
-import { APILikeProduct, APILikeProductList, APIProductList } from '../../api/ProductAPI';
+import { APILikeProduct, APILikeProductList } from '../../api/ProductAPI';
 import dayjs from 'dayjs';
-import snsImage from '../../asset/image/snsicon.png';
+import snsImage from '../../asset/image/discover.svg';
 import LikeCard from '../../components/Shop/LikeCard';
 import Nodata from '../../components/Product/NoData';
 
@@ -65,6 +64,7 @@ function LikeArtwork() {
 
 
   const { user } = useContext(UserContext);
+  
 
   const getLikeProductList = async (page:number) => {
     const data = {
@@ -76,7 +76,11 @@ function LikeArtwork() {
         return setHistory(false);
       }
       const { list } = await APILikeProductList(data);
-      setLikeList(list);
+      if(page > 1){
+        setLikeList((prev) => [...prev, ...list]);
+      } else {
+        setLikeList(list);
+      }
       // if(list){
       // }
       // console.log('listlistlistlist',list)
@@ -87,6 +91,7 @@ function LikeArtwork() {
   };
 
   const findHistory = () => {
+    console.log('find')
     const list = JSON.parse(sessionStorage.getItem('LikeArtworkList') ?? '');
     const categ = sessionStorage.getItem('LikeArtworkCategory');
     const page = Number(sessionStorage.getItem('LikeArtworkPage'));
@@ -180,51 +185,7 @@ function LikeArtwork() {
 
 
 
-  /** drageEvent */
-  const scrollRef = useRef<any>(null);
-  const [isDrag, setIsDrag] = useState(false);
-  const [startX, setStartX] = useState<any>();
-  const [isDragging, setIsDragging] = useState(false);
-  const [movingX, setmovingX] = useState<any>();
 
-  const onDragStart = (e:any) => {
-    e.preventDefault();
-    setIsDrag(true);
-    setStartX(e.pageX + scrollRef.current.scrollLeft);
-  };
-
-  const onDragEnd = () => {
-    setIsDrag(false);
-  };
-
-  const onDragMove = (e:any) => {
-    if (isDrag) {
-      scrollRef.current.scrollLeft = startX - e.pageX;
-      setmovingX(scrollRef.current.scrollLeft)
-    }
-  };
-  const throttle = (func:any, ms:any) => {
-    let throttled = false;
-    return (...args:any) => {
-      if (!throttled) {
-        throttled = true;
-        setTimeout(() => {
-          func(...args);
-          throttled = false;
-        }, ms);
-      }
-    };
-  };
-    
-  useEffect(()=>{
-    setIsDragging(true)
-    setTimeout(() => {
-      setIsDragging(false);
-    }, 500);
-  },[movingX])
-
-  const delay = 10;
-  const onThrottleDragMove = throttle(onDragMove, delay);
   return (
     <Container>      
       <TabBox>
@@ -235,20 +196,6 @@ function LikeArtwork() {
           <TabImage src={snsImage}/>
         </TabContents>
       </TabBox>
-      <CategorySelectButtonWrap 
-      onMouseDown={onDragStart}
-      onMouseMove={onThrottleDragMove}
-      onMouseUp={onDragEnd}
-      onMouseLeave={onDragEnd}
-      ref={scrollRef}
-      showcategory={showcategory}>
-        {CategoryList.map((item) => {
-          return (
-            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={category === item.value} onClickFilter={()=>{if(!isDragging)setCategory(item.value)}} />
-          );
-        })}
-      </CategorySelectButtonWrap>
-      
       <ProductListWrap>
         {likeList &&
         likeList.length > 0 ?
@@ -256,7 +203,7 @@ function LikeArtwork() {
           return(
             <LikeCard
               item={item.artwork}
-              key={item.idx}
+              key={index}
               onClick={(e) => saveHistory(e, item.artwork.idx)}
               isLikeList
               onClickLike={(e) => {
@@ -286,7 +233,7 @@ function LikeArtwork() {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>
@@ -342,7 +289,7 @@ const ControlImage = styled.img`
 `;
 
 const InterView = styled.div`
-  height: 200px;
+  height: 150px;
 `;
 
 const CategorySelectButtonWrap = styled.div<{showcategory:boolean}>`

@@ -184,7 +184,7 @@ function ChangePassword() {
             : alertType === 'needPasswordAuth'
             ? '기존 비밀번호 인증을 먼저 완료해 주세요.'
             : alertType === 'passwordDiffrent'
-            ? '새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.'
+            ? '비밀번호가 일치하지 않습니다.'
             : ''
         }
       />

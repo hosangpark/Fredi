@@ -74,15 +74,10 @@ function BottomNav() {
       </MenuButton>
       <MenuButton
         onClick={() => {
-          removeHistory();
-          if (!token) {
-            setShowLogin(true);
-          } else {
-            navigate('/community/FeedTab');
-          }
+          navigate('/community/FeedTab');
         }}
       >
-        <MenuButtonImage src={home04} width={29}/>
+        <MenuButtonImage style={{marginTop:4}} src={home04} width={26}/>
         <MenuButtonText>Discover</MenuButtonText>
       </MenuButton>
       <MenuButton
@@ -96,7 +91,7 @@ function BottomNav() {
           // console.log(user.idx)
         }}
       >
-        <MenuButtonImage src={home05} width={29}/>
+        <MenuButtonImage src={home05} width={30}/>
         <MenuButtonText>MY</MenuButtonText>
       </MenuButton>
       <AlertModal
@@ -115,9 +110,9 @@ function BottomNav() {
           navigate('/signin');
           setShowLogin(false);
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
-      <ConfirmModal visible={confirmModal} setVisible={setConfirmModal} text="로그아웃 하시겠습니까?" onOk={onLogout} />
+      <ConfirmModal visible={confirmModal} setVisible={setConfirmModal} text="Are you sure you want to logout?" onOk={onLogout} />
     </BottomNavWrap>
   );
 }

@@ -6,7 +6,7 @@ function Nodata({Text}:{Text?:string}) {
     <ContainerWrap>
       <NodataBox>
         <NodataText>
-          {Text? Text : '검색결과가 없습니다.'}
+          {Text? Text : 'No search results found.'}
         </NodataText>
       </NodataBox>
     </ContainerWrap>
@@ -14,7 +14,7 @@ function Nodata({Text}:{Text?:string}) {
 }
 
 const ContainerWrap = styled.div`
-  padding-top:50px;
+  padding:50px 0;
   flex:1;
 `;
 const NodataBox = styled.div`
@@ -24,6 +24,8 @@ const NodataBox = styled.div`
   align-items:center;
 `;
 const NodataText = styled.div`
+font-family:'Pretendard Variable';
+  font-weight: 410;
   font-size:17px;
   @media only screen and (max-width: 768px) {
     font-size:15px;

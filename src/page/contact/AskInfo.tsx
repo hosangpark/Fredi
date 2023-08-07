@@ -20,7 +20,7 @@ function AskInfo() {
   const [checked, setChecked] = useState(0);
   const [UploadImage, setUploadImages] = useState<dndData[]>([]);
   const [categoryList,setcategoriList] = useState<CategoryType[]>([])
-  const [categoryArray,setcategoryArray] = useState<number[]>([])
+  const [categoryArray,setcategoryArray] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [sellingAsk,setSellingAsk] = useState<any>({
     artistname:'',
@@ -182,7 +182,7 @@ function AskInfo() {
     setIsDragging(true)
     setTimeout(() => {
       setIsDragging(false);
-    }, 500);
+    }, 50);
   },[movingX])
   
   const delay = 10;
@@ -246,7 +246,7 @@ function AskInfo() {
             categoryList.map((item,index)=>{
               return(
                 <CheckCategoryItem key={index} item={item.name} idx={item.idx} checked={categoryArray.includes(item.idx)} 
-                setChecked={(e,type)=>{
+                setChecked={(e:string,type:string)=>{
                   console.log(e,type)
                   if(categoryArray.includes(e)){
                     setcategoryArray((prev) => prev?.filter((item) => item !== e))
@@ -385,7 +385,7 @@ const Container = styled.div`
 `
 const Title = styled.h3`
 font-family:'Pretendard Variable';
-  font-weight: 410;
+  font-weight:360;
   color: #121212;
   font-size: 16px;
   border-bottom: 1px solid  #ECECEC;
@@ -404,7 +404,7 @@ padding:0 20px 50px;
 
 const MessageInform = styled.div`
   font-family:'Pretendard Variable';
-  font-weight: 410;
+  font-weight:360;
   font-size:14px;
   margin:20px 0 10px 5px;
   @media only screen and (max-width:768){
@@ -420,12 +420,13 @@ const UplodaImage = styled.img`
 const FileUpload = styled.div`
 display:flex;
 justify-content:center;
+font-family:'Pretendard Variable';
 cursor:pointer;
 align-items:center;
   width: 150px;
   border-radius:12.5px;
   border:1px solid #b1b1b1;
-  font-weight:410;
+  font-weight:360;
   margin-bottom:20px;
 `
 const CheckBoxContainer = styled.div`
@@ -438,7 +439,7 @@ const CheckBoxText = styled.span`
   font-family:'Pretendard Variable';
   font-size: 14px;
   margin-left: 7px;
-  font-weight: 410;
+  font-weight:360;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
@@ -461,7 +462,7 @@ const RowWap = styled.div<{ last?: boolean }>`
 const LeftText = styled.span`
 font-family:'Pretendard Variable';
   color: #121212;
-  font-weight: 410;
+  font-weight:360;
   flex:4;
   height: 100%;
   text-align: left;
@@ -481,7 +482,7 @@ const HideInput = styled.input`
 
 const RightInput = styled.input<{marginR?:number}>`
 font-family:'Pretendard Variable';
-  font-weight: 410;
+  font-weight:360;
   width:100%;
   padding:10px 0;
   border: 0;

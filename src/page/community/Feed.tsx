@@ -9,7 +9,7 @@ import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
 import { createStyles, Image } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { FairListItem, SnsList, TImage, TProductListItem } from '../../types/Types';
+import { CategoryType, FairListItem, SnsList, TImage, TProductListItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -28,23 +28,22 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import FeedCard from '../../components/Shop/FeedCard';
-import { CategoryList } from '../../components/List/List';
 import { ArtworkListItem } from '../../types/Types';
 import { APIProducerList } from '../../api/ProducerAPI';
-import { APIProductList } from '../../api/ProductAPI';
+import { APICategoryList, APIProductList } from '../../api/ProductAPI';
 import Nodata from '../../components/Product/NoData';
 
 
 interface ICategorySelectButton {
-  item: { value: string; label: string };
+  item: CategoryType;
   isSelect: boolean;
-  onClickFilter: (e: { value: string; label: string }) => void;
+  onClickFilter: (e:CategoryType) => void;
 }
 
 const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategorySelectButton) => {
   return (
-      <CategorySelectButton selected={isSelect} onClick={() => onClickFilter(item)} key={item.label}>
-        <CategorySelectButtonText selected={isSelect}>{item.label}</CategorySelectButtonText>
+      <CategorySelectButton selected={isSelect} onClick={() => onClickFilter(item)} key={item.idx}>
+        <CategorySelectButtonText selected={isSelect}>{item.name}</CategorySelectButtonText>
       </CategorySelectButton>
   );
 });
@@ -52,13 +51,13 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 
 function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,selectCategory}
   :
-  {saveHistory:(e:React.MouseEvent, idx: number)=>void,
+  {saveHistory:(e:React.MouseEvent, idx: number, index:number)=>void,
   onLikeProduct?:(e:number)=>void,
   CategoryClick?:(e:any)=>void,
   setShowLogin:(e:boolean)=>void,
   productList?:SnsList[],
   selectCategory?:string}) {
-  const navigate = useNavigate();
+
   
   const { user } = useContext(UserContext);
 
@@ -68,6 +67,19 @@ function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,
   const [startX, setStartX] = useState<any>();
   const [isDragging, setIsDragging] = useState(false);
   const [movingX, setmovingX] = useState<any>();
+  const [categoriList, setcategoriList] = useState<CategoryType[]>([]);
+
+  const getCategoryList = async () => {
+    const data = {
+      page: 1
+    };
+    try {
+      const {list,total} = await APICategoryList(data);
+      setcategoriList(list);
+    } catch (error) {
+    }
+  };
+
   
   const onDragStart = (e:any) => {
     e.preventDefault();
@@ -103,11 +115,15 @@ function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,
     setIsDragging(true)
     setTimeout(() => {
       setIsDragging(false);
-    }, 500);
+    }, 50);
   },[movingX])
 
   const delay = 10;
   const onThrottleDragMove = throttle(onDragMove, delay);
+
+  useEffect(()=>{
+    getCategoryList()
+  },[])
 
   return (
     <Container>
@@ -117,10 +133,20 @@ function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,
       onMouseUp={onDragEnd}
       onMouseLeave={onDragEnd}
       ref={scrollRef}>
-        {CategoryList.map((item) => { 
+        <CategroySelectButtons key={`Category-All`} item={{
+            idx:'1',
+            order_num:1,
+            name:'All',
+            show:1,
+            created_time: '',
+            updated_time: '',
+            deleted_time: ''
+        }} isSelect={selectCategory === '1'} 
+        onClickFilter={()=>{if(!isDragging){if(CategoryClick)CategoryClick('1')}}} />
+        {categoriList.map((item) => { 
           return (
-            <CategroySelectButtons key={`Category-${item.value}`} item={item} isSelect={selectCategory === item.value} 
-            onClickFilter={()=>{if(!isDragging){if(CategoryClick)CategoryClick(item.value)}}} />
+            <CategroySelectButtons key={`Category-${item.name}`} item={item} isSelect={selectCategory == item.idx} 
+            onClickFilter={()=>{if(!isDragging){if(CategoryClick)CategoryClick(item.idx)}}} />
           );
         })}
       </CategorySelectButtonWrap>
@@ -135,7 +161,7 @@ function Feed({saveHistory,onLikeProduct,CategoryClick,setShowLogin,productList,
               key={item.idx}
               onClick={(e) => {
 
-                saveHistory(e, item.idx)
+                saveHistory(e, item.idx,index)
 
               }}
               onClickLike={(e) => {
@@ -225,9 +251,9 @@ const CategorySelectButtonWrap = styled.div`
 
 const CategorySelectButton = styled.div<{ selected: boolean }>`
   background-color: ${(props) => (props.selected ? '#121212' : '#fff')};
-  border : 1px solid ${(props) => (props.selected ? '#121212' : '#c0c0c0')};
-  padding: 13px 24px 14px 22px;
-  margin-right: 10.88px;
+  border : 1px solid ${(props) => (props.selected ? '#121212' : '#dbdbdb')};
+  padding: 13px 22px;
+  margin-right: 10px;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -237,23 +263,22 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
   cursor: pointer;
   @media only screen and (max-width: 768px) {
     margin-right: 5px;
-    padding: 7px 20px;
-    height: 27px;
+    padding: 8px 20px;
+    height: 29px;
   }
 `;
 
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   font-family:'Pretendard Variable';
-  font-size:17px;
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
-  font-weight: 410;
+  font-weight: 310;
+  white-space:nowrap;
+  font-size: 14px;
   text-transform: capitalize;
-  @media only screen and (max-width: 1440px) {
-    font-size: 14px;
-  }
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
+
 `;
 
 export default Feed;

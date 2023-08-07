@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import snsImage from '../../asset/image/snsicon.png';
 import { APIGetBanner } from '../../api/SettingAPI';
-import { LikeSnsListType, TImage, TProductListItem } from '../../types/Types';
+import { SnsList } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -39,7 +39,7 @@ const CategroySelectButtons = memo(({ item, isSelect, onClickFilter }: ICategory
 
 function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
   const navigate = useNavigate();
-  const [LikeSnsList, setLikeSnsList] = useState<LikeSnsListType[]>([]);
+  const [LikeSnsList, setLikeSnsList] = useState<SnsList[]>([]);
   const [showLogin, setShowLogin] = useState(false);
   const [history, setHistory] = useState(false);
   const [page, setPage] = useState<number>(1);
@@ -58,25 +58,30 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
         return setHistory(false);
       }
       const { list } = await APISnsLikeList(data);
-      setLikeSnsList(list);
+      if(page > 1){
+        setLikeSnsList((prev) => [...prev, ...list]);
+      } else {
+        setLikeSnsList(list);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   const findHistory = () => {
-    const list = JSON.parse(sessionStorage.getItem('LikeSnsList') ?? '');
+    // const list = JSON.parse(sessionStorage.getItem('LikeSnsList') ?? '');
     const page = Number(sessionStorage.getItem('LikeSnsPage'));
     setHistory(true);
     setPage(page);
-    setLikeSnsList(list)
+    getLikeSnsData(page)
+    // setLikeSnsList(list)
 
     sessionStorage.removeItem('LikeSnsPage');
-    sessionStorage.removeItem('LikeSnsList');
+    // sessionStorage.removeItem('LikeSnsList');
     sessionStorage.removeItem('LikeSnsSave');
   };
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
+  const saveHistory = (e: React.MouseEvent, idx: number, index:number) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
@@ -84,8 +89,9 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
       sessionStorage.setItem('LikeSnsPage', String(page));
       sessionStorage.setItem('LikeSnsSave','Save')
       sessionStorage.setItem('y', String(y ?? 0));
-
-      navigate(`/personalpage/${idx}`,{state:idx});
+      sessionStorage.setItem('SNSy', 'ScrollOnce');
+      sessionStorage.setItem('removeSNSHistory', 'SnsLike');
+      navigate(`/personalpage/${idx}`,{state:{idx:idx,page:page,index:index}});
     }
   };
   
@@ -156,9 +162,9 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
         return(
           // <div onClick={()=>console.log(item)}>asdsadasd</div>
           <SNSCard
-            item={item.sns}
+            item={item}
             key={item.idx}
-            onClick={(e) => saveHistory(e, item.sns.idx)}
+            onClick={(e) => saveHistory(e, item.idx,index)}
             index={index}
           />
         )
@@ -167,7 +173,7 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
         <Nodata/>
         }
       </ProductListWrap>
-      {/* <InterView ref={interSectRef} /> */}
+      <InterView ref={interSectRef} />
       <AlertModal
         visible={showLogin}
         setVisible={setShowLogin}
@@ -176,7 +182,7 @@ function LikeSns({productList}:{productList?:ArtworkListItem[]}) {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>
@@ -217,7 +223,9 @@ const CategorySelectButton = styled.div<{ selected: boolean }>`
     height: 27px;
   }
 `;
-
+const InterView = styled.div`
+  height: 150px;
+`;
 const CategorySelectButtonText = styled.span<{ selected: boolean }>`
   color: ${(props) => (props.selected ? '#fff' : '#121212')};
   font-weight: 410;

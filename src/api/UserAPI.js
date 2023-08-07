@@ -158,3 +158,9 @@ export const APIUserReport = async (data) => {
   const res = await API.post('/user/report', data, {headers: config });
   return res.data;
 };
+
+export const APISnsDelete = async (data) => {
+  const config = Authorization();
+  const res = await API.delete('/sns', {params: data, headers: config });
+  return res.data;
+};

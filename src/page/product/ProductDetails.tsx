@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState,MouseEvent } from 'react';
+import React, { useContext, useEffect, useState,MouseEvent, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import likeOnImage from '../../asset/image/heart_on.svg';
@@ -6,26 +6,23 @@ import likeOffImage from '../../asset/image/heart.svg';
 import ximage from '../../asset/image/close.svg';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { createStyles, Modal } from '@mantine/core';
-import { ArtworkDetailsType, TImage, TProductListItem } from '../../types/Types';
+import { ArtworkDetailsType, ArtworkLinkListType, LinkListType, TImage, TProductListItem } from '../../types/Types';
 import AlertModal from '../../components/Modal/AlertModal';
 import { UserContext } from '../../context/user';
 import { useRef } from 'react';
 import { createBrowserHistory } from 'history';
-import { APIAddCartItem, APILikeShop, APIShopDetails } from '../../api/ShopAPI';
-import { replaceString } from '../../util/Price';
 import { removeHistory } from '../../components/Layout/Header';
-import { Select } from '@mantine/core';
-import arrDownImage from '../../asset/image/arr_down.png';
-import { Virtual,Pagination,Navigation, Scrollbar ,FreeMode, Thumbs } from 'swiper';
+import { Pagination,Navigation, Scrollbar ,FreeMode, Thumbs } from 'swiper';
 import SwiperCore, { Keyboard, Mousewheel } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
+import profileImage from '../../asset/image/Profile.svg';
 import Sheet,{SheetRef} from 'react-modal-sheet';
 import './ProductDetails.css'
-import { APIGetBanner } from '../../api/SettingAPI';
-import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
-import { APILikeProduct, APIProductDetails } from '../../api/ProductAPI';
+import { APIArtistFollowAdd, APILikeProduct, APILinkMyAccount, APIProductDetails } from '../../api/ProductAPI';
 import ContactModal from '../../components/Modal/ContactModal';
+import { APILink } from '../../api/UserAPI';
+import ArtworkContactModal from '../../components/Modal/ArtworkContactModal';
 
 SwiperCore.use([Keyboard, Mousewheel]);
 
@@ -37,19 +34,15 @@ function ProductDetails() {
   const [defaultoverlay, setDefaultoverlay] = useState(false)
   const [shopDetails, setShopDetails] = useState<ArtworkDetailsType>();
   const [isLike, setIsLike] = useState<boolean>(false);
-  const [showImageModal, setShowImageModal] = useState<boolean>(false);
-  const [initcar, setInitCar] = useState<boolean>(false);
+  const [Mobile, setMobile] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [height, setHeight] = useState(0);
-  const [value, setValue] = useState(); // 현재 선택값
-  const [option, setOption] = useState<any>(); // 기존 옵션 리스트
-  const [addOption, setAddOption] = useState<any>([]); // 선택 누적 리스트
   const [readmore, setReadMore] = useState<boolean>(false)
   const [ShowContact, setShowContact] = useState<boolean>(false);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [bottomSheetModal, setBottomSheetModal] = useState(false);
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const [alertType, setAlertType] = useState<string>('')
+  const [linkList, setLinkList] = useState<ArtworkLinkListType>();
   const ref = useRef<SheetRef>();
 
 
@@ -72,6 +65,14 @@ function ProductDetails() {
       const resData = await APIProductDetails(data);
       console.log('resDataresData',resData);
       setShopDetails({ ...resData, imageList: resData.imageList.slice(0,10)});
+      setLinkList({
+          sns:resData.sns,
+          link_buy:resData.link_buy,
+          link_etc1:resData.link_etc1,
+          link_sns_title:resData.link_sns_title,
+          link_buy_title:resData.link_buy_title,
+          link_etc_title1:resData.link_etc_title
+      })
       setIsLike(resData.isLike);
     } catch (error) {
       console.log(error);
@@ -79,6 +80,27 @@ function ProductDetails() {
       navigate(-1);
     }
   };
+  const UserFollow = async() =>{
+    if (user.idx) {
+      const data = {
+        designer_idx: shopDetails?.designer_idx,
+      };
+      try {
+        const res = await APIArtistFollowAdd(data);
+        if(res.message == '좋아요 완료'){
+          setAlertType('Followed')
+        } else {
+          setAlertType('unFollowed')
+        }
+        setShowLogin(true)
+        getProductDetails()
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setShowLogin(true);setAlertType('Available after Sign up.')
+    }
+  }
 
   const AddLike = async (idx: number) => {
     if (user.idx) {
@@ -89,32 +111,54 @@ function ProductDetails() {
         const res = await APILikeProduct(data);
         getProductDetails()
         console.log(res)
-        setAlertType(res.message)
+        if(res.message == '좋아요 완료'){
+          setAlertType('Liked')
+        } else {
+          setAlertType('unLiked')
+        }
         setShowLogin(true)
       } catch (error) {
         console.log(error);
       }
     } else {
-      setAlertType("회원가입 후 이용 가능합니다.")
+      setAlertType("Available after Sign up.")
       setShowLogin(true);
     }
-
   };
-  
+
+  const LinkMyAccount = async (idx: number) => {
+    console.log('user.level',user.level)
+    if (user.idx) {
+      if(user.level !== 3){
+        const data = {
+          artwork_idx: idx,
+        };
+        try {
+          const res = await APILinkMyAccount(data);
+          getProductDetails()
+          console.log(res)
+          setAlertType('Link 요청 하였습니다.')
+          setShowLogin(true)
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        setAlertType("Customor 회원은 신청 불가합니다.")
+        setShowLogin(true);
+      }
+    } else {
+      setAlertType("Available after Sign up.")
+      setShowLogin(true);
+    }
+  };
+
 
   useEffect(() => {
-    console.log('productidx',idx)
     getProductDetails();
-    // getShopDetails();
+    getLinks()
   }, []);
 
-  useEffect(() => {
-    setInitCar(showImageModal);
-  }, [showImageModal]);
 
-  useEffect(() => {
-    setHeight(Leftheight);
-  }, [Leftheight]);
 
   useEffect(() => {
     console.log(history.action);
@@ -127,54 +171,42 @@ function ProductDetails() {
     return backCheck;
   }, []);
 
-  const onChangeOption = (data: any) => {
-    const result = option.filter((word: any) => word.value === data); //idx 값으로 기존값에서 컬럼 데이터 가져옴
-    setValue(data);
-
-    const array = addOption;
-    //누적값에 동일 값이 들어왔는지 체크
-    const result2 = array.filter((word: any) => word.value === data);
-    if (result2.length > 0) {
-      //동일값이 있으면 인덱스값을 구해서 인덱스 배열 카운트 추가
-      const index = array.findIndex((word: any) => word.value === data);
-      array[index].count = array[index].count + 1;
-    } else {
-      //동일값이 없으면 새로 추가
-      result[0].count = 1;
-      array.push(result[0]);
-    }
-    console.log('array===>', array);
-    // setAddOption(array);
-    // getTotal();
-    // getShopDetails();
-    return result;
-  };
-
-
-
-  var bullet = ['1번', '2번', '3번'];
-
-  const pagination = {
-    // el:<PaginationBox/>,
-    clickable: true,
-    renderBullet: function (index:number, className:string) {
-      let array : string[] = []
-      shopDetails?.imageList.map((item)=>{
-        array.push(item.file_name);
-      })
-      // return '<span class="' + className + '">' + array[index] + "</span>";
-      // return '<span class="' + className + '"><img src="' + array[index] + '}/>"</span>";
-      return '<span class="' + className + '"><img src="' + array[index] +'"/></span>';
-    },
-  };
-  const Click = () => {
-    
-  }
-
   useEffect(() => {
-    console.log('addOption', addOption);
-    console.log(shopDetails?.isLike);
-  }, [addOption]);
+    const userAgent = window.navigator.userAgent;
+    if (userAgent === 'APP-android' || userAgent === 'APP-ios') {
+      setMobile(true)
+      return;
+    }
+  }, []);
+
+
+  const getLinks = async () => {
+    const data = {
+      page: 1,
+      idx: shopDetails?.designer_idx
+    };
+    try {
+      const {list,total} = await APILink(data);
+      setLinkList(list);
+    } catch (error) {
+      // console.log(error);
+      // navigate('/signin', { replace: true });
+    }
+  };
+
+  useLayoutEffect(()=>{
+    const Drag = sessionStorage.getItem('ProductDrag')
+    if(Drag == 'true'){
+      setDefaultoverlay(true)
+      sety(window.innerHeight-225)
+    } else {
+      setDefaultoverlay(false)
+      sety(window.innerHeight-170)
+    }
+    return () =>{
+      
+    }
+  },[])
 
   useEffect(() => {
     const resizeListener = () => {
@@ -182,27 +214,90 @@ function ProductDetails() {
     };
     if(innerWidth > 768){
       setBottomSheetModal(false)
+      document.body.style.overflow = "unset"
     } else{
       setBottomSheetModal(true)
+      document.body.style.overflow = "hidden"
     }
     // console.log("innerWidth", innerWidth);
     window.addEventListener("resize", resizeListener);
+    return ()=>{
+      document.body.style.overflow = "unset"
+    }
   }, [innerWidth]);
+
+  /** draggabletouch */
+    const [startX, setStartX] = useState(0);
+    const [startY, setStartY] = useState(0);
+
+    const handleTouchStart = (event:any) => {
+      const touch = event.touches[0];
+      setStartX(touch.clientX);
+      setStartY(touch.clientY);
+    };
+
+    type DraggableData = {
+    node: HTMLElement,
+    // lastX + deltaX === x
+    x: number, y: number,
+    deltaX: number, deltaY: number,
+    lastX: number, lastY: number
+  };
+    const [y,sety] = useState(!defaultoverlay? window.innerHeight-225 : window.innerHeight-168)
+    const DraggableEventHandler = (e: any, data: DraggableData) => {
+      sety(data.y)
+    }
+
+    const handleTouchEnd = (event:any,type:string) => {
+      const touch = event.changedTouches[0];
+      const endX = touch.clientX;
+      const endY = touch.clientY;
+      const distance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+      if (distance < 5) {
+        if(type == '0'){
+          sessionStorage.setItem('ProductDrag',JSON.stringify(!defaultoverlay))
+          sety(!defaultoverlay? window.innerHeight-225 : window.innerHeight-170 )
+          setDefaultoverlay(!defaultoverlay)
+        } else if (type == '1'){
+          if(shopDetails?.idx)AddLike(shopDetails?.idx)
+        } else if (type == '2'){
+          setReadMore(true)
+        } else if (type == '3'){
+          UserFollow()
+        } else if (type == '4'){
+          if(shopDetails?.isLink == false){
+            LinkMyAccount(shopDetails?.idx)
+          } else {
+            setAlertType("이미 요청되었습니다.")
+            setShowLogin(true);
+          }
+        } else if (type == '5'){
+          if (user.idx) {
+            setShowContact(true);
+          } else {
+            setAlertType("Available after Sign up.")
+            setShowLogin(true);
+          }
+        }
+      }
+    };
+
 
   return (
     <ContainerWrap>
       <Container>
         {bottomSheetModal && 
         <Draggable 
-        bounds={{left: 0, top: 1, right: 0, bottom: !defaultoverlay? window.innerHeight-240 : window.innerHeight-170 }}
+        bounds={{left: 0, top: 1, right: 0, bottom: defaultoverlay? window.innerHeight-225 : window.innerHeight-170 }}
         axis="y"
-        // handle={scrollable}
-        defaultPosition={{x: 0, y: !defaultoverlay? window.innerHeight-240 : window.innerHeight-170}}
+        onDrag={(e,data)=>DraggableEventHandler(e,data)}
+        position={{x:0,y:y}}
+        defaultPosition={{x: 0, y: defaultoverlay? window.innerHeight-225 : window.innerHeight-170}}
         >
-          <ModalInfromBox>
+          <ModalInfromBox Mobile={Mobile}>
             <EmptyHeightBox height={35}>
               <HeaderButtom/>
-              <Ximage src={ximage}/>
+              <Ximage onTouchStart={handleTouchStart} onTouchEnd={(e)=>handleTouchEnd(e,'0')} src={ximage}/>
             </EmptyHeightBox>
             <LeftTopBox>
               <TitleBox>
@@ -211,44 +306,57 @@ function ProductDetails() {
                     <ProductName>{shopDetails?.name}</ProductName>
                     <Designer>{shopDetails?.designer_name}</Designer>
                   </NameDesigner>
-                  <LikeButton onClick={()=>{if(shopDetails?.idx){AddLike(shopDetails?.idx)}}} src={shopDetails?.isLike ? likeOnImage : likeOffImage} />
+                  <LikeButton onTouchStart={handleTouchStart} onTouchEnd={(e)=>handleTouchEnd(e,'1')}
+                  src={shopDetails?.isLike ? likeOnImage : likeOffImage} />
                 </NameBox>
-                <BottomBoxContent readmore={readmore} >value={shopDetails?.description}
+                <BottomBoxContent onTouchStart={handleTouchStart} readmore={readmore} >{shopDetails?.description}
                 </BottomBoxContent>
                 {!readmore &&
-                <ReadMore onClick={()=>{setReadMore(true)}}>Read More</ReadMore>
+                <ReadMore onTouchStart={handleTouchStart} onTouchEnd={(e)=>handleTouchEnd(e,'2')}>Read More</ReadMore>
                 }
               </TitleBox>
               <ContentBox>
-                {/* <ContentRowWrap>
-                  <Title>price</Title>
-                  <Content>{shopDetails && replaceString(shopDetails?.price)} ₩</Content>
-                </ContentRowWrap> */}
-              <ContentRowWrap>
-                <Title>Size(cm)</Title>
-                <Content>{shopDetails?.size}</Content>
-              </ContentRowWrap>
-              <ContentRowWrap>
-                <Title>Materials</Title>
-                <Content>{shopDetails?.materials}</Content>
-              </ContentRowWrap>
-              
+                <ContentRowWrap>
+                  <Title>Size(cm)</Title>
+                  <Content>{shopDetails?.size}</Content>
+                </ContentRowWrap>
+                <ContentRowWrap>
+                  <Title>Materials</Title>
+                  <Content>{shopDetails?.materials}</Content>
+                </ContentRowWrap>
               </ContentBox>
-              <RowWrap>
-                {/* <BottomBoxTitle>디자이너 & 작품설명</BottomBoxTitle> */}
+            <RowWrap>
+            {shopDetails?.user?
+            <LinkWrap>
+              <ImageWrap Image={shopDetails?.user.image?.file_name? true : false}>
+              {shopDetails?.user.image?.file_name ?
+                <ProfileImage src={shopDetails?.user.image?.file_name}/>
+                :
+                <BasicImage src={profileImage}/>
+                  }
+                </ImageWrap>
+                <NameBox>
+                <FlexBox>
+                  <NameText>{shopDetails?.user.name}</NameText>
+                  
+                </FlexBox>
+                <FollowButtonBox  onTouchStart={handleTouchStart} onTouchEnd={(e)=>handleTouchEnd(e,'3')} follow={shopDetails?.user.isLike? shopDetails?.user.isLike : false}>
+                  Follow
+                </FollowButtonBox>
+                </NameBox>
+              </LinkWrap>
+              :
+              <LinkWrap>
+                <LinkText>
+                Is this your workpiece?
+                </LinkText>
+                <LinkButtonBox onTouchStart={handleTouchStart} onTouchEnd={(e)=>handleTouchEnd(e,'4')}>
+                Link my Account
+                </LinkButtonBox>
+              </LinkWrap>
+              }
                 <AskButton
-                  onClick={() => {
-                    if (user.idx) {
-                      setShowContact(true);
-                      // navigate('/contact/registerask-shop', {
-                      //   state: { idx: shopDetails?.idx, name: shopDetails?.name, designer: shopDetails?.designer },
-                      // });
-                    } else {
-                      setAlertType("회원가입 후 이용 가능합니다.")
-                      setShowLogin(true);
-                    }
-                  }}
-                >
+                  onTouchStart={handleTouchStart} onTouchEnd={(e)=>handleTouchEnd(e,'5')}>
                   Contact
                 </AskButton>
               </RowWrap>
@@ -267,7 +375,7 @@ function ProductDetails() {
                 </NameDesigner>
                 <LikeButton onClick={()=>{if(shopDetails?.idx){AddLike(shopDetails?.idx)}}} src={isLike ? likeOnImage : likeOffImage} />
               </NameBox>
-              <BottomBoxContent readmore={readmore}>{shopDetails?.description}</BottomBoxContent>
+              <BottomBoxContent readmore={readmore}>&nbsp;{shopDetails?.description}</BottomBoxContent>
               {!readmore &&
                 <ReadMore onClick={()=>{setReadMore(true)}}>Read More</ReadMore>
               }
@@ -284,42 +392,59 @@ function ProductDetails() {
               </ContentRowWrap>
               <ContentRowWrap>
                 <Title>Materials</Title>
-                <Content>{shopDetails?.height}</Content>
+                <Content>{shopDetails?.materials}</Content>
               </ContentRowWrap>
-              {option && option.length > 0 && (
-                <ContentRowWrap>
-                  <Title>옵션</Title>
-                  <Select
-                    placeholder="옵션을 선택해주세요"
-                    rightSection={<DownIcon src={arrDownImage} />}
-                    styles={(theme) => ({
-                      rightSection: { pointerEvents: 'none' },
-                      root: { width: '70%', display: 'inline-block' },
-                    })}
-                    variant="unstyled"
-                    value={value}
-                    data={option}
-                    onChange={(data) => {
-                      onChangeOption(data);
-                    }}
-                  />
-                </ContentRowWrap>
-              )}
             </ContentBox>
-            <RowWrap>
-                {/* <BottomBoxTitle>디자이너 & 작품설명</BottomBoxTitle> */}
+            <RowWrap Mobile={Mobile}>
+              {shopDetails?.user?
+              <LinkWrap>
+                <ImageWrap Image={shopDetails?.user.image?.file_name? true : false}>
+                {shopDetails?.user.image?.file_name ?
+                <ProfileImage src={shopDetails?.user.image?.file_name}/>
+                :
+                <BasicImage src={profileImage}/>
+                  }
+                </ImageWrap>
+                <NameBox>
+                <FlexBox>
+                  <NameText>{shopDetails?.user.name}</NameText>
+                  
+                </FlexBox>
+
+                <FollowButtonBox follow={shopDetails?.user.isLike? shopDetails?.user.isLike : false} onClick={UserFollow}>
+                  Follow
+                </FollowButtonBox>
+
+                </NameBox>
+              </LinkWrap>
+              :
+              <LinkWrap>
+                <LinkText>
+                Is this your artwork?
+                </LinkText>
+                <LinkButtonBox onClick={()=>{
+                  if(shopDetails?.isLink == false){
+                    LinkMyAccount(shopDetails?.idx)
+                  } else {
+                    setAlertType("이미 요청되었습니다.")
+                    setShowLogin(true);
+                  }
+                }}>
+                Link Account
+                </LinkButtonBox>
+              </LinkWrap>
+              }
                 <AskButton
                   onClick={() => {
                     if (user.idx) {
                       setShowContact(true);
                     } else {
-                      setAlertType("회원가입 후 이용 가능합니다.")
+                      setAlertType("Available after Sign up.")
                       setShowLogin(true);
                     }
                   }}
                 >
                   Contact
-                  {/* <OrderButtonText>문의하기</OrderButtonText> */}
                 </AskButton>
             </RowWrap>
           </LeftTopBox>
@@ -328,7 +453,6 @@ function ProductDetails() {
         <RightBox>
           <SwiperWrap>
             <Swiper 
-              onMouseEnter={Click}
               // modules={[Navigation,Pagination]}
               // mousewheel={true}
               modules={[Pagination,Scrollbar,FreeMode,Thumbs]}
@@ -348,7 +472,7 @@ function ProductDetails() {
               // setWrapperSize={true}
               // pagination={innerWidth <= 768? false :pagination}
               style={{
-                maxHeight:innerWidth <= 1000? window.innerHeight : window.innerHeight*1,backgroundColor:'white'
+                maxHeight:innerWidth <= 768? window.innerHeight-150 : window.innerHeight*1,backgroundColor:'white'
               }}
               // slidesPerView={innerWidth <= 768? 990/innerWidth : innerWidth <= 1440? 1700/innerWidth :1800/innerWidth}
               slidesPerView={'auto'}
@@ -373,7 +497,7 @@ function ProductDetails() {
             <Swiper
               onSwiper={setThumbsSwiper}
               style={{
-                position:'absolute',top:0,right:0,width:'8%',minWidth:'30px'
+                position:'absolute',top:0,right:-20,width:'10%',minWidth:'30px'
               }}
               freeMode={true}
               scrollbar={false}
@@ -394,14 +518,49 @@ function ProductDetails() {
               ))}
             </Swiper>
             </PaginationBox>
-
           </SwiperWrap>
+          {shopDetails?.user?
+            <LinkWrapWeb Direction={true}>
+              <ImageWrap Image={shopDetails?.user.image?.file_name? true : false}>
+              {shopDetails?.user.image?.file_name ?
+              <ProfileImage src={shopDetails?.user.image?.file_name}/>
+              :
+              <BasicImage src={profileImage}/>
+                }
+              </ImageWrap>
+              <NameBox>
+              <FlexBox>
+                <NameText>{shopDetails?.user.name}</NameText>
+                
+              </FlexBox>
+              <FollowButtonBox follow={shopDetails?.user.isLike? shopDetails?.user.isLike : false} onClick={UserFollow}>
+                Follow
+              </FollowButtonBox>
+              </NameBox>
+            </LinkWrapWeb>
+            :
+          <LinkWrapWeb>
+            <LinkText>
+            Is this your workpiece?
+            </LinkText>
+            <LinkButtonBox onClick={()=>{
+              if(shopDetails?.isLink == false){
+                LinkMyAccount(shopDetails?.idx)
+              } else {
+                setAlertType("이미 요청되었습니다.")
+                setShowLogin(true);
+              }
+              }}>
+            Link my Account
+            </LinkButtonBox>
+          </LinkWrapWeb>
+          }
         </RightBox>
         <AlertModal
           visible={showLogin}
           setVisible={setShowLogin}
           onClick={() => {
-            if(alertType == "회원가입 후 이용 가능합니다."){
+            if(alertType == "Available after Sign up."){
               removeHistory();
               setShowLogin(false);
               navigate('/signin');
@@ -411,32 +570,15 @@ function ProductDetails() {
           }}
           text={alertType}
         />
-        <ContactModal
+        <ArtworkContactModal
           visible={ShowContact}
           setVisible={setShowContact}
           onClick={() => {
             setShowContact(false);
           }}
-          contactUrl={[
-            {
-            title:'Fredi',
-            url:'www.fredi.co.kr'
-            },
-            {
-            title:'Naver',
-            url:'www.naver.com'
-            },
-          ]}
+          contactUrl={linkList}
         />
       </Container>
-      {/* <AlertModal
-        visible={showModal}
-        setVisible={setShowModal}
-        onClick={() => {
-          setShowModal(false);
-        }}
-        text="장바구니에 상품이 추가되었습니다."
-      /> */}
     </ContainerWrap>
   );
 }
@@ -465,7 +607,7 @@ const Container = styled.div`
 `;
 
 const LeftBox = styled.div`
-  padding: 0 4.21875% 0 2.708333%;
+  padding: 0 50px 0 50px;
   display: flex;
   min-width:28.12%;
   max-width:540px;
@@ -475,6 +617,10 @@ const LeftBox = styled.div`
   justify-content:space-between;
   text-align: left;
   /* border-right: 1px solid #121212; */
+  @media only screen and (max-width: 1440px) {
+    padding: 0 50px 0 50px;
+
+  }
   @media only screen and (max-width: 768px) {
     width: 100%;
     /* border-right: 0;
@@ -484,17 +630,10 @@ const LeftBox = styled.div`
     display:none
   }
 `;
-const PaginationMap = styled.div`
-  position:absolute;
-  top:0;
-  right:0;
-  width:10%;
-`
+
 const RightBox = styled.div`
   display: flex;
   width:100%;
-  flex-direction: column;
-  overflow: hidden;
   @media only screen and (max-width: 768px) {
     width:100%;
   }
@@ -505,15 +644,17 @@ const PaginationBox = styled.div`
   }
 `;
 
-const ModalInfromBox = styled.div`
+const ModalInfromBox = styled.div<{Mobile:boolean}>`
   width:100%;
   position:absolute;
-  height:100vh;
   /* overflow:hidden; */
   /* border-radius:10px; */
   z-index:99;
-  background:rgba(255,255,255,0.95);
+  background:rgba(255,255,255,0.93);
+  /* ${props => props.Mobile ? 'height:calc(100vh - 240px)' : "height:calc(100vh - 150px)"} */
+  height:calc(100vh - 150px);
 `;
+
 const EmptyHeightBox = styled.div<{height:number}>`
   width:100%;
   height:${props => props.height}px;
@@ -521,7 +662,6 @@ const EmptyHeightBox = styled.div<{height:number}>`
 `;
 
 const HeaderButtom = styled.div`
-// tranform: translateY(-1px);
   position:absolute;
   top:15px;
   left:50%;
@@ -536,9 +676,9 @@ const HeaderButtom = styled.div`
 const LeftTopBox = styled.div`
   position: relative;
   width: 100%;
-  height: calc(100vh - 200px);
   padding: 0;
   @media only screen and (max-width: 768px) {
+    width: 100%;
     padding: 0 20px;
     /* position: static;
     bottom:0; */
@@ -570,15 +710,11 @@ const NameBox = styled.div`
   width:100%;
   display:flex;
   justify-content:space-between;
-  margin-top:100px;
-  margin-bottom:70px;
-  @media only screen and (max-width: 1440px) {
-    margin-top:70px;
-    margin-bottom:50px;
+  align-items:center;
+  margin-bottom:5px;
+  @media only screen and (max-width: 1920px) {
   }
   @media only screen and (max-width: 768px) {
-    margin-top:0px;
-    margin-bottom:46px;
     font-size:14px;
   }
 `;
@@ -608,10 +744,12 @@ const CategoryItem = styled.span`
 `
 const Ximage = styled.img`
   position:absolute;
-  width:12px;
-  height:12px;
-  top:11px;
-  right:14.19px;
+  padding:7px;
+  width:27px;
+  height:27px;
+  cursor: pointer;
+  top:5px;
+  right:13px;
 `
 
 const ProductImage = styled.img`
@@ -671,16 +809,19 @@ const LikeButton = styled.img`
     margin-top: 0px;
     position:absolute;
     top:11.73px;
-    right:9px;
+    right:15px;
     width:22.37px;
     height:18.73px;
   }
 `;
 
 const ContentBox = styled.div`
-  margin:65px 3.48px 90.85px 6.63px;
+  margin:65px 3.48px 60.85px 6.63px;
+  @media only screen and (max-width: 1440px) {
+    margin:65px 3.48px 40.85px 6.63px;
+  }
   @media only screen and (max-width: 768px) {
-    margin:65px 0 0 0;
+    margin:25px 0 0 0;
   }
 `;
 
@@ -725,7 +866,6 @@ cursor: pointer;
   @media only screen and (max-width: 768px) {
     font-size: 12px;
   }
-
 `
 const BottomBoxContent = styled.div<{readmore:boolean}>`
 font-family:'Pretendard Variable';
@@ -740,13 +880,19 @@ text-align:start;
   color: #121212;
   /* resize: none; */
   background-color: #fff;
-  display: ${props => props.readmore? 'block' : '-webkit-box' };
-  -webkit-line-clamp: 5; // 원하는 라인수
+  white-space:pre-line;
+  display: ${props => props.readmore? 'block':'-webkit-box'};
+  -webkit-line-clamp: ${props => props.readmore? 10:5}; // 원하는 라인수
   -webkit-box-orient: vertical;
     overflow:hidden; 
   /* white-space:nowrap; */
   text-overflow:ellipsis;
+  margin-top:30px;
   @media only screen and (max-width: 768px) {
+    margin-top:0px;
+    overflow-y:scroll;
+    display: -webkit-box;
+    -webkit-line-clamp: ${props => props.readmore? 10:5};
     background-color: transparent;
     max-height: 214px;
     font-size: 12px;
@@ -765,6 +911,63 @@ const ContentRowWrap = styled.div`
     margin-top: 10px;
   }
 `;
+const LinkWrap = styled.div`
+  width:100%;
+  align-items:center;
+  display:none;
+  @media only screen and (max-width: 1920px) {
+    padding:0 10px;
+    display:flex;
+    justify-content:space-between;
+    margin-bottom: 20px;
+  }
+  @media only screen and (max-width: 768px) {
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    margin-bottom: 20px;
+  }
+`;
+const LinkWrapWeb = styled.div<{Direction?:boolean}>`
+  width:350px;
+  margin-left:1.5%;
+  display:flex;
+  flex-direction:${props => props.Direction? 'row' : 'column'};
+  align-items:center;
+  justify-content:center;
+  @media only screen and (max-width: 1920px) {
+    display:none;
+  }
+
+`;
+
+const LinkButtonBox = styled.div`
+  font-family: "Pretendard Variable";
+  font-weight:310;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor: pointer;
+  border-radius:5px;
+  border:1px solid #000000;
+  padding:15px 80px;
+  @media only screen and (max-width: 1920px) {
+    padding:5px 20px;
+  }
+
+`
+const LinkText = styled.span`
+  font-family: "Pretendard Variable";
+  font-weight:310;
+  font-size:16px;
+  margin-bottom:20px;
+  @media only screen and (max-width: 1920px) {
+    margin-bottom:0px;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size:14px;
+  }
+`
 
 const ImageBox = styled.div`
   height: 100%;
@@ -802,101 +1005,6 @@ const ImageBox2 = styled.div`
     width: 100%;
   }
 `;
-const PagenationDiv = styled.div`
-  /* width: 100%; */
-  width: 100px;
-  height:100px;
-  /* max-height:800px; */
-  /* object-fit:contain; */
-  /* overflow: hidden; */
-  /* background-color:aqua; */
-  /* aspect-ratio: 0.8; */
-`;
-
-const LeftLabelBox = styled.div`
-  display: flex;
-  width: 60%;
-  font-size: 16px;
-  padding: 0.4rem 0rem;
-  align-items: center;
-  float: left;
-  @media only screen and (max-width: 768px) {
-    padding: 0.4rem 0rem;
-    font-size: 14px;
-  }
-`;
-
-const SliderImage = styled.img`
-  cursor: pointer;
-  object-fit: cover;
-  height: 100%;
-  max-height: 1096px;
-  max-width: 100%;
-  @media only screen and (max-width: 768px) {
-    width: 100%;
-  }
-`;
-
-const LeftButton = styled.img`
-  width: 45px;
-  cursor: w-resize;
-`;
-
-const RightButton = styled.img`
-  width: 45px;
-  cursor: e-resize;
-`;
-
-const LeftButtonMobile = styled(LeftButton)`
-  width: 45px;
-`;
-
-const RightButtonMobile = styled(RightButton)`
-  width: 45px;
-`;
-
-const OrderButton = styled.div`
-  // position: absolute;
-  // right: 49px;
-  // bottom: 60px;
-  margin-top: 1rem;
-  float: right;
-  width: 130px;
-  height: 40px;
-  background-color: #398049;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 510;
-  color: #fff;
-  @media only screen and (max-width: 768px) {
-    right: 19px;
-    bottom: 33px;
-    width: 100px;
-    height: 35px;
-    font-size: 13px;
-  }
-  &:hover {
-    background-color: white;
-    border: 1px solid #398049;
-    color: #398049;
-  }
-`;
-
-const DownIcon = styled.img`
-  width: 10px;
-  height: 10px;
-  cursor: pointer;
-  @media only screen and (max-width: 460px) {
-    width: 8px;
-    height: 8px;
-    margin-left: 15px;
-  }
-`;
-
 const AskButton = styled.div`
     font-family: "Pretendard Variable";
     width: 100%;
@@ -923,24 +1031,18 @@ const AskButton = styled.div`
   }
 `;
 
-const RowWrap = styled.div`
+const RowWrap = styled.div<{Mobile?:boolean}>`
   align-items: flex-end;
   justify-content:flex-end;
   margin-bottom:30px;
   padding-bottom:30px;
   @media only screen and (max-width: 768px) {
-    position:fixed;
-    width:calc(100% - 40px);
-    bottom:150px;
+    width:100%;
+    margin-top: ${props => props.Mobile? 70 : 40}px;
+    bottom:0px;
     margin-bottom:0px;
   }
 `;
-
-const LeftOption = styled.div`
-  min-height: 40px;
-  line-height: 2;
-`;
-const CartCardWrap = styled.div``;
 
 const SwiperWrap = styled.div`
   position:relative;
@@ -951,94 +1053,80 @@ const SwiperWrap = styled.div`
   /* max-height:800px; */
   /* width:100%; */
   @media only screen and (max-width: 1440px) {
+    width:65%;
     min-width:49.27%;
     max-width:1000px;
   }
   @media only screen and (max-width: 768px) {
     width:100%;
   }
-
 `;
 
-const AmountControllerWrap = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: row;
-  align-items: center;
-  // padding: 0.5rem 0;
-  justify-content: space-between;
+const ImageWrap = styled.div<{Image:boolean}>`
+  width:65px;
+  height:65px;
+  margin-right:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:50%;
+  aspect-ratio: 1.0;
+  background-color:${props => props.Image?  'none': '#DBDBDB'} ;
   @media only screen and (max-width: 768px) {
-    margin-top: 5px;
-    // padding: 0.4rem 0.5rem;
+    width:36px;
+    height:36px;
   }
 `;
-
-const AmountControllerBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 23px;
-  border: 1px solid #121212;
-  border-left: 0;
-  border-right: 0;
+const BasicImage = styled.img`
+  width:50%;
+  height:50%;
+  object-fit:contain;
 `;
 
-const AmountControllerButton = styled.div`
+const ProfileImage = styled.img`
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:1px solid #e0e0e0;
+  object-fit:contain;
+`;
+const FlexBox = styled.div`
+  display:flex;
+  align-items:center;
+`
+const NameText = styled.p`
+font-family:'Pretendard Variable';
+  font-size:16px;
+  font-weight: 410;
+  text-align:start;
+  line-height:31px;
+  margin:0 10px 0 0;
+  @media only screen and (max-width: 768px) {
+    font-size:14px;
+  }
+`;
+const FollowButtonBox = styled.div<{follow:boolean}>`
+font-family:'Pretendard Variable';
   display: flex;
-  width: 23px;
-  height: 23px;
-  background-color: #fff;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  width:100%;
   cursor: pointer;
-  border: 1px solid #121212;
-`;
-
-const AmountControllerButtonImage = styled.img`
-  width: 7px;
-  height: 7px;
-`;
-const AmountControllerButtonImageMinus = styled(AmountControllerButtonImage)`
-  height: auto;
-`;
-
-const AmountText = styled.span`
-  font-family:'Pretendard Variable';;
-  font-size: 12px;
-  width: 30px;
-  text-align: center;
-  line-height: 23px;
+  background-color:${props=>props.follow? '#505050':'#ffffff'};
+  color:${props=>props.follow? '#ffffff': '#505050'};
+  border:1px solid #c7c7c7;;
+  border-radius:4.93px;
+  font-size:12px;
+    width:90px;
+    height:38px;
+  font-weight: 300;
+  white-space:nowrap;
   @media only screen and (max-width: 768px) {
-    font-size: 11px;
+    width:60px;
+    height:25px;
+    font-size:10px;
   }
 `;
 
-const DeleteButton = styled.div`
-  margin-right: 5px;
-  padding: 5px;
-  cursor: pointer;
-`;
-
-const DeleteButtonImage = styled.img`
-  width: 17px;
-  height: 17px;
-  margin-top: -2px;
-  @media only screen and (max-width: 768px) {
-    width: 14px;
-    height: 14px;
-  }
-`;
-
-const LeftMiddleTotal = styled.p`
-  position: absolute;
-  font-size: 16px;
-  bottom: 0;
-  right: 4rem;
-  padding: 0;
-  @media only screen and (max-width: 768px) {
-    font-size: 14px;
-    right: 2rem;
-  }
-`;
 
 export default ProductDetails;

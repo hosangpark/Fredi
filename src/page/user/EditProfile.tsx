@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Button, FileButton, Image } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { APIChangeProfile, APICheckPassword, APILink, APILinkAdd, APILinkDelete, APILinkModify, APISnsProfile, APIUserDetails } from '../../api/UserAPI';
 import { UserContext } from '../../context/user';
@@ -16,43 +16,16 @@ import AlertModal from '../../components/Modal/AlertModal';
 import AddLink from './AddLink';
 import EditLink from './EditLink';
 import { NoDoubleEmptySpace } from '../../util/Reg';
+import axios from 'axios';
 
-export type TUserDetails = {
-  idx: number;
-  type: 1 | 2 | 3; // 1: fredi / 2: kakao / 3: naver
-  user_id: string;
-  password: string;
-  name: string;
-  nickname: string;
-  phone: string;
-  gender: 1 | 2;
-  birth: string;
-  visit_count: number;
-  login_time: Date | null;
-  created_time: Date;
-  suspended_time: Date | null;
-  deleted_time: Date | null;
-  reason: string;
-  level: 0 | 1 | 2 | 3; // 0: 관리자 / 1: 입점업체회원 / 2: 일반회원2 / 3: 일반회원1
-  status: 'active' | 'suspended' | 'deleted';
-};
-export type ImageItem = {
-  idx:number;
-  category: 1 | 2 | 3 | 4 | 5 | 6;
-  name: string;
-  image: TImage[];
-};
 
 function EditProfile() {
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-  const [passwordAlert, setPasswordAlert] = useState(false);
+  const { idxparams } = useParams();
   const [ChangeImage, setChangeImage] = useState<dndData>();
-  const [ChangeImageFormData, setChangeImageFormData] = useState<any>();
-  const [images, setImages] = useState<any>();
   const [showContentModal, setShowContentModal] = useState(false);
   const [alertType, setAlertType] = useState<string>();
-
+  const [userIdx, setUserIdx] = useState(0)
   const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
 
   const [isSnsUser, setIsSnsUser] = useState(false);
@@ -60,10 +33,10 @@ function EditProfile() {
   const [name, setName] = useState<string>('');
   const [About, setAbout] = useState<string>('');
   const [LinkList, setLinkList] = useState<LinkListType[]>([]);
-  const { user } = useContext(UserContext);
   const [LinkModal, setLinkModal] = useState<boolean>(false);
   const [EditModal, setEditModal] = useState<boolean>(false);
   const [checkidx, setcheckidx] = useState<number>(0);
+  const [ModifyItems, setModifyItems] = useState<{title:string,url:string}>();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const SaveButton = ()=>{
@@ -74,8 +47,6 @@ function EditProfile() {
       const res = APIChangeProfile(formData);
       console.log('Profile_change_ress',res);
       
-      // setUserDetails(res);
-      // setIsSnsUser(res.type !== 1 ? true : false);
       } catch (error) {
         console.log(error);
         // navigate('/signin', { replace: true });
@@ -90,10 +61,15 @@ function EditProfile() {
       const res = APISnsProfile(data)
       console.log(res)
       } catch (error) {
-        console.log(error);
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 409) {
+              alert(error.response.data.message);
+              // setFailedModal(true);
+          }
+        }
       }
     } 
-    setAlertType('저장되었습니다.')
+    setAlertType(`It's saved`)
     setShowAlertModal(true)
   }
 
@@ -103,7 +79,7 @@ function EditProfile() {
     };
     try {
       const res = await APILinkDelete(data);
-      setAlertType('삭제되었습니다.')
+      setAlertType('Deleted')
       setEditModal(false)
       getLinks()
       setShowContentModal(true)
@@ -114,16 +90,16 @@ function EditProfile() {
   }
 
   const ModifyLink = async (name:string,url:string) => {
-    if (!name) return setAlertType('Title을 입력해주세요.'),setShowContentModal(true);
-    if (!url) return setAlertType('Url을 입력해주세요.'),setShowContentModal(true);
+    if (!name) return setAlertType('enter a Title'),setShowContentModal(true);
+    if (!url) return setAlertType('enter Url'),setShowContentModal(true);
     const data = {
       title:name,
       url:url,
       idx:checkidx
     };
     try {
-      const res = await APILinkModify(data);
-      setAlertType('변경되었습니다.')
+      const res = await APILink(data);
+      setAlertType(`It's changed`)
       setEditModal(false)
       getLinks()
       setShowContentModal(true)
@@ -135,8 +111,8 @@ function EditProfile() {
 };
 
   const LinkAdd = async (name:string,url:string) => {
-    if (!name) return setAlertType('Title을 입력해주세요.'),setShowContentModal(true);
-    if (!url) return setAlertType('Url을 입력해주세요.'),setShowContentModal(true);
+    if (!name) return setAlertType('enter a Title'),setShowContentModal(true);
+    if (!url) return setAlertType('enter Url'),setShowContentModal(true);
     const data = {
       title:name,
       url: url
@@ -157,15 +133,12 @@ function EditProfile() {
   };
 
   const getUserDetails = async () => {
-    let data = {
-      idx:user.idx
-    }
     try {
-      const res = await APIUserDetails(data);
-      // console.log(res);
+      const res = await APIUserDetails({idx:undefined});
       setUserDetails(res);
-      setName(res.brand_name)
+      setName(res.nickname)
       setAbout(res.about)
+      setUserIdx(res.idx)
       setIsSnsUser(res.type !== 1 ? true : false);
     } catch (error) {
       // console.log(error);
@@ -174,7 +147,8 @@ function EditProfile() {
   };
   const getLinks = async () => {
     const data = {
-      page: 1
+      page: 1,
+      idx:userIdx
     };
     try {
       const {list,total} = await APILink(data);
@@ -201,11 +175,15 @@ function EditProfile() {
     });
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     getUserDetails();
-    getLinks()
   }, []);
   
+  useLayoutEffect(() => {
+    getLinks();
+  }, [userIdx]);
+
+
   return (
     <Container>
       <TopTextButton text='Save' onClick={SaveButton}/>
@@ -233,7 +211,7 @@ function EditProfile() {
         </FileButton>
         <InputBox>
           <InputWrap>
-            <InputTitle>BRNAD NAME</InputTitle>
+            <InputTitle>User name</InputTitle>
             <TextInput
               maxLength={20}
               value={name}
@@ -268,7 +246,7 @@ function EditProfile() {
             setLinkModal(true)
           } else {
             setShowAlertModal(true);
-            setAlertType('링크는 3개 이상 추가 할 수 없습니다.')
+            setAlertType('You cannot add more than three links.')
           }
         }}>
           <LinkImageWrap>
@@ -284,7 +262,7 @@ function EditProfile() {
         </LayoutWrap>
         {LinkList.map((item,index)=>{
           return(
-          <LayoutWrap key={index} onClick={()=>{setEditModal(true);setcheckidx(item.idx)}}>
+          <LayoutWrap key={index} onClick={()=>{setEditModal(true);setcheckidx(item.idx);sessionStorage.setItem('LinkSave',JSON.stringify(LinkList[index]));}}>
             <LinkImageWrap>
               <LinksImage src={linkImage}/>
             </LinkImageWrap>
@@ -304,7 +282,7 @@ function EditProfile() {
           </LayoutWrap>
           )
         })}
-        <Modal opened={EditModal} onClose={() => setEditModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
+        <Modal opened={EditModal} onClose={() => {setEditModal(false)}} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
           <EditLink Check={(name,url)=>{ModifyLink(name,url)}} Cancel={()=>setEditModal(false)} Delete={Delete}/>
         </Modal>
       </BoxWrap>
@@ -326,13 +304,13 @@ function EditProfile() {
         visible={showAlertModal}
         setVisible={setShowAlertModal}
         onClick={() => {
-          if(alertType == '링크는 3개 이상 추가 할 수 없습니다.'){
+          if(alertType == 'You cannot add more than three links.'){
             setShowAlertModal(false)
           }else{
             navigate(-1);
           }
         }}
-        text={alertType? alertType : '확인되었습니다.'}
+        text={alertType? alertType : `It's confirmed`}
       />
       <AlertModal
         visible={showContentModal}
@@ -340,7 +318,7 @@ function EditProfile() {
         onClick={() => {
           setShowContentModal(false);
         }}
-        text={alertType? alertType : '확인되었습니다'}
+        text={alertType? alertType : `It's confirmed`}
       />
       </ProfileContainer>
     </Container>

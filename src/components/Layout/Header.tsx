@@ -4,13 +4,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import logoImage from '../../asset/image/logo.png';
 import AlertModal from '../Modal/AlertModal';
 import menuheart from '../../asset/image/heart.svg';
-import menuselling from '../../asset/image/Selling.svg';
+import menuselling from '../../asset/image/selling.svg';
 import menucontact from '../../asset/image/contact.svg';
 import menusetting from '../../asset/image/Settings.svg';
 
 import profileImage from '../../asset/image/web_my.svg';
 import likeOffImage from '../../asset/image/heart.svg';
-import menuicon from '../../asset/image/threecircle.png';
+import menuicon from '../../asset/image/threecircle.svg';
 import { UserContext } from '../../context/user';
 import ConfirmModal from '../Modal/ConfirmModal';
 import backButtonImage from '../../asset/image/back.svg';
@@ -27,6 +27,9 @@ export const removeHistory = () => {
   sessionStorage.removeItem('y');
   sessionStorage.removeItem('type');
   sessionStorage.removeItem('tab');
+};
+export const removeSNSHistory = () => {
+  sessionStorage.removeItem('SNSListType');
 };
 
 export type TUserDetails = {
@@ -177,7 +180,7 @@ function Header() {
   const goAdmin = useCallback(() => {
     
     removeHistory();
-    navigate('/admin');
+    navigate('/adm');
   }, []);
 
   const goSelling = useCallback(() => {
@@ -335,6 +338,7 @@ function Header() {
 
   return (
     <>
+    
       <Sheet isOpen={bottomSheetModal} onClose={() => setBottomSheetModal(false)}
         detent={'content-height'}
         ref={ref}
@@ -412,7 +416,7 @@ function Header() {
       <SheetBackground onClick={() => setBottomSheetModal(false)}></SheetBackground>
       }
       <HeaderBox>
-        {showBackButton && <BackButtonWrap><BackButton onClick={BackbuttonHandle} src={backButtonImage} /></BackButtonWrap>}
+        {showBackButton && <BackButton onClick={BackbuttonHandle} src={backButtonImage} />}
         {pathName === ''&& <Logo onClick={goHome} src={logoImage} /> || innerWidth > 768 && <Logo onClick={goHome} src={logoImage} />}
 
         <WebMenuWrap>
@@ -428,11 +432,11 @@ function Header() {
           <MenuButton On={pathName === 'Community'} onClick={goCommunity}>
             <MenuButtonText>Discover</MenuButtonText>
           </MenuButton>
-          {token && user.level === 0 && (
+          {/* {token && user.level === 0 && (
             <MenuButton onClick={goAdmin}>
               <MenuButtonText>MANAGER</MenuButtonText>
             </MenuButton>
-          )}
+          )} */}
         </WebMenuWrap>
         {pageName?
         <PageNameWrap>
@@ -477,15 +481,15 @@ function Header() {
           {/* <SigninButton onClick={goSignIn} src={!token ? signIn : signOut} /> */}
         </ButtonWraps>
       </HeaderBox>
-      <AlertModal visible={showModal} setVisible={setShowModal} onClick={closeAlertModal} text="접근 권한이 없습니다." />
-      <AlertModal visible={showLogin} setVisible={setShowLogin} onClick={closeLoginAlertModal} text="회원가입 후 이용 가능합니다." />
-      <ConfirmModal visible={confirmModal} setVisible={setConfirmModal} text="로그아웃 하시겠습니까?" onOk={onLogout} />
+      <AlertModal visible={showModal} setVisible={setShowModal} onClick={closeAlertModal} text="You don't have access" />
+      <AlertModal visible={showLogin} setVisible={setShowLogin} onClick={closeLoginAlertModal} text="Available after Sign up" />
+      <ConfirmModal visible={confirmModal} setVisible={setConfirmModal} text="Are you sure you want to log out?" onOk={onLogout} />
       <Modal opened={showModal} onClose={() => setShowModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
         <ModalBox>
           <ModalTitle>개인정보 수정을 위해서</ModalTitle>
           <ModalTitle>비밀번호를 입력해 주세요.</ModalTitle>
           <InputWrap>
-            <TextInput maxLength={16} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="입력해 주세요" />
+            <TextInput maxLength={16} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter" />
             {passwordAlert && <AlertText>*비밀번호를 확인해 주세요.</AlertText>}
           </InputWrap>
           <ButtonWrap>
@@ -641,8 +645,8 @@ margin-left: 20px;
 `;
 
 const ProfileImage = styled.img`
-  width:20.47px;
-  height:23.88px;
+  width:21px;
+  height:24px;
   margin:5px 15px;
   @media only screen and (max-width: 768px) {
   margin:5px 5px;
@@ -749,7 +753,7 @@ font-family:'Pretendard Variable';
   }
   transition: all 0.3s ease;
   line-height:1px;
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1440px) {
     font-size: 14px;
   }
 
@@ -761,35 +765,35 @@ const IconImage = styled.img`
 
 `;
 const HeartIconImage = styled(IconImage)`
-  width: 22px;
-  height: 22px;
+  width: 23px;
+
 @media only screen and (max-width: 768px) {
-  width: 18.91px;
-  height: 15.82px;
+  width: 19px;
+
 }
 `
 const SellingIconImage = styled(IconImage)`
-  width: 22px;
-  height: 22px;
+  width: 24px;
+
 @media only screen and (max-width: 768px) {
-  width: 22.74px;
-  height: 19.63px;
+  width: 23px;
+
 }
 `
 const ContactIconImage = styled(IconImage)`
-  width: 22px;
-  height: 22px;
+  width: 23px;
+
 @media only screen and (max-width: 768px) {
   width: 22.27px;
-  height: 19.95px;
+
 }
 `
 const SettingsIconImage = styled(IconImage)`
-  width: 22px;
-  height: 22px;
+  width: 23px;
+
 @media only screen and (max-width: 768px) {
-  width: 22.27px;
-  height: 23.62px;
+  width: 22px;
+
 }
 `
 const BackButtonWrap = styled.div`
@@ -799,9 +803,12 @@ const BackButtonWrap = styled.div`
   padding:5px;
 `;
 const BackButton = styled.img`
-  left:20px;
-  width: 10px;
-  height: 15px;
+  position:absolute;
+  left:15px;
+  cursor:pointer;
+  padding:5px;
+  width: 20px;
+  height: 25px;
 `;
 
 const ModalBox = styled.div`

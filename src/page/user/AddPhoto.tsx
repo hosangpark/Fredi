@@ -5,7 +5,7 @@ import { FileButton } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/user';
 import RightArrowImage from '../../asset/image/ico_next_mobile.png'
-import linkImage from '../../asset/image/links.png';
+import linkImage from '../../asset/image/rink.svg';
 import deleteButtonImage from '../../asset/image/ico_del.png';
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -15,101 +15,100 @@ import {  dndData } from '../../components/DnD/DnD';
 import TopTextButton from '../../components/Layout/TopTextButton';
 import ButtonContainer from '../../components/Layout/ButtonBox';
 import AlertModal from '../../components/Modal/AlertModal';
-import { APICategoryList, APISnsAdd } from '../../api/ProductAPI';
-import { CategoryListCheck } from '../../components/List/List';
+import { APICategoryList, APISnsAdd, APISnsDetails, APISnsModify } from '../../api/ProductAPI';
 import CategoryItem from '../../components/Shop/CategoryItem';
 import { AddLinkListType, CategoryType, LinkListType } from '../../types/Types';
 import { APILink, APIUserDetails } from '../../api/UserAPI';
 import LoadingIndicator from '../../components/Product/LoadingIndicator';
 import AddLink from './AddLink';
-import EditLink from './EditLink';
 import imageCompression from 'browser-image-compression';
 import { NoDoubleEmptySpace } from '../../util/Reg';
-
-export type TUserDetails = {
-  idx: number;
-  type: 1 | 2 | 3; // 1: fredi / 2: kakao / 3: naver
-  user_id: string;
-  password: string;
-  name: string;
-  nickname: string;
-  phone: string;
-  gender: 1 | 2;
-  birth: string;
-  visit_count: number;
-  login_time: Date | null;
-  created_time: Date;
-  suspended_time: Date | null;
-  deleted_time: Date | null;
-  reason: string;
-  level: 0 | 1 | 2 | 3; // 0: 관리자 / 1: 입점업체회원 / 2: 일반회원2 / 3: 일반회원1
-  status: 'active' | 'suspended' | 'deleted';
-};
-export type ImageItem = {
-  idx:number;
-  file_name:string;
-  url:string;
-};
 
 
 function AddPhoto() {
   const navigate = useNavigate();
   const types = useLocation();
-  const propsData = types.state;
+  const ModifySns = sessionStorage.getItem('ModifySns');
   const { user } = useContext(UserContext);
   const [ShowModal,setShowModal] = useState<boolean>(false)
   const [ShowImage, setShowImage] = useState<any[]>([]);
-  // const [Name, setName] = useState<string>('');
-  const [Title, setTitle] = useState<string>('');
   const [About, setAbout] = useState<string>(' ');
   const [alertType, setAlertType] = useState<string>();
   const [UploadImage, setUploadImages] = useState<dndData[]>([]);
   const [LinkList, setLinkList] = useState<AddLinkListType[]>([]);
   const [SelectMain, setSelectMain] = useState(0)
   const [categoryList,setcategoriList] = useState<CategoryType[]>([])
-  const [categoryArray,setcategoryArray] = useState<number[]>([])
+  const [categoryArray,setcategoryArray] = useState<any[]>([])
   const [IsLoading,setIsLoading] = useState<boolean>(false)
   const [LinkModal, setLinkModal] = useState<boolean>(false);
+  const [Home, setHome] = useState<boolean>(false);
   
   const UploadSns = async() =>{
-    if(Title.length == 0)return(setShowModal(true),setAlertType('제목을 입력해주세요.'))
     if(UploadImage.length == 0)return(setShowModal(true),setAlertType('사진을 등록해주세요.'))
-    if(About.length == 0)return(setShowModal(true),setAlertType('내용을 등록해주세요.'))
-    if(LinkList.length == 0)return(setShowModal(true),setAlertType('링크를 등록해주세요.'))
+    if(About.length == 0)return(setShowModal(true),setAlertType('내용을 입력해주세요.'))
+    // if(LinkList.length == 0)return(setShowModal(true),setAlertType('링크를 등록해주세요.'))
     if(categoryArray.length == 0)return(setShowModal(true),setAlertType('카테고리를 등록해주세요.'))
-    setIsLoading(true)
+    // setIsLoading(true)
 
     const formData = new FormData();
+    
+    if (ModifySns) {
+      formData.append('idx', ModifySns);
+    }
     for (var i = 0; i < categoryArray.length; i++){
       formData.append('category[]', JSON.stringify(categoryArray[i]))
     }
-    formData.append('name', Title)
+    formData.append('name', '')
     formData.append('about', About)
 
 
-    formData.append('link_title', LinkList[0].title)
-    formData.append('link_url', LinkList[0].url)
-    
-
-    for (var i = 0; i < UploadImage.length; i++){
-      formData.append('images', UploadImage[i].file);
-      // console.log(UploadImage[i].file)
+    formData.append('link_title', LinkList[0]?.title? LinkList[0].title : '')
+    formData.append('link_url', LinkList[0]?.url? LinkList[0].url : '')
+    if(Home){
+      formData.append('is_home', 'Y')
+    } else {
+      formData.append('is_home', 'N')
     }
-    console.log(formData)
-    try {
-      const res = APISnsAdd(formData);
-      // console.log('55')
-      // console.log('APISnsAdd',res);
-        setShowModal(true)
-        setAlertType('업로드 되었습니다.')
-      // setUserDetails(res);
-      // setIsSnsUser(res.type !== 1 ? true : false);
-      
-        // setIsLoading(false)
-      } catch (error) {
-        console.log(error);
-        // navigate('/signin', { replace: true });
-        // setIsLoading(false)
+    
+    let count = 0;
+    for (const image of UploadImage) {
+      if (image.file) {
+        formData.append('images', image.file);
+        count += 1;
+      } else {
+        formData.append('images', JSON.stringify({ ...image, index: count }));
+        count += 1;
+      }
+    }
+    // for (var i = 0; i < UploadImage.length; i++){
+    //   formData.append('images', UploadImage[i].file);
+    //   // console.log(UploadImage[i].file)
+    // }
+    if(ModifySns){
+      try {
+        const res = APISnsModify(formData);
+        console.log('res',res)
+          setShowModal(true)
+          setAlertType(`It's been Modified`)     
+          setIsLoading(false)
+        } catch (error) {
+          console.log(error);
+          setShowModal(true)
+          setAlertType('Modify failed')
+          setIsLoading(false)
+      }
+    }else{
+      try {
+        const res = APISnsAdd(formData);
+          setShowModal(true)
+          setAlertType(`It's been uploaded`)     
+          setIsLoading(false)
+        } catch (error) {
+          console.log(error);
+          setShowModal(true)
+          setAlertType('Upload failed')
+          setIsLoading(false)
+      }
     }
   }
   
@@ -124,13 +123,28 @@ function AddPhoto() {
     }
   };
   
-  const getLinks = async () => {
+  const getDetails = async (idx:number) => {
+    let imageUrlLists = [];
+    let fileURLs:dndData[] = [];
     const data = {
-      page: 1
+      idx:idx
     };
     try {
-      const {list,total} = await APILink(data);
-      setLinkList(list);
+      const res = await APISnsDetails(data);
+      setAbout(res.about)
+      if(res.link_title !== "" && res.link_url !== ""){
+        setLinkList([{title:res.link_title, url:res.link_url}])
+      }
+      for (let i = 0; i < res.imageList.length; i++) {
+        imageUrlLists.push(res.imageList[i].file_name);
+        let Prevfile = res.imageList[i];
+        const file = { url: Prevfile.file_name as string, name: Prevfile.name, symbol: String(Date.now()), file: Prevfile };
+        fileURLs.push(file)
+      }
+
+      setcategoryArray(res.category.replace(/\#/g, '').split(",").map(Number))
+      setUploadImages(res.imageList.map((image: any) => ({ symbol: image.idx, name: image.file_name, url: image.file_name })))
+      setShowImage(res.imageList.map((image: any) => ( image.file_name )))
     } catch (error) {
     }
   };
@@ -140,8 +154,8 @@ function AddPhoto() {
     if(value.length > 12)return(setShowModal(true),setAlertType('12장 이상 등록할 수 없습니다.'))
     
     const options = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 500,
+        maxSizeMB: 10,
+        maxWidthOrHeight: 3000,
     };
     let fileURLs:dndData[] = [...UploadImage];
     let imageUrlLists = [...ShowImage];
@@ -156,12 +170,14 @@ function AddPhoto() {
       reader.onload = () => {
         const file = { url: reader.result as string, name: compressedFile.name, symbol: String(Date.now()), file: compressedFile };
         fileURLs.push(file)
+        console.log('filefilefile',file)
       };
       reader.readAsDataURL(compressedFile);
     }
+    console.log('imageUrlLists',imageUrlLists)
+    console.log('fileURLs',fileURLs)
     setShowImage(imageUrlLists.slice(0, 12))
     setUploadImages(fileURLs)
-    setIsLoading(false)
   };
   
   const handleDelete = (ItemIndex: number) => {
@@ -216,15 +232,19 @@ function AddPhoto() {
     setIsDragging(true)
     setTimeout(() => {
       setIsDragging(false);
-    }, 500);
+    }, 50);
   },[movingX])
   
   const delay = 10;
   const onThrottleDragMove = throttle(onDragMove, delay);
+  
 
   useEffect(()=>{
     // getLinks()
     getCategoryList()
+    if(ModifySns){
+      getDetails(Number(ModifySns))
+    }
   },[])
   
   return (
@@ -234,7 +254,7 @@ function AddPhoto() {
         {
         ShowImage.length > 0 &&
         <ShowMainImage>
-          <MainUploadImageItem height={innerWidth} src={ShowImage[SelectMain]? ShowImage[SelectMain]:ShowImage[0]}/>
+          <MainUploadImageItem height={innerWidth-80} src={ShowImage[SelectMain]? ShowImage[SelectMain]:ShowImage[0]}/>
           <FileButton onChange={handleImage} multiple accept="image/png,image/jpeg">
             {(props) => (
             <MiniPlusImage height={innerWidth} key={0} index={0} {...props}>
@@ -275,7 +295,7 @@ function AddPhoto() {
           }
         </ImageFlexBox>
         <>
-        <AboutWrap>
+        {/* <AboutWrap>
           Title
         </AboutWrap>
         <TextInput
@@ -285,7 +305,7 @@ function AddPhoto() {
             setTitle(NoDoubleEmptySpace(e.target.value));
           }}
           placeholder="Input here"
-          />
+          /> */}
         <AboutWrap>
           About
         </AboutWrap>
@@ -323,7 +343,7 @@ function AddPhoto() {
           </LayoutWrap>
           {LinkList.map((item,index)=>{
           return(
-          <LayoutWrap key={index} onClick={()=>{setLinkModal(true)}}>
+          <LayoutWrap key={index} onClick={()=>{setLinkModal(true);sessionStorage.setItem('LinkSave',JSON.stringify(LinkList))}}>
             <LinkImageWrap>
               <LinkImage src={linkImage}/>
             </LinkImageWrap>
@@ -349,12 +369,13 @@ function AddPhoto() {
             Category<CategoryCount>{categoryArray.length}</CategoryCount>
           </BoxTitle>
           <CategoryItemContainer>
+            <CategoryItem key={0} item={'Home & Styling'} idx={'0'} checked={Home} 
+              setChecked={()=>{setHome(!Home)}}/>
             {categoryList && 
             categoryList.map((item,index)=>{
               return(
                 <CategoryItem key={index} item={item.name} idx={item.idx} checked={categoryArray.includes(item.idx)} 
                 setChecked={(e,type)=>{
-                  console.log(e,type)
                   if(categoryArray.includes(e)){
                     setcategoryArray((prev) => prev?.filter((item) => item !== e))
                   } else if(categoryArray.length < 3){
@@ -379,7 +400,7 @@ function AddPhoto() {
         text2={'Cancel'}
         onClick1={()=>{}}
         onClick2={UploadSns}
-        cancle={()=>navigate(-1)}
+        cancle={()=>{sessionStorage.removeItem('ModifySns');navigate(-1)}}
         marginT={50}
         marginB={100}
         visible={true}
@@ -387,15 +408,15 @@ function AddPhoto() {
       <AlertModal
       visible={ShowModal}
       setVisible={setShowModal}
+      type={true}
       onClick={() => {
         if(alertType == '12장 이상 등록할 수 없습니다.' ||
         alertType == '링크는 1개 이상 추가 할 수 없습니다.' ||
         alertType == '제목을 입력해주세요.' ||
         alertType == '사진을 등록해주세요.' ||
-        alertType == '내용을 등록해주세요.' ||
+        alertType == '내용을 입력해주세요.' ||
         alertType == '링크를 등록해주세요.' ||
         alertType == '카테고리를 등록해주세요.'
-        
         ){
           setShowModal(false);
         } else{
@@ -403,7 +424,7 @@ function AddPhoto() {
           navigate(-1)
         }
       }}
-      text={alertType? alertType : '저장되었습니다.'}
+      text={alertType? alertType : 'Saved.'}
       />
       <LoadingIndicator
       loading={IsLoading}
@@ -423,7 +444,7 @@ const Container = styled.div`
   background-color: #ffffff;
   @media only screen and (max-width: 768px) {
     width:100%;
-    margin:0 20px;
+    padding:0 20px;
     flex-direction: column;
     border-top: 0;
   }
@@ -433,6 +454,7 @@ const ShowMainImage = styled.div`
   width:100%;
   height:width;
   position:relative;
+  margin-bottom:15px;
 `
 const SwiperWrap = styled.div`
 display:flex;
@@ -665,9 +687,11 @@ font-family:'Pretendard Variable';
 const LinkImageWrap = styled.div`
 display:flex;
 align-items:center;
+justify-content:center;
   width:70px;
   height:70px;
-  margin-right:30px;
+  border:1px solid #c4c4c4;
+  border-radius:50%;
 
   /* width:40%; */
   @media only screen and (max-width: 768px) {
@@ -686,8 +710,8 @@ align-items:center;
   }
 `;
 const LinkImage = styled.img`
-  width:100%;
-  height:100%;
+  width:30px;
+  height:30px;
   object-fit:contain;
 `;
 
@@ -696,7 +720,8 @@ const ArrowImage = styled.img`
   height:100%;
 `;
 const LinkItemBox = styled.div`
-  width:100%;
+  flex:1;
+  margin-left:30px;
   display:flex;
   justify-content:space-between;
   align-items:center;

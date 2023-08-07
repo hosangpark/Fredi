@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Pagination } from '@mantine/core';
 import OrderListCard from '../../components/Shop/OrderListCard';
 import { APIConfirm, APIOrderList } from '../../api/ShopAPI';
-import { TImage, TProductListItem } from '../../types/Types';
+import { TImage } from '../../types/Types';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import AlertModal from '../../components/Modal/AlertModal';
 

@@ -7,10 +7,10 @@ import naverImage from '../../asset/image/sns_naver.png';
 function NaverLoginButton() {
   const naver = (window as any).naver;
   // const NAVER_CLIENT_ID = 'iESKNVDDiIJZJakD29lF';
-  const NAVER_CLIENT_ID = 'ZpMvZLQj1QuCedLoNwEm';
+  const NAVER_CLIENT_ID = 'iESKNVDDiIJZJakD29lF';
   // const NAVER_CALLBACK_URL = 'https://fredi.dmonster.kr/naver';
-  // const NAVER_CALLBACK_URL = 'http://localhost:3000/naver';
-  const NAVER_CALLBACK_URL = 'https://new.fredi.co.kr/naver';
+  const NAVER_CALLBACK_URL = 'https://new.fredi.co.kr/SignUpNaver';
+  // const NAVER_CALLBACK_URL = 'http://localhost:3000/SignUpNaver';;
   const naverRef = useRef<HTMLDivElement>(null);
 
   const onLogin = () => {

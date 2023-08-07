@@ -4,9 +4,9 @@ import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'r
 import Autoplay from 'embla-carousel-autoplay';
 import leftButtonImage from '../../asset/image/home02.png';
 import rightButtonImage from '../../asset/image/ico_next.png';
-import snsImage from '../../asset/image/snsicon.png';
+import snsImage from '../../asset/image/discover.svg';
 import bookMarkImage from '../../asset/image/Bookoff.svg';
-import { SnsList } from '../../types/Types';
+import { CategoryType, SnsList } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
 import { useLayoutEffect } from 'react';
@@ -21,8 +21,7 @@ import Follow from './Follow';
 import Feed from './Feed';
 import BookMark from './BookMark';
 import { FairListItem } from '../../types/Types';
-import { CategoryList } from '../../components/List/List';
-import { APIProductList, APISnsList } from '../../api/ProductAPI';
+import { APICategoryList, APIProductList, APISnsList } from '../../api/ProductAPI';
 
 const TabImage = styled.img`
   width:25px;
@@ -41,30 +40,37 @@ function FeedTab() {
   const token = sessionStorage.getItem('token');
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const categoryParams = (searchParams.get('category')) ?? '1';
   const [showLogin, setShowLogin] = useState(false);
   const [SnsList, setSnsList] = useState<SnsList[]>([]);
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
-  const [category, setCategory] = useState<string>(categoryParams);
+  const [category, setCategory] = useState<string>('1');
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
+  const [categoriList, setcategoriList] = useState<CategoryType[]>([]);
   const interSectRef = useRef(null);
 
   const getproductList = async (page:number) => {
-    // console.log('ccccccccccc',category)
     const data = {
       page: page,
-      category: category,
+      category: category?category : '1',
       keyword: keyword? keyword : ''
     };
+    console.log('category',category)
     try {
       if (history) {
+        console.log('히스토리컷')
         return setHistory(false);
       }
+      console.log('ddddddddddd불러옴')
       const { list, total } = await APISnsList(data);
       setTotal(total);
-      setSnsList(list);
+      // console.log('page',page)
+      if(page > 1){
+        setSnsList((prev) => [...prev, ...list]);
+      } else {
+        setSnsList(list);
+      }
       // console.log('shop', list, page);
     } catch (error) {
       console.log(error);
@@ -85,18 +91,22 @@ function FeedTab() {
     sessionStorage.removeItem('FeedTabList');
     sessionStorage.removeItem('FeedTabCategory');
     sessionStorage.removeItem('FeedTabPage');
+    sessionStorage.removeItem('FeedTabSave');
   };
 
 
-  const saveHistory = (e: React.MouseEvent, idx: number) => {
+  const saveHistory = (e: React.MouseEvent, idx: number, index:number) => {
     const div = document.getElementById('root');
     if (div) {
       const y = globalThis.scrollY;
       sessionStorage.setItem('FeedTabList', JSON.stringify(SnsList));
       sessionStorage.setItem('FeedTabCategory', category);
       sessionStorage.setItem('FeedTabPage', String(page));
+      sessionStorage.setItem('FeedTabSave', 'Save');
       sessionStorage.setItem('y', String(y ?? 0));
-      navigate(`/personalpage/${idx}`,{state:idx});
+      sessionStorage.setItem('SNSy', 'ScrollOnce');
+      sessionStorage.setItem('removeSNSHistory', 'SnsFeed');
+      navigate(`/personalpage/${idx}`,{state:{idx:idx,page:page,index:index}});
     }
   };
 
@@ -112,6 +122,7 @@ function FeedTab() {
     rootMargin: '100px', // 관찰하는 뷰포트의 마진 지정
     threshold: 1.0, // 관찰요소와 얼만큼 겹쳤을 때 콜백을 수행하도록 지정하는 요소
   };
+
   
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, options);
@@ -124,7 +135,6 @@ function FeedTab() {
   }, [page]);
 
   useLayoutEffect(() => {
-    const categ = sessionStorage.getItem('FeedTabCategory');
     const page = Number(sessionStorage.getItem('FeedTabPage'));
     if (page) {
       findHistory();
@@ -133,11 +143,11 @@ function FeedTab() {
       getproductList(1);
     }
   }, [searchParams,category]);
+  
 
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
     if (SnsList.length > 0 && scrollY) {
-      console.log('불러옴', scrollY);
       setTimeout(() => {
         window.scrollTo({
           top: scrollY,
@@ -165,7 +175,7 @@ function FeedTab() {
               onSearch();
             }
           }}
-          categoryList={CategoryList}
+          categoryList={categoriList}
           category={category}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -198,6 +208,7 @@ function FeedTab() {
         </TabButtonWrap>
         <Feed saveHistory={saveHistory} productList={SnsList} CategoryClick={e=>setCategory(e)} setShowLogin={()=>setShowLogin(true)} selectCategory={category}/>
       </div>
+      <InterView ref={interSectRef}/>
       <AlertModal
         visible={showLogin}
         setVisible={setShowLogin}
@@ -206,9 +217,8 @@ function FeedTab() {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
-
     </Container>
   );
 }
@@ -216,7 +226,9 @@ function FeedTab() {
 const Container = styled.div`
   flex:1;
 `;
-
+const InterView = styled.div`
+  height: 150px;
+`;
 const TabButtonWrap = styled.div`
   width:400px;
   display:flex;
@@ -235,17 +247,14 @@ const TabButton = styled.div`
 `;
 
 const UnderLineTab = styled(TabButton)<{underLine?: boolean}>`
-  border-bottom: solid 1.7px ${(props) => props.color || "none"};
-  font-weight: ${props => props.color == 'black' ? 460 : 360};
-  color:#000000;
   font-family:'Pretendard Variable';
+  border-bottom: solid 1.7px ${(props) => props.color || "none"};
+  font-weight: 310;
+  color: #121212;
+  font-size: 16px;
   padding:10px 0;
   margin-top:5px;
   cursor: pointer;
-  font-size:18px;
-  @media only screen and (max-width: 768px) {
-    font-size:14px;
-  }
 `
 
 const TitleWrap = styled.div`

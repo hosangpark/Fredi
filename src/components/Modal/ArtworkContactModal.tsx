@@ -6,13 +6,10 @@ import linkImage from '../../asset/image/rink.svg';
 import { useNavigate } from 'react-router-dom';
 import closeImage from '../../asset/image/close.svg'
 import Nodata from '../Product/NoData';
+import { ArtworkLinkListType } from '../../types/Types';
 
-interface ContactObject {
-  title:string
-  url:string
-}
 
-function ContactModal({
+function ArtworkContactModal({
   visible,
   setVisible,
   contactUrl,
@@ -20,7 +17,7 @@ function ContactModal({
 }: {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  contactUrl: ContactObject[];
+  contactUrl?: ArtworkLinkListType;
   onClick: () => void;
 }) {
   return (
@@ -29,30 +26,64 @@ function ContactModal({
         <Xheader>
           <CloseImage onClick={()=>setVisible(false)} src={closeImage}/>
         </Xheader>
-        {contactUrl&&
-        contactUrl.length > 0 ?
-        contactUrl.map((item,index) => {
-          return(
-        <LayoutWrap key={index} onClick={() => window.open(`https://${item.url}`, '_blank')}>
+        {contactUrl?.sns &&
+        <LayoutWrap onClick={() => {
+          if(contactUrl.link_sns_title == '인스타그램' || contactUrl.link_sns_title == 'instagram'){
+                window.open(`https://www.instagram.com/${contactUrl.sns}`, '_blank')
+          }
+        }}>
           <LinkImageWrap>
             <LinksImage src={linkImage}/>
           </LinkImageWrap>
           <LinkItemBox>
             <LinkTitleBox>
               <LinkName>
-                {item.title}
+                {contactUrl.link_sns_title? contactUrl.link_sns_title : 'SNS' }
               </LinkName>
               <LinkUrl>
-                {item.url}
+                {contactUrl.sns}
               </LinkUrl>
             </LinkTitleBox>
           </LinkItemBox>
         </LayoutWrap>
-        )})
-        :
-        <LayoutWrap key={0} onClick={() => {}}>
-          <Nodata Text={'등록된 링크가 없습니다.'}/>
-        </LayoutWrap>
+        }
+        {contactUrl?.link_buy && contactUrl?.link_buy_title &&
+          <LayoutWrap onClick={() => window.open(`${contactUrl.link_buy}`, '_blank')}>
+            <LinkImageWrap>
+              <LinksImage src={linkImage}/>
+            </LinkImageWrap>
+            <LinkItemBox>
+              <LinkTitleBox>
+                <LinkName>
+                  {contactUrl?.link_buy_title? contactUrl.link_buy_title : '' }
+                </LinkName>
+                <LinkUrl>
+                  {contactUrl?.link_buy? contactUrl.link_buy:''}
+                </LinkUrl>
+              </LinkTitleBox>
+            </LinkItemBox>
+          </LayoutWrap>
+        }
+        {contactUrl?.link_etc1 && contactUrl?.link_etc_title1 &&
+          <LayoutWrap onClick={() => window.open(`${contactUrl?.link_etc1}`, '_blank')}>
+            <LinkImageWrap>
+              <LinksImage src={linkImage}/>
+            </LinkImageWrap>
+            <LinkItemBox>
+              <LinkTitleBox>
+                <LinkName>
+                  {contactUrl?.link_etc_title1? contactUrl.link_etc_title1 : '' }
+                </LinkName>
+                <LinkUrl>
+                  {contactUrl?.link_etc1? contactUrl.link_etc1:''}
+                </LinkUrl>
+              </LinkTitleBox>
+            </LinkItemBox>
+          </LayoutWrap>
+        }
+      {!contactUrl?.sns && !contactUrl?.link_buy && !contactUrl?.link_buy_title && !contactUrl?.link_etc1 && !contactUrl?.link_etc_title1
+        && !contactUrl?.link_sns_title &&
+        <Nodata Text={'등록된 링크가 없습니다.'}/>
       }
       </ModalBox>
     </Modal>
@@ -162,4 +193,4 @@ const LinkUrl = styled.p`
   }
 `;
 
-export default ContactModal;
+export default ArtworkContactModal;

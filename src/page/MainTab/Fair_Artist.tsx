@@ -1,41 +1,23 @@
 import React, { useCallback, useContext, useEffect, useRef, useState ,memo } from 'react';
 import styled from 'styled-components';
-import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import Autoplay from 'embla-carousel-autoplay';
-import leftButtonImage from '../../asset/image/ico_prev.png';
-import rightButtonImage from '../../asset/image/ico_next.png';
-import leftButtonMobileImage from '../../asset/image/ico_prev_mobile.png';
-import rightButtonMobileImage from '../../asset/image/ico_next_mobile.png';
-import { createStyles, Image } from '@mantine/core';
-import { Carousel } from '@mantine/carousel';
-import { APIGetBanner } from '../../api/SettingAPI';
-import { ArtistItem, FairDetailsArtistItem, TImage, TProductListItem } from '../../types/Types';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ArtistCardType, FairDetailsArtistItem } from '../../types/Types';
 import { UserContext } from '../../context/user';
 import AlertModal from '../../components/Modal/AlertModal';
-import { useLayoutEffect } from 'react';
-import { createBrowserHistory } from 'history';
-import ShowTypeButton from '../../components/Shop/ShowTypeButton';
-import SearchBox from '../../components/Product/SearchBox';
-import { APILikeShop, APIShopList } from '../../api/ShopAPI';
 import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 // swiper
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import ArtworkCard from '../../components/Shop/ArtworkCard';
-import { ArtworkListItem } from '../../types/Types';
-import { APIArtistList, APILikeProduct, APIProductList } from '../../api/ProductAPI';
 import ArtistCard from '../../components/Shop/ArtistCard';
 
 
 function FairArtist({saveHistory,productList}
   :
-  {saveHistory:(e:React.MouseEvent, name: string, idx:number)=>void,
-  productList?:FairDetailsArtistItem[],}) {
+  {saveHistory:(e:React.MouseEvent, name: string)=>void,
+  productList?:ArtistCardType[],}) {
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
@@ -64,8 +46,8 @@ function FairArtist({saveHistory,productList}
           return(
             <ArtistCard
               item={item}
-              key={item.idx}
-              onClick={(e) => saveHistory(e, item.name,item.idx)}
+              key={index}
+              onClick={(e) => saveHistory(e, item.designer_name)}
             />
           )
         })
@@ -79,7 +61,7 @@ function FairArtist({saveHistory,productList}
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>

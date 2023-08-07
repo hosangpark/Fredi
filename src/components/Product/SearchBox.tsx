@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import searchButtonImage from '../../asset/image/search.svg';
 import arrDownImage from '../../asset/image/arr_down.png';
 import { TextInput, Select } from '@mantine/core';
-
-type TCategory = { value: string; label: string };
+import { CategoryType } from '../../types/Types';
 
 
 function SearchBox({
@@ -16,12 +15,12 @@ function SearchBox({
 }: {
   onClickSearch: (e: any) => void;
   onKeyDown: (e: any) => void;
-  categoryList: TCategory[];
+  categoryList?: CategoryType[];
   category: string;
   keyword: string;
   none?:boolean;
   onChangeInput: (e: any) => void;
-  onChangeCategory: (value: '1' | '2' | '3' | '4' | '5' | '6') => void;
+  onChangeCategory?: (value: '1' | '2' | '3' | '4' | '5' | '6') => void;
 }) {
   return (
     <Wrap none={none}>
@@ -108,7 +107,7 @@ const SearchButton = styled.img`
 const Input = styled(TextInput)`
 font-family:'Pretendard Variable';
   flex: 1;
-  padding: 5px 10px;
+  padding: 5px 15px;
   height: 45px;
   @media only screen and (max-width: 460px) {
     height: 35px;

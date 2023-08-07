@@ -109,7 +109,8 @@ function WeeklyEdition() {
     <Container id="productContainer">
       <ProductListWrap>
         <WeeklyTitle>Weekly Edition</WeeklyTitle>
-        {WeeklyList.slice(0,5).map((item,index) => {
+        {WeeklyList&&
+        WeeklyList.slice(0,5).map((item,index) => {
           return(
             <WeeklyListItem
               key={index}
@@ -147,7 +148,7 @@ function WeeklyEdition() {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>

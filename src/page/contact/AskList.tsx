@@ -10,6 +10,7 @@ import { UserContext } from '../../context/user';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import { removeHistory } from '../../components/Layout/Header';
 import TopTextButton from '../../components/Layout/TopTextButton';
+import Nodata from '../../components/Product/NoData';
 
 type TAskListItem = {
   idx: number;
@@ -94,17 +95,12 @@ function AskList() {
           <RowWrap>
             <ListItemTitle> </ListItemTitle>
             <SendMessageBox onClick={()=>navigate('/registerask')}>
-              send Message
+              Send Message
             </SendMessageBox>
           </RowWrap>
         </UnderTitleBox>
       {total === 0 ? (
-        <NoDataBox>
-          <>
-          {/* <Logo src={logoImage} /> */}
-          <Text>문의글이 없습니다.</Text>
-          </>
-        </NoDataBox>
+        <Nodata Text={'There are no inquiries.'}/>
       ) : (
         <ListWrap>
           <Accordion
@@ -121,7 +117,7 @@ function AskList() {
                     <RowWrap>
                       <ListItemTitle>{item.title}</ListItemTitle>
                       <StatusBox answerd={!!item.answer}>
-                        <StatusBoxText>{item.answer ? '답변완료' : '답변대기'}</StatusBoxText>
+                        <StatusBoxText>{item.answer ? 'Answered' : 'Not Answered'}</StatusBoxText>
                       </StatusBox>
                     </RowWrap>
                     <RowWrap last>
@@ -140,17 +136,17 @@ function AskList() {
                       </ContentRowWrap>
                       <ButtonWrap>
                         <WhiteButton onClick={() => navigate(`/registerask/${item.idx}`)}>
-                          <WhiteButtonText>수정하기</WhiteButtonText>
+                          <WhiteButtonText>Modify</WhiteButtonText>
                         </WhiteButton>
                         <WhiteButton onClick={() => setItemIdx(item.idx)}>
-                          <WhiteButtonText>삭제하기</WhiteButtonText>
+                          <WhiteButtonText>Delete</WhiteButtonText>
                         </WhiteButton>
                       </ButtonWrap>
                     </QuestionBox>
                     <AnswerBox>
                       <ContentRowWrap>
                         <IconText>A.</IconText>
-                        <ContentText>{item.answer ?? '답변 대기 중'}</ContentText>
+                        <ContentText>{item.answer ?? 'Waiting for an answer'}</ContentText>
                       </ContentRowWrap>
                     </AnswerBox>
                   </ContentBox>
@@ -196,7 +192,7 @@ function AskList() {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
     </Container>
   );
@@ -282,6 +278,10 @@ const TitleBox = styled.div`
 const UnderTitleBox = styled.div`
   padding: 10px 10px 20px;
   border-bottom:1px solid black;
+  display:block;
+  @media only screen and (max-width: 768px) {
+    display:none;
+  }
 `;
 
 const ContentBox = styled.div`
@@ -312,6 +312,7 @@ const SendMessageBox = styled.div`
   font-family:'Pretendard Variable';
   display:block;
   padding:5px 40px;
+  cursor: pointer;
   border-radius:5px;
   font-size:15px;
   font-weight:510;

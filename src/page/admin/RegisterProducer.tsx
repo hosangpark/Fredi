@@ -133,6 +133,7 @@ function RegisterProducer() {
     setSns(resData.sns);
     setEmail(resData.email);
     setWebsite(resData.website);
+    console.log('resData.imageList',resData.imageList)
     setInit(resData.imageList.map((image: any) => ({ symbol: image.idx, name: image.file_name, url: image.file_name })));
   };
 
@@ -154,7 +155,7 @@ function RegisterProducer() {
       </Box>
       <Box>
         <InputWrap>
-          <InputTitle>카테고리</InputTitle>
+          <InputTitle>Category</InputTitle>
           <UnderLineBox>
             <Select
               rightSection={<DownIcon src={arrDownImage} />}
@@ -179,12 +180,12 @@ function RegisterProducer() {
         </InputWrap>
         <InputWrap>
           <InputTitle>업체명</InputTitle>
-          <TextInput value={name} onChange={(e) => setName(e.target.value)} placeholder="입력해 주세요" />
+          <TextInput value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter" />
         </InputWrap>
         <InputWrap>
           <InputTitle>주소</InputTitle>
           <InputDescription>(메인화면에 노출되는 주소 / ~시 ~ 동 까지 작성해주세요.)</InputDescription>
-          <TextInput value={addressText} onChange={(e) => setAddressText(e.target.value)} placeholder="입력해 주세요" />
+          <TextInput value={addressText} onChange={(e) => setAddressText(e.target.value)} placeholder="Enter" />
         </InputWrap>
         <InputWrap>
           <InputTitle>상세 주소</InputTitle>
@@ -220,21 +221,21 @@ function RegisterProducer() {
         </InputWrap>
         <InputWrap last>
           <InputTitle>업체 설명</InputTitle>
-          <TextArea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="입력해 주세요" />
+          <TextArea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter" />
         </InputWrap>
       </Box>
       <Box last>
         <InputWrap>
           <InputTitle>SNS</InputTitle>
-          <TextInput value={sns} onChange={(e) => setSns(e.target.value)} placeholder="입력해 주세요" />
+          <TextInput value={sns} onChange={(e) => setSns(e.target.value)} placeholder="Enter" />
         </InputWrap>
         <InputWrap>
           <InputTitle>E-mail</InputTitle>
-          <TextInput value={email} onChange={(e) => setEmail(e.target.value)} placeholder="입력해 주세요" />
+          <TextInput value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter" />
         </InputWrap>
         <InputWrap last>
           <InputTitle>Website</InputTitle>
-          <TextInput value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="입력해 주세요" />
+          <TextInput value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Enter" />
         </InputWrap>
         <BlackButton isLoading={isLoading} aria-disabled={isLoading} onClick={onRegisterProducer}>
           {isLoading ? <Loader color="#121212" size="xs" /> : <BlackButtonText>{idx ? '수정' : '등록'}</BlackButtonText>}

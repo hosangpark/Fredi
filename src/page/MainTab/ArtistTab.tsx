@@ -20,59 +20,15 @@ import TopButton from '../../components/Product/TopButton';
 import { removeHistory } from '../../components/Layout/Header';
 import Artist from './Artist';
 import { ArtistItem } from '../../types/Types';
-import { CategoryList } from '../../components/List/List';
-import { APIArtistList, APIProductList } from '../../api/ProductAPI';
+import { APIArtistList} from '../../api/ProductAPI';
 
-
-
-const useStyles = createStyles((theme, _params, getRef) => ({
-  carousel: {},
-
-  carouselControls: {
-    ref: getRef('carouselControls'),
-    padding: '0px 50px',
-    boxShadow: 'unset',
-    '@media (max-width: 768px)': { padding: '0 18px' },
-  },
-  carouselControl: {
-    ref: getRef('carouselControl'),
-    boxShadow: 'none',
-    outline: 0,
-  },
-
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    transition: 'width 250ms ease',
-    borderRadius: '100%',
-    backgroundColor: '#121212',
-    opacity: 0.4,
-    '&[data-active]': {
-      width: 8,
-      borderRadius: '100%',
-    },
-    '@media (max-width: 768px)': {
-      '&[data-active]': {
-        width: 4,
-        borderRadius: '100%',
-      },
-      width: 4,
-      height: 4,
-    },
-  },
-
-  carouselImages: {
-    width: '100%',
-    maxHeight: 700,
-  },
-}));
 
 
 function ArtistTab() {
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
   const keywordParams = searchParams.get('keyword') ?? '';
-  const [artistList, setArtistList] = useState<[]>([]);
+  const [artistList, setArtistList] = useState<any[]>([]);
   const [showLogin, setShowLogin] = useState(false);
   const [history, setHistory] = useState(false);
   const [keyword, setKeyword] = useState<string>(keywordParams);
@@ -90,8 +46,13 @@ function ArtistTab() {
         return setHistory(false);
       }
       const { list , total } = await APIArtistList(data);
-      setArtistList(list);
-      setTotal(total);
+      console.log('page',page)
+      if(page > 1){
+        // setArtistList([...artistList , ...list]);
+        setArtistList((prev) => [...prev, ...list]);
+      } else {
+        setArtistList(list);
+      }
 
     } catch (error) {
       console.log(error);
@@ -111,7 +72,7 @@ function ArtistTab() {
     sessionStorage.removeItem('ArtistList');
   };
 
-  const saveHistory = (e: React.MouseEvent, name: string , idx:number) => {
+  const saveHistory = (e: React.MouseEvent, name: string) => {
     const div = document.getElementById('root');
     if (div) {
       // console.log(div.scrollHeight, globalThis.scrollY);
@@ -120,7 +81,7 @@ function ArtistTab() {
       sessionStorage.setItem('ArtistList', JSON.stringify(artistList));
       sessionStorage.setItem('ArtistPage', String(page));
     }
-    navigate(`/ArtistProducts/${name}`,{ state:{name:name,idx:idx} });
+    navigate(`/ArtistProducts/${name}`,{ state:{name:name} });
   };
 
   const handleObserver = useCallback((entries: any) => {
@@ -189,7 +150,6 @@ function ArtistTab() {
               onSearch();
             }
           }}
-          categoryList={CategoryList}
           category={'1'}
           keyword={keyword}
           onChangeInput={(e) => setKeyword(e.target.value)}
@@ -211,7 +171,7 @@ function ArtistTab() {
       </TabBox>
       {/* <ShowTypeButton onClickType1={() => setShowType(1)} onClickType2={() => setShowType(2)} /> */}
       <Artist saveHistory={saveHistory} productList={artistList}/>
-      {/* <InterView ref={interSectRef} /> */}
+      <InterView ref={interSectRef} />
       <AlertModal
         visible={showLogin}
         setVisible={setShowLogin}
@@ -220,7 +180,7 @@ function ArtistTab() {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>
@@ -233,6 +193,10 @@ const Container = styled.div`
   flex-direction: column;
   width:100%;
 `;
+const InterView = styled.div`
+  height: 150px;
+`;
+
 const TabBox = styled.div`
   display:none;
   width:100%;
@@ -282,8 +246,9 @@ const TitleWrap = styled.div`
 `;
 const TitleText = styled.span`
 font-family:'Pretendard Variable';
-  font-size: 22px;
-  font-weight: 360;
+  font-weight: 410;
+  color: #121212;
+  font-size: 16px;
   text-transform: capitalize;
   @media only screen and (max-width: 768px) {
     display:none

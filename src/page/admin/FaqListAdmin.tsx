@@ -81,9 +81,9 @@ function FaqListAdmin() {
       {faqList.length < 1 ? (
         <NoDataBox>
           {/* <Logo src={logoImage} /> */}
-          <Text>등록된 FAQ가 없습니다.</Text>
+          <Text>No FAQs registered</Text>
           <BlackButtonNoData onClick={() => navigate('/admin/registerfaq')}>
-            <BlackButtonText>등록하기</BlackButtonText>
+            <BlackButtonText>register</BlackButtonText>
           </BlackButtonNoData>
         </NoDataBox>
       ) : (
@@ -107,12 +107,12 @@ function FaqListAdmin() {
                             setItemIdx(item.idx);
                           }}
                         >
-                          <DeleteButtonText>삭제</DeleteButtonText>
+                          <DeleteButtonText>Delete</DeleteButtonText>
                         </DeleteButton>
                       </RowWrap>
                       <RowWrap last>
                         <RowWrap>
-                          <Nickname>관리자</Nickname>
+                          <Nickname>Manager</Nickname>
                           <Line />
                           <Date>{dayjs(item.created_time).format('YYYY.MM.DD. HH:mm:ss')}</Date>
                         </RowWrap>

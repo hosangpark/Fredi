@@ -297,7 +297,6 @@ function Shop() {
             onSearch();
           }
         }}
-        categoryList={CategoryList}
         category={category}
         keyword={keyword}
         onChangeInput={(e) => setKeyword(e.target.value)}
@@ -335,7 +334,7 @@ function Shop() {
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>

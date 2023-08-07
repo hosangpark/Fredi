@@ -52,10 +52,6 @@ function FairMainList({
   const navigationPrevRef = React.useRef(null)
   const navigationNextRef = React.useRef(null)
 
-
-
-  const [like, setLike] = useState(false)
-
   useLayoutEffect(() => {
     const scrollY = Number(sessionStorage.getItem('y'));
       setTimeout(() => {
@@ -90,13 +86,11 @@ function FairMainList({
       <Swiper
         modules={[Navigation, Pagination, Scrollbar]}
         slidesPerView={ProductViews}
-        navigation= {naviArrow ?
+        navigation= {
             {
               prevEl: navigationPrevRef.current,
               nextEl: navigationNextRef.current,
             }
-            :
-            false
             }
         // spaceBetween={30}
         scrollbar={ scrollbar }
@@ -126,7 +120,7 @@ function FairMainList({
             </SwiperSlide>
           )
         })}
-        {naviArrow == true &&
+
         <>
         <LeftArrow ref={navigationPrevRef}>
           <RotateImage src={rotateLeft}/>
@@ -135,7 +129,7 @@ function FairMainList({
           <img src={rotateLeft}/>
         </RightArrow>
         </>
-        }
+        
       </Swiper>
     </ContainerWrap>
   );
@@ -157,6 +151,10 @@ border:0.5px solid #dfdfdf;
   border-radius:50%;
   background:#FFFFFF;
   z-index:99999;
+  @media only screen and (max-width: 768px) {
+    width:30px;
+    height:30px;
+  }
 `
 const RightArrow = styled.div`
 display:flex;
@@ -171,6 +169,10 @@ border:0.5px solid #dfdfdf;
   border-radius:50%;
   background:#FFFFFF;
   z-index:99999;
+  @media only screen and (max-width: 768px) {
+    width:30px;
+    height:30px;
+  }
 `
 
 const ProductImage = styled.img`

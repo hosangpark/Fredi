@@ -4,9 +4,9 @@ import CheckBox from './CheckBox';
 
 interface Props {
   item: string;
-  idx:number;
+  idx:string;
   checked:boolean;
-  setChecked: (idx:number,item:string)=>void;
+  setChecked: (idx:string,item:string)=>void;
 }
 function CheckCategoryItem({item,idx,checked,setChecked}: Props) {
   // const [checked, setChecked] = useState(false)

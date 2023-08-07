@@ -241,7 +241,7 @@ function AskListAdmin() {
         onClick={() => {
           setShowAlert(false);
         }}
-        text="내용을 입력해 주세요."
+        text="Enter"
       />
     </>
   );

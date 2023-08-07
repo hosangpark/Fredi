@@ -15,7 +15,7 @@ export type FairDetailsType = {
   fair_link_data : FairLinkData[]
   artwork_data:FairDetailsArtworkItem[]
   isLike?: boolean;
-  designer_data:FairDetailsArtistItem[]
+  designer_data:ArtistCardType[]
 };
 
 export type FairLinkData = {
@@ -144,6 +144,10 @@ export type FairDetailsArtistItem = {
   following: number,
   followers: number
 }
+
+export type ArtistCardType = {
+  designer_name:string,
+}
 export type ArtistList = {
   idx: number,
   type: number,
@@ -190,6 +194,7 @@ export type FeaturedListType = {
   isLike: boolean,
   isBookmark: boolean,
   category_arr: string[]
+  user:UserType
 }
 export type DesignerType = {
   idx:number;
@@ -248,6 +253,7 @@ export type ImageType = {
   idx: number;
   file_name: string;
   name:string;
+  thumb?:string;
 };
 export type LinkListType = {
   created_at:string;
@@ -256,15 +262,26 @@ export type LinkListType = {
   url:string;
   user_idx:number;
 };
+export type ArtworkLinkListType = {
+  sns:string | null;
+  link_buy: string | null,
+  link_etc1: string | null,
+  link_sns_title: string | null,
+  link_buy_title: string | null,
+  link_etc_title1: string | null,
+};
 export type AddLinkListType = {
   title: string;
   url:string;
 };
 export type CategoryType = {
-  idx:number;
+  idx:string;
   order_num:number;
   name:string;
-  is_gide:number;
+  show:number;
+  created_time: string;
+  updated_time: string | null;
+  deleted_time: string | null;
 };
 
 export type TProducerListItem = {
@@ -501,6 +518,8 @@ export type SnsList = {
   image:ImageType[];
   isLike:boolean;
   isBookmark:boolean;
+  is_featured:string;
+  is_hide:number;
   category_arr:string[]
   user:UserType
 }
@@ -532,7 +551,6 @@ export type ArtworkDetailsType = {
   description:string
   designer_idx:string | null
   designer_name:string
-  sns:string;
   email:string;
   user_idx:number;
   created_time:string;
@@ -542,9 +560,14 @@ export type ArtworkDetailsType = {
   depth: number,
   height: number,
   materials: null,
-  link_buy: null,
   imageList:ImageType[];
   category_arr:string[]
+  sns:string | null;
+  link_buy: string | null,
+  link_etc1: string | null,
+  link_sns_title: string | null,
+  link_buy_title: string | null,
+  link_etc_title: string | null,
   isLike:boolean;
   isLink:boolean;
   user:UserType | null

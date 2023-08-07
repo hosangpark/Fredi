@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal } from '@mantine/core';
 import { APIGetTerms } from '../../api/SettingAPI';
-import { APISendAuthNumber, APISignUp, APIVerifyAuthNumber } from '../../api/UserAPI';
+import { APISendAuthNumber, APISignUp } from '../../api/UserAPI';
 import 'dayjs/locale/ko';
 import CheckBox from '../../components/Shop/CheckBox';
 import AlertModal from '../../components/Modal/AlertModal';
@@ -53,7 +53,11 @@ function SignUp3() {
     if(!Checked) type.push('NoCheck')
     if(!authnumber) type.push('NoAuthNumber')
 
-    
+    console.log('type',location.state.type)
+    console.log('user_id',location.state.user_id)
+    console.log('password',location.state.password)
+    console.log('level',location.state.level)
+    console.log('location.state.type',location.state.type)
     if (type.length > 0) {
       return setAlertType(type);
     } else {
@@ -65,7 +69,7 @@ function SignUp3() {
           password: location.state.password,
           name: Name,
           phone: Phone,
-          level: location.state.type
+          level: location.state.level
       };
       try {
         const res = await APISignUp(data);
@@ -178,7 +182,7 @@ function SignUp3() {
         </InputWrap>
         <RowWrap>
           <Input
-            // maxLength={25}
+            maxLength={11}
             value={Phone}
             onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
             placeholder="01012345678"

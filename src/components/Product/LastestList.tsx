@@ -85,14 +85,12 @@ function LastestList({
         // install Swiper modules
         modules={[Navigation, Pagination, Scrollbar]}
         slidesPerView={ProductViews}
-        navigation= {naviArrow ?
+        navigation= {
             {
               prevEl: navigationPrevRef.current,
               nextEl: navigationNextRef.current,
             }
-            :
-            false
-            }
+          }
         // spaceBetween={30}
         scrollbar={ scrollbar }
         // pagination={{ clickable: true }}
@@ -122,7 +120,6 @@ function LastestList({
             </SwiperSlide>
           )
         })}
-        {naviArrow == true &&
         <>
         <LeftArrow ref={navigationPrevRef}>
           <RotateImage src={rotateLeft}/>
@@ -131,7 +128,7 @@ function LastestList({
           <img src={rotateLeft}/>
         </RightArrow>
         </>
-        }
+
       </Swiper>
     </ContainerWrap>
   );
@@ -142,6 +139,7 @@ const RotateImage = styled.img`
 `
 const LeftArrow = styled.div`
 display:flex;
+cursor: pointer;
 align-items:center;
 justify-content:center;
 border:1px solid #dfdfdf;
@@ -153,9 +151,14 @@ border:1px solid #dfdfdf;
   border-radius:50%;
   background:#FFFFFF;
   z-index:99999;
+  @media only screen and (max-width: 768px) {
+    width:30px;
+    height:30px;
+  }
 `
 const RightArrow = styled.div`
 display:flex;
+cursor: pointer;
 align-items:center;
 justify-content:center;
 border:1px solid #dfdfdf;
@@ -167,6 +170,10 @@ border:1px solid #dfdfdf;
   border-radius:50%;
   background:#FFFFFF;
   z-index:99999;
+  @media only screen and (max-width: 768px) {
+    width:30px;
+    height:30px;
+  }
 `
 
 const ProductImage = styled.img`

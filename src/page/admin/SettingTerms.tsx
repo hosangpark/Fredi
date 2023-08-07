@@ -52,13 +52,13 @@ function SettingTerms() {
       <TitleBox>
         <TabButtonWrap>
           <TabButton onClick={() => setTab(1)} selected={tab === 1}>
-            <TabButtonText selected={tab === 1}>이용약관</TabButtonText>
+            <TabButtonText selected={tab === 1}>Terms of Use</TabButtonText>
           </TabButton>
           <TabButton onClick={() => setTab(2)} selected={tab === 2}>
-            <TabButtonText selected={tab === 2}>개인정보처리방침</TabButtonText>
+            <TabButtonText selected={tab === 2}>Privacy Policy</TabButtonText>
           </TabButton>
           <TabButton onClick={() => setTab(3)} selected={tab === 3}>
-            <TabButtonText selected={tab === 3}>탈퇴약관</TabButtonText>
+            <TabButtonText selected={tab === 3}>Terms of withdrawal</TabButtonText>
           </TabButton>
         </TabButtonWrap>
       </TitleBox>
@@ -68,11 +68,11 @@ function SettingTerms() {
           onChange={(e) =>
             tab === 1 ? setTermsOfUse(e.target.value) : tab === 2 ? setPrivacyPolicy(e.target.value) : setTermsOfWithdrawal(e.target.value)
           }
-          placeholder={tab === 1 ? '이용약관 입력' : tab === 2 ? '개인정보 처리방침 입력' : '탈퇴약관 입력'}
+          placeholder={tab === 1 ? 'Enter Terms of Use' : tab === 2 ? 'Enter Privacy Policy' : 'Enter Terms of withdrawal'}
         />
       </TabContentBox>
       <BlackButton onClick={onModifyTerms}>
-        <BlackButtonText>등록</BlackButtonText>
+        <BlackButtonText>Registration</BlackButtonText>
       </BlackButton>
       <AlertModal
         visible={showModal}
@@ -80,7 +80,7 @@ function SettingTerms() {
         onClick={() => {
           setShowModal(false);
         }}
-        text={(tab === 1 ? '이용약관' : tab === 2 ? '개인정보 처리방침' : '탈퇴약관') + '이 수정되었습니다.'}
+        text={(tab === 1 ? 'Terms of Use' : tab === 2 ? 'Privacy Policy' : 'Terms of withdrawal') + 'have been revised.'}
       />
     </>
   );

@@ -7,6 +7,7 @@ import { UserContext } from '../../context/user';
 import axios from 'axios';
 import { AskTitleList } from '../../components/List/List';
 import ButtonContainer from '../../components/Layout/ButtonBox';
+import { NoDoubleEmptySpace } from '../../util/Reg';
 
 
 
@@ -39,11 +40,9 @@ function RegisterAsk() {
     }
   };
 
-  const onRegisterAsk = async () => {
-    console.log(title)
-    console.log(content)
+  const onRegisterAsk = async () => {   
     if (!title) return setShowTitleModal(true);
-    if (!content) return setShowContentModal(true);
+    if (NoDoubleEmptySpace(content).length < 10) return setShowContentModal(true);
     const data = {
       title: title,
       question: content,
@@ -176,7 +175,7 @@ function RegisterAsk() {
       onClick={() => {
         setShowContentModal(false);
       }}
-      text="내용을 입력해 주세요."
+      text="내용을 충분히 입력해 주세요."
     />
     </Container>
     

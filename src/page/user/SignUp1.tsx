@@ -11,13 +11,13 @@ function SignUp1() {
         Sign Up
       </SignUpTitle>
       <TypeContainer>
-        <TypeBox onClick={()=>navigate('/SignUp2',{state:{type:1}})}>
+        <TypeBox onClick={()=>navigate('/SignUp2',{state:{type:3}})}>
           Customer
         </TypeBox>
         <TypeBox onClick={()=>{navigate('/SignUp2',{state:{type:2}})}}>
           Artist
         </TypeBox>
-        <TypeBox onClick={()=>{navigate('/SignUp2',{state:{type:3}})}}>
+        <TypeBox onClick={()=>{navigate('/SignUp2',{state:{type:1}})}}>
           Brand
         </TypeBox>
       </TypeContainer>

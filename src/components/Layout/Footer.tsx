@@ -42,22 +42,22 @@ function Footer() {
             <TextButton onClick={() => navigate('/contact/askinfo')}>입점문의</TextButton>
           </InstaBox> */}
           <TextBox>
-            <FooterText>대표 {companyInfo?.representative}</FooterText>
-            <FooterText>대표전화 {companyInfo?.phone}</FooterText>
+            <FooterText>Owner : {companyInfo?.representative} /</FooterText>
+            <FooterText>Phone : {companyInfo?.phone} /</FooterText>
             <FooterText>{companyInfo?.address}</FooterText>
           </TextBox>
           <TextBox>
-            <FooterText>사업자등록번호 {companyInfo?.business_number}</FooterText>
-            <FooterText>통신판매업신고 {companyInfo?.business_number2}</FooterText>
+            <FooterText>Corporate Registration Number : {companyInfo?.business_number} /</FooterText>
+            <FooterText>Online Marketing Business : {companyInfo?.business_number2}</FooterText>
           </TextBox>
             {/* <FooterText Bold={true}>@copyright. FREDI</FooterText> */}
         </FooterTopBox>
         <TermsBox>
           <FooterText>
-            이용약관
+            Terms of Use
           </FooterText>
           <FooterText>
-            개인정보처리방침
+            Privacy Policy
           </FooterText>
           <FooterText>
             FAQ

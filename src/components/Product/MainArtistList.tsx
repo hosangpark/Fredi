@@ -121,7 +121,7 @@ function MainArtistList({
         setVisible={setShowAlertModal}
         onClick={() => {
           if(
-            alertType == '회원가입 후 이용 가능합니다.'
+            alertType == 'Available after Sign up.'
           ){
             navigate('/signin');
           } else {

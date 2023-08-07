@@ -23,10 +23,10 @@ function ConfirmModal({
         <ModalTitle>{text}</ModalTitle>
         <ButtonWrap>
           <ModalBlackButton onClick={onOk}>
-            <BlackButtonText>확인</BlackButtonText>
+            <BlackButtonText>OK</BlackButtonText>
           </ModalBlackButton>
           <ModalWhiteButton onClick={onClose}>
-            <WhiteButtonText>취소</WhiteButtonText>
+            <WhiteButtonText>Cancel</WhiteButtonText>
           </ModalWhiteButton>
         </ButtonWrap>
       </ModalBox>

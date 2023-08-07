@@ -6,32 +6,27 @@ import arrDownImage from '../../asset/image/arr_down.png';
 import rightArrowImage from '../../asset/image/pager_right.png';
 import { APIGetTerms } from '../../api/SettingAPI';
 import {
-  APICheckPassword,
   APIDeleteAccount,
   APIModifyName,
-  APIModifyPassword,
-  APIModifyUserDetails,
-  APISendAuthNumber,
   APIUserDetails,
-  APIVerifyAuthNumber,
   checkNicknameExcludeUser,
 } from '../../api/UserAPI';
 import AlertModal from '../../components/Modal/AlertModal';
 import { TUserDetails } from './Profile';
-import { passwordReg, phoneReg } from '../../util/Reg';
 import { useRef } from 'react';
 import { APISaveAddress } from '../../api/ShopAPI';
 import PostModal from '../../components/Modal/PostModal';
 import TopTextButton from '../../components/Layout/TopTextButton';
 import ButtonContainer from '../../components/Layout/ButtonBox';
 import { UserContext } from '../../context/user';
+import axios from 'axios';
 
 const REASONLIST = [
-  { value: '', label: '탈퇴 사유 선택' },
-  { value: '사용빈도 낮음', label: '사용빈도 낮음' },
-  { value: '서비스 불만', label: '서비스 불만' },
-  { value: '개인정보 유출 우려', label: '개인정보 유출 우려' },
-  { value: '기타', label: '기타' },
+  { value: '', label: 'Select reason' },
+  { value: '사용빈도 낮음', label: 'Infrequently used' },
+  { value: '서비스 불만', label: 'Dissatisfied with service' },
+  { value: '개인정보 유출 우려', label: 'Privacy concerns' },
+  { value: '기타', label: 'Others' },
 ];
 
 function ModifyUserInfo() {
@@ -81,6 +76,7 @@ function ModifyUserInfo() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showAddressModal, setShowAddressModal] = useState<boolean>(false);
   const [showSaveAddressModal, setShowSaveAddressModal] = useState<boolean>(false);
+  const [UserType, setUserType] = useState<number>(1);
 
   const [zipCode, setZipCode] = useState<string>('');
   const [address1, setAddress1] = useState<string>('');
@@ -107,6 +103,7 @@ function ModifyUserInfo() {
       setNickname(res.nickname);
       setOriginalNickname(res.nickname);
       setOriginalPhone(res.phone);
+      setUserType(res.type)
       console.log('ddddd',res)
       // const addressData = res.address;
       // setZipCode(addressData.zipcode);
@@ -154,6 +151,11 @@ function ModifyUserInfo() {
       const res = await APIModifyName(data);
       setAlertType('Modify')
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409) {
+            alert(error.response.data.message);
+        }
+      }
     }
   }
 
@@ -270,6 +272,7 @@ function ModifyUserInfo() {
             </EmptyBox>
           </RightText>
         </RowWap>
+        {UserType == 1 &&
         <RowWap>
           <LeftText>Password</LeftText>
           <RightText cursor onClick={()=> navigate('/changePassword')}>
@@ -279,7 +282,8 @@ function ModifyUserInfo() {
             </EmptyBox>
           </RightText>
         </RowWap>
-        <RowWap style={{paddingTop:100}}>
+        }
+        {/* <RowWap style={{paddingTop:100}}>
           <LeftText>Address</LeftText>
           <RightText cursor onClick={()=> setShowAddressModal(true)}>
             Edit
@@ -287,7 +291,7 @@ function ModifyUserInfo() {
             <RightArrow src={rightArrowImage}/>
             </EmptyBox>
           </RightText>
-        </RowWap>
+        </RowWap> */}
         <RowWap style={{paddingTop:100}}>
           <LeftText style={{color:'#9C343F'}}>Delete Account</LeftText>
           <RightText cursor onClick={()=>setShowAccountModal(true)}>
@@ -311,8 +315,8 @@ function ModifyUserInfo() {
 
       <Modal opened={showAccountModal} onClose={() => setShowAccountModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
         <ModalBox>
-          <ModalTitle>회원탈퇴를 진행하시겠습니까?</ModalTitle>
-          <ModalTitle>해당 사이트의 회원서비스의 이용이 종료됩니다.</ModalTitle>
+          <ModalTitle>You want to cancel your account?</ModalTitle>
+          <ModalSubTitle>Your account and membership services will be terminated.</ModalSubTitle>
           <ModalContentBox>{terms}</ModalContentBox>
           <UnderLineBox>
             <Select
@@ -340,7 +344,7 @@ function ModifyUserInfo() {
             <Checkbox
               checked={agree}
               onChange={(e) => setAgree(e.currentTarget.checked)}
-              label="유의사항을 모두 확인하였으며, 회원 탈퇴합니다."
+              label="I've read all the terms and conditions."
               styles={{
                 label: { cursor: 'pointer' },
                 input: { cursor: 'pointer', borderColor: '#121212', '&:checked': { backgroundColor: '#121212', borderColor: '#121212' } },
@@ -357,45 +361,6 @@ function ModifyUserInfo() {
           </ButtonWrap>
         </ModalBox>
       </Modal>
-      <Modal opened={showAddressModal} onClose={() => setShowAddressModal(false)} overlayOpacity={0.5} size="auto" centered withCloseButton={false}>
-        <AddressModalBox>
-          <AddressModalTitle>배송지 설정</AddressModalTitle>
-          <ModifyDeliveryInfoBox>
-            <InputWrap>
-              <SearchAddressInputWrap>
-                <AddressModalTextInput value={zipCode} disabled placeholder="우편번호" style={{ backgroundColor: '#fff' }} />
-                <SearchButton onClick={() => setShowModal(true)}>
-                  <SearchButtonText>검색</SearchButtonText>
-                </SearchButton>
-              </SearchAddressInputWrap>
-              <AddressModalTextInput value={address1} onChange={(e) => setAddress1(e.target.value)} placeholder="주소를 검색해 주세요." />
-              <AddressModalTextInput value={address2} onChange={(e) => setAddress2(e.target.value)} placeholder="상세 주소 입력" />
-            </InputWrap>
-            <RecipientInputRowWrap>
-              <RecipientInputLeftText>이름</RecipientInputLeftText>
-              <RecipientInput value={recipient} onChange={(e) => setRecipient(e.target.value)} placeholder="수령인 입력" />
-            </RecipientInputRowWrap>
-            <RecipientInputRowWrap last>
-              <RecipientInputLeftText>휴대폰번호</RecipientInputLeftText>
-              <RecipientInput
-                value={recipientPhone}
-                onChange={(e) => {
-                  setRecipientPhone(e.target.value.replace(/[^0-9]/g, ''));
-                }}
-                placeholder="휴대폰 번호 입력"
-              />
-            </RecipientInputRowWrap>
-          </ModifyDeliveryInfoBox>
-          <AddressModalButtonWrap>
-            <AddresModalBlackButton onClick={onSaveAddress}>
-              <BlackButtonText>저장하기</BlackButtonText>
-            </AddresModalBlackButton>
-            <ModalWhiteButton onClick={() => setShowAddressModal(false)}>
-              <WhiteButtonText>닫기</WhiteButtonText>
-            </ModalWhiteButton>
-          </AddressModalButtonWrap>
-        </AddressModalBox>
-      </Modal>
       <AlertModal
         visible={alertModal}
         setVisible={setAlertModal}
@@ -404,41 +369,17 @@ function ModifyUserInfo() {
           setAlertType(undefined);
         }}
         text={
-          alertType === 'nicknameDuplicated'
-            ? '중복된 닉네임입니다.'
-            : alertType === 'nicknameEmpty'
+          alertType === 'nicknameEmpty'
             ? '닉네임을 입력해 주세요.'
             : alertType === 'nameEmpty'
             ? '이름을 입력해 주세요.'
-            : alertType === 'nicknameAvailable'
-            ? '사용 가능한 닉네임입니다.'
             : alertType === 'Modify'
             ? '변경이 완료 되었습니다.'
-            : alertType === 'sendFaild'
-            ? '휴대폰 번호를 올바르게 입력해 주세요.'
-            : alertType === 'send'
-            ? '인증번호가 발송되었습니다.'
-            : alertType === 'auth'
-            ? '인증되었습니다.'
-            : alertType === 'authFaild'
-            ? '인증번호를 확인해 주세요.'
-            : alertType === 'member'
-            ? '이미 가입된 번호입니다.'
-            : alertType === 'modified'
-            ? '프로필이 수정되었습니다.'
-            : alertType === 'faild'
-            ? '닉네임 중복 확인과 휴대폰 인증을 완료해 주세요.'
-            : alertType === 'originalPhone'
-            ? '기존 휴대폰 번호와 같습니다.'
-            : alertType === 'originalNickname'
-            ? '기존 닉네임과 같습니다.'
             : alertType === 'reason'
             ? '탈퇴 사유를 입력해 주세요.'
             : alertType === 'agree'
             ? '탈퇴 약관에 동의해 주세요.'
-            : alertType === 'deleted'
-            ? '회원 탈퇴가 완료되었습니다.'
-            : ''
+            : ""
         }
       />
       <AlertModal
@@ -452,23 +393,6 @@ function ModifyUserInfo() {
       />
 
       <PostModal visible={showModal} setVisible={setShowModal} setAddress={onAddress} />
-      <AlertModal
-        visible={showAlertModal}
-        setVisible={setShowAlertModal}
-        onClick={() => {
-          setShowAlertModal(false);
-        }}
-        text={'배송지를 입력해 주세요.'}
-      />
-      <AlertModal
-        visible={showSaveAddressModal}
-        setVisible={setShowSaveAddressModal}
-        onClick={() => {
-          setShowSaveAddressModal(false);
-          setShowAddressModal(false);
-        }}
-        text={'배송지가 저장되었습니다.'}
-      />
     </Container>
   );
 }
@@ -655,10 +579,23 @@ const AddressModalBox = styled(ModalBox)`
 const ModalTitle = styled.span`
 font-family:'Pretendard Variable';
   font-size: 16px;
+  text-align:center;
   color: #000000;
   font-weight: 410;
   @media only screen and (max-width: 768px) {
     font-size: 14px;
+  }
+`;
+const ModalSubTitle = styled.span`
+font-family:'Pretendard Variable';
+  font-size: 16px;
+  text-align:center;
+  white-space:nowrap;
+  color: #000000;
+  font-weight: 410;
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    white-space:inherit;
   }
 `;
 
@@ -840,7 +777,7 @@ const EmptyRowInputWrap = styled.div`
 
 const ModalContentBox = styled.textarea`
   width: 400px;
-  height: 300px;
+  height: 150px;
   border: 1px solid #121212;
   padding: 15px;
   overflow-y: scroll;
@@ -858,7 +795,7 @@ const ModalContentBox = styled.textarea`
 
   @media only screen and (max-width: 768px) {
     width: 260px;
-    height: 250px;
+    height: 125px;
     font-size: 12px;
     line-height: 20px;
     margin-top: 10px;
@@ -873,7 +810,7 @@ const CheckboxWrap = styled.div`
 
 const ReasonInput = styled.textarea`
   width: 100%;
-  height: 120px;
+  height: 60px;
 
   padding: 10px;
   font-size: 14px;

@@ -36,7 +36,7 @@ import Nodata from '../../components/Product/NoData';
 
 function BookMark({saveHistory,onLikeProduct,productList,selectCategory}
   :
-  {saveHistory:(e:React.MouseEvent, idx: number)=>void,
+  {saveHistory:(e:React.MouseEvent, idx: number, index: number)=>void,
   onLikeProduct?:(e:number)=>void,
   productList?:SnsList[],
   selectCategory?:string}) {
@@ -52,12 +52,12 @@ function BookMark({saveHistory,onLikeProduct,productList,selectCategory}
         {
         productList&&
         productList.length > 0 ?
-        productList.map((item:any,index:number)=>{
+        productList.map((item:SnsList,index:number)=>{
           return(
             <SnsCard
-              item={item.sns}
+              item={item}
               key={item.idx}
-              onClick={(e) => saveHistory(e, item.sns.idx)}
+              onClick={(e) => saveHistory(e, item.idx, index)}
               index={index}
             />
           )
@@ -74,7 +74,7 @@ function BookMark({saveHistory,onLikeProduct,productList,selectCategory}
           setShowLogin(false);
           navigate('/signin');
         }}
-        text="회원가입 후 이용 가능합니다."
+        text="Available after Sign up."
       />
       <TopButton />
     </Container>
